@@ -26,7 +26,6 @@ class _LoginComponentState extends State<LoginComponent> {
             SingleChildScrollView(
               child: Container(
                 child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
@@ -173,7 +172,6 @@ class _LoginComponentState extends State<LoginComponent> {
                       margin: EdgeInsets.only(
                           top: 20, bottom: defaultMargin, left: 20, right: 20),
                       child: ButtonTheme(
-                        // minWidth: double.infinity,
                         height: 40.0,
                         child: RaisedButton(
                           shape: RoundedRectangleBorder(
@@ -206,10 +204,10 @@ class _LoginComponentState extends State<LoginComponent> {
                 style: TextStyle(
                   color: Colors.grey,
                 ),
-                // underline: Container(
-                //   height: 2,
-                //   color: Colors.deepPurple,
-                // ),
+                underline: Container(
+                  height: 1,
+                  color: Colors.white10,
+                ),
                 onChanged: (String newValue) {
                   setState(() {
                     dropdownValue = newValue;
