@@ -1,4 +1,4 @@
-package com.example.waste_app
+package com.pitol.waste_app
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
