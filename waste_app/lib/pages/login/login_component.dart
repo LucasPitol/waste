@@ -16,6 +16,8 @@ class _LoginComponentState extends State<LoginComponent> {
 
   String dropdownValue = 'Português';
 
+  bool loading = false;
+
   AuthService authService;
 
   UserDto userDto;
@@ -32,6 +34,13 @@ class _LoginComponentState extends State<LoginComponent> {
     setState(() {
       this.userDto = AuthService.currentUser;
       this.dropdownValue = this.userDto.language;
+    });
+  }
+
+  Future<void> _login() async {
+    setState(() {
+      this.loading = true;
+      print(loading);
     });
   }
 
@@ -128,7 +137,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: defaultBorderRadius,
                                 ),
-                                onPressed: () {},
+                                onPressed: _login,
                                 color: Colors.deepPurple,
                                 child: Text(
                                   this.userDto.language == this.languages[0]
@@ -257,6 +266,23 @@ class _LoginComponentState extends State<LoginComponent> {
                 }).toList(),
               ),
             ),
+            this.loading
+                ? Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height,
+                    color: Colors.black.withOpacity(0.5),
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      alignment: Alignment.center,
+                      child: Theme(
+                        data: Theme.of(context)
+                            .copyWith(accentColor: Colors.deepPurple),
+                        child: new CircularProgressIndicator(),
+                      ),
+                    ),
+                  )
+                : new Container(),
           ],
         ),
       ),

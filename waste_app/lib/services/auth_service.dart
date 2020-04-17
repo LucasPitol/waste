@@ -9,9 +9,39 @@ class AuthService {
 
   static void changeLanguage(String language) {
     AuthService.currentUser.language = language;
-  } 
+  }
 
   Future<UserDto> login(LoginForm form) async {
     UserDto userDtoTemp;
+
+    String userMail = form.userMail.text;
+    String password = form.password.text;
+
+    await dbReference
+        .collection('user')
+        .where('email', isEqualTo: userMail)
+        .where('password', isEqualTo: password)
+        .getDocuments()
+        .then((QuerySnapshot snapShot) async {
+      var userRef = snapShot.documents.first;
+
+      var user = userRef.data;
+
+      var uid = userRef.documentID;
+
+      if (user != null) {
+        AuthService.currentUser.email = user['email'];
+        AuthService.currentUser.name = user['name'];
+        AuthService.currentUser.language = user['language'];
+        AuthService.currentUser.theme = user['theme'];
+        AuthService.currentUser.uid = uid;
+      }
+
+      return user;
+    }).catchError((onError) {
+      print(onError);
+    });
+
+    return userDtoTemp;
   }
 }
