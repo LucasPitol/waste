@@ -21,123 +21,180 @@ class _LoginComponentState extends State<LoginComponent> {
       home: Scaffold(
         body: Stack(
           children: <Widget>[
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: double.infinity,
-                  height: 300.0,
-                  margin: EdgeInsets.only(
-                      left: 20, right: 20, bottom: 20, top: 100),
-                  decoration: BoxDecoration(
-                    color: mainColor,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade400,
-                        offset: Offset(0, 0),
-                        blurRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: 20,
-                            bottom: defaultMargin,
-                            left: 20,
-                            right: 20),
-                        child: TextField(
-                          // controller: _loginForm.userMail,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: defaultBorderRadius,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: defaultBorderRadius,
-                              borderSide: BorderSide(color: Colors.grey.shade300),
-                            ),
-                            labelText: 'e-mail',
+            SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: 300.0,
+                      margin: EdgeInsets.only(
+                          left: 20, right: 20, bottom: 10, top: 100),
+                      decoration: BoxDecoration(
+                        color: mainColor,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade400,
+                            offset: Offset(0, 0),
+                            blurRadius: 2,
                           ),
-                        ),
+                        ],
                       ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: 10,
-                            bottom: defaultMargin,
-                            left: 20,
-                            right: 20),
-                        child: TextField(
-                          // controller: _loginForm.userMail,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: defaultBorderRadius,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: defaultBorderRadius,
-                              borderSide: BorderSide(color: Colors.grey.shade300),
-                            ),
-                            labelText: 'senha',
-                          ),
-                          obscureText: true,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: defaultMargin,
-                            bottom: defaultMargin,
-                            left: 20,
-                            right: 20),
-                        child: ButtonTheme(
-                          minWidth: double.infinity,
-                          height: 60.0,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: defaultBorderRadius,
-                            ),
-                            onPressed: () {},
-                            color: Colors.deepPurple,
-                            child: Text(
-                              'Entrar',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.0,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: 20,
+                                bottom: defaultMargin,
+                                left: 20,
+                                right: 20),
+                            child: TextField(
+                              // controller: _loginForm.userMail,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: defaultBorderRadius,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: defaultBorderRadius,
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                labelText: 'e-mail',
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              child: Text(
-                                'Esqueceu a senha?',
-                                style: TextStyle(
-                                    fontSize: 14.0, color: Colors.grey),
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: 10,
+                                bottom: defaultMargin,
+                                left: 20,
+                                right: 20),
+                            child: TextField(
+                              // controller: _loginForm.userMail,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: defaultBorderRadius,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: defaultBorderRadius,
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                labelText: 'senha',
                               ),
+                              obscureText: true,
                             ),
-                            Container(
-                              child: FlatButton(
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: defaultMargin,
+                                bottom: defaultMargin,
+                                left: 20,
+                                right: 20),
+                            child: ButtonTheme(
+                              minWidth: double.infinity,
+                              height: 60.0,
+                              child: RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: defaultBorderRadius,
+                                ),
                                 onPressed: () {},
+                                color: Colors.deepPurple,
                                 child: Text(
-                                  'Recuperar',
+                                  'Entrar',
                                   style: TextStyle(
-                                      fontSize: 14.0, color: Colors.deepPurple),
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
                                 ),
                               ),
                             ),
-                          ],
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  child: Text(
+                                    'Esqueceu a senha?',
+                                    style: TextStyle(
+                                        fontSize: 14.0, color: Colors.grey),
+                                  ),
+                                ),
+                                Container(
+                                  child: FlatButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      'Recuperar',
+                                      style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.deepPurple),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              'Novo por aqui?',
+                              style:
+                                  TextStyle(fontSize: 14.0, color: Colors.grey),
+                            ),
+                          ),
+                          Container(
+                            child: FlatButton(
+                              onPressed: () {},
+                              child: Text(
+                                'Cadastrar',
+                                style: TextStyle(
+                                    fontSize: 14.0, color: Colors.deepPurple),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: 20,
+                          bottom: defaultMargin,
+                          left: 20,
+                          right: 20),
+                      child: ButtonTheme(
+                        // minWidth: double.infinity,
+                        height: 40.0,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: defaultBorderRadius,
+                          ),
+                          onPressed: () {},
+                          color: mainColor,
+                          child: Text(
+                            'Continuar com Google',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 14.0,
+                            ),
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ],
         ),
