@@ -10,6 +10,8 @@ class _LoginComponentState extends State<LoginComponent> {
   BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(50.0));
   Color mainColor = Colors.grey.shade50;
 
+  String dropdownValue = 'Português';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -169,10 +171,7 @@ class _LoginComponentState extends State<LoginComponent> {
                     ),
                     Container(
                       margin: EdgeInsets.only(
-                          top: 20,
-                          bottom: defaultMargin,
-                          left: 20,
-                          right: 20),
+                          top: 20, bottom: defaultMargin, left: 20, right: 20),
                       child: ButtonTheme(
                         // minWidth: double.infinity,
                         height: 40.0,
@@ -194,6 +193,35 @@ class _LoginComponentState extends State<LoginComponent> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.topRight,
+              margin: EdgeInsets.only(top: 40, right: defaultMargin),
+              child: DropdownButton<String>(
+                value: dropdownValue,
+                icon: Icon(Icons.keyboard_arrow_down),
+                iconSize: 24,
+                elevation: 16,
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+                // underline: Container(
+                //   height: 2,
+                //   color: Colors.deepPurple,
+                // ),
+                onChanged: (String newValue) {
+                  setState(() {
+                    dropdownValue = newValue;
+                  });
+                },
+                items: <String>['Português', 'English']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
             ),
           ],
