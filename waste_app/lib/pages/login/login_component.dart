@@ -27,7 +27,7 @@ class _LoginComponentState extends State<LoginComponent> {
               children: <Widget>[
                 Container(
                   width: double.infinity,
-                  height: 230.0,
+                  height: 300.0,
                   margin: EdgeInsets.only(
                       left: 20, right: 20, bottom: 20, top: 100),
                   decoration: BoxDecoration(
@@ -57,7 +57,7 @@ class _LoginComponentState extends State<LoginComponent> {
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: defaultBorderRadius,
-                              borderSide: BorderSide(color: Colors.grey[100]),
+                              borderSide: BorderSide(color: Colors.grey.shade300),
                             ),
                             labelText: 'e-mail',
                           ),
@@ -82,6 +82,56 @@ class _LoginComponentState extends State<LoginComponent> {
                             labelText: 'senha',
                           ),
                           obscureText: true,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: defaultMargin,
+                            bottom: defaultMargin,
+                            left: 20,
+                            right: 20),
+                        child: ButtonTheme(
+                          minWidth: double.infinity,
+                          height: 60.0,
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: defaultBorderRadius,
+                            ),
+                            onPressed: () {},
+                            color: Colors.deepPurple,
+                            child: Text(
+                              'Entrar',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                'Esqueceu a senha?',
+                                style: TextStyle(
+                                    fontSize: 14.0, color: Colors.grey),
+                              ),
+                            ),
+                            Container(
+                              child: FlatButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'Recuperar',
+                                  style: TextStyle(
+                                      fontSize: 14.0, color: Colors.deepPurple),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
