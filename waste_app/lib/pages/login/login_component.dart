@@ -3,6 +3,7 @@ import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/pages/doalogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class LoginComponent extends StatefulWidget {
   Function selectHandler;
@@ -97,11 +98,7 @@ class _LoginComponentState extends State<LoginComponent> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        cursorColor: Colors.deepPurple,
-        primaryColor: Colors.deepPurple,
-        textSelectionHandleColor: Colors.deepPurple,
-      ),
+      theme: Styles.mainTheme,
       home: Scaffold(
         body: Stack(
           children: <Widget>[
