@@ -31,6 +31,7 @@ class AuthService {
       var uid = userRef.documentID;
 
       if (user != null) {
+        userDtoTemp = UserDto();
         Map<String, dynamic> preferences = user['preferences'];
         userDtoTemp.email = user['email'];
         userDtoTemp.name = user['name'];
