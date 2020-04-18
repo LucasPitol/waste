@@ -3,6 +3,7 @@ import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/pages/doalogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 import 'new_member_component.dart';
@@ -21,8 +22,6 @@ class _LoginComponentState extends State<LoginComponent> {
   double defaultMargin = 10.0;
   BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(50.0));
   Color mainColor = Colors.grey.shade50;
-
-  List<String> languages = ['Português', 'English'];
 
   String dropdownValue = 'Português';
 
@@ -60,8 +59,8 @@ class _LoginComponentState extends State<LoginComponent> {
 
     if (_loginForm.userMail.text == '' || _loginForm.password.text == '') {
       String title =
-          this.userDto.language == this.languages[0] ? 'Alerta' : 'Alert';
-      String content = this.userDto.language == this.languages[0]
+          this.userDto.language == Constants.languages[0] ? 'Alerta' : 'Alert';
+      String content = this.userDto.language == Constants.languages[0]
           ? 'Campo não preenchido'
           : 'Must complete all the fields';
 
@@ -71,8 +70,8 @@ class _LoginComponentState extends State<LoginComponent> {
 
       if (userTemp == null) {
         String title =
-            this.userDto.language == this.languages[0] ? 'Alerta' : 'Alert';
-        String content = this.userDto.language == this.languages[0]
+            this.userDto.language == Constants.languages[0] ? 'Alerta' : 'Alert';
+        String content = this.userDto.language == Constants.languages[0]
             ? 'Usuário não encontrado'
             : 'User not found';
         await _openInfoDialog(title, content);
@@ -151,7 +150,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                       BorderSide(color: Colors.grey.shade300),
                                 ),
                                 labelText:
-                                    this.userDto.language == this.languages[0]
+                                    this.userDto.language == Constants.languages[0]
                                         ? 'senha'
                                         : 'pasword',
                               ),
@@ -174,7 +173,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 onPressed: _login,
                                 color: Colors.deepPurple,
                                 child: Text(
-                                  this.userDto.language == this.languages[0]
+                                  this.userDto.language == Constants.languages[0]
                                       ? 'Entrar'
                                       : 'Login',
                                   style: TextStyle(
@@ -192,7 +191,7 @@ class _LoginComponentState extends State<LoginComponent> {
                               children: <Widget>[
                                 Container(
                                   child: Text(
-                                    this.userDto.language == this.languages[0]
+                                    this.userDto.language == Constants.languages[0]
                                         ? 'Esqueceu a senha?'
                                         : "Can't remember password?",
                                     style: TextStyle(
@@ -203,7 +202,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                   child: FlatButton(
                                     onPressed: () {},
                                     child: Text(
-                                      this.userDto.language == this.languages[0]
+                                      this.userDto.language == Constants.languages[0]
                                           ? 'Recuperar'
                                           : 'Recover',
                                       style: TextStyle(
@@ -225,7 +224,7 @@ class _LoginComponentState extends State<LoginComponent> {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              this.userDto.language == this.languages[0]
+                              this.userDto.language == Constants.languages[0]
                                   ? 'Novo por aqui?'
                                   : 'New member?',
                               style:
@@ -236,7 +235,7 @@ class _LoginComponentState extends State<LoginComponent> {
                             child: FlatButton(
                               onPressed: _goToNewMemberPage,
                               child: Text(
-                                this.userDto.language == this.languages[0]
+                                this.userDto.language == Constants.languages[0]
                                     ? 'Cadastrar'
                                     : 'Register',
                                 style: TextStyle(
@@ -259,7 +258,7 @@ class _LoginComponentState extends State<LoginComponent> {
                           onPressed: () {},
                           color: mainColor,
                           child: Text(
-                            this.userDto.language == this.languages[0]
+                            this.userDto.language == Constants.languages[0]
                                 ? 'Continuar com Google'
                                 : 'Login with Google',
                             style: TextStyle(
@@ -292,7 +291,7 @@ class _LoginComponentState extends State<LoginComponent> {
                 onChanged: (String newValue) {
                   changeLAnguage(newValue);
                 },
-                items: languages.map<DropdownMenuItem<String>>((String value) {
+                items: Constants.languages.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
