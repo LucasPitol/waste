@@ -26,7 +26,6 @@ class AuthService {
       var userRef = snapShot.documents.first;
 
       var user = userRef.data;
-      print(user);
 
       var uid = userRef.documentID;
 

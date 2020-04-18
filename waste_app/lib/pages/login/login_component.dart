@@ -71,7 +71,6 @@ class _LoginComponentState extends State<LoginComponent> {
     setState(() {
       this.loading = false;
       this.userDto = AuthService.currentUser;
-      print(this.userDto.theme);
     });
   }
 
