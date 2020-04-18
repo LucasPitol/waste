@@ -5,6 +5,8 @@ import 'package:waste_app/pages/doalogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/styles.dart';
 
+import 'new_member_component.dart';
+
 class LoginComponent extends StatefulWidget {
   Function selectHandler;
 
@@ -95,6 +97,10 @@ class _LoginComponentState extends State<LoginComponent> {
         });
   }
 
+  void _goToNewMemberPage() async {
+    var refresh = await Navigator.push(context, NewMemberComponent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -112,17 +118,7 @@ class _LoginComponentState extends State<LoginComponent> {
                       height: 300.0,
                       margin: EdgeInsets.only(
                           left: 20, right: 20, bottom: 10, top: 100),
-                      decoration: BoxDecoration(
-                        color: mainColor,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            offset: Offset(0, 0),
-                            blurRadius: 2,
-                          ),
-                        ],
-                      ),
+                      decoration: Styles.loginBox,
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -133,17 +129,8 @@ class _LoginComponentState extends State<LoginComponent> {
                                 right: 20),
                             child: TextField(
                               controller: _loginForm.userMail,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: defaultBorderRadius,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: defaultBorderRadius,
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
-                                ),
-                                labelText: 'e-mail',
-                              ),
+                              decoration:
+                                  Styles.getTextFieldDecoration('e-mail'),
                             ),
                           ),
                           Container(
@@ -247,7 +234,7 @@ class _LoginComponentState extends State<LoginComponent> {
                           ),
                           Container(
                             child: FlatButton(
-                              onPressed: () {},
+                              onPressed: _goToNewMemberPage,
                               child: Text(
                                 this.userDto.language == this.languages[0]
                                     ? 'Cadastrar'
