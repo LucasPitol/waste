@@ -87,7 +87,7 @@ class _LoginComponentState extends State<LoginComponent> {
   }
 
   Future<void> _openInfoDialog(String title, String content) async {
-    showDialog<String>(
+    await showDialog<String>(
         context: context,
         builder: (builder) {
           return AlertDialogComponent(title, content);
