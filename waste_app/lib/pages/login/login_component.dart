@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/pages/doalogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 
 class LoginComponent extends StatefulWidget {
@@ -22,8 +24,11 @@ class _LoginComponentState extends State<LoginComponent> {
 
   UserDto userDto;
 
+  LoginForm _loginForm;
+
   _LoginComponentState() {
     this.authService = AuthService();
+    this._loginForm = LoginForm();
     this.userDto = AuthService.currentUser;
     this.userDto.language = dropdownValue;
   }
@@ -40,8 +45,42 @@ class _LoginComponentState extends State<LoginComponent> {
   Future<void> _login() async {
     setState(() {
       this.loading = true;
-      print(loading);
     });
+
+    if (_loginForm.userMail.text == '' || _loginForm.password.text == '') {
+      String title =
+          this.userDto.language == this.languages[0] ? 'Alerta' : 'Alert';
+      String content = this.userDto.language == this.languages[0]
+          ? 'Campo não preenchido'
+          : 'Must complete';
+
+      await _openInfoDialog(title, content);
+    } else {
+      UserDto userTemp = await this.authService.login(_loginForm);
+
+      if (userTemp == null) {
+        String title =
+            this.userDto.language == this.languages[0] ? 'Alerta' : 'Alert';
+        String content = this.userDto.language == this.languages[0]
+            ? 'Usuário não encontrado'
+            : 'User not found';
+        await _openInfoDialog(title, content);
+      }
+    }
+
+    setState(() {
+      this.loading = false;
+      this.userDto = AuthService.currentUser;
+      print(this.userDto.theme);
+    });
+  }
+
+  Future<void> _openInfoDialog(String title, String content) async {
+    await showDialog<String>(
+        context: context,
+        builder: (builder) {
+          return AlertDialogComponent(title, content);
+        });
   }
 
   @override
@@ -85,7 +124,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 left: 20,
                                 right: 20),
                             child: TextField(
-                              // controller: _loginForm.userMail,
+                              controller: _loginForm.userMail,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: defaultBorderRadius,
@@ -106,7 +145,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 left: 20,
                                 right: 20),
                             child: TextField(
-                              // controller: _loginForm.userMail,
+                              controller: _loginForm.password,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: defaultBorderRadius,

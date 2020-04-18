@@ -26,20 +26,25 @@ class AuthService {
       var userRef = snapShot.documents.first;
 
       var user = userRef.data;
+      print(user);
 
       var uid = userRef.documentID;
 
       if (user != null) {
-        AuthService.currentUser.email = user['email'];
-        AuthService.currentUser.name = user['name'];
-        AuthService.currentUser.language = user['language'];
-        AuthService.currentUser.theme = user['theme'];
-        AuthService.currentUser.uid = uid;
+        Map<String, dynamic> preferences = user['preferences'];
+        userDtoTemp.email = user['email'];
+        userDtoTemp.name = user['name'];
+        userDtoTemp.language = preferences['language'];
+        userDtoTemp.theme = preferences['theme'];
+        userDtoTemp.uid = uid;
       }
 
-      return user;
+      AuthService.currentUser = userDtoTemp;
+
+      return userDtoTemp;
     }).catchError((onError) {
       print(onError);
+      return userDtoTemp;
     });
 
     return userDtoTemp;
