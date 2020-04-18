@@ -5,8 +5,13 @@ import 'package:waste_app/pages/doalogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 
 class LoginComponent extends StatefulWidget {
+  Function selectHandler;
+
+  LoginComponent(this.selectHandler);
+
   @override
-  _LoginComponentState createState() => _LoginComponentState();
+  _LoginComponentState createState() =>
+      _LoginComponentState(this.selectHandler);
 }
 
 class _LoginComponentState extends State<LoginComponent> {
@@ -26,11 +31,14 @@ class _LoginComponentState extends State<LoginComponent> {
 
   LoginForm _loginForm;
 
-  _LoginComponentState() {
+  Function selectHandler;
+
+  _LoginComponentState(selectHandlerTemp) {
     this.authService = AuthService();
     this._loginForm = LoginForm();
     this.userDto = AuthService.currentUser;
     this.userDto.language = dropdownValue;
+    this.selectHandler = selectHandlerTemp;
   }
 
   void changeLAnguage(String language) {
@@ -52,7 +60,7 @@ class _LoginComponentState extends State<LoginComponent> {
           this.userDto.language == this.languages[0] ? 'Alerta' : 'Alert';
       String content = this.userDto.language == this.languages[0]
           ? 'Campo não preenchido'
-          : 'Must complete';
+          : 'Must complete all the fields';
 
       await _openInfoDialog(title, content);
     } else {
@@ -65,12 +73,16 @@ class _LoginComponentState extends State<LoginComponent> {
             ? 'Usuário não encontrado'
             : 'User not found';
         await _openInfoDialog(title, content);
+      } else {
+        setState(() {
+          this.userDto = AuthService.currentUser;
+          this.selectHandler();
+        });
       }
     }
 
     setState(() {
       this.loading = false;
-      this.userDto = AuthService.currentUser;
     });
   }
 
