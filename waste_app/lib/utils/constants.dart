@@ -12,4 +12,8 @@ class Constants {
   static String getDefaultInvalidEmailMsg(String language) {
     return language == languages[0] ? 'email inválido' : 'Invalid email';
   }
+
+  static String getUserAlreadyExistsMsg(String language) {
+    return language == languages[0] ? 'email já cadastrado' : 'email already registered';
+  }
 }

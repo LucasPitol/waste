@@ -10,6 +10,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
           builder: (BuildContext context) {
             UserDto userDto = AuthService.currentUser;
             final _formKey = GlobalKey<FormState>();
+            AuthService authService = new AuthService();
             TextEditingController name = new TextEditingController();
             TextEditingController userMail = new TextEditingController();
             TextEditingController password = new TextEditingController();
@@ -19,9 +20,14 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
               Navigator.pop(context);
             }
 
-            void _register() {
-              Scaffold.of(context)
-                  .showSnackBar(SnackBar(content: Text('Processing Data')));
+            Future<void> _register() async {
+              String error = await authService.createNewUser(name.text, userMail.text, password.text);
+
+              if (error == null || error.isEmpty) {
+                
+              } else {
+                print(error);
+              }
             }
 
             return Scaffold(
@@ -75,6 +81,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                     right: 20,
                                   ),
                                   child: TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
                                     controller: userMail,
                                     validator: (value) {
                                       if (value.isEmpty) {

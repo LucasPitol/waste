@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/utils/constants.dart';
 
 class AuthService {
   final dbReference = Firestore.instance;
@@ -54,5 +56,30 @@ class AuthService {
     });
 
     return userDtoTemp;
+  }
+
+  Future<String> createNewUser(
+      String name, String userMail, String password) async {
+    String errorMsg;
+
+    await dbReference
+        .collection('user')
+        .where('email', isEqualTo: userMail)
+        .getDocuments()
+        .then((snapShot) async {
+
+      var userRef = snapShot.documents.isEmpty ? null : snapShot.documents.first;
+      
+      if (userRef != null) {
+        errorMsg = Constants.getUserAlreadyExistsMsg(currentUser.language);
+        return errorMsg;
+      }
+
+      
+    }).catchError((onError) {
+      print(onError);
+      return errorMsg;
+    });
+    return errorMsg;
   }
 }
