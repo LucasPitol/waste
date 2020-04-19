@@ -9,30 +9,39 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
       : super(
           builder: (BuildContext context) {
             UserDto userDto = AuthService.currentUser;
+            final _formKey = GlobalKey<FormState>();
+            TextEditingController name = new TextEditingController();
+            TextEditingController userMail = new TextEditingController();
+            TextEditingController password = new TextEditingController();
+            TextEditingController rePassword = new TextEditingController();
 
             void _goBack() {
               Navigator.pop(context);
             }
 
-            return MaterialApp(
-              theme: Styles.mainTheme,
-              home: Scaffold(
-                body: Stack(
-                  children: <Widget>[
-                    SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            height: 430.0,
-                            margin: EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              bottom: 10,
-                              top: 100,
-                            ),
-                            decoration: Styles.loginBox,
+            void _register() {
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text('Processing Data')));
+            }
+
+            return Scaffold(
+              body: Stack(
+                children: <Widget>[
+                  SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: double.infinity,
+                          margin: EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            bottom: 10,
+                            top: 100,
+                          ),
+                          decoration: Styles.loginBox,
+                          child: Form(
+                            key: _formKey,
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -42,8 +51,16 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                     left: 20,
                                     right: 20,
                                   ),
-                                  child: TextField(
-                                    // controller: _loginForm.userMail,
+                                  child: TextFormField(
+                                    controller: name,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants
+                                            .getDefaultEmptyFieldMsg(
+                                                userDto.language);
+                                      }
+                                      return null;
+                                    },
                                     decoration: userDto.language ==
                                             Constants.languages[0]
                                         ? Styles.getTextFieldDecoration('nome')
@@ -57,8 +74,23 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                     left: 20,
                                     right: 20,
                                   ),
-                                  child: TextField(
-                                    // controller: _loginForm.userMail,
+                                  child: TextFormField(
+                                    controller: userMail,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants
+                                            .getDefaultEmptyFieldMsg(
+                                                userDto.language);
+                                      }
+
+                                      if (!value.contains('.com') ||
+                                          !value.contains('@')) {
+                                        return Constants
+                                            .getDefaultInvalidEmailMsg(
+                                                userDto.language);
+                                      }
+                                      return null;
+                                    },
                                     decoration:
                                         Styles.getTextFieldDecoration('e-mail'),
                                   ),
@@ -70,8 +102,16 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                     left: 20,
                                     right: 20,
                                   ),
-                                  child: TextField(
-                                    // controller: _loginForm.password,
+                                  child: TextFormField(
+                                    controller: password,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants
+                                            .getDefaultEmptyFieldMsg(
+                                                userDto.language);
+                                      }
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                         borderRadius:
@@ -99,8 +139,22 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                     left: 20,
                                     right: 20,
                                   ),
-                                  child: TextField(
-                                    // controller: _loginForm.password,
+                                  child: TextFormField(
+                                    controller: rePassword,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return Constants
+                                            .getDefaultEmptyFieldMsg(
+                                                userDto.language);
+                                      }
+
+                                      if (value != password.text) {
+                                        return Constants.getPasswordNotMatchMsg(
+                                            userDto.language);
+                                      }
+
+                                      return null;
+                                    },
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                         borderRadius:
@@ -123,7 +177,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                 ),
                                 Container(
                                   margin: EdgeInsets.only(
-                                      top: 10, bottom: 10, left: 20, right: 20),
+                                      top: 10, bottom: 20, left: 20, right: 20),
                                   child: ButtonTheme(
                                     minWidth: double.infinity,
                                     height: 60.0,
@@ -132,7 +186,11 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         borderRadius:
                                             Styles.defaultTextFieldBorderRadius,
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        if (_formKey.currentState.validate()) {
+                                          _register();
+                                        }
+                                      },
                                       color: Colors.deepPurple,
                                       child: Text(
                                         userDto.language ==
@@ -150,48 +208,48 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                               ],
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(
-                                top: 20, bottom: 10, left: 20, right: 20),
-                            child: ButtonTheme(
-                              height: 40.0,
-                              child: RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      Styles.defaultTextFieldBorderRadius,
-                                ),
-                                onPressed: () {},
-                                color: Styles.mainBackgroundColor,
-                                child: Text(
-                                  userDto.language == Constants.languages[0]
-                                      ? 'Continuar com Google'
-                                      : 'Login with Google',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14.0,
-                                  ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                              top: 20, bottom: 10, left: 20, right: 20),
+                          child: ButtonTheme(
+                            height: 40.0,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    Styles.defaultTextFieldBorderRadius,
+                              ),
+                              onPressed: () {},
+                              color: Styles.mainBackgroundColor,
+                              child: Text(
+                                userDto.language == Constants.languages[0]
+                                    ? 'Continuar com Google'
+                                    : 'Login with Google',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14.0,
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 45, right: 10),
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        child: Icon(
-                          Icons.cancel,
-                          color: Colors.grey,
                         ),
-                        onTap: () {
-                          _goBack();
-                        },
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 45, right: 10),
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      child: Icon(
+                        Icons.cancel,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        _goBack();
+                      },
+                    ),
+                  ),
+                ],
               ),
             );
           },
