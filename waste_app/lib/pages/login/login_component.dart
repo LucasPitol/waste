@@ -33,6 +33,8 @@ class _LoginComponentState extends State<LoginComponent> {
 
   LoginForm _loginForm;
 
+  final _formKey = GlobalKey<FormState>();
+
   Function selectHandler;
 
   _LoginComponentState(selectHandlerTemp) {
@@ -113,108 +115,132 @@ class _LoginComponentState extends State<LoginComponent> {
                 children: <Widget>[
                   Container(
                     width: double.infinity,
-                    height: 300.0,
                     margin: EdgeInsets.only(
-                        left: 20, right: 20, bottom: 10, top: 100),
+                        left: 20, right: 20, bottom: 20, top: 100),
                     decoration: Styles.loginBox,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: 20,
-                              bottom: defaultMargin,
-                              left: 20,
-                              right: 20),
-                          child: TextField(
-                            controller: _loginForm.userMail,
-                            decoration: Styles.getTextFieldDecoration('e-mail'),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: 10,
-                              bottom: defaultMargin,
-                              left: 20,
-                              right: 20),
-                          child: TextField(
-                            controller: _loginForm.password,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: defaultBorderRadius,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: defaultBorderRadius,
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                              ),
-                              labelText: this.userDto.language ==
-                                      Constants.languages[0]
-                                  ? 'senha'
-                                  : 'pasword',
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: 20,
+                                bottom: defaultMargin,
+                                left: 20,
+                                right: 20),
+                            child: TextFormField(
+                              controller: _loginForm.userMail,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return Constants.getDefaultEmptyFieldMsg(
+                                      userDto.language);
+                                }
+
+                                return null;
+                              },
+                              decoration:
+                                  Styles.getTextFieldDecoration('e-mail'),
                             ),
-                            obscureText: true,
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: defaultMargin,
-                              bottom: defaultMargin,
-                              left: 20,
-                              right: 20),
-                          child: ButtonTheme(
-                            minWidth: double.infinity,
-                            height: 60.0,
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: defaultBorderRadius,
-                              ),
-                              onPressed: _login,
-                              color: Colors.deepPurple,
-                              child: Text(
-                                this.userDto.language == Constants.languages[0]
-                                    ? 'Entrar'
-                                    : 'Login',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: 10,
+                                bottom: defaultMargin,
+                                left: 20,
+                                right: 20),
+                            child: TextFormField(
+                              controller: _loginForm.password,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return Constants.getDefaultEmptyFieldMsg(
+                                      userDto.language);
+                                }
+
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: defaultBorderRadius,
                                 ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: defaultBorderRadius,
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                labelText: this.userDto.language ==
+                                        Constants.languages[0]
+                                    ? 'senha'
+                                    : 'pasword',
                               ),
+                              obscureText: true,
                             ),
                           ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: defaultMargin,
+                                bottom: defaultMargin,
+                                left: 20,
+                                right: 20),
+                            child: ButtonTheme(
+                              minWidth: double.infinity,
+                              height: 60.0,
+                              child: RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: defaultBorderRadius,
+                                ),
+                                onPressed: () {
+                                  if (_formKey.currentState.validate()) {
+                                    _login();
+                                  }
+                                },
+                                color: Colors.deepPurple,
                                 child: Text(
                                   this.userDto.language ==
                                           Constants.languages[0]
-                                      ? 'Esqueceu a senha?'
-                                      : "Can't remember password?",
+                                      ? 'Entrar'
+                                      : 'Login',
                                   style: TextStyle(
-                                      fontSize: 14.0, color: Colors.grey),
-                                ),
-                              ),
-                              Container(
-                                child: FlatButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    this.userDto.language ==
-                                            Constants.languages[0]
-                                        ? 'Recuperar'
-                                        : 'Recover',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.deepPurple),
+                                    color: Colors.white,
+                                    fontSize: 18.0,
                                   ),
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+                          Container(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  child: Text(
+                                    this.userDto.language ==
+                                            Constants.languages[0]
+                                        ? 'Esqueceu a senha?'
+                                        : "Can't remember password?",
+                                    style: TextStyle(
+                                        fontSize: 14.0, color: Colors.grey),
+                                  ),
+                                ),
+                                Container(
+                                  child: FlatButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      this.userDto.language ==
+                                              Constants.languages[0]
+                                          ? 'Recuperar'
+                                          : 'Recover',
+                                      style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.deepPurple),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Container(

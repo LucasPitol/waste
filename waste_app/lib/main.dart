@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   UserDto currentUser;
-  bool isAuthenticated;
+  bool isAuthenticated = false;
 
   _MyAppState() {
     SchedulerBinding.instance.addPostFrameCallback((_) => this._updateMainState());
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: Styles.mainTheme,
       home:
-          isAuthenticated ? Text('Entroou') : LoginComponent(_updateMainState),
+          this.isAuthenticated ? Text('Entroou') : LoginComponent(_updateMainState),
     );
   }
 }
