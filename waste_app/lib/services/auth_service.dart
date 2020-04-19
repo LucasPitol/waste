@@ -11,6 +11,12 @@ class AuthService {
     AuthService.currentUser.language = language;
   }
 
+  static isAuthenticated() {
+    return currentUser != null &&
+        currentUser.name != null &&
+        currentUser.name.isNotEmpty;
+  }
+
   Future<UserDto> login(LoginForm form) async {
     UserDto userDtoTemp;
 

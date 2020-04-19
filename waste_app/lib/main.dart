@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:waste_app/pages/login/login_component.dart';
 
 import 'models/user_dto.dart';
 import 'services/auth_service.dart';
-
+import 'utils/styles.dart';
 
 void main() {
   // initializeDateFormatting().then((_) => runApp(MaterialApp(home: AppMorador())));
@@ -16,22 +17,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   UserDto currentUser;
+  bool isAuthenticated;
+
+  _MyAppState() {
+    SchedulerBinding.instance.addPostFrameCallback((_) => this._updateMainState());
+  }
 
   void _updateMainState() {
     setState(() {
       this.currentUser = AuthService.currentUser;
+      this.isAuthenticated = AuthService.isAuthenticated();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    if (currentUser == null) {
-      return LoginComponent(_updateMainState);
-    } else {
-      return Text('Entroou');
-    } 
+    return MaterialApp(
+      theme: Styles.mainTheme,
+      home:
+          isAuthenticated ? Text('Entroou') : LoginComponent(_updateMainState),
+    );
   }
 }
