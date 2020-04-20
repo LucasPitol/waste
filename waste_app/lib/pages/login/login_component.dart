@@ -3,6 +3,7 @@ import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/pages/doalogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/google_sign_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -29,6 +30,8 @@ class _LoginComponentState extends State<LoginComponent> {
 
   AuthService authService;
 
+  GoogleSignService googleSignService;
+
   UserDto userDto;
 
   LoginForm _loginForm;
@@ -39,6 +42,7 @@ class _LoginComponentState extends State<LoginComponent> {
 
   _LoginComponentState(selectHandlerTemp) {
     this.authService = AuthService();
+    this.googleSignService = GoogleSignService();
     this._loginForm = LoginForm();
     this.userDto = AuthService.currentUser;
     this.userDto.language = dropdownValue;
@@ -281,7 +285,7 @@ class _LoginComponentState extends State<LoginComponent> {
                         shape: RoundedRectangleBorder(
                           borderRadius: defaultBorderRadius,
                         ),
-                        onPressed: () {},
+                        onPressed: () => googleSignService.googleSignIn(),
                         color: mainColor,
                         child: Text(
                           this.userDto.language == Constants.languages[0]
