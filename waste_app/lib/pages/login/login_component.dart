@@ -58,6 +58,16 @@ class _LoginComponentState extends State<LoginComponent> {
     });
   }
 
+  Future<void> _loginWithGoogle() async {
+    var user = await googleSignService.googleSignIn();
+
+    AuthService.currentUser.email = user.email;
+    AuthService.currentUser.name = user.displayName;
+
+    this.userDto = AuthService.currentUser;
+    this.selectHandler();
+  }
+
   Future<void> _login() async {
     setState(() {
       this.loading = true;
@@ -285,7 +295,7 @@ class _LoginComponentState extends State<LoginComponent> {
                         shape: RoundedRectangleBorder(
                           borderRadius: defaultBorderRadius,
                         ),
-                        onPressed: () => googleSignService.googleSignIn(),
+                        onPressed: () => _loginWithGoogle(),
                         color: mainColor,
                         child: Text(
                           this.userDto.language == Constants.languages[0]

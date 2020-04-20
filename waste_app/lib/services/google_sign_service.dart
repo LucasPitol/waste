@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 
+import 'auth_service.dart';
+
 class GoogleSignService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
@@ -50,12 +52,18 @@ class GoogleSignService {
   void updateUserData(FirebaseUser user) async {
     DocumentReference docRef = _db.collection('user').document(user.uid);
 
+     Map<String, dynamic> preferencesMap = {
+        'language': AuthService.currentUser.language,
+        'theme': 'light'
+      };
+
     return docRef.setData({
       'uid': user.uid,
       'email': user.email,
       'photoUrl': user.photoUrl,
       'name': user.displayName,
-      'lastAccess': Timestamp.fromDate(DateTime.now())
+      'lastAccess': Timestamp.fromDate(DateTime.now()),
+      'preferences': preferencesMap,
     }, merge: true);
   }
 
