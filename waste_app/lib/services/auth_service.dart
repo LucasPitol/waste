@@ -67,17 +67,36 @@ class AuthService {
         .where('email', isEqualTo: userMail)
         .getDocuments()
         .then((snapShot) async {
+      var userRef =
+          snapShot.documents.isEmpty ? null : snapShot.documents.first;
 
-      var userRef = snapShot.documents.isEmpty ? null : snapShot.documents.first;
-      
       if (userRef != null) {
         errorMsg = Constants.getUserAlreadyExistsMsg(currentUser.language);
         return errorMsg;
       }
 
-      
+      Map<String, dynamic> preferencesMap = {
+        'language': currentUser.language,
+        'theme': 'light'
+      };
+
+      await dbReference.collection('user').add({
+        'name': name,
+        'email': userMail,
+        'password': password,
+        'preferences': preferencesMap,
+        'creationDate': Timestamp.fromDate(DateTime.now())
+      }).then((onValue) {
+        return null;
+      }).catchError((onError) {
+        print(onError);
+        errorMsg = 'Erro desconhecido';
+        return errorMsg;
+      });
     }).catchError((onError) {
       print(onError);
+      errorMsg = 'Erro desconhecido';
+
       return errorMsg;
     });
     return errorMsg;
