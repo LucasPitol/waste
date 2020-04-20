@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/widgets/editable_text.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -18,7 +17,6 @@ class AuthService {
         currentUser.name != null &&
         currentUser.name.isNotEmpty;
   }
-
   Future<UserDto> login(LoginForm form) async {
     UserDto userDtoTemp;
 
