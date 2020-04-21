@@ -85,6 +85,9 @@ class AuthService {
         'preferences': preferencesMap,
         'creationDate': Timestamp.fromDate(DateTime.now())
       }).then((onValue) {
+        currentUser.email = userMail;
+        currentUser.name = name;
+        
         return null;
       }).catchError((onError) {
         print(onError);

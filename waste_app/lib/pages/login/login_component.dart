@@ -115,6 +115,10 @@ class _LoginComponentState extends State<LoginComponent> {
 
   void _goToNewMemberPage() async {
     var refresh = await Navigator.push(context, NewMemberComponent());
+
+    if (refresh) {
+      this.selectHandler();
+    }
   }
 
   @override
