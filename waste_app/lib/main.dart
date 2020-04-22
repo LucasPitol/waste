@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:waste_app/main_component.dart';
 import 'package:waste_app/pages/login/login_component.dart';
 
 import 'models/user_dto.dart';
@@ -36,7 +37,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: Styles.mainTheme,
       home:
-          this.isAuthenticated ? Text('Entroou') : LoginComponent(_updateMainState),
+          this.isAuthenticated ? MainComponent() : LoginComponent(_updateMainState),
     );
   }
 }
