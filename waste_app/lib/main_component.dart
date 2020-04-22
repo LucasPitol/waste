@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waste_app/pages/spends/spends.dart';
 
 class MainComponent extends StatefulWidget {
   @override
@@ -31,7 +32,7 @@ class _MainComponentState extends State<MainComponent> {
   }
 
   final List<Widget> _widgetOptions = <Widget>[
-    Text('home'),
+    SpendsComponent(),
     Text('Perfil'),
   ];
 
