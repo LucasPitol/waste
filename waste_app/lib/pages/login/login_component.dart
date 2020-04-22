@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
-import 'package:waste_app/pages/doalogs/alert_dialog_component.dart';
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/google_sign_service.dart';
 import 'package:waste_app/utils/constants.dart';
