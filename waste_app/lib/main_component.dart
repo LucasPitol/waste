@@ -15,6 +15,7 @@ class _MainComponentState extends State<MainComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: true,
       body: Container(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
