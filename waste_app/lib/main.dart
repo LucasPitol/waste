@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:waste_app/main_component.dart';
 import 'package:waste_app/pages/login/login_component.dart';
 
@@ -22,7 +23,8 @@ class _MyAppState extends State<MyApp> {
   bool isAuthenticated = false;
 
   _MyAppState() {
-    SchedulerBinding.instance.addPostFrameCallback((_) => this._updateMainState());
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => this._updateMainState());
   }
 
   void _updateMainState() {
@@ -34,10 +36,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.deepPurple,
+    ));
     return MaterialApp(
       theme: Styles.mainTheme,
-      home:
-          this.isAuthenticated ? MainComponent() : LoginComponent(_updateMainState),
+      home: this.isAuthenticated
+          ? MainComponent()
+          : LoginComponent(_updateMainState),
     );
   }
 }
