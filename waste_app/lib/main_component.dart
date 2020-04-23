@@ -48,7 +48,7 @@ class _MainComponentState extends State<MainComponent> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       unselectedItemColor: Colors.deepPurple.shade300,
-      selectedItemColor: Colors.white,
+      selectedItemColor: Colors.deepPurple.shade100,
       backgroundColor: Colors.deepPurple,
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,

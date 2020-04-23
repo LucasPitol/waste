@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:waste_app/models/spend_by_month_dto.dart';
 
 class SpendsComponent extends StatefulWidget {
   @override
@@ -7,6 +9,14 @@ class SpendsComponent extends StatefulWidget {
 
 class _SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
+  List<SpendByMonthDto> spendsByMonthDtoList = [
+    SpendByMonthDto(DateTime(2020, 4), -120.0),
+    SpendByMonthDto(DateTime(2020, 3), -110.0),
+    SpendByMonthDto(DateTime(2020, 2), -150.0),
+    SpendByMonthDto(DateTime(2020, 1), -155.0),
+    SpendByMonthDto(DateTime(2019, 12), -170.0),
+  ];
+
   bool headerExpanded = false;
   double appbarHeight = 80.0;
   double menuHeight = 0.0;
@@ -60,6 +70,61 @@ class _SpendsComponentState extends State<SpendsComponent>
     super.dispose();
   }
 
+  Widget createTile(SpendByMonthDto item) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(left: 40, top: 10),
+                  child: Text(
+                    DateFormat("y").format(item.date),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: 10),
+                  child: Text(
+                    DateFormat("MMMM").format(item.date),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerRight,
+                  margin: EdgeInsets.only(right: 40, top: 10),
+                  child: Text(
+                    item.spent.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Divider(
+              color: Colors.deepPurple.shade700,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,74 +175,30 @@ class _SpendsComponentState extends State<SpendsComponent>
                       height: 20.0,
                     ),
                     Expanded(
-                      child: ListView(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Procurar vizinho",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18.0,
-                              ),
+                      child: Container(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: spendsByMonthDtoList
+                                  .map((item) => createTile(item))
+                                  .toList(),
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Horário da van",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.center,
-                            child: GestureDetector(
-                              onTap: () {
-                                print('evidenciei');
-                              },
-                              child: Text(
-                                "Conversas",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Reuniões",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Ajuda",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _handleHeaderPress,
+                      child: Container(
+                        alignment: Alignment.bottomCenter,
+                        margin: EdgeInsets.only(bottom: 30),
+                        child: Icon(
+                          Icons.arrow_drop_up,
+                          color: Colors.deepPurple.shade100,
+                          size: 60,
+                        ),
                       ),
                     ),
                   ],
