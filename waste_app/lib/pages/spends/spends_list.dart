@@ -4,9 +4,8 @@ import 'package:waste_app/models/spend_item_dto.dart';
 
 class SpendsListComponent extends StatelessWidget {
   final List<SpendItem> spends;
-  final BoxConstraints constraints;
 
-  SpendsListComponent(this.spends, this.constraints);
+  SpendsListComponent(this.spends);
 
   Widget createTile(SpendItem item) {
     return Container(
@@ -34,21 +33,22 @@ class SpendsListComponent extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomPadding: true,
-      body: Container(
-        child: Container(
-          height: constraints.maxHeight / 1.7,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: spends.map((item) => createTile(item)).toList(),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: spends.map((item) => createTile(item)).toList(),
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -221,7 +221,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                             margin: EdgeInsets.only(
                                 top: 20, left: 20, right: 20),
                             decoration: Styles.loginBox,
-                            child: SpendsListComponent(spendList, constraints),
+                            child: SpendsListComponent(spendList),
                           ),
                         ],
                       ),
