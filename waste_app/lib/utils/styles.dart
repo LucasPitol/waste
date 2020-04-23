@@ -9,6 +9,12 @@ class Styles {
     textSelectionHandleColor: Colors.deepPurple,
   );
 
+  static TextStyle datehAndSpendStyle = TextStyle(
+    color: Colors.deepPurple.shade50,
+    fontWeight: FontWeight.w400,
+    fontSize: 18.0,
+  );
+
   static BoxDecoration loginBox = BoxDecoration(
     color: mainBackgroundColor,
     borderRadius: BorderRadius.all(Radius.circular(20)),

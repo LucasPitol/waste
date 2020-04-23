@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class SpendsComponent extends StatefulWidget {
   @override
@@ -83,11 +84,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   margin: EdgeInsets.only(left: 40, top: 10),
                   child: Text(
                     DateFormat("y").format(item.date),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 18.0,
-                    ),
+                    style: Styles.datehAndSpendStyle,
                   ),
                 ),
                 Container(
@@ -95,11 +92,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   margin: EdgeInsets.only(top: 10),
                   child: Text(
                     DateFormat("MMMM").format(item.date),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 18.0,
-                    ),
+                    style: Styles.datehAndSpendStyle,
                   ),
                 ),
                 Container(
@@ -107,11 +100,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   margin: EdgeInsets.only(right: 40, top: 10),
                   child: Text(
                     item.spent.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 18.0,
-                    ),
+                    style: Styles.datehAndSpendStyle,
                   ),
                 ),
               ],
@@ -150,11 +139,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                           margin: EdgeInsets.only(left: 40, top: 10),
                           child: Text(
                             'Junho',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18.0,
-                            ),
+                            style: Styles.datehAndSpendStyle,
                           ),
                         ),
                         Container(
@@ -162,11 +147,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                           margin: EdgeInsets.only(right: 40, top: 10),
                           child: Text(
                             '-130,00',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18.0,
-                            ),
+                            style: Styles.datehAndSpendStyle,
                           ),
                         ),
                       ],
