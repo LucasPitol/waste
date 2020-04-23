@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
+import 'package:waste_app/pages/spends/pie_chart_spends.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class SpendsComponent extends StatefulWidget {
@@ -195,7 +196,13 @@ class _SpendsComponentState extends State<SpendsComponent>
                   child: Material(
                     elevation: 16.0,
                     child: Center(
-                      child: Text('Gastos'),
+                      child: Column(
+                        children: <Widget>[
+                          GestureDetector(
+                            child: PieChartSpendsComponent(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
