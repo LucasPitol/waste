@@ -215,13 +215,14 @@ class _SpendsComponentState extends State<SpendsComponent>
                           GestureDetector(
                             child: PieChartSpendsComponent(),
                           ),
-                          Container(
-                            alignment: Alignment.topCenter,
-                            height: constraints.maxHeight / 1.7,
-                            margin: EdgeInsets.only(
-                                top: 20, left: 20, right: 20),
-                            decoration: Styles.loginBox,
-                            child: SpendsListComponent(spendList),
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.topCenter,
+                              margin:
+                                  EdgeInsets.only(top: 20, bottom: 40, left: 20, right: 20),
+                              decoration: Styles.loginBox,
+                              child: SpendsListComponent(spendList),
+                            ),
                           ),
                         ],
                       ),
