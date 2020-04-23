@@ -1,10 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:waste_app/models/spend_item_dto.dart';
 
 class SpendsListComponent extends StatelessWidget {
+  final List<SpendItem> spends;
+  final BoxConstraints constraints;
+
+  SpendsListComponent(this.spends, this.constraints);
+
+  Widget createTile(SpendItem item) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            title: Text(item.reason),
+            subtitle: Text(
+              (DateFormat.yMd().format(item.spendDate) +
+                  '  ' +
+                  DateFormat.Hm().format(item.spendDate)),
+            ),
+            trailing: Text(item.spent.toString()),
+          ),
+          Divider(
+            color: Colors.grey,
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('lista'),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      resizeToAvoidBottomPadding: true,
+      body: Container(
+        child: Container(
+          height: constraints.maxHeight / 1.7,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: spends.map((item) => createTile(item)).toList(),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

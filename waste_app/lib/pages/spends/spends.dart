@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
+import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/pages/spends/pie_chart_spends.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -12,12 +13,23 @@ class SpendsComponent extends StatefulWidget {
 
 class _SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
+  //Mock
   List<SpendByMonthDto> spendsByMonthDtoList = [
     SpendByMonthDto(DateTime(2020, 4), -120.0),
     SpendByMonthDto(DateTime(2020, 3), -110.0),
     SpendByMonthDto(DateTime(2020, 2), -150.0),
     SpendByMonthDto(DateTime(2020, 1), -155.0),
     SpendByMonthDto(DateTime(2019, 12), -170.0),
+  ];
+
+  List<SpendItem> spendList = [
+    SpendItem('10', 'Salgado', DateTime(2020, 06, 23, 14, 30), -4.50),
+    SpendItem('9', 'Passagem', DateTime(2020, 06, 23, 13, 00), -200.00),
+    SpendItem('8', 'Estacionamento', DateTime(2020, 06, 23, 08, 30), -6.00),
+    SpendItem('7', 'Zefa', DateTime(2020, 06, 22, 21, 30), -50.00),
+    SpendItem('6', 'Benkei', DateTime(2020, 06, 21, 20, 00), -50.00),
+    SpendItem('5', 'Sushurão', DateTime(2020, 06, 20, 20, 00), -50.00),
+    SpendItem('4', 'Credito', DateTime(2020, 06, 20, 9, 00), -20.00),
   ];
 
   bool headerExpanded = false;
@@ -119,6 +131,7 @@ class _SpendsComponentState extends State<SpendsComponent>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: true,
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -204,9 +217,11 @@ class _SpendsComponentState extends State<SpendsComponent>
                           ),
                           Container(
                             alignment: Alignment.topCenter,
-                            margin: EdgeInsets.only(top: 20, bottom: 40, left: 20, right: 20),
+                            height: constraints.maxHeight / 1.7,
+                            margin: EdgeInsets.only(
+                                top: 20, left: 20, right: 20),
                             decoration: Styles.loginBox,
-                            child: SpendsListComponent(),
+                            child: SpendsListComponent(spendList, constraints),
                           ),
                         ],
                       ),
