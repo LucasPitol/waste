@@ -82,7 +82,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                       children: <Widget>[
                         Container(
                           alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(left: 30, top: 10),
+                          margin: EdgeInsets.only(left: 40, top: 10),
                           child: Text(
                             'Junho',
                             style: TextStyle(
@@ -94,21 +94,15 @@ class _SpendsComponentState extends State<SpendsComponent>
                         ),
                         Container(
                           alignment: Alignment.centerRight,
-                          margin: EdgeInsets.only(right: 30, top: 10),
+                          margin: EdgeInsets.only(right: 40, top: 10),
                           child: Text(
-                            '130,00',
+                            '-130,00',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
                               fontSize: 18.0,
                             ),
                           ),
-                          // child: IconButton(
-                          //   icon: Icon(
-                          //       headerExpanded ? Icons.cancel : Icons.menu),
-                          //   color: Colors.white,
-                          //   onPressed: _handleHeaderPress,
-                          // ),
                         ),
                       ],
                     ),
