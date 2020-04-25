@@ -4,6 +4,7 @@ import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/pages/spends/pie_chart_spends.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
+import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class SpendsComponent extends StatefulWidget {
@@ -113,7 +114,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   alignment: Alignment.centerRight,
                   margin: EdgeInsets.only(right: 40, top: 10),
                   child: Text(
-                    item.spent.toString(),
+                    Constants.getAmountFormated(item.spent),
                     style: Styles.datehAndSpendStyle,
                   ),
                 ),
@@ -218,8 +219,8 @@ class _SpendsComponentState extends State<SpendsComponent>
                           Flexible(
                             child: Container(
                               alignment: Alignment.topCenter,
-                              margin:
-                                  EdgeInsets.only(top: 20, bottom: 40, left: 20, right: 20),
+                              margin: EdgeInsets.only(
+                                  top: 20, bottom: 40, left: 20, right: 20),
                               decoration: Styles.loginBox,
                               child: SpendsListComponent(spendList),
                             ),

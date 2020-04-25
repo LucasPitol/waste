@@ -1,3 +1,5 @@
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+
 class Constants {
   static List<String> languages = ['Português', 'English'];
 
@@ -15,5 +17,9 @@ class Constants {
 
   static String getUserAlreadyExistsMsg(String language) {
     return language == languages[0] ? 'email já cadastrado' : 'email already registered';
+  }
+
+  static String getAmountFormated(double amount) {
+    return toCurrencyString(amount.toString());
   }
 }

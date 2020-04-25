@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/utils/constants.dart';
 
 class SpendsListComponent extends StatelessWidget {
   final List<SpendItem> spends;
@@ -8,6 +9,9 @@ class SpendsListComponent extends StatelessWidget {
   SpendsListComponent(this.spends);
 
   Widget createTile(SpendItem item) {
+
+    String amount = Constants.getAmountFormated(item.spent);
+    
     return Container(
       child: Column(
         children: <Widget>[
@@ -18,7 +22,7 @@ class SpendsListComponent extends StatelessWidget {
                   '  ' +
                   DateFormat.Hm().format(item.spendDate)),
             ),
-            trailing: Text(item.spent.toString()),
+            trailing: Text(amount),
           ),
           Divider(
             color: Colors.grey,
