@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
-import 'package:waste_app/pages/spends/pie_chart_spends.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -31,6 +30,7 @@ class _SpendsComponentState extends State<SpendsComponent>
     SpendItem('6', 'Benkei', DateTime(2020, 06, 21, 20, 00), -50.00),
     SpendItem('5', 'Sushurão', DateTime(2020, 06, 20, 20, 00), -50.00),
     SpendItem('4', 'Credito', DateTime(2020, 06, 20, 9, 00), -20.00),
+    SpendItem('4', 'Café', DateTime(2020, 06, 20, 8, 00), -10.00),
   ];
 
   bool headerExpanded = false;
@@ -213,15 +213,10 @@ class _SpendsComponentState extends State<SpendsComponent>
                     child: Center(
                       child: Column(
                         children: <Widget>[
-                          GestureDetector(
-                            child: PieChartSpendsComponent(),
-                          ),
                           Flexible(
                             child: Container(
                               alignment: Alignment.topCenter,
-                              margin: EdgeInsets.only(
-                                  top: 20, bottom: 40, left: 20, right: 20),
-                              // decoration: Styles.loginBox,
+                              margin: EdgeInsets.only(left: 20, right: 20),
                               child: SpendsListComponent(spendList),
                             ),
                           ),
