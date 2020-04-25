@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class SpendsListComponent extends StatelessWidget {
   final List<SpendItem> spends;
@@ -14,25 +15,26 @@ class SpendsListComponent extends StatelessWidget {
     return Container(
       child: Column(
         children: <Widget>[
-          ListTile(
-            title: Text(
-              item.reason,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              (DateFormat.yMd().format(item.spendDate) +
-                  '  ' +
-                  DateFormat.Hm().format(item.spendDate)),
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            trailing: Text(
-              amount,
-              style: TextStyle(fontWeight: FontWeight.bold),
+          Container(
+            margin: EdgeInsets.only(top: 10, bottom: 5),
+            decoration: Styles.loginBox,
+            child: ListTile(
+              title: Text(
+                item.reason,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                (DateFormat.yMd().format(item.spendDate) +
+                    '  ' +
+                    DateFormat.Hm().format(item.spendDate)),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              trailing: Text(
+                amount,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-          Divider(
-            color: Colors.grey,
-          )
         ],
       ),
     );

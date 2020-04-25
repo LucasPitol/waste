@@ -221,7 +221,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                               alignment: Alignment.topCenter,
                               margin: EdgeInsets.only(
                                   top: 20, bottom: 40, left: 20, right: 20),
-                              decoration: Styles.loginBox,
+                              // decoration: Styles.loginBox,
                               child: SpendsListComponent(spendList),
                             ),
                           ),
