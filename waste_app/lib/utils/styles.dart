@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Styles {
   static Color mainBackgroundColor = Colors.grey.shade50;
@@ -7,11 +8,12 @@ class Styles {
     cursorColor: Colors.deepPurple,
     primaryColor: Colors.deepPurple,
     textSelectionHandleColor: Colors.deepPurple,
+    textTheme: GoogleFonts.quicksandTextTheme(),
   );
 
-  static TextStyle datehAndSpendStyle = TextStyle(
+  static TextStyle dateAndSpendStyle = TextStyle(
     color: Colors.deepPurple.shade50,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.bold,
     fontSize: 18.0,
   );
 

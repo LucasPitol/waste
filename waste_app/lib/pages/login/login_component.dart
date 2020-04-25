@@ -221,6 +221,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.0,
+                                      fontWeight: FontWeight.bold
                                     ),
                                   ),
                                 ),
@@ -309,6 +310,7 @@ class _LoginComponentState extends State<LoginComponent> {
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 14.0,
+                              fontWeight: FontWeight.bold
                             ),
                           ),
                         ),

@@ -9,20 +9,26 @@ class SpendsListComponent extends StatelessWidget {
   SpendsListComponent(this.spends);
 
   Widget createTile(SpendItem item) {
-
     String amount = Constants.getAmountFormated(item.spent);
-    
+
     return Container(
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text(item.reason),
+            title: Text(
+              item.reason,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             subtitle: Text(
               (DateFormat.yMd().format(item.spendDate) +
                   '  ' +
                   DateFormat.Hm().format(item.spendDate)),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            trailing: Text(amount),
+            trailing: Text(
+              amount,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           Divider(
             color: Colors.grey,

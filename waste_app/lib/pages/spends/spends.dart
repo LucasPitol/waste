@@ -99,7 +99,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   margin: EdgeInsets.only(left: 40, top: 10),
                   child: Text(
                     DateFormat("y").format(item.date),
-                    style: Styles.datehAndSpendStyle,
+                    style: Styles.dateAndSpendStyle,
                   ),
                 ),
                 Container(
@@ -107,7 +107,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   margin: EdgeInsets.only(top: 10),
                   child: Text(
                     DateFormat("MMMM").format(item.date),
-                    style: Styles.datehAndSpendStyle,
+                    style: Styles.dateAndSpendStyle,
                   ),
                 ),
                 Container(
@@ -115,7 +115,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   margin: EdgeInsets.only(right: 40, top: 10),
                   child: Text(
                     Constants.getAmountFormated(item.spent),
-                    style: Styles.datehAndSpendStyle,
+                    style: Styles.dateAndSpendStyle,
                   ),
                 ),
               ],
@@ -155,7 +155,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                           margin: EdgeInsets.only(left: 40, top: 10),
                           child: Text(
                             'Junho',
-                            style: Styles.datehAndSpendStyle,
+                            style: Styles.dateAndSpendStyle,
                           ),
                         ),
                         Container(
@@ -163,7 +163,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                           margin: EdgeInsets.only(right: 40, top: 10),
                           child: Text(
                             '-130,00',
-                            style: Styles.datehAndSpendStyle,
+                            style: Styles.dateAndSpendStyle,
                           ),
                         ),
                       ],
