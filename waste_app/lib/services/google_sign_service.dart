@@ -43,25 +43,28 @@ class GoogleSignService {
 
     FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
 
-    updateUserData(user);
+    var wallets = await updateUserData(user);
 
     AuthService.currentUser.email = user.email;
     AuthService.currentUser.name = user.displayName;
     AuthService.currentUser.uid = user.uid;
+    AuthService.currentUser.currentWalletId = wallets[0];
 
     loading.add(false);
     return user;
   }
 
-  void updateUserData(FirebaseUser user) async {
+  Future<dynamic> updateUserData(FirebaseUser user) async {
+    var wallets;
+
     DocumentReference docRef = _db.collection('user').document(user.uid);
 
-     Map<String, dynamic> preferencesMap = {
-        'language': AuthService.currentUser.language,
-        'theme': 'light'
-      };
+    Map<String, dynamic> preferencesMap = {
+      'language': AuthService.currentUser.language,
+      'theme': 'light'
+    };
 
-    return docRef.setData({
+    await docRef.setData({
       'uid': user.uid,
       'email': user.email,
       'photoUrl': user.photoUrl,
@@ -69,6 +72,11 @@ class GoogleSignService {
       'lastAccess': Timestamp.fromDate(DateTime.now()),
       'preferences': preferencesMap,
     }, merge: true);
+
+    var userDb = (await docRef.get()).data;
+    wallets = userDb['walletIds'];
+
+    return wallets;
   }
 
   void signOut() {

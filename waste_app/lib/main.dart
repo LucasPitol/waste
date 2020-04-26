@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:waste_app/main_component.dart';
 import 'package:waste_app/pages/login/login_component.dart';
 
@@ -9,8 +10,8 @@ import 'services/auth_service.dart';
 import 'utils/styles.dart';
 
 void main() {
-  // initializeDateFormatting().then((_) => runApp(MaterialApp(home: AppMorador())));
-  runApp(MaterialApp(home: MyApp()));
+  initializeDateFormatting('pt_BR').then((_) => runApp(MaterialApp(home: MyApp())));
+  // runApp(MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {

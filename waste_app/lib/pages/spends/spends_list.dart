@@ -24,13 +24,15 @@ class SpendsListComponent extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                (DateFormat.yMd().format(item.spendDate) +
+                (DateFormat.E('pt_BR').format(item.spendDate) +
+                    ', ' +
+                    DateFormat.d().format(item.spendDate) +
                     '  ' +
                     DateFormat.Hm().format(item.spendDate)),
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               trailing: Text(
-                amount,
+                '-' + amount,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),

@@ -12,7 +12,8 @@ class SpendsService {
     DateTime fistDayOfCurrentMonth =
         DateTime(completeDate.year, completeDate.month, 1);
 
-    Timestamp fistDayOfCurrentMonthTimestamp = Timestamp.fromDate(fistDayOfCurrentMonth);
+    Timestamp fistDayOfCurrentMonthTimestamp =
+        Timestamp.fromDate(fistDayOfCurrentMonth);
 
     DateTime firstDayOfNextMonth =
         DateTime(completeDate.year, completeDate.month + 1, 1, 23, 59, 59);
@@ -20,17 +21,17 @@ class SpendsService {
     DateTime lastDayOfCurrentMonth =
         firstDayOfNextMonth.add(Duration(days: -1));
 
-    Timestamp lastDayOfCurrentMonthTimestamp = Timestamp.fromDate(lastDayOfCurrentMonth);
-
-
+    Timestamp lastDayOfCurrentMonthTimestamp =
+        Timestamp.fromDate(lastDayOfCurrentMonth);
 
     UserDto user = AuthService.currentUser;
     String uid = user.uid;
 
     await dbReference
         .collection('spends')
-        .where('userId', isEqualTo: uid)
-        .where('spendDate', isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
+        .where('walletId', isEqualTo: 'NrVZOfYKOMES17nLAPff')
+        .where('spendDate',
+            isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
         .where('spendDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
@@ -38,8 +39,10 @@ class SpendsService {
         var obj = item.data;
 
         Timestamp spendDate = obj['spendDate'];
-        var spend = SpendItem(
-            obj['userId'], obj['reason'], spendDate.toDate(), obj['waste']);
+        double waste = double.parse(obj['waste'].toString());
+
+        var spend =
+            SpendItem(obj['userId'], obj['reason'], spendDate.toDate(), waste);
 
         spendsList.add(spend);
       });

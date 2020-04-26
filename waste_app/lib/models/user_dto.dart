@@ -5,4 +5,5 @@ class UserDto {
   String imageUrl;
   String theme;
   String language;
+  String currentWalletId;
 }
