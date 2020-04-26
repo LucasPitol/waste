@@ -12,11 +12,17 @@ class SpendsService {
     DateTime fistDayOfCurrentMonth =
         DateTime(completeDate.year, completeDate.month, 1);
 
+    Timestamp fistDayOfCurrentMonthTimestamp = Timestamp.fromDate(fistDayOfCurrentMonth);
+
     DateTime firstDayOfNextMonth =
         DateTime(completeDate.year, completeDate.month + 1, 1, 23, 59, 59);
 
     DateTime lastDayOfCurrentMonth =
         firstDayOfNextMonth.add(Duration(days: -1));
+
+    Timestamp lastDayOfCurrentMonthTimestamp = Timestamp.fromDate(lastDayOfCurrentMonth);
+
+
 
     UserDto user = AuthService.currentUser;
     String uid = user.uid;
@@ -24,6 +30,8 @@ class SpendsService {
     await dbReference
         .collection('spends')
         .where('userId', isEqualTo: uid)
+        .where('spendDate', isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
+        .where('spendDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((item) {
