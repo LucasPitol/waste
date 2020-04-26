@@ -13,7 +13,7 @@ class SpendsService {
         DateTime(completeDate.year, completeDate.month, 1);
 
     DateTime firstDayOfNextMonth =
-        DateTime(completeDate.year, completeDate.month + 1, 1);
+        DateTime(completeDate.year, completeDate.month + 1, 1, 23, 59, 59);
 
     DateTime lastDayOfCurrentMonth =
         firstDayOfNextMonth.add(Duration(days: -1));
@@ -40,8 +40,6 @@ class SpendsService {
       print(onError);
       return spendsList;
     });
-
-    print(uid);
 
     return spendsList;
   }
