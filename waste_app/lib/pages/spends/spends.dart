@@ -17,25 +17,17 @@ class _SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
   //Mock
   List<SpendByMonthDto> spendsByMonthDtoList = [
-    SpendByMonthDto(DateTime(2020, 4), -120.0),
-    SpendByMonthDto(DateTime(2020, 3), -110.0),
-    SpendByMonthDto(DateTime(2020, 2), -150.0),
-    SpendByMonthDto(DateTime(2020, 1), -155.0),
-    SpendByMonthDto(DateTime(2019, 12), -170.0),
+    // SpendByMonthDto(DateTime(2020, 4), -120.0),
+    // SpendByMonthDto(DateTime(2020, 3), -110.0),
+    // SpendByMonthDto(DateTime(2020, 2), -150.0),
+    // SpendByMonthDto(DateTime(2020, 1), -155.0),
+    // SpendByMonthDto(DateTime(2019, 12), -170.0),
   ];
 
   List<SpendItem> spendList = [];
-  //   SpendItem('10', 'Salgado', DateTime(2020, 06, 23, 14, 30), -4.50),
-  //   SpendItem('9', 'Passagem', DateTime(2020, 06, 23, 13, 00), -200.00),
-  //   SpendItem('8', 'Estacionamento', DateTime(2020, 06, 23, 08, 30), -6.00),
-  //   SpendItem('7', 'Zefa', DateTime(2020, 06, 22, 21, 30), -50.00),
-  //   SpendItem('6', 'Benkei', DateTime(2020, 06, 21, 20, 00), -50.00),
-  //   SpendItem('5', 'Sushurão', DateTime(2020, 06, 20, 20, 00), -50.00),
-  //   SpendItem('4', 'Credito', DateTime(2020, 06, 20, 9, 00), -20.00),
-  //   SpendItem('4', 'Café', DateTime(2020, 06, 20, 8, 00), -10.00),
-  // ];
 
   bool listLoading = true;
+  bool spendsByMonthLoading = true;
   bool headerExpanded = false;
   double appbarHeight = 80.0;
   double menuHeight = 0.0;
@@ -73,8 +65,21 @@ class _SpendsComponentState extends State<SpendsComponent>
           });
         },
       );
-      SchedulerBinding.instance
-        .addPostFrameCallback((_) => this._getSpends());
+    SchedulerBinding.instance.addPostFrameCallback((_) => this._getSpends());
+  }
+
+  Future<void> _getSpendsByMonthDtoList() async {
+    setState(() {
+      this.spendsByMonthLoading = true;
+      this.spendsByMonthDtoList = [];
+    });
+
+    this.spendsByMonthDtoList =
+        await this.spendsService.getSpendsByMonthDtoList();
+
+    setState(() {
+      this.spendsByMonthLoading = false;
+    });
   }
 
   Future<void> _getSpends() async {
@@ -99,6 +104,10 @@ class _SpendsComponentState extends State<SpendsComponent>
       headerExpanded = !headerExpanded;
       headerExpanded ? openController.forward() : closeController.forward();
     });
+
+    if (headerExpanded && this.spendsByMonthDtoList.isEmpty) {
+      _getSpendsByMonthDtoList();
+    }
   }
 
   @override
@@ -135,7 +144,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                 Container(
                   alignment: Alignment.centerRight,
                   margin: EdgeInsets.only(right: 40, top: 10),
-                  child: Text(
+                  child: Text('-' +
                     Constants.getAmountFormated(item.spent),
                     style: Styles.dateAndSpendStyle,
                   ),
@@ -195,17 +204,29 @@ class _SpendsComponentState extends State<SpendsComponent>
                     ),
                     Expanded(
                       child: Container(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: spendsByMonthDtoList
-                                  .map((item) => createTile(item))
-                                  .toList(),
-                            ),
-                          ),
-                        ),
+                        child: spendsByMonthLoading
+                            ? Container(
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                child: Theme(
+                                  data: Theme.of(context)
+                                      .copyWith(accentColor: Colors.white),
+                                  child: new CircularProgressIndicator(),
+                                ),
+                              )
+                            : SingleChildScrollView(
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(left: 20.0, right: 20.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: spendsByMonthDtoList
+                                        .map((item) => createTile(item))
+                                        .toList(),
+                                  ),
+                                ),
+                              ),
                       ),
                     ),
                     GestureDetector(
@@ -244,8 +265,8 @@ class _SpendsComponentState extends State<SpendsComponent>
                                       width: double.infinity,
                                       alignment: Alignment.center,
                                       child: Theme(
-                                        data: Theme.of(context)
-                                            .copyWith(accentColor: Colors.deepPurple),
+                                        data: Theme.of(context).copyWith(
+                                            accentColor: Colors.deepPurple),
                                         child: new CircularProgressIndicator(),
                                       ),
                                     )

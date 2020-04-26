@@ -1,10 +1,52 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
 
 class SpendsService {
   final dbReference = Firestore.instance;
+
+  Future<List<SpendByMonthDto>> getSpendsByMonthDtoList() async {
+    List<SpendByMonthDto> spendsByMonthDtoList = [];
+
+    await dbReference
+        .collection('spends')
+        .where('walletId', isEqualTo: 'NrVZOfYKOMES17nLAPff')
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((doc) {
+        var spend = doc.data;
+
+        Timestamp spendDateTimestamp = spend['spendDate'];
+        DateTime spendDateComplete = spendDateTimestamp.toDate();
+        DateTime spendYearAndMonth =
+            DateTime(spendDateComplete.year, spendDateComplete.month);
+
+        var spendItem =
+            spendsByMonthDtoList.where((i) => i.date == spendYearAndMonth);
+        double waste = double.parse(spend['waste'].toString());
+
+        if (spendItem.isEmpty) {
+          SpendByMonthDto newDto = SpendByMonthDto(spendYearAndMonth, waste);
+          spendsByMonthDtoList.add(newDto);
+        } else {
+          int index = spendsByMonthDtoList
+              .indexWhere((i) => i.date == spendYearAndMonth);
+          SpendByMonthDto oldDto = spendsByMonthDtoList.elementAt(index);
+          double oldWaste = oldDto.spent;
+          double newWaste = oldWaste + waste;
+          SpendByMonthDto newDto = SpendByMonthDto(spendYearAndMonth, newWaste);
+          spendsByMonthDtoList[index] = newDto;
+        }
+      });
+      return spendsByMonthDtoList.sort((a, b) => b.date.compareTo(a.date));
+    }).catchError((onError) {
+      print(onError);
+      return spendsByMonthDtoList;
+    });
+    return spendsByMonthDtoList;
+  }
 
   Future<List<SpendItem>> getSpendsByMonth(DateTime completeDate) async {
     List<SpendItem> spendsList = List<SpendItem>();
@@ -25,11 +67,11 @@ class SpendsService {
         Timestamp.fromDate(lastDayOfCurrentMonth);
 
     UserDto user = AuthService.currentUser;
-    String uid = user.uid;
+    String walletId = user.currentWalletId;
 
     await dbReference
         .collection('spends')
-        .where('walletId', isEqualTo: 'NrVZOfYKOMES17nLAPff')
+        .where('walletId', isEqualTo: walletId)
         .where('spendDate',
             isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
         .where('spendDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
