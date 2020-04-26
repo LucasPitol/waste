@@ -65,7 +65,7 @@ class _SpendsComponentState extends State<SpendsComponent>
           });
         },
       );
-    SchedulerBinding.instance.addPostFrameCallback((_) => this._getSpends());
+    SchedulerBinding.instance.addPostFrameCallback((_) => this._getCurrentSpends());
   }
 
   Future<void> _getSpendsByMonthDtoList() async {
@@ -82,15 +82,18 @@ class _SpendsComponentState extends State<SpendsComponent>
     });
   }
 
-  Future<void> _getSpends() async {
+  _getCurrentSpends() {
+    var now = DateTime.now();
+    _getSpends(now);
+  }
+
+  Future<void> _getSpends(DateTime date) async {
     setState(() {
       this.listLoading = true;
       this.spendList = [];
     });
 
-    var now = DateTime.now();
-
-    this.spendList = await this.spendsService.getSpendsByMonth(now);
+    this.spendList = await this.spendsService.getSpendsByMonth(date);
 
     setState(() {
       this.listLoading = false;
@@ -119,7 +122,10 @@ class _SpendsComponentState extends State<SpendsComponent>
 
   Widget createTile(SpendByMonthDto item) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        _handleHeaderPress();
+        _getSpends(item.date);
+      },
       child: Container(
         child: Column(
           children: <Widget>[
@@ -144,8 +150,8 @@ class _SpendsComponentState extends State<SpendsComponent>
                 Container(
                   alignment: Alignment.centerRight,
                   margin: EdgeInsets.only(right: 40, top: 10),
-                  child: Text('-' +
-                    Constants.getAmountFormated(item.spent),
+                  child: Text(
+                    '-' + Constants.getAmountFormated(item.spent),
                     style: Styles.dateAndSpendStyle,
                   ),
                 ),
