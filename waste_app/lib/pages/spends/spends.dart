@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
+import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -22,20 +24,23 @@ class _SpendsComponentState extends State<SpendsComponent>
     SpendByMonthDto(DateTime(2019, 12), -170.0),
   ];
 
-  List<SpendItem> spendList = [
-    SpendItem('10', 'Salgado', DateTime(2020, 06, 23, 14, 30), -4.50),
-    SpendItem('9', 'Passagem', DateTime(2020, 06, 23, 13, 00), -200.00),
-    SpendItem('8', 'Estacionamento', DateTime(2020, 06, 23, 08, 30), -6.00),
-    SpendItem('7', 'Zefa', DateTime(2020, 06, 22, 21, 30), -50.00),
-    SpendItem('6', 'Benkei', DateTime(2020, 06, 21, 20, 00), -50.00),
-    SpendItem('5', 'Sushurão', DateTime(2020, 06, 20, 20, 00), -50.00),
-    SpendItem('4', 'Credito', DateTime(2020, 06, 20, 9, 00), -20.00),
-    SpendItem('4', 'Café', DateTime(2020, 06, 20, 8, 00), -10.00),
-  ];
+  List<SpendItem> spendList = [];
+  //   SpendItem('10', 'Salgado', DateTime(2020, 06, 23, 14, 30), -4.50),
+  //   SpendItem('9', 'Passagem', DateTime(2020, 06, 23, 13, 00), -200.00),
+  //   SpendItem('8', 'Estacionamento', DateTime(2020, 06, 23, 08, 30), -6.00),
+  //   SpendItem('7', 'Zefa', DateTime(2020, 06, 22, 21, 30), -50.00),
+  //   SpendItem('6', 'Benkei', DateTime(2020, 06, 21, 20, 00), -50.00),
+  //   SpendItem('5', 'Sushurão', DateTime(2020, 06, 20, 20, 00), -50.00),
+  //   SpendItem('4', 'Credito', DateTime(2020, 06, 20, 9, 00), -20.00),
+  //   SpendItem('4', 'Café', DateTime(2020, 06, 20, 8, 00), -10.00),
+  // ];
 
+  bool listLoading = true;
   bool headerExpanded = false;
   double appbarHeight = 80.0;
   double menuHeight = 0.0;
+
+  SpendsService spendsService = SpendsService();
 
   Animation<double> openAnimation, closeAnimation;
   AnimationController openController, closeController;
@@ -68,6 +73,23 @@ class _SpendsComponentState extends State<SpendsComponent>
           });
         },
       );
+      SchedulerBinding.instance
+        .addPostFrameCallback((_) => this._getSpends());
+  }
+
+  Future<void> _getSpends() async {
+    setState(() {
+      this.listLoading = true;
+      this.spendList = [];
+    });
+
+    var now = DateTime.now();
+
+    this.spendList = await this.spendsService.getSpendsByMonth(now);
+
+    setState(() {
+      this.listLoading = false;
+    });
   }
 
   _handleHeaderPress() {
@@ -217,7 +239,17 @@ class _SpendsComponentState extends State<SpendsComponent>
                             child: Container(
                               alignment: Alignment.topCenter,
                               margin: EdgeInsets.only(left: 20, right: 20),
-                              child: SpendsListComponent(spendList),
+                              child: listLoading
+                                  ? Container(
+                                      width: double.infinity,
+                                      alignment: Alignment.center,
+                                      child: Theme(
+                                        data: Theme.of(context)
+                                            .copyWith(accentColor: Colors.deepPurple),
+                                        child: new CircularProgressIndicator(),
+                                      ),
+                                    )
+                                  : SpendsListComponent(spendList),
                             ),
                           ),
                         ],

@@ -45,6 +45,10 @@ class GoogleSignService {
 
     updateUserData(user);
 
+    AuthService.currentUser.email = user.email;
+    AuthService.currentUser.name = user.displayName;
+    AuthService.currentUser.uid = user.uid;
+
     loading.add(false);
     return user;
   }
