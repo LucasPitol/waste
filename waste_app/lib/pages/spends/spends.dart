@@ -15,16 +15,13 @@ class SpendsComponent extends StatefulWidget {
 
 class _SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
-  //Mock
-  List<SpendByMonthDto> spendsByMonthDtoList = [
-    // SpendByMonthDto(DateTime(2020, 4), -120.0),
-    // SpendByMonthDto(DateTime(2020, 3), -110.0),
-    // SpendByMonthDto(DateTime(2020, 2), -150.0),
-    // SpendByMonthDto(DateTime(2020, 1), -155.0),
-    // SpendByMonthDto(DateTime(2019, 12), -170.0),
-  ];
+  List<SpendByMonthDto> spendsByMonthDtoList = [];
 
   List<SpendItem> spendList = [];
+
+  double totalWaste = 0.0;
+
+  DateTime dateSelected = DateTime.now();
 
   bool listLoading = true;
   bool spendsByMonthLoading = true;
@@ -87,6 +84,18 @@ class _SpendsComponentState extends State<SpendsComponent>
     _getSpends(now);
   }
 
+  void calculateTotalWaste() {
+    double total = 0.0;
+
+    spendList.forEach((item) {
+      total = total + item.spent;
+    });
+
+    setState(() {
+      this.totalWaste = total;
+    });
+  }
+
   Future<void> _getSpends(DateTime date) async {
     setState(() {
       this.listLoading = true;
@@ -94,6 +103,10 @@ class _SpendsComponentState extends State<SpendsComponent>
     });
 
     this.spendList = await this.spendsService.getSpendsByMonth(date);
+
+    this.calculateTotalWaste();
+
+    this.dateSelected = this.spendList.first.spendDate;
 
     setState(() {
       this.listLoading = false;
@@ -191,7 +204,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(left: 40, top: 10),
                           child: Text(
-                            'Junho',
+                            DateFormat("MMMM").format(dateSelected),
                             style: Styles.dateAndSpendStyle,
                           ),
                         ),
@@ -199,7 +212,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                           alignment: Alignment.centerRight,
                           margin: EdgeInsets.only(right: 40, top: 10),
                           child: Text(
-                            '-130,00',
+                            '-' + Constants.getAmountFormated(totalWaste),
                             style: Styles.dateAndSpendStyle,
                           ),
                         ),
