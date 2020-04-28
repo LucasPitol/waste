@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class MainComponent extends StatefulWidget {
   @override
@@ -24,7 +25,7 @@ class _MainComponentState extends State<MainComponent> {
         backgroundColor: Colors.deepPurple,
         child: Icon(
           Icons.add,
-          color: Colors.white,
+          color: Colors.deepPurple.shade50,
         ),
         onPressed: () {},
       ),
