@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/utils/constants.dart';
 
 class ProfileComponent extends StatefulWidget {
@@ -11,14 +12,43 @@ class ProfileComponent extends StatefulWidget {
 
 class _ProfileComponentState extends State<ProfileComponent> {
   UserDto userDto = AuthService.currentUser;
+  double totalWasteThisYear = 0.0;
+  bool totalWasteThisYearLoading = true;
+
+  SpendsService spendService;
+
+  _ProfileComponentState() {
+    this.spendService = SpendsService();
+  }
 
   String dropdownWalletValue = 'Carteira pessoal';
 
   List<String> wallets = ['Carteira pessoal', 'Carteira secundária'];
 
+  void initState() {
+    super.initState();
+    this._getTotalWasteThisYear();
+  }
+
   void switchWallets(String wallet) {
     setState(() {
       this.dropdownWalletValue = wallet;
+    });
+  }
+
+  Future<void> _getTotalWasteThisYear() async {
+    setState(() {
+      totalWasteThisYearLoading = true;
+    });
+
+    DateTime now = DateTime.now();
+
+    double total = await this.spendService.getTotalWasteByYear(now);
+
+    this.totalWasteThisYear = total;
+
+    setState(() {
+      this.totalWasteThisYearLoading = false;
     });
   }
 
@@ -126,14 +156,25 @@ class _ProfileComponentState extends State<ProfileComponent> {
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      '-3,500.00',
-                      style: TextStyle(
-                        color: Colors.deepPurple,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
+                    child: totalWasteThisYearLoading
+                        ? Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Theme(
+                              data: Theme.of(context)
+                                  .copyWith(accentColor: Colors.deepPurple),
+                              child: new CircularProgressIndicator(),
+                            ),
+                          )
+                        : Text(
+                            '-' +
+                                Constants.getAmountFormated(totalWasteThisYear),
+                            style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
                   ),
                 ],
               ),

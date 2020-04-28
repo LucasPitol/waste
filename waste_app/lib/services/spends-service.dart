@@ -48,6 +48,40 @@ class SpendsService {
     return spendsByMonthDtoList;
   }
 
+  Future<double> getTotalWasteByYear(DateTime completeDate) async {
+    double totalWaste = 0.0;
+
+    DateTime firstDayOfTheYear = DateTime(completeDate.year, 1, 1);
+    Timestamp firstDayOfTheYearTimestamp =
+        Timestamp.fromDate(firstDayOfTheYear);
+
+    DateTime lastDayOfTheYear = DateTime(completeDate.year, 12, 31);
+    Timestamp lastDayOfTheYearTimestamp = Timestamp.fromDate(lastDayOfTheYear);
+
+    UserDto user = AuthService.currentUser;
+    String walletId = user.currentWalletId;
+
+    await dbReference
+        .collection('spends')
+        .where('walletId', isEqualTo: walletId)
+        .where('spendDate', isGreaterThanOrEqualTo: firstDayOfTheYearTimestamp)
+        .where('spendDate', isLessThanOrEqualTo: lastDayOfTheYearTimestamp)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+          snapshot.documents.forEach((item) {
+            var obj = item.data;
+            double waste = double.parse(obj['waste'].toString());
+            totalWaste = totalWaste + waste;
+          });
+          return totalWaste;
+        })
+        .catchError((onError) {
+      print(onError);
+      return totalWaste;
+    });
+    return totalWaste;
+  }
+
   Future<List<SpendItem>> getSpendsByMonth(DateTime completeDate) async {
     List<SpendItem> spendsList = List<SpendItem>();
 
