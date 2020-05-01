@@ -24,7 +24,7 @@ class SpendsListComponent extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                (DateFormat.E('pt_BR').format(item.spendDate) +
+                (DateFormat.E(Constants.ptLanguage).format(item.spendDate) +
                     ', ' +
                     DateFormat.d().format(item.spendDate) +
                     '  ' +

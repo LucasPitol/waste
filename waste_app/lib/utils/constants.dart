@@ -3,6 +3,8 @@ import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 class Constants {
   static List<String> languages = ['Português', 'English'];
 
+  static String ptLanguage = 'pt_BR';
+
   static String getDefaultEmptyFieldMsg(String language) {
     return language == languages[0] ? 'Campo obrigatório' : 'Required field';
   }

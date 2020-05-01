@@ -7,10 +7,11 @@ import 'package:waste_app/pages/login/login_component.dart';
 
 import 'models/user_dto.dart';
 import 'services/auth_service.dart';
+import 'utils/constants.dart';
 import 'utils/styles.dart';
 
 void main() {
-  initializeDateFormatting('pt_BR').then((_) => runApp(MaterialApp(home: MyApp())));
+  initializeDateFormatting(Constants.ptLanguage).then((_) => runApp(MaterialApp(home: MyApp())));
   // runApp(MaterialApp(home: MyApp()));
 }
 

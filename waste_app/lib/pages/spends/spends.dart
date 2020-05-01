@@ -156,7 +156,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(top: 10),
                   child: Text(
-                    DateFormat("MMMM").format(item.date),
+                    DateFormat.MMMM(Constants.ptLanguage).format(item.date),
                     style: Styles.dateAndSpendStyle,
                   ),
                 ),
@@ -204,7 +204,7 @@ class _SpendsComponentState extends State<SpendsComponent>
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(left: 40, top: 10),
                           child: Text(
-                            DateFormat("MMMM").format(dateSelected),
+                            DateFormat.MMMM(Constants.ptLanguage).format(dateSelected),
                             style: Styles.dateAndSpendStyle,
                           ),
                         ),
