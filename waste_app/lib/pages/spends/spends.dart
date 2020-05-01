@@ -136,6 +136,10 @@ class _SpendsComponentState extends State<SpendsComponent>
   Widget createTile(SpendByMonthDto item) {
     return GestureDetector(
       onTap: () {
+        setState(() {
+        this.dateSelected = item.date;
+        this.totalWaste = item.spent;
+        });
         _handleHeaderPress();
         _getSpends(item.date);
       },
