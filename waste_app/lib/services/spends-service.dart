@@ -10,9 +10,11 @@ class SpendsService {
   Future<List<SpendByMonthDto>> getSpendsByMonthDtoList() async {
     List<SpendByMonthDto> spendsByMonthDtoList = [];
 
+    String walletId = AuthService.currentUser.currentWalletId;
+
     await dbReference
         .collection('spends')
-        .where('walletId', isEqualTo: 'NrVZOfYKOMES17nLAPff')
+        .where('walletId', isEqualTo: walletId)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
@@ -101,9 +103,6 @@ class SpendsService {
 
     UserDto user = AuthService.currentUser;
     String walletId = user.currentWalletId;
-
-    print('Id da carteiraaaaaaaaaaaaa');
-    print(walletId);
 
     await dbReference
         .collection('spends')
