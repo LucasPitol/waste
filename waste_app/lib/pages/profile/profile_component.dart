@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -24,10 +25,9 @@ class _ProfileComponentState extends State<ProfileComponent> {
     this.walletService = WalletService();
   }
 
-  List<String> wallets;
-  
-  String dropdownWalletValue;
+  List<Wallet> wallets;
 
+  String dropdownWalletValue;
 
   void initState() {
     super.initState();
@@ -37,13 +37,18 @@ class _ProfileComponentState extends State<ProfileComponent> {
 
   void _getUserWallets() {
     wallets = this.walletService.getUserWallets();
-    this.dropdownWalletValue = wallets[0];
+
+    this.dropdownWalletValue = this.walletService.getCurrentWalletId();
   }
 
-  void switchWallets(String wallet) {
+  void switchWallets(String walletId) {
     setState(() {
-      this.dropdownWalletValue = wallet;
+      this.dropdownWalletValue = walletId;
     });
+
+    this.walletService.switchWallet(walletId);
+
+    this._getTotalWasteThisYear();
   }
 
   Future<void> _getTotalWasteThisYear() async {
@@ -117,10 +122,10 @@ class _ProfileComponentState extends State<ProfileComponent> {
                         switchWallets(newValue);
                       },
                       items:
-                          wallets.map<DropdownMenuItem<String>>((String value) {
+                          wallets.map<DropdownMenuItem<String>>((Wallet item) {
                         return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                          value: item.id,
+                          child: Text(item.name),
                         );
                       }).toList(),
                     ),

@@ -6,15 +6,16 @@ import 'auth_service.dart';
 class WalletService {
   final dbReference = Firestore.instance;
 
-  List<String> getUserWallets() {
-    List<Wallet> wallets = AuthService.currentUser.walletList;
+  List<Wallet> getUserWallets() {
+    return AuthService.currentUser.walletList;
+  }
 
-    //mock
-    List<String> walletsString = [];
-    wallets.forEach((item) {
-      walletsString.add(item.id);
-    });
-    return walletsString;
+  void switchWallet(String walletId) {
+    AuthService.currentUser.currentWalletId = walletId;
+  }
+
+  String getCurrentWalletId() {
+    return AuthService.currentUser.currentWalletId;
   }
 
   Future<List<Wallet>> getWalletsByUserId(String userId) async {
