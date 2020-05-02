@@ -68,14 +68,13 @@ class SpendsService {
         .where('spendDate', isLessThanOrEqualTo: lastDayOfTheYearTimestamp)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
-          snapshot.documents.forEach((item) {
-            var obj = item.data;
-            double waste = double.parse(obj['waste'].toString());
-            totalWaste = totalWaste + waste;
-          });
-          return totalWaste;
-        })
-        .catchError((onError) {
+      snapshot.documents.forEach((item) {
+        var obj = item.data;
+        double waste = double.parse(obj['waste'].toString());
+        totalWaste = totalWaste + waste;
+      });
+      return totalWaste;
+    }).catchError((onError) {
       print(onError);
       return totalWaste;
     });
@@ -103,6 +102,9 @@ class SpendsService {
     UserDto user = AuthService.currentUser;
     String walletId = user.currentWalletId;
 
+    print('Id da carteiraaaaaaaaaaaaa');
+    print(walletId);
+
     await dbReference
         .collection('spends')
         .where('walletId', isEqualTo: walletId)
@@ -110,7 +112,7 @@ class SpendsService {
             isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
         .where('spendDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
         .getDocuments()
-        .then((QuerySnapshot snapshot) {
+        .then((QuerySnapshot snapshot) {      
       snapshot.documents.forEach((item) {
         var obj = item.data;
 

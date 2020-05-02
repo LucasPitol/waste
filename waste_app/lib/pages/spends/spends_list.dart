@@ -55,10 +55,13 @@ class SpendsListComponent extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               child: Padding(
                 padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: spends.map((item) => createTile(item)).toList(),
-                ),
+                child: spends.isNotEmpty
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:
+                            spends.map((item) => createTile(item)).toList(),
+                      )
+                    : Column(),
               ),
             ),
           ),

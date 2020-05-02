@@ -21,9 +21,10 @@ class _ProfileComponentState extends State<ProfileComponent> {
     this.spendService = SpendsService();
   }
 
+  List<String> wallets = ['Carteira pessoal', 'Carteira secundária'];
+  
   String dropdownWalletValue = 'Carteira pessoal';
 
-  List<String> wallets = ['Carteira pessoal', 'Carteira secundária'];
 
   void initState() {
     super.initState();

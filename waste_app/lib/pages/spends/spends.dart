@@ -62,7 +62,8 @@ class _SpendsComponentState extends State<SpendsComponent>
           });
         },
       );
-    SchedulerBinding.instance.addPostFrameCallback((_) => this._getCurrentSpends());
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => this._getCurrentSpends());
   }
 
   Future<void> _getSpendsByMonthDtoList() async {
@@ -104,9 +105,10 @@ class _SpendsComponentState extends State<SpendsComponent>
 
     this.spendList = await this.spendsService.getSpendsByMonth(date);
 
-    this.calculateTotalWaste();
-
-    this.dateSelected = this.spendList.first.spendDate;
+    if (spendList.isNotEmpty) {
+      this.calculateTotalWaste();
+      this.dateSelected = this.spendList.first.spendDate;
+    }
 
     setState(() {
       this.listLoading = false;
@@ -137,8 +139,8 @@ class _SpendsComponentState extends State<SpendsComponent>
     return GestureDetector(
       onTap: () {
         setState(() {
-        this.dateSelected = item.date;
-        this.totalWaste = item.spent;
+          this.dateSelected = item.date;
+          this.totalWaste = item.spent;
         });
         _handleHeaderPress();
         _getSpends(item.date);
@@ -208,7 +210,8 @@ class _SpendsComponentState extends State<SpendsComponent>
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(left: 40, top: 10),
                           child: Text(
-                            DateFormat.MMMM(Constants.ptLanguage).format(dateSelected),
+                            DateFormat.MMMM(Constants.ptLanguage)
+                                .format(dateSelected),
                             style: Styles.dateAndSpendStyle,
                           ),
                         ),

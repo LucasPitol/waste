@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/services/wallet-service.dart';
 
 import 'auth_service.dart';
 
@@ -12,6 +14,7 @@ class GoogleSignService {
 
   Observable<FirebaseUser> user;
   Observable<Map<String, dynamic>> profile;
+  WalletService walletService = WalletService();
   PublishSubject loading = PublishSubject();
 
   GoogleSignService() {
@@ -43,19 +46,21 @@ class GoogleSignService {
 
     FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
 
-    var wallets = await updateUserData(user);
+    List<Wallet> wallets = await updateUserData(user);
 
     AuthService.currentUser.email = user.email;
     AuthService.currentUser.name = user.displayName;
     AuthService.currentUser.uid = user.uid;
-    AuthService.currentUser.currentWalletId = wallets[0];
+    AuthService.currentUser.walletList = wallets;
+    AuthService.currentUser.currentWalletId = wallets[0].id;
+
 
     loading.add(false);
     return user;
   }
 
-  Future<dynamic> updateUserData(FirebaseUser user) async {
-    var wallets;
+  Future<List<Wallet>> updateUserData(FirebaseUser user) async {
+    List<Wallet> wallets;
 
     DocumentReference docRef = _db.collection('user').document(user.uid);
 
@@ -73,8 +78,7 @@ class GoogleSignService {
       'preferences': preferencesMap,
     }, merge: true);
 
-    var userDb = (await docRef.get()).data;
-    wallets = userDb['walletIds'];
+    wallets = await this.walletService.getWalletsByUserId(user.uid);
 
     return wallets;
   }

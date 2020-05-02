@@ -1,3 +1,5 @@
+import 'package:waste_app/models/wallet.dart';
+
 class UserDto {
   String uid;
   String name;
@@ -6,4 +8,5 @@ class UserDto {
   String theme;
   String language;
   String currentWalletId;
+  List<Wallet> walletList;
 }
