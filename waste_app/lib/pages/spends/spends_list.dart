@@ -47,26 +47,32 @@ class SpendsListComponent extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomPadding: true,
-      body: Column(
-        children: <Widget>[
-          Flexible(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                child: spends.isNotEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            spends.map((item) => createTile(item)).toList(),
-                      )
-                    : Column(),
+      body: spends.isNotEmpty
+          ? Column(
+              children: <Widget>[
+                Flexible(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                        padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:
+                              spends.map((item) => createTile(item)).toList(),
+                        )),
+                  ),
+                ),
+              ],
+            )
+          : Center(
+              child: Text(
+                'Nenhum gasto',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
     );
   }
 }
