@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
+import 'package:waste_app/services/wallet-service.dart';
 import 'package:waste_app/utils/constants.dart';
 
 class ProfileComponent extends StatefulWidget {
@@ -16,19 +17,27 @@ class _ProfileComponentState extends State<ProfileComponent> {
   bool totalWasteThisYearLoading = true;
 
   SpendsService spendService;
+  WalletService walletService;
 
   _ProfileComponentState() {
     this.spendService = SpendsService();
+    this.walletService = WalletService();
   }
 
-  List<String> wallets = ['Carteira pessoal', 'Carteira secundária'];
+  List<String> wallets;
   
-  String dropdownWalletValue = 'Carteira pessoal';
+  String dropdownWalletValue;
 
 
   void initState() {
     super.initState();
     this._getTotalWasteThisYear();
+    this._getUserWallets();
+  }
+
+  void _getUserWallets() {
+    wallets = this.walletService.getUserWallets();
+    this.dropdownWalletValue = wallets[0];
   }
 
   void switchWallets(String wallet) {
