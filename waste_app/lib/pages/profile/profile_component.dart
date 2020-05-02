@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/pages/manage-wallets/manage-wallets.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -48,6 +49,19 @@ class _ProfileComponentState extends State<ProfileComponent> {
 
     this.walletService.switchWallet(walletId);
 
+    this._getTotalWasteThisYear();
+  }
+
+  void _goToManageWalletsPage() async {
+    var refresh = await Navigator.push(context, ManageWallets());
+
+    if (refresh != null && refresh) {
+      _updatePageContent();
+    }
+  }
+
+  _updatePageContent() {
+    this._getUserWallets();
     this._getTotalWasteThisYear();
   }
 
@@ -133,7 +147,7 @@ class _ProfileComponentState extends State<ProfileComponent> {
                   Container(
                     alignment: Alignment.topRight,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: _goToManageWalletsPage,
                       child: Text(
                         this.userDto.language == Constants.languages[0]
                             ? 'Gerenciar carteiras'

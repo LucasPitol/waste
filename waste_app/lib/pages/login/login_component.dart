@@ -49,7 +49,7 @@ class _LoginComponentState extends State<LoginComponent> {
     this.selectHandler = selectHandlerTemp;
   }
 
-  void changeLAnguage(String language) {
+  void changeLanguage(String language) {
     AuthService.changeLanguage(language);
 
     setState(() {
@@ -333,7 +333,7 @@ class _LoginComponentState extends State<LoginComponent> {
                   color: Colors.white10,
                 ),
                 onChanged: (String newValue) {
-                  changeLAnguage(newValue);
+                  changeLanguage(newValue);
                 },
                 items: Constants.languages
                     .map<DropdownMenuItem<String>>((String value) {
