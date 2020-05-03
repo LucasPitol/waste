@@ -29,7 +29,7 @@ class ManageWalletsAppBar extends StatelessWidget
           Navigator.pop(context, false);
         },
         child: Icon(
-          Icons.arrow_back,
+          Icons.keyboard_backspace,
           color: Colors.grey,
         ),
       ),

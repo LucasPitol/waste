@@ -7,6 +7,7 @@ import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class ProfileComponent extends StatefulWidget {
   @override
@@ -53,7 +54,8 @@ class _ProfileComponentState extends State<ProfileComponent> {
   }
 
   void _goToManageWalletsPage() async {
-    var refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => ManageWallets()));
+    var refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ManageWallets()));
 
     if (refresh != null && refresh) {
       _updatePageContent();
@@ -85,125 +87,144 @@ class _ProfileComponentState extends State<ProfileComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: true,
-      appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        actions: <Widget>[
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              margin: EdgeInsets.only(right: 10),
-              child: Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-        title: Text(
-          'Waste',
-          style: TextStyle(
-            fontSize: 21,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: <Widget>[
             Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.deepPurple,
               child: Stack(
                 children: <Widget>[
                   Container(
                     alignment: Alignment.topLeft,
-                    margin: EdgeInsets.only(left: 10),
-                    child: DropdownButton<String>(
-                      value: dropdownWalletValue,
-                      icon: Icon(Icons.keyboard_arrow_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: GoogleFonts.quicksand(
-                        textStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 14,
-                        ),
-                      ),
-                      underline: Container(
-                        height: 1,
-                        color: Colors.white10,
-                      ),
-                      onChanged: (String newValue) {
-                        switchWallets(newValue);
-                      },
-                      items:
-                          wallets.map<DropdownMenuItem<String>>((Wallet item) {
-                        return DropdownMenuItem<String>(
-                          value: item.id,
-                          child: Text(item.name),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: FlatButton(
-                      onPressed: _goToManageWalletsPage,
-                      child: Text(
-                        this.userDto.language == Constants.languages[0]
-                            ? 'Gerenciar carteiras'
-                            : 'Manage wallets',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.0,
-                          color: Colors.deepPurple,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.topCenter,
-              margin: EdgeInsets.only(top: 20),
-              width: 200,
-              decoration: BoxDecoration(
-                color: Colors.deepPurple.shade50,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 10, bottom: 5),
+                    margin: EdgeInsets.only(left: 20, top: 10),
                     child: Text(
-                      'Gastos em 2020',
+                      'Waste',
                       style: TextStyle(
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    child: totalWasteThisYearLoading
-                        ? Container(
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            child: Theme(
-                              data: Theme.of(context)
-                                  .copyWith(accentColor: Colors.deepPurple),
-                              child: new CircularProgressIndicator(),
+                    alignment: Alignment.topRight,
+                    margin: EdgeInsets.only(right: 20, top: 10),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Icon(Icons.menu, color: Colors.white,),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 50),
+              decoration: BoxDecoration(
+                color: Styles.mainBackgroundColor,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.only(left: 10),
+                          child: DropdownButton<String>(
+                            value: dropdownWalletValue,
+                            icon: Icon(Icons.keyboard_arrow_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: GoogleFonts.quicksand(
+                              textStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 14,
+                              ),
                             ),
-                          )
-                        : Text(
-                            '-' +
-                                Constants.getAmountFormated(totalWasteThisYear),
+                            underline: Container(
+                              height: 1,
+                              color: Colors.white10,
+                            ),
+                            onChanged: (String newValue) {
+                              switchWallets(newValue);
+                            },
+                            items: wallets
+                                .map<DropdownMenuItem<String>>((Wallet item) {
+                              return DropdownMenuItem<String>(
+                                value: item.id,
+                                child: Text(item.name),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.topRight,
+                          child: FlatButton(
+                            onPressed: _goToManageWalletsPage,
+                            child: Text(
+                              this.userDto.language == Constants.languages[0]
+                                  ? 'Editar'
+                                  : 'Edit',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    margin: EdgeInsets.only(top: 20),
+                    width: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.deepPurple.shade50,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 10, bottom: 5),
+                          child: Text(
+                            'Gastos em 2020',
                             style: TextStyle(
-                              color: Colors.deepPurple,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                             ),
                           ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: totalWasteThisYearLoading
+                              ? Container(
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                        accentColor: Colors.deepPurple),
+                                    child: new CircularProgressIndicator(),
+                                  ),
+                                )
+                              : Text(
+                                  '-' +
+                                      Constants.getAmountFormated(
+                                          totalWasteThisYear),
+                                  style: TextStyle(
+                                    color: Colors.deepPurple,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
