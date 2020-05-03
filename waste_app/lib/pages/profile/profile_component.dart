@@ -53,7 +53,7 @@ class _ProfileComponentState extends State<ProfileComponent> {
   }
 
   void _goToManageWalletsPage() async {
-    var refresh = await Navigator.push(context, ManageWallets());
+    var refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => ManageWallets()));
 
     if (refresh != null && refresh) {
       _updatePageContent();
