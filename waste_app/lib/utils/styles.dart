@@ -49,4 +49,16 @@ class Styles {
       labelText: value,
     );
   }
+
+  static getTextFieldDecorationUnderline(String value) {
+    return InputDecoration(
+      border: UnderlineInputBorder(
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderRadius: defaultTextFieldBorderRadius,
+        borderSide: BorderSide(color: Colors.grey.shade300),
+      ),
+      labelText: value,
+    );
+  }
 }

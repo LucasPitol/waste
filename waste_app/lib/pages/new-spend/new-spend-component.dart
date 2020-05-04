@@ -59,6 +59,28 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
               width: double.infinity,
               margin: EdgeInsets.only(top: 50),
               decoration: Styles.containerDecoration,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: 20, bottom: 10, left: 20, right: 20),
+                    child: TextFormField(
+                      // controller: _loginForm.userMail,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return Constants.getDefaultEmptyFieldMsg(
+                              userDto.language);
+                        }
+                        return null;
+                      },
+                      decoration: this.userDto.language ==
+                              Constants.languages[0]
+                          ? Styles.getTextFieldDecorationUnderline('Motivo')
+                          : Styles.getTextFieldDecorationUnderline('Reason'),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
