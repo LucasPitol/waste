@@ -79,6 +79,26 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                           : Styles.getTextFieldDecorationUnderline('Reason'),
                     ),
                   ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: 10, bottom: 10, left: 20, right: 20),
+                    child: TextFormField(
+                      // controller: _loginForm.userMail,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return Constants.getDefaultEmptyFieldMsg(
+                              userDto.language);
+                        }
+                        return null;
+                      },
+                      decoration:
+                          this.userDto.language == Constants.languages[0]
+                              ? Styles.getTextFieldDecorationUnderline(
+                                  'Desperdício')
+                              : Styles.getTextFieldDecorationUnderline('Waste'),
+                    ),
+                  ),
                 ],
               ),
             ),
