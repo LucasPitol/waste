@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 
+import 'pages/new-spend/new-spend-component.dart';
+
 class MainComponent extends StatefulWidget {
   @override
   _MainComponentState createState() => _MainComponentState();
@@ -13,6 +15,10 @@ class _MainComponentState extends State<MainComponent> {
 
   int _selectedIndex = 0;
 
+  void _goToNewSpendPage() async {
+    var refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,12 +27,12 @@ class _MainComponentState extends State<MainComponent> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       floatingActionButton: FloatingActionButton(
+        onPressed: _goToNewSpendPage,
         backgroundColor: Colors.deepPurple,
         child: Icon(
           Icons.add,
           color: Colors.deepPurple.shade50,
         ),
-        onPressed: () {},
       ),
       floatingActionButtonLocation: this._addFabLocation,
       bottomNavigationBar: this._buildBottomNavAppBar(),
