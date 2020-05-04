@@ -121,10 +121,7 @@ class _ProfileComponentState extends State<ProfileComponent> {
             ),
             Container(
               margin: EdgeInsets.only(top: 50),
-              decoration: BoxDecoration(
-                color: Styles.mainBackgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
+              decoration: Styles.containerDecoration,
               child: Column(
                 children: <Widget>[
                   Container(

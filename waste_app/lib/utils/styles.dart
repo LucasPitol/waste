@@ -32,6 +32,11 @@ class Styles {
   static BorderRadius defaultTextFieldBorderRadius =
       BorderRadius.all(Radius.circular(50.0));
 
+  static BoxDecoration containerDecoration = BoxDecoration(
+    color: Styles.mainBackgroundColor,
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+  );
+
   static getTextFieldDecoration(String value) {
     return InputDecoration(
       border: OutlineInputBorder(
