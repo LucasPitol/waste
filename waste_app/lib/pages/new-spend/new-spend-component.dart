@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/wallet-service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -13,8 +16,32 @@ class NewSpendComponent extends StatefulWidget {
 
 class _NewSpendComponenState extends State<NewSpendComponent> {
   UserDto userDto = AuthService.currentUser;
-
   DateTime spendDate = DateTime.now();
+  List<Wallet> wallets;
+  String dropdownWalletValue;
+
+  WalletService walletService;
+
+  _NewSpendComponenState() {
+    this.walletService = WalletService();
+  }
+
+  void initState() {
+    super.initState();
+    this._getUserWallets();
+  }
+
+  void _getUserWallets() {
+    wallets = this.walletService.getUserWallets();
+
+    this.dropdownWalletValue = this.walletService.getCurrentWalletId();
+  }
+
+  void switchWallets(String walletId) {
+    setState(() {
+      this.dropdownWalletValue = walletId;
+    });
+  }
 
   void _selectDate() {
     DatePicker.showDateTimePicker(context,
@@ -146,6 +173,34 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                         ),
                       ),
                     ],
+                  ),
+                  Container(
+                    child: DropdownButton<String>(
+                      value: dropdownWalletValue,
+                      icon: Icon(Icons.keyboard_arrow_down),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: GoogleFonts.quicksand(
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                      underline: Container(
+                        height: 1,
+                        color: Colors.white10,
+                      ),
+                      onChanged: (String newValue) {
+                        switchWallets(newValue);
+                      },
+                      items:
+                          wallets.map<DropdownMenuItem<String>>((Wallet item) {
+                        return DropdownMenuItem<String>(
+                          value: item.id,
+                          child: Text(item.name),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ],
               ),
