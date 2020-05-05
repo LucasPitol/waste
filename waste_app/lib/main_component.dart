@@ -17,6 +17,10 @@ class _MainComponentState extends State<MainComponent> {
 
   void _goToNewSpendPage() async {
     var refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
+
+    if (refresh != null && refresh) {
+      print('atualizar');
+    }
   }
 
   @override
