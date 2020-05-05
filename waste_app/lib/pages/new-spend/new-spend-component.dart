@@ -19,6 +19,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   DateTime spendDate = DateTime.now();
   List<Wallet> wallets;
   String dropdownWalletValue;
+  final _formKey = GlobalKey<FormState>();
 
   WalletService walletService;
 
@@ -58,6 +59,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
         this.spendDate = newDate;
       });
     });
+  }
+
+  void _saveNewWaste() {
   }
 
   @override
@@ -107,102 +111,125 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
               width: double.infinity,
               margin: EdgeInsets.only(top: 50),
               decoration: Styles.containerDecoration,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: 20, bottom: 10, left: 20, right: 20),
-                    child: TextFormField(
-                      // controller: _loginForm.userMail,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return Constants.getDefaultEmptyFieldMsg(
-                              userDto.language);
-                        }
-                        return null;
-                      },
-                      decoration: this.userDto.language ==
-                              Constants.languages[0]
-                          ? Styles.getTextFieldDecorationUnderline('Motivo')
-                          : Styles.getTextFieldDecorationUnderline('Reason'),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: 10, bottom: 10, left: 20, right: 20),
-                    child: TextFormField(
-                      // controller: _loginForm.userMail,
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return Constants.getDefaultEmptyFieldMsg(
-                              userDto.language);
-                        }
-                        return null;
-                      },
-                      decoration:
-                          this.userDto.language == Constants.languages[0]
-                              ? Styles.getTextFieldDecorationUnderline(
-                                  'Desperdício')
-                              : Styles.getTextFieldDecorationUnderline('Waste'),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: 20, bottom: 20, right: 10),
-                        child: Text(
-                          'Data:',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          _selectDate();
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: 20, bottom: 10, left: 20, right: 20),
+                      child: TextFormField(
+                        // controller: _loginForm.userMail,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return Constants.getDefaultEmptyFieldMsg(
+                                userDto.language);
+                          }
+                          return null;
                         },
-                        child: Container(
+                        decoration: this.userDto.language ==
+                                Constants.languages[0]
+                            ? Styles.getTextFieldDecorationUnderline('Motivo')
+                            : Styles.getTextFieldDecorationUnderline('Reason'),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 20, right: 20),
+                      child: TextFormField(
+                        // controller: _loginForm.userMail,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return Constants.getDefaultEmptyFieldMsg(
+                                userDto.language);
+                          }
+                          return null;
+                        },
+                        decoration: this.userDto.language ==
+                                Constants.languages[0]
+                            ? Styles.getTextFieldDecorationUnderline(
+                                'Desperdício')
+                            : Styles.getTextFieldDecorationUnderline('Waste'),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
                           margin:
-                              EdgeInsets.only(top: 20, bottom: 20, left: 10),
+                              EdgeInsets.only(top: 20, bottom: 20, right: 10),
                           child: Text(
-                            DateFormat.yMd(Constants.ptLanguage)
-                                .add_jm()
-                                .format(spendDate),
+                            'Data:',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            _selectDate();
+                          },
+                          child: Container(
+                            margin:
+                                EdgeInsets.only(top: 20, bottom: 20, left: 10),
+                            child: Text(
+                              DateFormat.yMd(Constants.ptLanguage)
+                                  .add_jm()
+                                  .format(spendDate),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      child: DropdownButton<String>(
+                        value: dropdownWalletValue,
+                        icon: Icon(Icons.keyboard_arrow_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: GoogleFonts.quicksand(
+                          textStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                        underline: Container(
+                          height: 1,
+                          color: Colors.white10,
+                        ),
+                        onChanged: (String newValue) {
+                          switchWallets(newValue);
+                        },
+                        items: wallets
+                            .map<DropdownMenuItem<String>>((Wallet item) {
+                          return DropdownMenuItem<String>(
+                            value: item.id,
+                            child: Text(item.name),
+                          );
+                        }).toList(),
                       ),
-                    ],
-                  ),
-                  Container(
-                    child: DropdownButton<String>(
-                      value: dropdownWalletValue,
-                      icon: Icon(Icons.keyboard_arrow_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: GoogleFonts.quicksand(
-                        textStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                      child: ButtonTheme(
+                        minWidth: double.infinity,
+                        height: 50,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: Styles.defaultTextFieldBorderRadius,
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              _saveNewWaste();
+                            }
+                          },
+                          color: Colors.deepPurple,
+                          child: Text('Salvar', style: TextStyle(color: Colors.white, fontSize: 18),),
                         ),
                       ),
-                      underline: Container(
-                        height: 1,
-                        color: Colors.white10,
-                      ),
-                      onChanged: (String newValue) {
-                        switchWallets(newValue);
-                      },
-                      items:
-                          wallets.map<DropdownMenuItem<String>>((Wallet item) {
-                        return DropdownMenuItem<String>(
-                          value: item.id,
-                          child: Text(item.name),
-                        );
-                      }).toList(),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
