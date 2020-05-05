@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/new_waste_form.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -6,6 +7,33 @@ import 'package:waste_app/services/auth_service.dart';
 
 class SpendsService {
   final dbReference = Firestore.instance;
+
+  Future<bool> waste(NewWasteForm form) async {
+    bool success = false;
+
+    String uid = AuthService.currentUser.uid;
+
+    Timestamp spendDate = Timestamp.fromDate(form.spendDate);
+    Timestamp creationDate = Timestamp.fromDate(DateTime.now());
+
+    String reason = form.reason.text;
+    String walletId = form.walletId;
+    double waste = double.parse(form.waste.text);
+
+    await dbReference.collection('spends').add({
+      'creationDate': creationDate,
+      'reason': reason,
+      'spendDate': spendDate,
+      'userId': uid,
+      'walletId': walletId,
+      'waste': waste
+    }).catchError((onError) {
+      print(onError);
+      return success;
+    });
+    success = true;
+    return success;
+  }
 
   Future<List<SpendByMonthDto>> getSpendsByMonthDtoList() async {
     List<SpendByMonthDto> spendsByMonthDtoList = [];
@@ -111,7 +139,7 @@ class SpendsService {
             isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
         .where('spendDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
         .getDocuments()
-        .then((QuerySnapshot snapshot) {      
+        .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((item) {
         var obj = item.data;
 

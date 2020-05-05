@@ -6,6 +6,7 @@ import 'package:waste_app/models/new_waste_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -23,10 +24,12 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   NewWasteForm newWasteForm;
 
   WalletService walletService;
+  SpendsService spendsService;
 
   _NewSpendComponenState() {
     this.walletService = WalletService();
     this.newWasteForm = NewWasteForm();
+    this.spendsService = SpendsService();
   }
 
   void initState() {
@@ -63,7 +66,10 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     });
   }
 
-  void _saveNewWaste() {}
+  Future<void> _saveNewWaste() async {
+    this.newWasteForm.walletId = dropdownWalletValue;
+    var success = this.spendsService.waste(newWasteForm);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +128,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                             top: 20, bottom: 10, left: 20, right: 20),
                         child: TextFormField(
                           controller: newWasteForm.reason,
+                          textCapitalization: TextCapitalization.sentences,
                           validator: (value) {
                             if (value.isEmpty) {
                               return Constants.getDefaultEmptyFieldMsg(
