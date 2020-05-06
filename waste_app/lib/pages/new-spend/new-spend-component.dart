@@ -68,7 +68,11 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   Future<void> _saveNewWaste() async {
     this.newWasteForm.walletId = dropdownWalletValue;
-    var success = this.spendsService.waste(newWasteForm);
+    var success = await this.spendsService.waste(newWasteForm);
+
+    if (success) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override

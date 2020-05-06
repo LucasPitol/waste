@@ -16,12 +16,30 @@ class _MainComponentState extends State<MainComponent> {
   int _selectedIndex = 0;
 
   void _goToNewSpendPage() async {
-    var refresh = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
+    var refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
 
     if (refresh != null && refresh) {
-      print('atualizar');
+      _refreshData();
     }
   }
+
+  void _refreshData() {
+    switch (_selectedIndex) {
+      case 0:
+        _updateSpendsPage();
+        break;
+      case 1:
+        _updateProfilePage();
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _updateSpendsPage() {}
+
+  void _updateProfilePage() {}
 
   @override
   Widget build(BuildContext context) {
