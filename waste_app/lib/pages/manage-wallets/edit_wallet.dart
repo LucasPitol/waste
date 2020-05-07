@@ -5,14 +5,15 @@ import 'package:waste_app/utils/constants.dart';
 
 import 'manage-wallets-app-bar.dart';
 
-class EditWallet extends StatelessWidget {
-  var userDto = AuthService.currentUser;
-  
-  List<Wallet> wallets;
-  
-  EditWallet() {
+class EditWallet extends StatefulWidget {
+  @override
+  _EditWalletState createState() => _EditWalletState();
+}
 
-  }
+class _EditWalletState extends State<EditWallet> {
+  var userDto = AuthService.currentUser;
+
+  List<Wallet> wallets;
 
   @override
   Widget build(BuildContext context) {

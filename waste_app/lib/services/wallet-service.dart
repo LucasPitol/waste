@@ -6,6 +6,12 @@ import 'auth_service.dart';
 class WalletService {
   final dbReference = Firestore.instance;
 
+  bool isOwner(String walletId, String uid) {
+    List<Wallet> wallets = getUserWallets();
+    Wallet currentWallet = wallets.where((w) => w.id == walletId).first;
+    return currentWallet.ownerId == uid;
+  }
+
   List<Wallet> getUserWallets() {
     return AuthService.currentUser.walletList;
   }

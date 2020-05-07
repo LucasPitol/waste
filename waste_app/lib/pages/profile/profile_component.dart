@@ -19,6 +19,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   UserDto userDto = AuthService.currentUser;
   double totalWasteThisYear = 0.0;
   bool totalWasteThisYearLoading = true;
+  bool isWalletOwner = false;
 
   SpendsService spendService;
   WalletService walletService;
@@ -34,8 +35,9 @@ class ProfileComponentState extends State<ProfileComponent> {
 
   void initState() {
     super.initState();
-    this._getTotalWasteThisYear();
     this._getUserWallets();
+    this._updatePermission();
+    this._getTotalWasteThisYear();
   }
 
   void _getUserWallets() {
@@ -52,6 +54,7 @@ class ProfileComponentState extends State<ProfileComponent> {
     this.walletService.switchWallet(walletId);
 
     this._getTotalWasteThisYear();
+    this._updatePermission();
   }
 
   void _goToEditWalletPage() async {
@@ -63,8 +66,18 @@ class ProfileComponentState extends State<ProfileComponent> {
     }
   }
 
+  void _updatePermission() {
+    String walletId = this.userDto.currentWalletId;
+    String uid = this.userDto.uid;
+    setState(() {
+      this.isWalletOwner =
+          this.walletService.isOwner(walletId, uid);
+    });
+  }
+
   _updatePageContent() {
     this._getUserWallets();
+    this._updatePermission();
     this._getTotalWasteThisYear();
   }
 
@@ -118,7 +131,10 @@ class ProfileComponentState extends State<ProfileComponent> {
                     margin: EdgeInsets.only(right: 20, top: 10),
                     child: GestureDetector(
                       onTap: () {},
-                      child: Icon(Icons.menu, color: Colors.white,),
+                      child: Icon(
+                        Icons.menu,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -163,22 +179,25 @@ class ProfileComponentState extends State<ProfileComponent> {
                             }).toList(),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.topRight,
-                          child: FlatButton(
-                            onPressed: _goToEditWalletPage,
-                            child: Text(
-                              this.userDto.language == Constants.languages[0]
-                                  ? 'Editar'
-                                  : 'Edit',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0,
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                          ),
-                        ),
+                        isWalletOwner
+                            ? Container(
+                                alignment: Alignment.topRight,
+                                child: FlatButton(
+                                  onPressed: _goToEditWalletPage,
+                                  child: Text(
+                                    this.userDto.language ==
+                                            Constants.languages[0]
+                                        ? 'Editar'
+                                        : 'Edit',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                      color: Colors.deepPurple,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
