@@ -5,24 +5,23 @@ import 'package:waste_app/utils/constants.dart';
 
 import 'manage-wallets-app-bar.dart';
 
-class ManageWallets extends StatelessWidget {
+class EditWallet extends StatelessWidget {
   var userDto = AuthService.currentUser;
   
   List<Wallet> wallets;
   
-  ManageWallets() {
+  EditWallet() {
 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ManageWalletsAppBar(context),
+      appBar: ManageWalletsAppBar(context, 'Editar carteira'),
       body: Container(
         child: Column(
           children: <Widget>[
             Container(
-              alignment: Alignment.topRight,
               child: FlatButton(
                 onPressed: () {},
                 child: Text(

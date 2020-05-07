@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:waste_app/pages/manage-wallets/manage-wallets.dart';
+import 'package:waste_app/pages/manage-wallets/edit_wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -54,9 +54,9 @@ class ProfileComponentState extends State<ProfileComponent> {
     this._getTotalWasteThisYear();
   }
 
-  void _goToManageWalletsPage() async {
+  void _goToEditWalletPage() async {
     var refresh = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ManageWallets()));
+        context, MaterialPageRoute(builder: (context) => EditWallet()));
 
     if (refresh != null && refresh) {
       _updatePageContent();
@@ -166,7 +166,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                         Container(
                           alignment: Alignment.topRight,
                           child: FlatButton(
-                            onPressed: _goToManageWalletsPage,
+                            onPressed: _goToEditWalletPage,
                             child: Text(
                               this.userDto.language == Constants.languages[0]
                                   ? 'Editar'

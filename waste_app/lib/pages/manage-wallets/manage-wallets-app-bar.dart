@@ -5,18 +5,19 @@ import 'package:waste_app/utils/styles.dart';
 class ManageWalletsAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final BuildContext context;
+  final String title;
 
   @override
   final Size preferredSize;
 
-  ManageWalletsAppBar(this.context) : preferredSize = Size.fromHeight(60.0);
+  ManageWalletsAppBar(this.context, this.title) : preferredSize = Size.fromHeight(60.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Styles.mainBackgroundColor,
       title: Text(
-        'Gerenciar carteiras',
+        this.title,
         style: GoogleFonts.quicksand(
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
