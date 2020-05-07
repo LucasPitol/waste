@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:waste_app/models/new_waste_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/pages/shared/loading-block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -22,6 +23,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   String dropdownWalletValue;
   final _formKey = GlobalKey<FormState>();
   NewWasteForm newWasteForm;
+  bool loading = false;
 
   WalletService walletService;
   SpendsService spendsService;
@@ -67,8 +69,16 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   }
 
   Future<void> _saveNewWaste() async {
+    setState(() {
+      this.loading = true;
+    });
+
     this.newWasteForm.walletId = dropdownWalletValue;
     var success = await this.spendsService.waste(newWasteForm);
+
+    setState(() {
+      this.loading = false;
+    });
 
     if (success) {
       Navigator.pop(context, true);
@@ -251,6 +261,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                 ),
               ),
             ),
+            LoadingBlock(this.loading),
           ],
         ),
       ),
