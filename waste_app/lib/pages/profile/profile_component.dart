@@ -10,11 +10,12 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class ProfileComponent extends StatefulWidget {
+  ProfileComponent({Key key}) : super(key: key);
   @override
-  _ProfileComponentState createState() => _ProfileComponentState();
+  ProfileComponentState createState() => ProfileComponentState();
 }
 
-class _ProfileComponentState extends State<ProfileComponent> {
+class ProfileComponentState extends State<ProfileComponent> {
   UserDto userDto = AuthService.currentUser;
   double totalWasteThisYear = 0.0;
   bool totalWasteThisYearLoading = true;
@@ -22,7 +23,7 @@ class _ProfileComponentState extends State<ProfileComponent> {
   SpendsService spendService;
   WalletService walletService;
 
-  _ProfileComponentState() {
+  ProfileComponentState() {
     this.spendService = SpendsService();
     this.walletService = WalletService();
   }
@@ -81,6 +82,10 @@ class _ProfileComponentState extends State<ProfileComponent> {
     setState(() {
       this.totalWasteThisYearLoading = false;
     });
+  }
+
+  void refreshData() {
+    this._updatePageContent();
   }
 
   @override

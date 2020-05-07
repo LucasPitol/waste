@@ -9,11 +9,12 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class SpendsComponent extends StatefulWidget {
+  SpendsComponent({Key key}) : super(key: key);
   @override
-  _SpendsComponentState createState() => _SpendsComponentState();
+  SpendsComponentState createState() => SpendsComponentState();
 }
 
-class _SpendsComponentState extends State<SpendsComponent>
+class SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
   List<SpendByMonthDto> spendsByMonthDtoList = [];
 
@@ -126,6 +127,12 @@ class _SpendsComponentState extends State<SpendsComponent>
     if (headerExpanded && this.spendsByMonthDtoList.isEmpty) {
       _getSpendsByMonthDtoList();
     }
+  }
+
+  void refreshData() {
+    this.spendsByMonthDtoList = [];
+    this._getSpends(dateSelected);
+
   }
 
   @override

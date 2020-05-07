@@ -9,6 +9,9 @@ class MainComponent extends StatefulWidget {
   _MainComponentState createState() => _MainComponentState();
 }
 
+GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
+GlobalKey<ProfileComponentState> profileComponentGlobalKey = GlobalKey();
+
 class _MainComponentState extends State<MainComponent> {
   FloatingActionButtonLocation _addFabLocation =
       FloatingActionButtonLocation.centerDocked;
@@ -37,9 +40,13 @@ class _MainComponentState extends State<MainComponent> {
     }
   }
 
-  void _updateSpendsPage() {}
+  void _updateSpendsPage() {
+    spendsComponentGlobalKey.currentState.refreshData();
+  }
 
-  void _updateProfilePage() {}
+  void _updateProfilePage() {
+    profileComponentGlobalKey.currentState.refreshData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +69,8 @@ class _MainComponentState extends State<MainComponent> {
   }
 
   final List<Widget> _widgetOptions = <Widget>[
-    SpendsComponent(),
-    ProfileComponent(),
+    SpendsComponent(key: spendsComponentGlobalKey),
+    ProfileComponent(key: profileComponentGlobalKey),
   ];
 
   void _onItemTapped(int index) {
