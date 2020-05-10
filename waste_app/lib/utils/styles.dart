@@ -55,7 +55,6 @@ class Styles {
       border: UnderlineInputBorder(
       ),
       enabledBorder: UnderlineInputBorder(
-        borderRadius: defaultTextFieldBorderRadius,
         borderSide: BorderSide(color: Colors.grey.shade300),
       ),
       labelText: value,
