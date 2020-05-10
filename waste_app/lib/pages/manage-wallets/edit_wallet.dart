@@ -32,7 +32,17 @@ class _EditWalletState extends State<EditWallet> {
     this.walletNameController.text = currentWallet.name;
   }
 
-  void _updateWallet() {}
+  Future<void> _updateWallet() async {
+    Wallet newWallet = currentWallet;
+
+    newWallet.name = walletNameController.text;
+
+    bool success = await this.walletService.updateWallet(newWallet);
+
+    if (success) {
+      Navigator.pop(context, true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

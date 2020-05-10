@@ -29,6 +29,30 @@ class WalletService {
     return AuthService.currentUser.currentWalletId;
   }
 
+  Future<bool> updateWallet(Wallet newWallet) async {
+    bool success = false;
+
+    String walletId = newWallet.id;
+
+    Timestamp lastUpdate = Timestamp.fromDate(DateTime.now());
+
+    await dbReference.collection('wallets').document(walletId).setData(
+        {'name': newWallet.name, 'lastUpdate': lastUpdate},
+        merge: true).then((onValue) {
+      success = true;
+      return success;
+    }).catchError((onError) async {
+      print(onError);
+
+      List<Wallet> wallets = await getWalletsByUserId(newWallet.ownerId);
+
+      AuthService.currentUser.walletList = wallets;
+
+      return success;
+    });
+    return success;
+  }
+
   Future<List<Wallet>> getWalletsByUserId(String userId) async {
     List<Wallet> wallets = [];
 

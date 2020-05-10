@@ -41,7 +41,9 @@ class ProfileComponentState extends State<ProfileComponent> {
   }
 
   void _getUserWallets() {
-    wallets = this.walletService.getUserWallets();
+    setState(() {
+      wallets = this.walletService.getUserWallets();
+    });
 
     this.dropdownWalletValue = this.walletService.getCurrentWalletId();
   }
@@ -71,8 +73,7 @@ class ProfileComponentState extends State<ProfileComponent> {
     String walletId = this.userDto.currentWalletId;
     String uid = this.userDto.uid;
     setState(() {
-      this.isWalletOwner =
-          this.walletService.isOwner(walletId, uid);
+      this.isWalletOwner = this.walletService.isOwner(walletId, uid);
     });
   }
 
