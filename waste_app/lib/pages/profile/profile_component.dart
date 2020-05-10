@@ -58,8 +58,9 @@ class ProfileComponentState extends State<ProfileComponent> {
   }
 
   void _goToEditWalletPage() async {
+    String walletId = this.userDto.currentWalletId;
     var refresh = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => EditWallet()));
+        context, MaterialPageRoute(builder: (context) => EditWallet(walletId)));
 
     if (refresh != null && refresh) {
       _updatePageContent();

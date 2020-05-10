@@ -12,6 +12,11 @@ class WalletService {
     return currentWallet.ownerId == uid;
   }
 
+  Wallet getWallet(String walletId) {
+    List<Wallet> wallets = getUserWallets();
+    return wallets.where((w) => w.id == walletId).first;
+  }
+
   List<Wallet> getUserWallets() {
     return AuthService.currentUser.walletList;
   }
