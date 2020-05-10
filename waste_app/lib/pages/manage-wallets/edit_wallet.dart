@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/pages/shared/loading-block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/wallet-service.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -19,6 +20,7 @@ class _EditWalletState extends State<EditWallet> {
   Wallet currentWallet;
   String walletIdToEdit;
   var _formKey;
+  bool loading = false;
   TextEditingController walletNameController;
 
   WalletService walletService;
@@ -33,11 +35,19 @@ class _EditWalletState extends State<EditWallet> {
   }
 
   Future<void> _updateWallet() async {
+    setState(() {
+      this.loading = true;
+    });
+
     Wallet newWallet = currentWallet;
 
     newWallet.name = walletNameController.text;
 
     bool success = await this.walletService.updateWallet(newWallet);
+
+    setState(() {
+      this.loading = false;
+    });
 
     if (success) {
       Navigator.pop(context, true);
@@ -48,73 +58,80 @@ class _EditWalletState extends State<EditWallet> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ManageWalletsAppBar(context, 'Editar carteira'),
-      body: Container(
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.topRight,
-                  child: FlatButton(
-                    onPressed: () {},
-                    child: Text(
-                      this.userDto.language == Constants.languages[0]
-                          ? 'Excluir carteira'
-                          : 'Delete wallet',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                        color: Colors.deepPurple,
+      body: Stack(
+        children: <Widget>[
+          Container(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.topRight,
+                      child: FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          this.userDto.language == Constants.languages[0]
+                              ? 'Excluir carteira'
+                              : 'Delete wallet',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: 20, bottom: 10, left: 20, right: 20),
-                  child: TextFormField(
-                    controller: walletNameController,
-                    textCapitalization: TextCapitalization.sentences,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return Constants.getDefaultEmptyFieldMsg(
-                            userDto.language);
-                      }
-                      return null;
-                    },
-                    decoration: this.userDto.language == Constants.languages[0]
-                        ? Styles.getTextFieldDecorationUnderline(
-                            'Nome da carteira')
-                        : Styles.getTextFieldDecorationUnderline('Wallet name'),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 40, left: 20, right: 20),
-                  child: ButtonTheme(
-                    minWidth: double.infinity,
-                    height: 50,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: Styles.defaultTextFieldBorderRadius,
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          _updateWallet();
-                        }
-                      },
-                      color: Colors.deepPurple,
-                      child: Text(
-                        'Salvar',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: 20, bottom: 10, left: 20, right: 20),
+                      child: TextFormField(
+                        controller: walletNameController,
+                        textCapitalization: TextCapitalization.sentences,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return Constants.getDefaultEmptyFieldMsg(
+                                userDto.language);
+                          }
+                          return null;
+                        },
+                        decoration:
+                            this.userDto.language == Constants.languages[0]
+                                ? Styles.getTextFieldDecorationUnderline(
+                                    'Nome da carteira')
+                                : Styles.getTextFieldDecorationUnderline(
+                                    'Wallet name'),
                       ),
                     ),
-                  ),
+                    Container(
+                      margin: EdgeInsets.only(top: 40, left: 20, right: 20),
+                      child: ButtonTheme(
+                        minWidth: double.infinity,
+                        height: 50,
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: Styles.defaultTextFieldBorderRadius,
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              _updateWallet();
+                            }
+                          },
+                          color: Colors.deepPurple,
+                          child: Text(
+                            'Salvar',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          LoadingBlock(loading),
+        ],
       ),
     );
   }
