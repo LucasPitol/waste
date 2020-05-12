@@ -7,17 +7,17 @@ class WalletService {
   final dbReference = Firestore.instance;
 
   bool isOwner(String walletId, String uid) {
-    List<Wallet> wallets = getUserWallets();
+    List<Wallet> wallets = getUserWalletsLocal();
     Wallet currentWallet = wallets.where((w) => w.id == walletId).first;
     return currentWallet.ownerId == uid;
   }
 
   Wallet getWallet(String walletId) {
-    List<Wallet> wallets = getUserWallets();
+    List<Wallet> wallets = getUserWalletsLocal();
     return wallets.where((w) => w.id == walletId).first;
   }
 
-  List<Wallet> getUserWallets() {
+  List<Wallet> getUserWalletsLocal() {
     return AuthService.currentUser.walletList;
   }
 
@@ -27,6 +27,28 @@ class WalletService {
 
   String getCurrentWalletId() {
     return AuthService.currentUser.currentWalletId;
+  }
+
+  Future<bool> deleteWallet(String walletId) async {
+    bool success = false;
+
+    await dbReference
+        .collection('wallets')
+        .document(walletId)
+        .delete()
+        .then((onValue) {
+
+
+        AuthService.currentUser.walletList.remove((w) => w.id == walletId);
+      AuthService.currentUser.currentWalletId = AuthService.currentUser.walletList[0].id;
+      success = true;
+      return success;
+    }).catchError((onError) {
+      print(onError);
+      return success;
+    });
+
+    return success;
   }
 
   Future<bool> updateWallet(Wallet newWallet) async {

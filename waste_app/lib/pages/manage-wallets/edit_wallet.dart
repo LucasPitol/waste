@@ -64,7 +64,15 @@ class _EditWalletState extends State<EditWallet> {
     bool delete = await _openConfirmDialog(title, subtitle);
 
     if (delete != null && delete) {
-      print('Prapaga');
+      setState(() {
+        this.loading = true;
+      });
+
+      var success = await this.walletService.deleteWallet(walletIdToEdit);
+
+      if (success) {
+        Navigator.pop(context, true);
+      }
     }
   }
 

@@ -40,7 +40,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   }
 
   void _getUserWallets() {
-    wallets = this.walletService.getUserWallets();
+    wallets = this.walletService.getUserWalletsLocal();
 
     this.dropdownWalletValue = this.walletService.getCurrentWalletId();
   }

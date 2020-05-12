@@ -40,12 +40,19 @@ class ProfileComponentState extends State<ProfileComponent> {
     this._getTotalWasteThisYear();
   }
 
-  void _getUserWallets() {
+  Future<void> _getUserWallets() async {
     setState(() {
-      wallets = this.walletService.getUserWallets();
+      wallets = this.walletService.getUserWalletsLocal();
     });
 
     this.dropdownWalletValue = this.walletService.getCurrentWalletId();
+
+    String uid = this.userDto.uid;
+    List<Wallet> walletsTemp = await this.walletService.getWalletsByUserId(uid);
+
+    setState(() {
+      wallets = walletsTemp;
+    });
   }
 
   void switchWallets(String walletId) {
