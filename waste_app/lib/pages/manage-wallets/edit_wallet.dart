@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/pages/dialogs/confirm_dialog.dart';
 import 'package:waste_app/pages/shared/loading-block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -54,6 +55,29 @@ class _EditWalletState extends State<EditWallet> {
     }
   }
 
+  Future<void> _deleteWallet() async {
+    String title = 'Excluir ' + currentWallet.name + '?';
+
+    String subtitle =
+        'Todos os gastos relacionados a carteira tambem serão apagados';
+
+    await _openConfirmDialog(title, subtitle);
+
+    // if (delete != null && delete) {
+    //   print('Prapaga');
+    // }
+  }
+
+  Future<bool> _openConfirmDialog(String title, String content) async {
+    var x = await showDialog<bool>(
+        context: context,
+        builder: (builder) {
+          return ConfirmDialogComponent(title, content);
+        });
+
+    print(x);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +93,7 @@ class _EditWalletState extends State<EditWallet> {
                     Container(
                       alignment: Alignment.topRight,
                       child: FlatButton(
-                        onPressed: () {},
+                        onPressed: _deleteWallet,
                         child: Text(
                           this.userDto.language == Constants.languages[0]
                               ? 'Excluir carteira'
