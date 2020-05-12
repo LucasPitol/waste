@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ConfirmDialogComponent extends StatefulWidget {
   final String title;
@@ -36,10 +37,13 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
               child: AlertDialog(
                 shape: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0)),
-                title: Text(this.title),
+                title: Text(
+                  this.title,
+                  style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                ),
                 content: Text(
                   this.subtitle,
-                  style: TextStyle(color: Colors.grey),
+                  style: GoogleFonts.quicksand(color: Colors.grey),
                 ),
                 actions: <Widget>[
                   FlatButton(
@@ -47,14 +51,20 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                     onPressed: () {
                       closeDialog(false);
                     },
-                    child: Text('Cancelar'),
+                    child: Text(
+                      'Cancelar',
+                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   FlatButton(
                     textColor: Colors.red,
                     onPressed: () {
                       closeDialog(true);
                     },
-                    child: Text('Excluir'),
+                    child: Text(
+                      'Excluir',
+                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),

@@ -61,21 +61,19 @@ class _EditWalletState extends State<EditWallet> {
     String subtitle =
         'Todos os gastos relacionados a carteira tambem serão apagados';
 
-    await _openConfirmDialog(title, subtitle);
+    bool delete = await _openConfirmDialog(title, subtitle);
 
-    // if (delete != null && delete) {
-    //   print('Prapaga');
-    // }
+    if (delete != null && delete) {
+      print('Prapaga');
+    }
   }
 
   Future<bool> _openConfirmDialog(String title, String content) async {
-    var x = await showDialog<bool>(
+    return await showDialog<bool>(
         context: context,
         builder: (builder) {
           return ConfirmDialogComponent(title, content);
         });
-
-    print(x);
   }
 
   @override
