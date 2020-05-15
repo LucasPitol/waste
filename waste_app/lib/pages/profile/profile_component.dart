@@ -20,6 +20,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   double totalWasteThisYear = 0.0;
   bool totalWasteThisYearLoading = true;
   bool isWalletOwner = false;
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   SpendsService spendService;
   WalletService walletService;
@@ -113,7 +114,13 @@ class ProfileComponentState extends State<ProfileComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       resizeToAvoidBottomPadding: true,
+      endDrawer: Drawer(
+        child: SafeArea(
+          child: Text('data'),
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           children: <Widget>[
@@ -139,7 +146,9 @@ class ProfileComponentState extends State<ProfileComponent> {
                     alignment: Alignment.topRight,
                     margin: EdgeInsets.only(right: 20, top: 10),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        scaffoldKey.currentState.openEndDrawer();
+                      },
                       child: Icon(
                         Icons.menu,
                         color: Colors.white,
