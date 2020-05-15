@@ -118,7 +118,39 @@ class ProfileComponentState extends State<ProfileComponent> {
       resizeToAvoidBottomPadding: true,
       endDrawer: Drawer(
         child: SafeArea(
-          child: Text('data'),
+          child: Column(
+            children: <Widget>[
+              Container(
+                // height: 100.0,
+                color: Colors.deepPurple,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 10, right: 20),
+                      alignment: Alignment.topRight,
+                      child: Icon(
+                        Icons.account_circle,
+                        color: Colors.deepPurple.shade300,
+                        size: 40,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 10, right: 20, bottom: 10),
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        'Josias Ferreira Neto',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: SafeArea(
