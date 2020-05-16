@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class NewWalletDialogComponent extends StatefulWidget {
@@ -10,13 +14,26 @@ class NewWalletDialogComponent extends StatefulWidget {
 }
 
 class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
-    TextEditingController walletNameController = TextEditingController();
+  TextEditingController walletNameController = TextEditingController();
+  UserDto userDto = AuthService.currentUser;
+  List<Wallet> wallets;
+  var _formKey;
 
+  _NewWalletDialogComponentState() {
+    wallets = userDto.walletList;
+    this._formKey = GlobalKey<FormState>();
+  }
 
   @override
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) => this._showDialog());
+  }
+
+  bool _isRepeated(String input) {
+    Iterable<Wallet> containsList = wallets.where((w) => w.name == input);
+
+    return containsList.isNotEmpty;
   }
 
   _showDialog() {
@@ -37,19 +54,27 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                 ),
                 content: Theme(
                   data: Styles.mainTheme,
-                  child: TextFormField(
-                    cursorColor: Colors.deepPurple,
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      cursorColor: Colors.deepPurple,
                       controller: walletNameController,
                       textCapitalization: TextCapitalization.sentences,
-                      // validator: (value) {
-                      //   if (value.isEmpty) {
-                      //     return Constants.getDefaultEmptyFieldMsg(
-                      //         userDto.language);
-                      //   }
-                      //   return null;
-                      // },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return Constants.getDefaultEmptyFieldMsg(
+                              userDto.language);
+                        }
+
+                        if (_isRepeated(value)) {
+                          return 'Já tem uma carteira com esse nome';
+                        }
+                        return null;
+                      },
                       decoration: Styles.getTextFieldDecorationUnderline(
-                          'Nome da carteira')),
+                          'Nome da carteira'),
+                    ),
+                  ),
                 ),
                 actions: <Widget>[
                   FlatButton(
@@ -64,8 +89,10 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                   ),
                   FlatButton(
                     textColor: Colors.deepPurple,
-                    onPressed: () {
-                      closeDialog(true);
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        closeDialog(true);
+                      }
                     },
                     child: Text(
                       'Criar',
@@ -86,7 +113,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
 
   closeDialog(bool action) {
     String walletName = walletNameController.text;
-    
+
     Navigator.pop(context, [action, walletName]);
     Navigator.pop(context, [action, walletName]);
   }
