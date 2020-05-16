@@ -29,6 +29,35 @@ class WalletService {
     return AuthService.currentUser.currentWalletId;
   }
 
+  Future<bool> createNewWallet(String walletName) async {
+    bool success = false;
+
+    String uid = AuthService.currentUser.uid;
+
+    List<String> membersId = [uid];
+
+    Timestamp creationDate = Timestamp.fromDate(DateTime.now());
+
+    await dbReference.collection('wallets').add({
+      'creationDate': creationDate,
+      'membersId': membersId,
+      'name': walletName,
+      'ownerId': uid
+    }).then((onValue) async {
+      success = true;
+      List<Wallet> wallets = await getWalletsByUserId(uid);
+
+      updateUserWalletsLocal(wallets);
+
+      return success;
+    }).catchError((onError) {
+      print(onError);
+      return success;
+    });
+
+    return success;
+  }
+
   Future<bool> deleteWallet(String walletId) async {
     bool success = false;
 
@@ -37,10 +66,9 @@ class WalletService {
         .document(walletId)
         .delete()
         .then((onValue) {
-
-
-        AuthService.currentUser.walletList.remove((w) => w.id == walletId);
-      AuthService.currentUser.currentWalletId = AuthService.currentUser.walletList[0].id;
+      AuthService.currentUser.walletList.remove((w) => w.id == walletId);
+      AuthService.currentUser.currentWalletId =
+          AuthService.currentUser.walletList[0].id;
       success = true;
       return success;
     }).catchError((onError) {
@@ -49,6 +77,10 @@ class WalletService {
     });
 
     return success;
+  }
+
+  void updateUserWalletsLocal(List<Wallet> wallets) {
+    AuthService.currentUser.walletList = wallets;
   }
 
   Future<bool> updateWallet(Wallet newWallet) async {
@@ -68,7 +100,7 @@ class WalletService {
 
       List<Wallet> wallets = await getWalletsByUserId(newWallet.ownerId);
 
-      AuthService.currentUser.walletList = wallets;
+      updateUserWalletsLocal(wallets);
 
       return success;
     });

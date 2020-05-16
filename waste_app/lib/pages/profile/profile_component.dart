@@ -5,6 +5,7 @@ import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/pages/manage-wallets/edit_wallet.dart';
 import 'package:waste_app/pages/profile/drawer_menu_item.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
+import 'package:waste_app/pages/shared/loading-block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -22,6 +23,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   double totalWasteThisYear = 0.0;
   bool totalWasteThisYearLoading = true;
   bool isWalletOwner = false;
+  bool loading = false;
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   SpendsService spendService;
@@ -84,8 +86,20 @@ class ProfileComponentState extends State<ProfileComponent> {
 
     if (res != null && res.isNotEmpty && res[0]) {
       Navigator.pop(context);
-      print(res[1]);
-      _updatePageContent();
+
+      setState(() {
+        this.loading = true;
+      });
+
+      var refresh = await this.walletService.createNewWallet(res[1]);
+
+      setState(() {
+        this.loading = false;
+      });
+
+      if (refresh) {
+        _updatePageContent();
+      }
     }
   }
 
@@ -328,6 +342,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                 ],
               ),
             ),
+            LoadingBlock(loading),
           ],
         ),
       ),
