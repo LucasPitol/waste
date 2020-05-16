@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/pages/manage-wallets/edit_wallet.dart';
+import 'package:waste_app/pages/profile/drawer_menu_item.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -118,10 +119,9 @@ class ProfileComponentState extends State<ProfileComponent> {
       resizeToAvoidBottomPadding: true,
       endDrawer: Drawer(
         child: SafeArea(
-          child: Column(
+          child: ListView(
             children: <Widget>[
               Container(
-                // height: 100.0,
                 color: Colors.deepPurple,
                 child: Column(
                   children: <Widget>[
@@ -148,6 +148,15 @@ class ProfileComponentState extends State<ProfileComponent> {
                     ),
                   ],
                 ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: DrawerMenuItem(
+                    'Nova carteira', Icons.account_balance_wallet),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: DrawerMenuItem('Sair', Icons.exit_to_app),
               ),
             ],
           ),
