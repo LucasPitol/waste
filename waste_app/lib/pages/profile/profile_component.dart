@@ -4,6 +4,7 @@ import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/pages/manage-wallets/edit_wallet.dart';
 import 'package:waste_app/pages/profile/drawer_menu_item.dart';
+import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
@@ -78,6 +79,24 @@ class ProfileComponentState extends State<ProfileComponent> {
     }
   }
 
+  Future<void> _createNewWallet() async {
+    bool refresh = await _openNewWalletDialog();
+
+    if (refresh != null && refresh) {
+      Navigator.pop(context);
+      _updatePageContent();
+    }
+  }
+
+  Future<bool> _openNewWalletDialog() async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (builder) {
+        return NewWalletDialogComponent();
+      }
+    );
+  }
+
   void _updatePermission() {
     String walletId = this.userDto.currentWalletId;
     String uid = this.userDto.uid;
@@ -150,7 +169,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                 ),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: _createNewWallet,
                 child: DrawerMenuItem(
                     'Nova carteira', Icons.account_balance_wallet),
               ),
