@@ -80,21 +80,21 @@ class ProfileComponentState extends State<ProfileComponent> {
   }
 
   Future<void> _createNewWallet() async {
-    bool refresh = await _openNewWalletDialog();
+    List res = await _openNewWalletDialog();
 
-    if (refresh != null && refresh) {
+    if (res != null && res.isNotEmpty && res[0]) {
       Navigator.pop(context);
+      print(res[1]);
       _updatePageContent();
     }
   }
 
-  Future<bool> _openNewWalletDialog() async {
-    return await showDialog<bool>(
-      context: context,
-      builder: (builder) {
-        return NewWalletDialogComponent();
-      }
-    );
+  Future<List> _openNewWalletDialog() async {
+    return await showDialog<List>(
+        context: context,
+        builder: (builder) {
+          return NewWalletDialogComponent();
+        });
   }
 
   void _updatePermission() {

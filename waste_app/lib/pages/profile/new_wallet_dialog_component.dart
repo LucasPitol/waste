@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class NewWalletDialogComponent extends StatefulWidget {
-
   @override
   _NewWalletDialogComponentState createState() =>
       _NewWalletDialogComponentState();
 }
 
 class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
+    TextEditingController walletNameController = TextEditingController();
+
 
   @override
   void initState() {
@@ -33,9 +35,21 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                   'Nova carteira',
                   style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                 ),
-                content: Text(
-                  'this.subtitle',
-                  style: GoogleFonts.quicksand(color: Colors.grey),
+                content: Theme(
+                  data: Styles.mainTheme,
+                  child: TextFormField(
+                    cursorColor: Colors.deepPurple,
+                      controller: walletNameController,
+                      textCapitalization: TextCapitalization.sentences,
+                      // validator: (value) {
+                      //   if (value.isEmpty) {
+                      //     return Constants.getDefaultEmptyFieldMsg(
+                      //         userDto.language);
+                      //   }
+                      //   return null;
+                      // },
+                      decoration: Styles.getTextFieldDecorationUnderline(
+                          'Nome da carteira')),
                 ),
                 actions: <Widget>[
                   FlatButton(
@@ -71,8 +85,10 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
   }
 
   closeDialog(bool action) {
-    Navigator.pop(context, action);
-    Navigator.pop(context, action);
+    String walletName = walletNameController.text;
+    
+    Navigator.pop(context, [action, walletName]);
+    Navigator.pop(context, [action, walletName]);
   }
 
   @override
