@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
@@ -47,6 +48,12 @@ class _LoginComponentState extends State<LoginComponent> {
     this.userDto = AuthService.currentUser;
     this.userDto.language = dropdownValue;
     this.selectHandler = selectHandlerTemp;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.tryPreviousLogin();
   }
 
   void changeLanguage(String language) {
@@ -116,6 +123,30 @@ class _LoginComponentState extends State<LoginComponent> {
     if (refresh) {
       this.selectHandler();
     }
+  }
+
+  Future<void> tryPreviousLogin() async {
+    String uid = await _getLastUserId();
+
+    if (uid != null) {
+      var x = await this.googleSignService.loginByUid(uid);
+
+      this.selectHandler();
+    }
+  }
+
+  Future<String> _getLastUserId() async {
+    String uidStored;
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getKeys();
+
+    if (userId != null && userId.isNotEmpty) {
+      uidStored = userId.first;
+
+      // String loginType = await prefs.getString(uidStored);
+    }
+
+    return uidStored;
   }
 
   @override
@@ -216,10 +247,9 @@ class _LoginComponentState extends State<LoginComponent> {
                                         ? 'Entrar'
                                         : 'Login',
                                     style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold
-                                    ),
+                                        color: Colors.white,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
@@ -305,10 +335,9 @@ class _LoginComponentState extends State<LoginComponent> {
                                 ? 'Continuar com Google'
                                 : 'Login with Google',
                             style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold
-                            ),
+                                color: Colors.grey,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
