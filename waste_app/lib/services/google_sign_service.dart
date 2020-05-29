@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/wallet-service.dart';
 
@@ -86,7 +87,14 @@ class GoogleSignService {
   }
 
   void signOut() {
+    this._clearLocalStorage();
+    AuthService.currentUser = UserDto();
     _auth.signOut();
+  }
+
+  Future<void> _clearLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 
   Future<void> _setUserIdToLocalStorage(String uid) async {

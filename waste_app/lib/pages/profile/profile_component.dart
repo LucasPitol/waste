@@ -7,6 +7,7 @@ import 'package:waste_app/pages/profile/drawer_menu_item.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/shared/loading-block.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/google_sign_service.dart';
 import 'package:waste_app/services/spends-service.dart';
 import 'package:waste_app/services/wallet-service.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -28,10 +29,12 @@ class ProfileComponentState extends State<ProfileComponent> {
 
   SpendsService spendService;
   WalletService walletService;
+  GoogleSignService googleSignService;
 
   ProfileComponentState() {
     this.spendService = SpendsService();
     this.walletService = WalletService();
+    this.googleSignService = GoogleSignService();
   }
 
   List<Wallet> wallets;
@@ -145,6 +148,10 @@ class ProfileComponentState extends State<ProfileComponent> {
     this._updatePageContent();
   }
 
+  void _logout() {
+    this.googleSignService.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,7 +178,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                       margin: EdgeInsets.only(top: 10, right: 20, bottom: 10),
                       alignment: Alignment.topRight,
                       child: Text(
-                        'Josias Ferreira Neto',
+                        this.userDto.name,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -188,7 +195,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                     'Nova carteira', Icons.account_balance_wallet),
               ),
               GestureDetector(
-                onTap: () {},
+                onTap:_logout,
                 child: DrawerMenuItem('Sair', Icons.exit_to_app),
               ),
             ],
