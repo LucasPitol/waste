@@ -129,7 +129,15 @@ class _LoginComponentState extends State<LoginComponent> {
     String uid = await _getLastUserId();
 
     if (uid != null) {
+      setState(() {
+        this.loading = true;
+      });
+
       var x = await this.googleSignService.loginByUid(uid);
+
+      setState(() {
+        this.loading = false;
+      });
 
       this.selectHandler();
     }
