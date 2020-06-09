@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 
-import 'pages/new-spend/new-spend-component.dart';
+import 'pages/new_spend/new_spend_component.dart';
 
 class MainComponent extends StatefulWidget {
   @override

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
-import 'package:waste_app/services/spends-service.dart';
+import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 

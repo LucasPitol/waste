@@ -3,14 +3,14 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:waste_app/pages/manage-wallets/edit_wallet.dart';
+import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:waste_app/pages/profile/drawer_menu_item.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
-import 'package:waste_app/pages/shared/loading-block.dart';
+import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/google_sign_service.dart';
-import 'package:waste_app/services/spends-service.dart';
-import 'package:waste_app/services/wallet-service.dart';
+import 'package:waste_app/services/spends_service.dart';
+import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 

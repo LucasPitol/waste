@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/pages/dialogs/confirm_dialog.dart';
-import 'package:waste_app/pages/shared/loading-block.dart';
+import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/wallet-service.dart';
+import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
-import 'manage-wallets-app-bar.dart';
+import 'manage_wallets_app_bar.dart';
 
 class EditWallet extends StatefulWidget {
   String walletIdToEdit;

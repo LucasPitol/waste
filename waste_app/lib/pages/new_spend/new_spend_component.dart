@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:waste_app/models/new_waste_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:waste_app/pages/shared/loading-block.dart';
+import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/spends-service.dart';
-import 'package:waste_app/services/wallet-service.dart';
+import 'package:waste_app/services/spends_service.dart';
+import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 

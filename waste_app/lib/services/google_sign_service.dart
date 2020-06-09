@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:waste_app/services/wallet-service.dart';
+import 'package:waste_app/services/wallet_service.dart';
 
 import 'auth_service.dart';
 
