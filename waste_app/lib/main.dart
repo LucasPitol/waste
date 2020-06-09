@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waste_app/main_component.dart';
 import 'package:waste_app/pages/login/login_component.dart';
 
@@ -12,7 +12,8 @@ import 'utils/constants.dart';
 import 'utils/styles.dart';
 
 void main() {
-  initializeDateFormatting(Constants.ptLanguage).then((_) => runApp(MaterialApp(home: MyApp())));
+  initializeDateFormatting(Constants.ptLanguage)
+      .then((_) => runApp(Phoenix(child: MaterialApp(home: MyApp()))));
   // runApp(MaterialApp(home: MyApp()));
 }
 
