@@ -12,8 +12,8 @@ import 'utils/constants.dart';
 import 'utils/styles.dart';
 
 void main() {
-  initializeDateFormatting(Constants.ptLanguage)
-      .then((_) => runApp(Phoenix(child: MaterialApp(home: MyApp()))));
+  initializeDateFormatting(Constants.ptLanguage).then((_) => runApp(Phoenix(
+      child: MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()))));
   // runApp(MaterialApp(home: MyApp()));
 }
 
@@ -44,6 +44,7 @@ class _MyAppState extends State<MyApp> {
       statusBarColor: Colors.deepPurple,
     ));
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: Styles.mainTheme,
       home: this.isAuthenticated
           ? MainComponent()

@@ -169,167 +169,21 @@ class _LoginComponentState extends State<LoginComponent> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.only(
-                          left: 20, right: 20, bottom: 20, top: 60),
-                      decoration: Styles.loginBox,
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(
-                                  top: 20,
-                                  bottom: defaultMargin,
-                                  left: 20,
-                                  right: 20),
-                              child: TextFormField(
-                                controller: _loginForm.userMail,
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return Constants.getDefaultEmptyFieldMsg(
-                                        userDto.language);
-                                  }
-
-                                  return null;
-                                },
-                                decoration:
-                                    Styles.getTextFieldDecoration('e-mail'),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  top: 10,
-                                  bottom: defaultMargin,
-                                  left: 20,
-                                  right: 20),
-                              child: TextFormField(
-                                controller: _loginForm.password,
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return Constants.getDefaultEmptyFieldMsg(
-                                        userDto.language);
-                                  }
-
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: defaultBorderRadius,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: defaultBorderRadius,
-                                    borderSide:
-                                        BorderSide(color: Colors.grey.shade300),
-                                  ),
-                                  labelText: this.userDto.language ==
-                                          Constants.languages[0]
-                                      ? 'senha'
-                                      : 'pasword',
-                                ),
-                                obscureText: true,
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  top: defaultMargin,
-                                  bottom: defaultMargin,
-                                  left: 20,
-                                  right: 20),
-                              child: ButtonTheme(
-                                minWidth: double.infinity,
-                                height: 60.0,
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: defaultBorderRadius,
-                                  ),
-                                  onPressed: () {
-                                    if (_formKey.currentState.validate()) {
-                                      _login();
-                                    }
-                                  },
-                                  color: Colors.deepPurple,
-                                  child: Text(
-                                    this.userDto.language ==
-                                            Constants.languages[0]
-                                        ? 'Entrar'
-                                        : 'Login',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      this.userDto.language ==
-                                              Constants.languages[0]
-                                          ? 'Esqueceu a senha?'
-                                          : "Can't remember password?",
-                                      style: TextStyle(
-                                          fontSize: 14.0, color: Colors.grey),
-                                    ),
-                                  ),
-                                  Container(
-                                    child: FlatButton(
-                                      onPressed: () {},
-                                      child: Text(
-                                        this.userDto.language ==
-                                                Constants.languages[0]
-                                            ? 'Recuperar'
-                                            : 'Recover',
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: Colors.deepPurple),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.symmetric(vertical: 100),
+                      child: Text(
+                        'Waste',
+                        style: TextStyle(
+                          color: Colors.deepPurple,
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     Container(
                       alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              this.userDto.language == Constants.languages[0]
-                                  ? 'Novo por aqui?'
-                                  : 'New member?',
-                              style:
-                                  TextStyle(fontSize: 14.0, color: Colors.grey),
-                            ),
-                          ),
-                          Container(
-                            child: FlatButton(
-                              onPressed: _goToNewMemberPage,
-                              child: Text(
-                                this.userDto.language == Constants.languages[0]
-                                    ? 'Cadastrar'
-                                    : 'Register',
-                                style: TextStyle(
-                                    fontSize: 14.0, color: Colors.deepPurple),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
                       margin: EdgeInsets.only(
-                          top: 20, bottom: defaultMargin, left: 20, right: 20),
+                          bottom: defaultMargin, left: 20, right: 20),
                       child: ButtonTheme(
                         height: 40.0,
                         child: RaisedButton(
@@ -354,33 +208,33 @@ class _LoginComponentState extends State<LoginComponent> {
                 ),
               ),
             ),
-            Container(
-              alignment: Alignment.topRight,
-              margin: EdgeInsets.only(right: defaultMargin),
-              child: DropdownButton<String>(
-                value: dropdownValue,
-                icon: Icon(Icons.keyboard_arrow_down),
-                iconSize: 24,
-                elevation: 16,
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-                underline: Container(
-                  height: 1,
-                  color: Colors.white10,
-                ),
-                onChanged: (String newValue) {
-                  changeLanguage(newValue);
-                },
-                items: Constants.languages
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ),
+            // Container(
+            //   alignment: Alignment.topRight,
+            //   margin: EdgeInsets.only(right: defaultMargin),
+            //   child: DropdownButton<String>(
+            //     value: dropdownValue,
+            //     icon: Icon(Icons.keyboard_arrow_down),
+            //     iconSize: 24,
+            //     elevation: 16,
+            //     style: TextStyle(
+            //       color: Colors.grey,
+            //     ),
+            //     underline: Container(
+            //       height: 1,
+            //       color: Colors.white10,
+            //     ),
+            //     onChanged: (String newValue) {
+            //       changeLanguage(newValue);
+            //     },
+            //     items: Constants.languages
+            //         .map<DropdownMenuItem<String>>((String value) {
+            //       return DropdownMenuItem<String>(
+            //         value: value,
+            //         child: Text(value),
+            //       );
+            //     }).toList(),
+            //   ),
+            // ),
             this.loading
                 ? Container(
                     width: double.infinity,
