@@ -81,6 +81,8 @@ class GoogleSignService {
 
     await this._setUserIdToLocalStorage(user.uid);
 
+    AuthService.currentUser.uid = user.uid;
+
     wallets = await this.walletService.getWalletsByUserId(user.uid);
 
     return wallets;

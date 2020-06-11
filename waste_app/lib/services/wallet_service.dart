@@ -114,8 +114,21 @@ class WalletService {
         .collection('wallets')
         .where('membersId', arrayContains: userId)
         .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((doc) {
+        .then((QuerySnapshot snapshot) async {
+      var docs = snapshot.documents;
+
+      if (docs.isEmpty) {
+        var ok = await this.createNewWallet('Carteira Pessoal');
+
+        await dbReference
+            .collection('wallets')
+            .where('membersId', arrayContains: userId)
+            .getDocuments()
+            .then((QuerySnapshot snapshot) async {
+          docs = snapshot.documents;
+        });
+      }
+      docs.forEach((doc) {
         String walletId = doc.documentID;
         var walletRef = doc.data;
         List<String> members = [];
