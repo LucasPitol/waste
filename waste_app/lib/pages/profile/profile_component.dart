@@ -149,6 +149,14 @@ class ProfileComponentState extends State<ProfileComponent> {
     this._updatePageContent();
   }
 
+  void _openAboutDialog() {
+    showAboutDialog(
+      context: context,
+      applicationName: 'Waste',
+      applicationVersion: '1.0.0',
+    );
+  }
+
   void _logout() {
     this.googleSignService.signOut();
     Phoenix.rebirth(context);
@@ -197,7 +205,11 @@ class ProfileComponentState extends State<ProfileComponent> {
                     'Nova carteira', Icons.account_balance_wallet),
               ),
               GestureDetector(
-                onTap:_logout,
+                onTap: _openAboutDialog,
+                child: DrawerMenuItem('Sobre', Icons.info_outline),
+              ),
+              GestureDetector(
+                onTap: _logout,
                 child: DrawerMenuItem('Sair', Icons.exit_to_app),
               ),
             ],
