@@ -49,6 +49,10 @@ class ProfileComponentState extends State<ProfileComponent> {
     this._getTotalWasteThisYear();
   }
 
+  bool isEndDrawerOpen() {
+    return (scaffoldKey.currentState.isEndDrawerOpen);
+  }
+
   Future<void> _getUserWallets() async {
     setState(() {
       wallets = this.walletService.getUserWalletsLocal();

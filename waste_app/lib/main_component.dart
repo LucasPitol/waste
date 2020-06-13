@@ -74,6 +74,13 @@ class _MainComponentState extends State<MainComponent> {
   ];
 
   void _onItemTapped(int index) {
+
+    if (_selectedIndex == 1 && index == 0) {
+      if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
+        Navigator.pop(profileComponentGlobalKey.currentContext);
+      }
+    }
+
     setState(() {
       _selectedIndex = index;
     });
