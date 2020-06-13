@@ -66,9 +66,15 @@ class _LoginComponentState extends State<LoginComponent> {
   }
 
   Future<void> _loginWithGoogle() async {
+    setState(() {
+      this.loading = true;
+    });
     var user = await googleSignService.googleSignIn();
 
     this.userDto = AuthService.currentUser;
+    setState(() {
+      this.loading = false;
+    });
     this.selectHandler();
   }
 
