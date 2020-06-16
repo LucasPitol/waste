@@ -141,6 +141,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                         margin: EdgeInsets.only(
                             top: 20, bottom: 10, left: 20, right: 20),
                         child: TextFormField(
+                          maxLength: 50,
                           controller: newWasteForm.reason,
                           textCapitalization: TextCapitalization.sentences,
                           validator: (value) {
