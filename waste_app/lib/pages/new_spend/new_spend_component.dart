@@ -73,6 +73,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
       this.loading = true;
     });
 
+    FocusScope.of(context).unfocus();
+
     this.newWasteForm.walletId = dropdownWalletValue;
     var success = await this.spendsService.waste(newWasteForm);
 
