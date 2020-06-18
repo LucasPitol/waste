@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class NewWasteForm {
   TextEditingController reason;
-  TextEditingController waste;
+  MoneyMaskedTextController waste;
   DateTime spendDate;
   String walletId;
 
   NewWasteForm() {
     this.reason = new TextEditingController();
-    this.waste = new TextEditingController();
+    this.waste = new MoneyMaskedTextController(decimalSeparator: '.');
     this.spendDate = DateTime.now();
   }
 }
