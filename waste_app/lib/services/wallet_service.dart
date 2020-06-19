@@ -29,6 +29,15 @@ class WalletService {
     return AuthService.currentUser.currentWalletId;
   }
 
+  bool isWalletNameRepeated(String input) {
+
+    List<Wallet> wallets = this.getUserWalletsLocal();
+
+    Iterable<Wallet> containsList = wallets.where((w) => w.name == input);
+
+    return containsList.isNotEmpty;
+  }
+
   Future<bool> createNewWallet(String walletName) async {
     bool success = false;
 

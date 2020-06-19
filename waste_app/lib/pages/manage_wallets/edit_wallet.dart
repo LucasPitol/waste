@@ -55,6 +55,10 @@ class _EditWalletState extends State<EditWallet> {
     }
   }
 
+  bool _isWalletNameRepeated(String input) {
+    return this.walletService.isWalletNameRepeated(input);
+  }
+
   Future<void> _deleteWallet() async {
     String title = 'Excluir ' + currentWallet.name + '?';
 
@@ -123,6 +127,11 @@ class _EditWalletState extends State<EditWallet> {
                             return Constants.getDefaultEmptyFieldMsg(
                                 userDto.language);
                           }
+
+                          if (_isWalletNameRepeated(value)) {
+                            return 'Já tem uma carteira com esse nome';
+                          }
+
                           return null;
                         },
                         decoration:
