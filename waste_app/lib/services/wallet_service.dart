@@ -30,7 +30,6 @@ class WalletService {
   }
 
   bool isWalletNameRepeated(String input) {
-
     List<Wallet> wallets = this.getUserWalletsLocal();
 
     Iterable<Wallet> containsList = wallets.where((w) => w.name == input);
@@ -67,15 +66,40 @@ class WalletService {
     return success;
   }
 
-  Future<bool> deleteWallet(String walletId) async {
+  Future<bool> deleteWalletSpends(String walletId) async {
     bool success = false;
+
+    await dbReference
+        .collection('spends')
+        .where('walletId', isEqualTo: walletId)
+        .getDocuments()
+        .then((onValue) {
+      for (DocumentSnapshot ds in onValue.documents) {
+        ds.reference.delete();
+      }
+      success = true;
+      return success;
+    }).catchError((onError) {
+      print(onError);
+      return success;
+    });
+    return success;
+  }
+
+  Future<bool> deleteWallet(String walletId, String userId) async {
+    bool success = false;
+
+    bool x = await this.deleteWalletSpends(walletId);
 
     await dbReference
         .collection('wallets')
         .document(walletId)
         .delete()
-        .then((onValue) {
-      AuthService.currentUser.walletList.remove((w) => w.id == walletId);
+        .then((onValue) async {
+      List<Wallet> wallets = await getWalletsByUserId(userId);
+
+      updateUserWalletsLocal(wallets);
+      
       AuthService.currentUser.currentWalletId =
           AuthService.currentUser.walletList[0].id;
       success = true;

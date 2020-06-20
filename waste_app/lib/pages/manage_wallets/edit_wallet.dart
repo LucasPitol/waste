@@ -60,10 +60,30 @@ class _EditWalletState extends State<EditWallet> {
   }
 
   Future<void> _deleteWallet() async {
-    String title = 'Excluir ' + currentWallet.name + '?';
+    String title;
 
-    String subtitle =
-        'Todos os gastos relacionados a carteira tambem serão apagados';
+    String subtitle;
+
+    bool deleteWallet = true;
+
+    String uid = this.userDto.uid;
+
+    List<Wallet> wallets = this.walletService.getUserWalletsLocal();
+
+    if (wallets.length <= 1) {
+      title = 'Não é possivel excluir sua unica carteira, quer reseta-la?';
+
+      subtitle = 'Todos os gastos de ' +
+          currentWallet.name +
+          ' carteira serão apagados';
+
+      deleteWallet = false;
+    } else {
+      title = 'Excluir ' + currentWallet.name + '?';
+
+      subtitle =
+          'Todos os gastos relacionados a carteira tambem serão apagados';
+    }
 
     bool delete = await _openConfirmDialog(title, subtitle);
 
@@ -72,7 +92,9 @@ class _EditWalletState extends State<EditWallet> {
         this.loading = true;
       });
 
-      var success = await this.walletService.deleteWallet(walletIdToEdit);
+      var success = deleteWallet
+          ? await this.walletService.deleteWallet(walletIdToEdit, uid)
+          : await this.walletService.deleteWalletSpends(walletIdToEdit);
 
       if (success) {
         Navigator.pop(context, true);
