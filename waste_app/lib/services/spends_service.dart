@@ -18,7 +18,9 @@ class SpendsService {
 
     String reason = form.reason.text;
     String walletId = form.walletId;
-    double waste = double.parse(form.waste.text);
+
+    String wasteString = form.waste.text.replaceAll(',', '');
+    double waste = double.parse(wasteString);
 
     await dbReference.collection('spends').add({
       'creationDate': creationDate,

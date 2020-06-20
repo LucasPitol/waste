@@ -9,7 +9,7 @@ class NewWasteForm {
 
   NewWasteForm() {
     this.reason = new TextEditingController();
-    this.waste = new MoneyMaskedTextController(decimalSeparator: '.');
+    this.waste = new MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
     this.spendDate = DateTime.now();
   }
 }
