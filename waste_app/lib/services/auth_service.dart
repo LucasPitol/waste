@@ -2,12 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/constants.dart';
+
+import 'wallet_service.dart';
 
 class AuthService {
   final dbReference = Firestore.instance;
 
   static UserDto currentUser = new UserDto();
+
+  WalletService walletService;
+
+  AuthService() {
+    this.walletService = WalletService();
+  }
 
   static void changeLanguage(String language) {
     AuthService.currentUser.language = language;
@@ -18,6 +27,7 @@ class AuthService {
         currentUser.name != null &&
         currentUser.name.isNotEmpty;
   }
+
   Future<UserDto> login(LoginForm form) async {
     UserDto userDtoTemp;
 
@@ -36,17 +46,15 @@ class AuthService {
 
       var uid = userRef.documentID;
 
-      if (user != null) {
-        userDtoTemp = UserDto();
-        Map<String, dynamic> preferences = user['preferences'];
-        userDtoTemp.email = user['email'];
-        userDtoTemp.name = user['name'];
-        userDtoTemp.language = preferences['language'];
-        userDtoTemp.theme = preferences['theme'];
-        userDtoTemp.uid = uid;
-      }
+      List<Wallet> wallets = await this.walletService.getWalletsByUserId(uid);
 
-      AuthService.currentUser = userDtoTemp;
+      AuthService.currentUser.email = user['email'];
+      AuthService.currentUser.name = user['displayName'];
+      AuthService.currentUser.uid = uid;
+      AuthService.currentUser.walletList = wallets;
+      AuthService.currentUser.currentWalletId = wallets[0].id;
+
+      userDtoTemp = AuthService.currentUser;
 
       return userDtoTemp;
     }).catchError((onError) {
@@ -88,7 +96,7 @@ class AuthService {
       }).then((onValue) {
         currentUser.email = userMail;
         currentUser.name = name;
-        
+
         return null;
       }).catchError((onError) {
         print(onError);
