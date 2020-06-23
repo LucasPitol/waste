@@ -56,6 +56,10 @@ class AuthService {
 
       userDtoTemp = AuthService.currentUser;
 
+      this.updateUserData(uid);
+
+      await this._setUserIdToLocalStorage(uid);
+
       return userDtoTemp;
     }).catchError((onError) {
       print(onError);
@@ -63,6 +67,20 @@ class AuthService {
     });
 
     return userDtoTemp;
+  }
+
+  void updateUserData(String uid) {
+    DocumentReference docRef = dbReference.collection('user').document(uid);
+
+    docRef.setData({
+      'lastAccess': Timestamp.fromDate(DateTime.now())
+    }, merge: true);
+  }
+
+  Future<void> _setUserIdToLocalStorage(String uid) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    await prefs.setString('uid', uid);
   }
 
   Future<String> createNewUser(
