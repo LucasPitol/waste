@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -31,13 +32,17 @@ class AuthService {
   Future<UserDto> login(LoginForm form) async {
     UserDto userDtoTemp;
 
+    final cryptor = new PlatformStringCryptor();
+
     String userMail = form.userMail.text;
     String password = form.password.text;
+    String salt = await cryptor.generateSalt();
+    String passwordEncrypt = await cryptor.generateKeyFromPassword(password, salt);
 
     await dbReference
         .collection('user')
         .where('email', isEqualTo: userMail)
-        .where('password', isEqualTo: password)
+        .where('password', isEqualTo: passwordEncrypt)
         .getDocuments()
         .then((QuerySnapshot snapShot) async {
       var userRef = snapShot.documents.first;
