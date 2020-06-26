@@ -56,15 +56,6 @@ class _LoginComponentState extends State<LoginComponent> {
     this.tryPreviousLogin();
   }
 
-  void changeLanguage(String language) {
-    AuthService.changeLanguage(language);
-
-    setState(() {
-      this.userDto = AuthService.currentUser;
-      this.dropdownValue = this.userDto.language;
-    });
-  }
-
   Future<void> _loginWithGoogle() async {
     setState(() {
       this.loading = true;
@@ -152,10 +143,11 @@ class _LoginComponentState extends State<LoginComponent> {
   Future<String> _getLastUserId() async {
     String uidStored;
     final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getKeys();
+    final keys = prefs.getKeys();
 
-    if (userId != null && userId.isNotEmpty) {
-      uidStored = userId.first;
+    if (keys != null && keys.isNotEmpty) {
+
+      uidStored = prefs.getString('uid');
 
       // String loginType = await prefs.getString(uidStored);
     }
