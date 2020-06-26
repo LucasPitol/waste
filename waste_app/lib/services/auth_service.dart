@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
-import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/constants.dart';
-
+import 'package:waste_app/models/wallet.dart';
 import 'wallet_service.dart';
 
 class AuthService {
