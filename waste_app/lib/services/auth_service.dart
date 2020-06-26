@@ -77,6 +77,29 @@ class AuthService {
     }, merge: true);
   }
 
+  Future<bool> loginByUid(String uid) async {
+    DocumentReference docRef = dbReference.collection('user').document(uid);
+
+    await docRef.setData({
+      'uid': uid,
+      'lastAccess': Timestamp.fromDate(DateTime.now()),
+    }, merge: true);
+
+    await this._setUserIdToLocalStorage(uid);
+
+    List<Wallet> wallets = await this.walletService.getWalletsByUserId(uid);
+
+    await docRef.get().then((onValue) {
+      var user = onValue.data;
+
+      AuthService.currentUser.email = user['email'];
+      AuthService.currentUser.name = user['displayName'];
+      AuthService.currentUser.uid = uid;
+      AuthService.currentUser.walletList = wallets;
+      AuthService.currentUser.currentWalletId = wallets[0].id;
+    });
+  }
+
   Future<void> _setUserIdToLocalStorage(String uid) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();

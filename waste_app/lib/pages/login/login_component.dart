@@ -130,7 +130,7 @@ class _LoginComponentState extends State<LoginComponent> {
         this.loading = true;
       });
 
-      var x = await this.googleSignService.loginByUid(uid);
+      var x = await this.authService.loginByUid(uid);
 
       setState(() {
         this.loading = false;
@@ -143,15 +143,8 @@ class _LoginComponentState extends State<LoginComponent> {
   Future<String> _getLastUserId() async {
     String uidStored;
     final prefs = await SharedPreferences.getInstance();
-    final keys = prefs.getKeys();
-
-    if (keys != null && keys.isNotEmpty) {
-
-      uidStored = prefs.getString('uid');
-
-      // String loginType = await prefs.getString(uidStored);
-    }
-
+    uidStored = prefs.getString('uid');
+    print(uidStored);
     return uidStored;
   }
 
@@ -177,7 +170,10 @@ class _LoginComponentState extends State<LoginComponent> {
                           children: <Widget>[
                             Container(
                               margin: EdgeInsets.only(top: defaultMargin),
-                              child: Image.asset('assets/images/ic_launcher_circle.png', width: 80,),
+                              child: Image.asset(
+                                'assets/images/ic_launcher_circle.png',
+                                width: 80,
+                              ),
                             ),
                             Container(
                               margin: EdgeInsets.only(
