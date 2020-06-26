@@ -1,7 +1,6 @@
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:waste_app/pages/profile/drawer_menu_item.dart';
-import 'package:waste_app/services/google_sign_service.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
@@ -30,13 +29,11 @@ class ProfileComponentState extends State<ProfileComponent> {
 
   SpendsService spendService;
   WalletService walletService;
-  GoogleSignService googleSignService;
   AuthService authService;
 
   ProfileComponentState() {
     this.spendService = SpendsService();
     this.walletService = WalletService();
-    this.googleSignService = GoogleSignService();
     this.authService = AuthService();
   }
 

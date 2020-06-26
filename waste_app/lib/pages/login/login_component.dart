@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
-import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
-import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/google_sign_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
-
+import 'package:flutter/material.dart';
 import 'new_member_component.dart';
 
 class LoginComponent extends StatefulWidget {
@@ -31,8 +29,6 @@ class _LoginComponentState extends State<LoginComponent> {
 
   AuthService authService;
 
-  GoogleSignService googleSignService;
-
   UserDto userDto;
 
   LoginForm _loginForm;
@@ -43,7 +39,6 @@ class _LoginComponentState extends State<LoginComponent> {
 
   _LoginComponentState(selectHandlerTemp) {
     this.authService = AuthService();
-    this.googleSignService = GoogleSignService();
     this._loginForm = LoginForm();
     this.userDto = AuthService.currentUser;
     this.userDto.language = dropdownValue;
@@ -54,19 +49,6 @@ class _LoginComponentState extends State<LoginComponent> {
   void initState() {
     super.initState();
     this.tryPreviousLogin();
-  }
-
-  Future<void> _loginWithGoogle() async {
-    setState(() {
-      this.loading = true;
-    });
-    var user = await googleSignService.googleSignIn();
-
-    this.userDto = AuthService.currentUser;
-    setState(() {
-      this.loading = false;
-    });
-    this.selectHandler();
   }
 
   Future<void> _login() async {
@@ -144,7 +126,7 @@ class _LoginComponentState extends State<LoginComponent> {
     String uidStored;
     final prefs = await SharedPreferences.getInstance();
     uidStored = prefs.getString('uid');
-    print(uidStored);
+
     return uidStored;
   }
 
@@ -324,30 +306,6 @@ class _LoginComponentState extends State<LoginComponent> {
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(
-                          bottom: defaultMargin, left: 20, right: 20),
-                      child: ButtonTheme(
-                        height: 40.0,
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: defaultBorderRadius,
-                          ),
-                          onPressed: () => _loginWithGoogle(),
-                          color: mainColor,
-                          child: Text(
-                            this.userDto.language == Constants.languages[0]
-                                ? 'Continuar com Google'
-                                : 'Login with Google',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
                       ),
                     ),
                   ],

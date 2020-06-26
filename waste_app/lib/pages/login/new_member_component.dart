@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/google_sign_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -13,7 +12,6 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
             UserDto userDto = AuthService.currentUser;
             final _formKey = GlobalKey<FormState>();
             AuthService authService = new AuthService();
-            GoogleSignService googleSignService = GoogleSignService();
             TextEditingController name = new TextEditingController();
             TextEditingController userMail = new TextEditingController();
             TextEditingController password = new TextEditingController();
@@ -41,15 +39,6 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
               } else {
                 await _openInfoDialog('Ops...', error);
               }
-            }
-
-            Future<void> _loginWithGoogle() async {
-              var user = await googleSignService.googleSignIn();
-
-              AuthService.currentUser.email = user.email;
-              AuthService.currentUser.name = user.displayName;
-
-              Navigator.pop(context, true);
             }
 
             return StatefulBuilder(
@@ -265,7 +254,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                     borderRadius:
                                         Styles.defaultTextFieldBorderRadius,
                                   ),
-                                  onPressed: () => _loginWithGoogle(),
+                                  onPressed: () => {},
                                   color: Styles.mainBackgroundColor,
                                   child: Text(
                                     userDto.language == Constants.languages[0]
