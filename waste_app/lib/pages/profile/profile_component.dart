@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:waste_app/models/user_dto.dart';
-import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:waste_app/pages/profile/drawer_menu_item.dart';
-import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
-import 'package:waste_app/pages/shared/loading_block.dart';
-import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/google_sign_service.dart';
+import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:waste_app/services/auth_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/material.dart';
 
 class ProfileComponent extends StatefulWidget {
   ProfileComponent({Key key}) : super(key: key);
@@ -31,11 +31,13 @@ class ProfileComponentState extends State<ProfileComponent> {
   SpendsService spendService;
   WalletService walletService;
   GoogleSignService googleSignService;
+  AuthService authService;
 
   ProfileComponentState() {
     this.spendService = SpendsService();
     this.walletService = WalletService();
     this.googleSignService = GoogleSignService();
+    this.authService = AuthService();
   }
 
   List<Wallet> wallets;
@@ -162,7 +164,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   }
 
   void _logout() {
-    this.googleSignService.signOut();
+    this.authService.signOut();
     Phoenix.rebirth(context);
   }
 

@@ -100,10 +100,20 @@ class AuthService {
     });
   }
 
+  void signOut() {
+    this._clearLocalStorage();
+    AuthService.currentUser = UserDto();
+  }
+
   Future<void> _setUserIdToLocalStorage(String uid) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await prefs.setString('uid', uid);
+  }
+
+  Future<void> _clearLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 
   Future<String> createNewUser(
