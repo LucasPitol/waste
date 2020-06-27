@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/material.dart';
 
 class NewMemberComponent extends MaterialPageRoute<bool> {
   NewMemberComponent()
@@ -71,6 +71,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         right: 20,
                                       ),
                                       child: TextFormField(
+                                        textCapitalization: TextCapitalization.sentences,
                                         controller: name,
                                         validator: (value) {
                                           if (value.isEmpty) {
@@ -244,39 +245,15 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                 ),
                               ),
                             ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  top: 20, bottom: 10, left: 20, right: 20),
-                              child: ButtonTheme(
-                                height: 40.0,
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        Styles.defaultTextFieldBorderRadius,
-                                  ),
-                                  onPressed: () => {},
-                                  color: Styles.mainBackgroundColor,
-                                  child: Text(
-                                    userDto.language == Constants.languages[0]
-                                        ? 'Continuar com Google'
-                                        : 'Login with Google',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 45, right: 10),
+                        margin: EdgeInsets.only(top: 50, right: 10),
                         alignment: Alignment.topRight,
                         child: GestureDetector(
                           child: Icon(
-                            Icons.cancel,
+                            Icons.close,
                             color: Colors.grey,
                           ),
                           onTap: () {

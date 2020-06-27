@@ -28,15 +28,21 @@ class AuthService {
         currentUser.name.isNotEmpty;
   }
 
+  Future<String> encryptString(String input) async {
+    // final cryptor = new PlatformStringCryptor();
+
+    // String salt = await cryptor.generateSalt();
+    // String key = await cryptor.generateKeyFromPassword(input, salt);
+
+    return input;
+  }
+
   Future<UserDto> login(LoginForm form) async {
     UserDto userDtoTemp;
 
-    final cryptor = new PlatformStringCryptor();
-
     String userMail = form.userMail.text;
     String password = form.password.text;
-    String salt = await cryptor.generateSalt();
-    String passwordEncrypt = await cryptor.generateKeyFromPassword(password, salt);
+    String passwordEncrypt = await this.encryptString(password);
 
     await dbReference
         .collection('user')
@@ -76,9 +82,8 @@ class AuthService {
   void updateUserData(String uid) {
     DocumentReference docRef = dbReference.collection('user').document(uid);
 
-    docRef.setData({
-      'lastAccess': Timestamp.fromDate(DateTime.now())
-    }, merge: true);
+    docRef.setData({'lastAccess': Timestamp.fromDate(DateTime.now())},
+        merge: true);
   }
 
   Future<bool> loginByUid(String uid) async {
@@ -124,6 +129,8 @@ class AuthService {
       String name, String userMail, String password) async {
     String errorMsg;
 
+    String passwordEncrypt = await this.encryptString(password);
+
     await dbReference
         .collection('user')
         .where('email', isEqualTo: userMail)
@@ -140,11 +147,21 @@ class AuthService {
       await dbReference.collection('user').add({
         'displayName': name,
         'email': userMail,
-        'password': password,
+        'password': passwordEncrypt,
         'creationDate': Timestamp.fromDate(DateTime.now())
-      }).then((onValue) {
-        currentUser.email = userMail;
-        currentUser.name = name;
+      }).then((onValue) async {
+        String uid = await onValue.documentID;
+
+        await this._setUserIdToLocalStorage(uid);
+
+        AuthService.currentUser.name = name;
+        AuthService.currentUser.email = userMail;
+        AuthService.currentUser.uid = uid;
+
+        List<Wallet> wallets = await this.walletService.getWalletsByUserId(uid);
+
+        AuthService.currentUser.walletList = wallets;
+        AuthService.currentUser.currentWalletId = wallets[0].id;
 
         return null;
       }).catchError((onError) {

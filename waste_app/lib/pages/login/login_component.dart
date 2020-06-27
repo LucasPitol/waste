@@ -165,6 +165,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 right: 20,
                               ),
                               child: TextFormField(
+                                keyboardType: TextInputType.emailAddress,
                                 controller: _loginForm.userMail,
                                 validator: (value) {
                                   if (value.isEmpty) {
