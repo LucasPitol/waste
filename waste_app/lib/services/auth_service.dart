@@ -29,12 +29,26 @@ class AuthService {
   }
 
   Future<String> encryptString(String input) async {
-    // final cryptor = new PlatformStringCryptor();
+    final cryptor = new PlatformStringCryptor();
 
-    // String salt = await cryptor.generateSalt();
-    // String key = await cryptor.generateKeyFromPassword(input, salt);
+    String password = 'pass';
+    final salt = "Ee/aHwc6EfEactQ00sm/0A==";
+    final generatedKey = await cryptor.generateKeyFromPassword(password, salt);
 
-    return input;
+    final encrypted = await cryptor.encrypt(input, generatedKey);
+
+    return encrypted;
+  }
+
+  Future<String> dencryptString(String input) async {
+    final cryptor = new PlatformStringCryptor();
+    String password = 'pass';
+    final salt = "Ee/aHwc6EfEactQ00sm/0A==";
+    final generatedKey = await cryptor.generateKeyFromPassword(password, salt);
+
+    final decrypted = await cryptor.decrypt(input, generatedKey);
+
+    return decrypted;
   }
 
   Future<UserDto> login(LoginForm form) async {
@@ -42,17 +56,23 @@ class AuthService {
 
     String userMail = form.userMail.text;
     String password = form.password.text;
-    String passwordEncrypt = await this.encryptString(password);
 
     await dbReference
         .collection('user')
         .where('email', isEqualTo: userMail)
-        .where('password', isEqualTo: passwordEncrypt)
         .getDocuments()
         .then((QuerySnapshot snapShot) async {
       var userRef = snapShot.documents.first;
 
       var user = userRef.data;
+
+      String passwordEncrypt = user['password'];
+
+      String passwordDencrypt = await this.dencryptString(passwordEncrypt);
+
+      if (passwordDencrypt != password){
+        return userDtoTemp;
+      }
 
       var uid = userRef.documentID;
 
@@ -150,7 +170,7 @@ class AuthService {
         'password': passwordEncrypt,
         'creationDate': Timestamp.fromDate(DateTime.now())
       }).then((onValue) async {
-        String uid = await onValue.documentID;
+        String uid = onValue.documentID;
 
         await this._setUserIdToLocalStorage(uid);
 
