@@ -1,0 +1,12 @@
+.backg {
+    background-color: #FCFAFF;
+    height: 100%;
+}
+
+.dialog-box {
+    background-color: white;
+    border-radius: 20px;
+    width: 400px;
+    height: 250px;
+    margin: auto;
+}
