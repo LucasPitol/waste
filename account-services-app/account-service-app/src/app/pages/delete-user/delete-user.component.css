@@ -13,4 +13,17 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.box-title {
+    font-weight: bold;
+    font-size: 21px;
+    margin-top: 20px;
+}
+
+.box-subtitle {
+    font-size: 16px;
+    color: #9E9E9E;
+    margin-top: 15px;
 }
