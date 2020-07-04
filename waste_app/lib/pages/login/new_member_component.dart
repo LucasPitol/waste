@@ -19,7 +19,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
             bool loading = false;
 
             void _goBack() {
-              Navigator.pop(context);
+              Navigator.pop(context, false);
             }
 
             Future<void> _openInfoDialog(String title, String content) async {

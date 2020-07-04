@@ -1,3 +1,4 @@
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -183,6 +184,8 @@ class AuthService {
         AuthService.currentUser.walletList = wallets;
         AuthService.currentUser.currentWalletId = wallets[0].id;
 
+        this.sendNewUserEmail(uid, userMail, name);
+
         return null;
       }).catchError((onError) {
         print(onError);
@@ -196,5 +199,22 @@ class AuthService {
       return errorMsg;
     });
     return errorMsg;
+  }
+
+  void sendNewUserEmail(String uid, String userMail, String userName) {
+
+    String pathUrl = 'http://localhost:4200/verification/' + uid;
+
+    String body = 'Bem vindo, ' + userName + '\n' + 'Caso não tenha se cadastrado no app Waste, acesse ' + pathUrl + ' para excluir a conta vinculada a este email.';
+
+    Email email = Email(
+      body: body,
+      subject: 'Welcome to Waste',
+      recipients: [userMail],
+      cc: ['noreply@waste.com'],
+      isHTML: false,
+    );
+
+    FlutterEmailSender.send(email);
   }
 }
