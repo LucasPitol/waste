@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito Sans');
+@import url('https://fonts.googleapis.com/css?family=Quicksand');
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 html, body, div, span, applet, object, iframe,
@@ -45,4 +46,11 @@ span, p {
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* body { margin: 0; font-family: Nunito Sans, "Helvetica Neue", sans-serif; } */
+
+.waste-title {
+    font-size: 21px;
+    color: #673AB7;
+    font-weight: bold;
+    font-family: Quicksand;
+}
