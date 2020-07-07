@@ -1,5 +1,5 @@
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
+import 'package:mailer2/mailer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/login_form.dart';
@@ -203,18 +203,31 @@ class AuthService {
 
   void sendNewUserEmail(String uid, String userMail, String userName) {
 
+    var gmailOpts = new GmailSmtpOptions();
+    gmailOpts.username = 'waste.helpme@gmail.com';
+    gmailOpts.password = 'Perereca20';
+
+    var emailTransport = new SmtpTransport(gmailOpts);
+
+    var envelope = Envelope();
+
     String pathUrl = 'http://localhost:4200/verification/' + uid;
 
     String body = 'Bem vindo, ' + userName + '\n' + 'Caso não tenha se cadastrado no app Waste, acesse ' + pathUrl + ' para excluir a conta vinculada a este email.';
 
-    Email email = Email(
-      body: body,
-      subject: 'Welcome to Waste',
-      recipients: [userMail],
-      cc: ['noreply@waste.com'],
-      isHTML: false,
-    );
+    String subject = 'Welcome to Waste';
 
-    FlutterEmailSender.send(email);
+    envelope.from = gmailOpts.username;
+    envelope.recipients.add(userMail);
+    envelope.subject = subject;
+    envelope.text = body;
+
+    emailTransport.send(envelope);
+    // .then((onValue) {
+    //   print('enviou');
+    // }).catchError((onError) {
+    //   print(onError);
+    // });
+
   }
 }
