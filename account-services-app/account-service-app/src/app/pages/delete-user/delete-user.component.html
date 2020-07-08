@@ -4,7 +4,11 @@
         <span class="waste-title">Waste</span>
     </div>
 
-    <div class="dialog-box">
+    <div *ngIf="loading" class="loader">
+		<mat-spinner class="loader-spiner"></mat-spinner>
+	</div>
+
+    <div *ngIf="!loading" class="dialog-box">
 
         <div class="box-title">
             <span>Essa conta não é sua?</span>

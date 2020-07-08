@@ -11,37 +11,41 @@ import { UserService } from 'src/app/services/user-service';
 
 export class DeleteUserComponent implements OnInit {
 
+    loading = true
     uid: string
 
     constructor(
-        private activatedRoute: ActivatedRoute, 
+        private activatedRoute: ActivatedRoute,
         private router: Router,
         private userService: UserService,
-        ) 
-    {
+    ) {
         this.uid = this.activatedRoute.snapshot.paramMap.get("uid")
     }
 
-    ngOnInit() 
-    {
+    ngOnInit() {
         this.getUserData()
     }
 
-    getUserData()
-    {
+    getUserData() {
+        this.toggleLoading(true)
         this.userService.getUserData(this.uid)
             .subscribe(
                 res => {
                     console.log(res)
+                    this.toggleLoading(false)
                 }
             ),
             erro => {
                 console.error(erro)
+                this.toggleLoading(false)
             }
     }
 
-    goHome() 
-    {
+    toggleLoading(flag: boolean) {
+        this.loading = flag
+    }
+
+    goHome() {
         Utils.goHome(this.router)
     }
 }
