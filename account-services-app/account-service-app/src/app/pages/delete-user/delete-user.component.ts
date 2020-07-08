@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Utils } from 'src/app/utils/utils';
 import { UserService } from 'src/app/services/user-service';
+import { UserVerificationDto } from 'src/models/user-verification';
 
 @Component({
     selector: 'delete-user-component',
@@ -13,6 +14,7 @@ export class DeleteUserComponent implements OnInit {
 
     loading = true
     uid: string
+    user: UserVerificationDto
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -31,7 +33,7 @@ export class DeleteUserComponent implements OnInit {
         this.userService.getUserData(this.uid)
             .subscribe(
                 res => {
-                    console.log(res)
+                    this.user = res
                     this.toggleLoading(false)
                 }
             ),
