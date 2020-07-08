@@ -8,6 +8,7 @@ import { DeleteUserComponent } from './pages/delete-user/delete-user.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule, MatButtonModule } from '@angular/material';
 import { HomeComponent } from './pages/home/home.component';
+import { UserService } from './services/user-service';
 
 
 @NgModule({
@@ -24,7 +25,9 @@ import { HomeComponent } from './pages/home/home.component';
     MatButtonModule,
     MatIconModule,
   ],
-  providers: [],
+  providers: [
+    UserService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
