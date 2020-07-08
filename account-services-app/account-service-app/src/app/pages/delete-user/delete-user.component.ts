@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Utils } from 'src/app/utils/utils';
+import { UserService } from 'src/app/services/user-service';
 
 @Component({
     selector: 'delete-user-component',
@@ -14,13 +15,29 @@ export class DeleteUserComponent implements OnInit {
 
     constructor(
         private activatedRoute: ActivatedRoute, 
-        private router: Router,) 
+        private router: Router,
+        private userService: UserService,
+        ) 
     {
         this.uid = this.activatedRoute.snapshot.paramMap.get("uid")
     }
 
-    ngOnInit() {
-        console.log(this.uid)
+    ngOnInit() 
+    {
+        this.getUserData()
+    }
+
+    getUserData()
+    {
+        this.userService.getUserData(this.uid)
+            .subscribe(
+                res => {
+                    console.log(res)
+                }
+            ),
+            erro => {
+                console.error(erro)
+            }
     }
 
     goHome() 
