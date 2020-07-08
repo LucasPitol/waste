@@ -6,9 +6,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DeleteUserComponent } from './pages/delete-user/delete-user.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatIconModule, MatButtonModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatIconModule, MatButtonModule, MatProgressSpinnerModule, MatDialogModule } from '@angular/material';
 import { HomeComponent } from './pages/home/home.component';
 import { UserService } from './services/user-service';
+import { ConfirmDialogComponent } from './pages/subpages/confirm-dialog/confirm-dialog.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { UserService } from './services/user-service';
     AppComponent,
     DeleteUserComponent,
     HomeComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     routing,
@@ -25,10 +27,14 @@ import { UserService } from './services/user-service';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   providers: [
     UserService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    ConfirmDialogComponent,
+  ]
 })
 export class AppModule { }
