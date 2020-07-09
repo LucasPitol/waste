@@ -7,26 +7,61 @@ import { UserVerificationDto } from 'src/models/user-verification';
 export class UserService {
 
     private db = firebase.firestore()
-    
-    getUserData(uid): Observable<any>
-    {
+
+    async deleteUser(uid: string) {
+        //get wallets
+        var walletsRef = await this.db
+        .collection('wallets')
+        .where('ownerId', '==', uid)
+        .onSnapshot(querySnapshot => {
+            var walletsDocs = querySnapshot.docs
+
+            walletsDocs.forEach(async wallet => {
+                var walletId = wallet.id
+
+                // get spends
+                this.db
+                .collection('spends')
+                .where('walletId', '==', walletId)
+                .onSnapshot(spendsSnapshot => {
+                    var spendsDocs = spendsSnapshot.docs
+
+                    // delete spends
+                    spendsDocs.forEach(async spend => {
+                        var spendId = spend.id
+                        await this.db.collection('spends').doc(spendId).delete()
+                    })
+                })
+                //delete wallets
+                await this.db.collection('wallets').doc(walletId).delete()
+            })
+        })
+        //delet user
+        await this.db.collection('user').doc(uid).delete()
+    }
+
+    getUserData(uid): Observable<any> {
         var user = new UserVerificationDto()
 
         var userCollectionRef = this.db.collection('user').doc(uid)
 
         return new Observable(observer => {
             userCollectionRef.get()
-            .then(doc => {
-                
-                var userData = doc.data()
-                user.creationDate = userData.creationDate
-                user.displayName = userData.displayName
-                user.email = userData.email
+                .then(doc => {
 
-                observer.next(user)
-            }).catch(err => {
-                console.error(err)
-            })
+                    var userData = doc.data()
+
+                    if (userData != undefined)
+                    {
+                        user.creationDate = userData.creationDate
+                        user.displayName = userData.displayName
+                        user.email = userData.email
+                    }
+
+                    observer.next(user)
+                }).catch(err => {
+                    console.error(err)
+                })
         })
     }
 

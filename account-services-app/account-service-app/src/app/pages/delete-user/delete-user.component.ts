@@ -46,17 +46,16 @@ export class DeleteUserComponent implements OnInit {
 
         confirmDialog.afterClosed().subscribe(result => {
 
-            if (result != null && result != undefined && result != false)
-            {
+            if (result != null && result != undefined && result != false) {
                 this.deleteAccount()
             }
 
         })
     }
 
-    deleteAccount()
-    {
-        console.log('ledeto')
+    deleteAccount() {
+        this.userService.deleteUser(this.uid)
+        this.goHome()
     }
 
     getUserData() {
@@ -64,14 +63,18 @@ export class DeleteUserComponent implements OnInit {
         this.userService.getUserData(this.uid)
             .subscribe(
                 res => {
+                    if (res.creationDate == undefined)
+                    {
+                        this.goHome()
+                    }
                     this.user = res
                     this.toggleLoading(false)
-                }
-            ),
-            erro => {
-                console.error(erro)
-                this.toggleLoading(false)
-            }
+                },
+                erro => {
+                    console.error(erro)
+                    this.toggleLoading(false)
+                    this.goHome()
+                })
     }
 
     toggleLoading(flag: boolean) {
