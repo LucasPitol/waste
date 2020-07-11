@@ -10,6 +10,7 @@ import { MatIconModule, MatButtonModule, MatProgressSpinnerModule, MatDialogModu
 import { HomeComponent } from './pages/home/home.component';
 import { UserService } from './services/user-service';
 import { ConfirmDialogComponent } from './pages/subpages/confirm-dialog/confirm-dialog.component';
+import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { ConfirmDialogComponent } from './pages/subpages/confirm-dialog/confirm-
     DeleteUserComponent,
     HomeComponent,
     ConfirmDialogComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     routing,
