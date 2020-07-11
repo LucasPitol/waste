@@ -211,7 +211,7 @@ class AuthService {
 
     var envelope = Envelope();
 
-    String pathUrl = 'http://localhost:4200/verification/' + uid;
+    String pathUrl = 'https://waste-dev.web.app/verification/' + uid;
 
     String body = 'Bem vindo, ' + userName + '\n' + 'Caso não tenha se cadastrado no app Waste, acesse ' + pathUrl + ' para excluir a conta vinculada a este email.';
 
