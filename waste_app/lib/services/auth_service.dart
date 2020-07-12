@@ -71,7 +71,7 @@ class AuthService {
 
       String passwordDencrypt = await this.dencryptString(passwordEncrypt);
 
-      if (passwordDencrypt != password){
+      if (passwordDencrypt != password) {
         return userDtoTemp;
       }
 
@@ -110,23 +110,31 @@ class AuthService {
   Future<bool> loginByUid(String uid) async {
     DocumentReference docRef = dbReference.collection('user').document(uid);
 
-    await docRef.setData({
-      'uid': uid,
-      'lastAccess': Timestamp.fromDate(DateTime.now()),
-    }, merge: true);
+    await docRef.get().then((onValue) async {
+      print(onValue.exists);
+      if (onValue.exists) {
+        await docRef.setData({
+          'uid': uid,
+          'lastAccess': Timestamp.fromDate(DateTime.now()),
+        }, merge: true);
 
-    await this._setUserIdToLocalStorage(uid);
+        await this._setUserIdToLocalStorage(uid);
 
-    List<Wallet> wallets = await this.walletService.getWalletsByUserId(uid);
+        List<Wallet> wallets = await this.walletService.getWalletsByUserId(uid);
 
-    await docRef.get().then((onValue) {
-      var user = onValue.data;
+        var user = onValue.data;
 
-      AuthService.currentUser.email = user['email'];
-      AuthService.currentUser.name = user['displayName'];
-      AuthService.currentUser.uid = uid;
-      AuthService.currentUser.walletList = wallets;
-      AuthService.currentUser.currentWalletId = wallets[0].id;
+        AuthService.currentUser.email = user['email'];
+        AuthService.currentUser.name = user['displayName'];
+        AuthService.currentUser.uid = uid;
+        AuthService.currentUser.walletList = wallets;
+        AuthService.currentUser.currentWalletId = wallets[0].id;
+      } else {
+        this._clearLocalStorage();
+      }
+    }).catchError((onError) {
+      print(onError);
+      this._clearLocalStorage();
     });
   }
 
@@ -202,7 +210,6 @@ class AuthService {
   }
 
   void sendNewUserEmail(String uid, String userMail, String userName) {
-
     var gmailOpts = new GmailSmtpOptions();
     gmailOpts.username = 'waste.helpme@gmail.com';
     gmailOpts.password = 'Perereca20';
@@ -213,7 +220,12 @@ class AuthService {
 
     String pathUrl = 'https://waste-dev.web.app/verification/' + uid;
 
-    String body = 'Bem vindo, ' + userName + '\n' + 'Caso não tenha se cadastrado no app Waste, acesse ' + pathUrl + ' para excluir a conta vinculada a este email.';
+    String body = 'Bem vindo, ' +
+        userName +
+        '\n' +
+        'Caso não tenha se cadastrado no app Waste, acesse ' +
+        pathUrl +
+        ' para excluir a conta vinculada a este email.';
 
     String subject = 'Welcome to Waste';
 
@@ -228,6 +240,5 @@ class AuthService {
     // }).catchError((onError) {
     //   print(onError);
     // });
-
   }
 }
