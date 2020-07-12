@@ -13,6 +13,12 @@ export class ChangePasswordComponent implements OnInit {
     loading = true
     uid: string
 
+    changePaswordForm = {
+		email: '',
+		password: '',
+		rePassword: '',
+	}
+
     constructor(
         private activatedRoute: ActivatedRoute,
         private router: Router,
