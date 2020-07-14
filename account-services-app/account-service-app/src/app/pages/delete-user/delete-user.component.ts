@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Utils } from 'src/app/utils/utils';
 import { UserService } from 'src/app/services/user-service';
-import { UserVerificationDto } from 'src/models/user-verification';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent } from '../subpages/confirm-dialog/confirm-dialog.component';
+import { UserVerificationDto } from 'src/app/models/user-verification';
 
 @Component({
     selector: 'delete-user-component',

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Utils } from 'src/app/utils/utils';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user-service';
-import { UserVerificationDto } from 'src/models/user-verification';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { UserVerificationDto } from 'src/app/models/user-verification';
 
 @Component({
     selector: 'change-password-component',
