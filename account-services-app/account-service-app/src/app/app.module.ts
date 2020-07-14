@@ -11,7 +11,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { UserService } from './services/user-service';
 import { ConfirmDialogComponent } from './pages/subpages/confirm-dialog/confirm-dialog.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -34,6 +34,7 @@ import { FormsModule } from '@angular/forms';
     MatFormFieldModule,
     FormsModule,
     MatInputModule,
+    ReactiveFormsModule,
   ],
   providers: [
     UserService,
