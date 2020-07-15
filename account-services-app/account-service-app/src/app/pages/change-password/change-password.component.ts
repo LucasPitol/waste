@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Utils } from 'src/app/utils/utils';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user-service';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { UserVerificationDto } from 'src/app/models/user-verification';
+import { matches } from 'src/app/utils/custom-validators';
 
 @Component({
     selector: 'change-password-component',
@@ -14,26 +15,11 @@ import { UserVerificationDto } from 'src/app/models/user-verification';
 export class ChangePasswordComponent implements OnInit {
 
     loading = true
+    userMail = ''
     uid: string
     user: UserVerificationDto
 
-    changePaswordForm = {
-		email: '',
-		password: '',
-		rePassword: '',
-    }
-
-    emailFormControl = new FormControl('', [
-        Validators.required,
-        Validators.email,
-    ]);
-    
-    profileForm = new FormGroup({
-        email: this.emailFormControl,
-        lastName: new FormControl(''),
-    });
-
-    
+    emailFormControl: FormControl
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -41,11 +27,19 @@ export class ChangePasswordComponent implements OnInit {
         private userService: UserService,
     ) {
         this.uid = this.activatedRoute.snapshot.paramMap.get("uid")
-     }
+    }
 
     ngOnInit() {
-        // this.getUserData()
-        this.toggleLoading(false)
+        this.getUserData()
+    }
+
+    buildFormValidators()
+    {
+        this.emailFormControl = new FormControl('', [
+            Validators.required,
+            Validators.email,
+            matches(this.user.email),
+        ]);
     }
 
     getUserData()
@@ -59,6 +53,7 @@ export class ChangePasswordComponent implements OnInit {
                         this.goHome()
                     }
                     this.user = res
+                    this.buildFormValidators()
                     this.toggleLoading(false)
                 },
                 erro => {
@@ -78,8 +73,6 @@ export class ChangePasswordComponent implements OnInit {
     changePassword()
     {
         var valid = this.validateForm()
-
-        console.log(this.emailFormControl.value)
     }
 
     toggleLoading(value: boolean) {
