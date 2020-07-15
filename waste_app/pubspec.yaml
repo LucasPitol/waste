@@ -31,7 +31,6 @@ dependencies:
   shared_preferences: ^0.5.7+3
   flutter_phoenix: ^0.1.0
   flutter_masked_text: ^0.8.0
-  flutter_string_encryption: ^0.3.1
   mailer2: ^1.2.5
 
   # The following adds the Cupertino Icons font to your application.

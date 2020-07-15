@@ -1,12 +1,12 @@
-import 'package:flutter_string_encryption/flutter_string_encryption.dart';
-import 'package:mailer2/mailer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:mailer2/mailer.dart';
 import 'wallet_service.dart';
+import 'dart:convert';
 
 class AuthService {
   final dbReference = Firestore.instance;
@@ -30,24 +30,17 @@ class AuthService {
   }
 
   Future<String> encryptString(String input) async {
-    final cryptor = new PlatformStringCryptor();
 
-    String password = 'pass';
-    final salt = "Ee/aHwc6EfEactQ00sm/0A==";
-    final generatedKey = await cryptor.generateKeyFromPassword(password, salt);
-
-    final encrypted = await cryptor.encrypt(input, generatedKey);
+    final encrypted = base64Encode(utf8.encode(input));
 
     return encrypted;
   }
 
   Future<String> dencryptString(String input) async {
-    final cryptor = new PlatformStringCryptor();
-    String password = 'pass';
-    final salt = "Ee/aHwc6EfEactQ00sm/0A==";
-    final generatedKey = await cryptor.generateKeyFromPassword(password, salt);
 
-    final decrypted = await cryptor.decrypt(input, generatedKey);
+    final decryptedByte = base64Decode(input);
+
+    final decrypted = utf8.decode(decryptedByte);
 
     return decrypted;
   }
