@@ -90,6 +90,17 @@ export class ChangePasswordComponent implements OnInit {
             }
 
             this.userService.changeUserPassword(userAndPasswordDto)
+            .subscribe( res => {
+                    if (res)
+                    {
+                        // modal de sucesso
+                    } else {
+                        // modal de erro
+                    }
+                },
+                error => {
+                    console.error(error)
+                })
         }
     }
 
