@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user-service';
 import { FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { UserVerificationDto } from 'src/app/models/user-verification';
-import { matches } from 'src/app/utils/custom-validators';
+import { emailMatchValidation } from 'src/app/utils/custom-validators';
 
 @Component({
     selector: 'change-password-component',
@@ -38,7 +38,7 @@ export class ChangePasswordComponent implements OnInit {
         this.emailFormControl = new FormControl('', [
             Validators.required,
             Validators.email,
-            matches(this.user.email),
+            emailMatchValidation(this.user.email),
         ]);
     }
 
