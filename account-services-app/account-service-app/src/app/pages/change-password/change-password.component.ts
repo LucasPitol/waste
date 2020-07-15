@@ -20,6 +20,7 @@ export class ChangePasswordComponent implements OnInit {
     user: UserVerificationDto
 
     emailFormControl: FormControl
+    passwordFormControl: FormControl
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -38,7 +39,14 @@ export class ChangePasswordComponent implements OnInit {
         this.emailFormControl = new FormControl('', [
             Validators.required,
             Validators.email,
+            Validators.maxLength(200),
             emailMatchValidation(this.user.email),
+        ]);
+
+        this.passwordFormControl = new FormControl('', [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(100),
         ]);
     }
 
