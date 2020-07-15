@@ -35,8 +35,7 @@ export class ChangePasswordComponent implements OnInit {
         this.getUserData()
     }
 
-    buildFormValidators()
-    {
+    buildFormValidators() {
         this.emailFormControl = new FormControl('', [
             Validators.required,
             Validators.email,
@@ -51,18 +50,17 @@ export class ChangePasswordComponent implements OnInit {
         ]);
 
         this.rePasswordFormControl = new FormControl('', [
+            Validators.required,
             passwordMatchValidation(this.passwordFormControl),
         ]);
     }
 
-    getUserData()
-    {
+    getUserData() {
         this.toggleLoading(true)
         this.userService.getUserData(this.uid)
             .subscribe(
                 res => {
-                    if (res.creationDate == undefined)
-                    {
+                    if (res.creationDate == undefined) {
                         this.goHome()
                     }
                     this.user = res
@@ -76,16 +74,23 @@ export class ChangePasswordComponent implements OnInit {
                 })
     }
 
-    validateForm()
-    {
-        var valid = true;
-
-        return valid
+    validateForm() {
+        return (this.emailFormControl.valid && this.passwordFormControl.valid && this.rePasswordFormControl.valid)
     }
 
-    changePassword()
-    {
+    changePassword() {
         var valid = this.validateForm()
+
+        if (valid) {
+            var password = this.passwordFormControl.value
+
+            var userAndPasswordDto = {
+                uid: this.uid,
+                password: password
+            }
+
+            this.userService.changeUserPassword(userAndPasswordDto)
+        }
     }
 
     toggleLoading(value: boolean) {

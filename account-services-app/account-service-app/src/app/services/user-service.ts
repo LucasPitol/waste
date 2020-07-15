@@ -8,6 +8,22 @@ export class UserService {
 
     private db = firebase.firestore()
 
+    changeUserPassword(userAndPasswordDto: any)//: Observable<any>
+    {
+        var uid = userAndPasswordDto.uid
+        var password = userAndPasswordDto.password
+
+        var passwordEncrypt = btoa(password)
+
+        var userCollectionRef = this.db.collection('user').doc(uid)
+
+        // return new Observable(observer => {
+        //     userCollectionRef.set(
+
+        //     )
+        // })
+    }
+
     async deleteUser(uid: string) {
         //get wallets
         var walletsRef = await this.db
