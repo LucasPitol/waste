@@ -11,3 +11,14 @@ export function emailMatchValidation(strToCompare: string): ValidatorFn {
         return null;
     }
 }
+
+export function passwordMatchValidation(controlToCompare: AbstractControl): ValidatorFn {
+
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+
+        if (control.value !== controlToCompare.value) {
+            return { 'passwordMatchValidation': true };
+        }
+        return null;
+    }
+}

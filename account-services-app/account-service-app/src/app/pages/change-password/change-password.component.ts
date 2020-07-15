@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from 'src/app/services/user-service';
 import { FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
 import { UserVerificationDto } from 'src/app/models/user-verification';
-import { emailMatchValidation } from 'src/app/utils/custom-validators';
+import { emailMatchValidation, passwordMatchValidation } from 'src/app/utils/custom-validators';
 
 @Component({
     selector: 'change-password-component',
@@ -21,6 +21,7 @@ export class ChangePasswordComponent implements OnInit {
 
     emailFormControl: FormControl
     passwordFormControl: FormControl
+    rePasswordFormControl: FormControl
 
     constructor(
         private activatedRoute: ActivatedRoute,
@@ -47,6 +48,10 @@ export class ChangePasswordComponent implements OnInit {
             Validators.required,
             Validators.minLength(6),
             Validators.maxLength(100),
+        ]);
+
+        this.rePasswordFormControl = new FormControl('', [
+            passwordMatchValidation(this.passwordFormControl),
         ]);
     }
 
