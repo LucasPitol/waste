@@ -12,15 +12,17 @@ import { UserService } from './services/user-service';
 import { ConfirmDialogComponent } from './pages/subpages/confirm-dialog/confirm-dialog.component';
 import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AlertDialogComponent } from './pages/subpages/alert-dialog/alert-dialog.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    AlertDialogComponent,
+    ChangePasswordComponent,
+    ConfirmDialogComponent,
     DeleteUserComponent,
     HomeComponent,
-    ConfirmDialogComponent,
-    ChangePasswordComponent,
   ],
   imports: [
     routing,
@@ -41,6 +43,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   ],
   bootstrap: [AppComponent],
   entryComponents: [
+    AlertDialogComponent,
     ConfirmDialogComponent,
   ]
 })
