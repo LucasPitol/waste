@@ -100,6 +100,21 @@ export class ChangePasswordComponent implements OnInit {
         })
     }
 
+    openErrorDialog()
+    {
+        var title = 'Ops...'
+        var text = 'Não foi possível alterar sua senha'
+        var subText = 'Tente novamente mais tarde'
+
+        const alertDialog = this.alertDialog.open(AlertDialogComponent, {
+            data: {
+                title: title,
+                text: text,
+                subText: subText
+            }
+        })
+    }
+
     changePassword() {
         this.toggleLoading(true)
 
@@ -117,19 +132,20 @@ export class ChangePasswordComponent implements OnInit {
             .subscribe( res => {
                     if (res)
                     {
-                        // modal de sucesso
                         this.openSuccessDialog()
                     } else {
-                        // modal de erro
+                        this.openErrorDialog()
                     }
                 },
                 error => {
                     console.error(error)
+                    this.openErrorDialog()
                 })
         }
         else
         {
             this.toggleLoading(false);
+            this.openErrorDialog()
         }
     }
 

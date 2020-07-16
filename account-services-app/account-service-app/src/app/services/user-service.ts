@@ -25,6 +25,7 @@ export class UserService {
                 merge: true
             }).then(onValue => {
                 observer.next(true)
+                //enviar email
             }).catch(onError => {
                 console.error(onError)
                 observer.next(false)
