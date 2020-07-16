@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';
-import { Observable, merge } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserVerificationDto } from '../models/user-verification';
 
 @Injectable()
