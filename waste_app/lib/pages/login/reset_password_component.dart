@@ -17,19 +17,34 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
   UserDto userDto = AuthService.currentUser;
   final _formKey = GlobalKey<FormState>();
   TextEditingController userMailController;
+  AuthService authService;
 
   _ResetPasswordComponentState(String userMail) {
+    this.authService = AuthService();
     this.userMailController = TextEditingController();
     this.userMailController.text = userMail.trim();
   }
 
-  _goBack()
-  {
+  _goBack() {
     Navigator.pop(context, false);
   }
 
-  _register() {
-    print('reset');
+  _resetPassword() async {
+    setState(() {
+      this.loading = true;
+    });
+
+    String mail = this.userMailController.text;
+
+    // String error = await authService.sendResetPasswordEmail(mail);
+
+    // if (error == null || error.isEmpty) {
+    //   String text = 'Enviamos um link para escolher uma nova senha';
+    //   await _openInfoDialog('Verifique seu email', text);
+    //   Navigator.pop(context, true);
+    // } else {
+    //   await _openInfoDialog('Ops...', error);
+    // }
   }
 
   @override
@@ -70,7 +85,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                     ),
                     Container(
                       margin: EdgeInsets.only(
-                          top: 10, bottom: 20, left: 20, right: 20),
+                          top: 15, bottom: 20, left: 20, right: 20),
                       child: ButtonTheme(
                         minWidth: double.infinity,
                         height: 60.0,
@@ -83,7 +98,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                               setState(() {
                                 loading = true;
                               });
-                              await _register();
+                              await _resetPassword();
                             }
                             setState(() {
                               loading = false;
@@ -116,6 +131,18 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                   onTap: () {
                     _goBack();
                   },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 15),
+                alignment: Alignment.topCenter,
+                child: Text(
+                  'Redefinir senha',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
               ),
             ],
