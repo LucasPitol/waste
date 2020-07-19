@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -29,6 +30,14 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
     Navigator.pop(context, false);
   }
 
+  Future<void> _openInfoDialog(String title, String content) async {
+    await showDialog<String>(
+        context: context,
+        builder: (builder) {
+          return AlertDialogComponent(title, content);
+        });
+  }
+
   _resetPassword() async {
     setState(() {
       this.loading = true;
@@ -36,15 +45,13 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
 
     String mail = this.userMailController.text;
 
-    // String error = await authService.sendResetPasswordEmail(mail);
+    authService.sendResetPasswordEmail(mail);
 
-    // if (error == null || error.isEmpty) {
-    //   String text = 'Enviamos um link para escolher uma nova senha';
-    //   await _openInfoDialog('Verifique seu email', text);
-    //   Navigator.pop(context, true);
-    // } else {
-    //   await _openInfoDialog('Ops...', error);
-    // }
+    String text = 'Enviamos um link para escolher uma nova senha';
+
+    await _openInfoDialog('Verifique seu email', text);
+
+    Navigator.pop(context, true);
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:mailer2/mailer.dart';
+import 'package:waste_app/utils/infos.dart';
 import 'wallet_service.dart';
 import 'dart:convert';
 
@@ -30,14 +31,12 @@ class AuthService {
   }
 
   Future<String> encryptString(String input) async {
-
     final encrypted = base64Encode(utf8.encode(input));
 
     return encrypted;
   }
 
   Future<String> dencryptString(String input) async {
-
     final decryptedByte = base64Decode(input);
 
     final decrypted = utf8.decode(decryptedByte);
@@ -200,6 +199,48 @@ class AuthService {
       return errorMsg;
     });
     return errorMsg;
+  }
+
+  Future<void> sendResetPasswordEmail(String userMail) async {
+    await this
+        .dbReference
+        .collection('user')
+        .where('email', isEqualTo: userMail)
+        .getDocuments()
+        .then((onValue) {
+      var userSS = onValue.documents.first;
+
+      if (userSS != null) {
+        var gmailOpts = new GmailSmtpOptions();
+        gmailOpts.username = Infos.accountServiceMail;
+        gmailOpts.password = Infos.accountServiceMailPass;
+
+        var emailTransport = new SmtpTransport(gmailOpts);
+
+        var envelope = Envelope();
+        String uid = userSS.documentID;
+        String pathUrl = Infos.accountServiceUrl + '/change-password/' + uid;
+
+        String body = 'Ola ' +
+            '\n' +
+            'Acesse ' +
+            pathUrl +
+            ' para mudar sua senha.' +
+            '\n' +
+            'Caso não tenha solicitado a redefinição de seha ignore este email.';
+
+        String subject = 'Redefinição de senha';
+
+        envelope.from = gmailOpts.username;
+        envelope.recipients.add(userMail);
+        envelope.subject = subject;
+        envelope.text = body;
+
+        emailTransport.send(envelope);
+      }
+    }).catchError((onError) {
+      print(onError);
+    });
   }
 
   void sendNewUserEmail(String uid, String userMail, String userName) {
