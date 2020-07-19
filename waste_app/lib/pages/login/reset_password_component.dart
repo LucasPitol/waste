@@ -20,7 +20,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
 
   _ResetPasswordComponentState(String userMail) {
     this.userMailController = TextEditingController();
-    this.userMailController.text = userMail;
+    this.userMailController.text = userMail.trim();
   }
 
   _goBack()
