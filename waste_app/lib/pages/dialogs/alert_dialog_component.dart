@@ -37,7 +37,10 @@ class _AlertDialogComponentState extends State<AlertDialogComponent> {
                 shape: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0)),
                 title: Text(this.title),
-                content: Text(this.content),
+                content: Text(
+                  this.content,
+                  style: TextStyle(color: Colors.grey.shade700),
+                ),
                 actions: <Widget>[
                   FlatButton(
                     textColor: Colors.deepPurple,

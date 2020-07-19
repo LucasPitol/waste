@@ -1,3 +1,4 @@
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:waste_app/pages/profile/drawer_menu_item.dart';
@@ -165,6 +166,27 @@ class ProfileComponentState extends State<ProfileComponent> {
     Phoenix.rebirth(context);
   }
 
+  Future<void> _openInfoDialog(String title, String content) async {
+    await showDialog<String>(
+        context: context,
+        builder: (builder) {
+          return AlertDialogComponent(title, content);
+        });
+  }
+
+  _sendChangePasswordEmail()
+  async {
+    String userMail = AuthService.currentUser.email;
+
+    this.authService.sendResetPasswordEmail(userMail);
+
+    String text = 'Enviamos um link para escolher uma nova senha';
+
+    await _openInfoDialog('Verifique seu email', text);
+
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,6 +228,10 @@ class ProfileComponentState extends State<ProfileComponent> {
                 onTap: _createNewWallet,
                 child: DrawerMenuItem(
                     'Nova carteira', Icons.account_balance_wallet),
+              ),
+              GestureDetector(
+                onTap: _sendChangePasswordEmail,
+                child: DrawerMenuItem('Alterar senha', Icons.lock_outline),
               ),
               GestureDetector(
                 onTap: _openAboutDialog,
