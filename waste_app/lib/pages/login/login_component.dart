@@ -7,6 +7,7 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'new_member_component.dart';
+import 'reset_password_component.dart';
 
 class LoginComponent extends StatefulWidget {
   Function selectHandler;
@@ -101,6 +102,17 @@ class _LoginComponentState extends State<LoginComponent> {
 
     if (refresh) {
       this.selectHandler();
+    }
+  }
+
+  goToResetPasswordPage() async {
+    String email = this._loginForm.userMail.text;
+
+    var reset = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ResetPasswordComponent(email)));
+
+    if (reset != null && reset) {
+      //abrir modal de sucesso?
     }
   }
 
@@ -261,7 +273,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                   ),
                                   Container(
                                     child: FlatButton(
-                                      onPressed: () {},
+                                      onPressed: this.goToResetPasswordPage,
                                       child: Text(
                                         this.userDto.language ==
                                                 Constants.languages[0]
