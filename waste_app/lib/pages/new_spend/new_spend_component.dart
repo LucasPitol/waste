@@ -52,20 +52,32 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   }
 
   void _selectDate() {
-    DatePicker.showDateTimePicker(context,
-        theme: DatePickerTheme(
-          doneStyle: TextStyle(color: Colors.deepPurple),
-        ),
-        showTitleActions: true,
-        minTime: DateTime(1810, 1, 1),
-        maxTime: DateTime.now().add(
-          Duration(days: 35),
-        ),
-        locale: LocaleType.pt, onConfirm: (newDate) {
-      setState(() {
-        this.newWasteForm.spendDate = newDate;
-      });
-    });
+    DatePicker.showDateTimePicker(
+      context,
+      theme: DatePickerTheme(
+        doneStyle: TextStyle(color: Colors.deepPurple),
+      ),
+      locale: LocaleType.pt,
+      showTitleActions: true,
+      minTime: DateTime(1810, 1, 1),
+      maxTime: DateTime.now().add(
+        Duration(days: 35),
+      ),
+      onChanged: (newDate) {
+        setState(
+          () {
+            this.newWasteForm.spendDate = newDate;
+          },
+        );
+      },
+      onConfirm: (newDate) {
+        setState(
+          () {
+            this.newWasteForm.spendDate = newDate;
+          },
+        );
+      },
+    );
   }
 
   Future<void> _saveNewWaste() async {
