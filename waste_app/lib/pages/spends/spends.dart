@@ -132,7 +132,6 @@ class SpendsComponentState extends State<SpendsComponent>
   void refreshData() {
     this.spendsByMonthDtoList = [];
     this._getSpends(dateSelected);
-
   }
 
   @override
@@ -143,6 +142,8 @@ class SpendsComponentState extends State<SpendsComponent>
   }
 
   Widget createTile(SpendByMonthDto item) {
+    bool monthSelected = item.date.month == this.dateSelected.month;
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -153,41 +154,42 @@ class SpendsComponentState extends State<SpendsComponent>
         _getSpends(item.date);
       },
       child: Container(
-        child: Column(
+        margin: EdgeInsets.only(top: 5, bottom: 5),
+        decoration: BoxDecoration(
+          borderRadius: Styles.defaultBorderRadius,
+          color: monthSelected ? Colors.deepPurple.shade700 : Colors.deepPurple,
+        ),
+        child: Stack(
           children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(left: 40, top: 10),
-                  child: Text(
-                    DateFormat("y").format(item.date),
-                    style: Styles.dateAndSpendStyle,
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(top: 10),
-                  child: Text(
-                    DateFormat.MMMM(Constants.ptLanguage).format(item.date),
-                    style: Styles.dateAndSpendStyle,
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  margin: EdgeInsets.only(right: 40, top: 10),
-                  child: Text(
-                    '-' + Constants.getAmountFormated(item.spent),
-                    style: Styles.dateAndSpendStyle,
-                  ),
-                ),
-              ],
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(left: 40, top: 10, bottom: 10),
+              child: Text(
+                DateFormat("y").format(item.date),
+                style: Styles.dateAndSpendStyle,
+              ),
             ),
-            Divider(
-              color: Colors.deepPurple.shade700,
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(top: 10),
+              child: Text(
+                DateFormat.MMMM(Constants.ptLanguage).format(item.date),
+                style: Styles.dateAndSpendStyle,
+              ),
+            ),
+            Container(
+              alignment: Alignment.centerRight,
+              margin: EdgeInsets.only(right: 40, top: 10),
+              child: Text(
+                '-' + Constants.getAmountFormated(item.spent),
+                style: Styles.dateAndSpendStyle,
+              ),
             ),
           ],
         ),
+        // Divider(
+        //   color: Colors.deepPurple.shade700,
+        // ),
       ),
     );
   }
