@@ -17,9 +17,11 @@ class Styles {
     fontSize: 18.0,
   );
 
+  static BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(20));
+
   static BoxDecoration loginBox = BoxDecoration(
     color: mainBackgroundColor,
-    borderRadius: BorderRadius.all(Radius.circular(20)),
+    borderRadius: defaultBorderRadius,
     boxShadow: [
       BoxShadow(
         color: Colors.grey.shade400,
@@ -34,7 +36,7 @@ class Styles {
 
   static BoxDecoration containerDecoration = BoxDecoration(
     color: Styles.mainBackgroundColor,
-    borderRadius: BorderRadius.all(Radius.circular(20)),
+    borderRadius: defaultBorderRadius,
   );
 
   static getTextFieldDecoration(String value) {

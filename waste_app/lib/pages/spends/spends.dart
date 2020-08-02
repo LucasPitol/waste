@@ -142,7 +142,7 @@ class SpendsComponentState extends State<SpendsComponent>
   }
 
   Widget createTile(SpendByMonthDto item) {
-    bool monthSelected = item.date.month == this.dateSelected.month;
+    bool monthSelected = (item.date.year == this.dateSelected.year) && (item.date.month == this.dateSelected.month);
 
     return GestureDetector(
       onTap: () {
