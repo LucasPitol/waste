@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/login_form.dart';
@@ -199,6 +201,28 @@ class AuthService {
       return errorMsg;
     });
     return errorMsg;
+  }
+
+  Future<void> userExists(BuildContext context) async {
+    String uid = currentUser.uid;
+
+    if (uid == null || uid.isEmpty) {
+      this.signOut();
+      Phoenix.rebirth(context);
+    }
+
+    DocumentReference docRef = dbReference.collection('user').document(uid);
+
+    await docRef.get().then((onValue) async {
+      if (!onValue.exists) {
+        this.signOut();
+        Phoenix.rebirth(context);
+      }
+    }).catchError((onError) {
+      print(onError);
+      this.signOut();
+      Phoenix.rebirth(context);
+    });
   }
 
   Future<void> sendResetPasswordEmail(String userMail) async {

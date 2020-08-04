@@ -27,11 +27,13 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   WalletService walletService;
   SpendsService spendsService;
+  AuthService authService;
 
   _NewSpendComponenState() {
     this.walletService = WalletService();
     this.newWasteForm = NewWasteForm();
     this.spendsService = SpendsService();
+    this.authService = AuthService();
   }
 
   void initState() {
@@ -86,6 +88,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     });
 
     FocusScope.of(context).unfocus();
+
+    this.authService.userExists(context);
 
     this.newWasteForm.walletId = dropdownWalletValue;
     var success = await this.spendsService.waste(newWasteForm);
