@@ -15,11 +15,13 @@ class NewWalletDialogComponent extends StatefulWidget {
 
 class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
   TextEditingController walletNameController = TextEditingController();
+  AuthService authService;
   UserDto userDto = AuthService.currentUser;
   List<Wallet> wallets;
   var _formKey;
 
   _NewWalletDialogComponentState() {
+    this.authService = AuthService();
     wallets = userDto.walletList;
     this._formKey = GlobalKey<FormState>();
   }
@@ -28,6 +30,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
   void initState() {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) => this._showDialog());
+    this.authService.userExists(context);
   }
 
   bool _isRepeated(String input) {
