@@ -17,6 +17,7 @@ class EditWallet extends StatefulWidget {
 }
 
 class _EditWalletState extends State<EditWallet> {
+  AuthService authService;
   var userDto = AuthService.currentUser;
   Wallet currentWallet;
   String walletIdToEdit;
@@ -28,11 +29,17 @@ class _EditWalletState extends State<EditWallet> {
 
   _EditWalletState(String walletId) {
     this.walletIdToEdit = walletId;
+    this.authService = AuthService();
     this.walletService = WalletService();
     this._formKey = GlobalKey<FormState>();
     this.currentWallet = walletService.getWallet(walletId);
     this.walletNameController = TextEditingController();
     this.walletNameController.text = currentWallet.name;
+  }
+
+  void initState() {
+    super.initState();
+    this.authService.userExists(context);
   }
 
   Future<void> _updateWallet() async {
