@@ -44,6 +44,7 @@ class ProfileComponentState extends State<ProfileComponent> {
 
   void initState() {
     super.initState();
+    this.authService.userExists(context);
     this._getUserWallets();
     this._updatePermission();
     this._getTotalWasteThisYear();
