@@ -1,12 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:waste_app/models/new_waste_form.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
-import 'package:waste_app/models/spend_item_dto.dart';
-import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/models/new_waste_form.dart';
+import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/smart_error.dart';
+import 'package:waste_app/models/user_dto.dart';
+import 'smart_error_service.dart';
 
 class SpendsService {
   final dbReference = Firestore.instance;
+  SmartErrorService smartErrorService = SmartErrorService();
 
   Future<bool> waste(NewWasteForm form) async {
     bool success = false;
@@ -31,6 +34,13 @@ class SpendsService {
       'waste': waste
     }).catchError((onError) {
       print(onError);
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Waste';
+      errorDto.userId = uid;
+
+      this.smartErrorService.saveError(errorDto);
+
       return success;
     });
     success = true;
@@ -75,6 +85,14 @@ class SpendsService {
       return spendsByMonthDtoList.sort((a, b) => b.date.compareTo(a.date));
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Get list of months/spends';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
       return spendsByMonthDtoList;
     });
     return spendsByMonthDtoList;
@@ -108,6 +126,14 @@ class SpendsService {
       return totalWaste;
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Get total waste by year';
+      errorDto.userId = user.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
       return totalWaste;
     });
     return totalWaste;
@@ -156,6 +182,14 @@ class SpendsService {
       return spendsList.sort((a, b) => b.spendDate.compareTo(a.spendDate));
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Get list of spends by month';
+      errorDto.userId = user.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
       return spendsList;
     });
 
