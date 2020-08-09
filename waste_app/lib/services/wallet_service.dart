@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/wallet.dart';
 
 import 'auth_service.dart';
+import 'smart_error_service.dart';
 
 class WalletService {
   final dbReference = Firestore.instance;
+  SmartErrorService smartErrorService = SmartErrorService();
+
 
   bool isOwner(String walletId, String uid) {
     List<Wallet> wallets = getUserWalletsLocal();
@@ -60,6 +64,12 @@ class WalletService {
       return success;
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Create new wallet';
+      errorDto.userId = uid;
+      
       return success;
     });
 
@@ -81,6 +91,12 @@ class WalletService {
       return success;
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Delete wallet spends';
+      errorDto.userId = AuthService.currentUser.uid;
+
       return success;
     });
     return success;
@@ -106,6 +122,12 @@ class WalletService {
       return success;
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Delete wallet';
+      errorDto.userId = AuthService.currentUser.uid;
+
       return success;
     });
 
@@ -134,6 +156,11 @@ class WalletService {
       List<Wallet> wallets = await getWalletsByUserId(newWallet.ownerId);
 
       updateUserWalletsLocal(wallets);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Update wallet';
+      errorDto.userId = AuthService.currentUser.uid;
 
       return success;
     });
@@ -187,6 +214,12 @@ class WalletService {
       return wallets.sort((a, b) => a.creationDate.compareTo(b.creationDate));
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Get wallets by userId';
+      errorDto.userId = userId;
+
       return wallets;
     });
     return wallets;
