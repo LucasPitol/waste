@@ -3,16 +3,19 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/login_form.dart';
+import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:mailer2/mailer.dart';
 import 'package:waste_app/utils/infos.dart';
+import 'smart_error_service.dart';
 import 'wallet_service.dart';
 import 'dart:convert';
 
 class AuthService {
   final dbReference = Firestore.instance;
+  SmartErrorService smartErrorService = SmartErrorService();
 
   static UserDto currentUser = new UserDto();
 
@@ -88,6 +91,14 @@ class AuthService {
       return userDtoTemp;
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Login';
+      errorDto.userId = 'email: ' + userMail;
+
+      this.smartErrorService.saveError(errorDto);
+
       return userDtoTemp;
     });
 
@@ -129,6 +140,13 @@ class AuthService {
     }).catchError((onError) {
       print(onError);
       this._clearLocalStorage();
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Auto login';
+      errorDto.userId = uid;
+
+      this.smartErrorService.saveError(errorDto);
     });
   }
 
@@ -191,6 +209,14 @@ class AuthService {
         return null;
       }).catchError((onError) {
         print(onError);
+
+        SmartError errorDto = SmartError();
+        errorDto.errorLog = onError;
+        errorDto.feature = 'Create new user';
+        errorDto.userId = 'email: ' + userMail;
+
+        this.smartErrorService.saveError(errorDto);
+
         errorMsg = 'Erro desconhecido';
         return errorMsg;
       });
@@ -220,6 +246,14 @@ class AuthService {
       }
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Check if user exists';
+      errorDto.userId = uid;
+
+      this.smartErrorService.saveError(errorDto);
+
       this.signOut();
       Phoenix.rebirth(context);
     });
@@ -264,6 +298,13 @@ class AuthService {
       }
     }).catchError((onError) {
       print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError;
+      errorDto.feature = 'Send reset password email';
+      errorDto.userId = 'email: ' + userMail;
+
+      this.smartErrorService.saveError(errorDto);
     });
   }
 

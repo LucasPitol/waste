@@ -69,6 +69,8 @@ class WalletService {
       errorDto.errorLog = onError;
       errorDto.feature = 'Create new wallet';
       errorDto.userId = uid;
+
+      this.smartErrorService.saveError(errorDto);
       
       return success;
     });
@@ -96,6 +98,8 @@ class WalletService {
       errorDto.errorLog = onError;
       errorDto.feature = 'Delete wallet spends';
       errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
 
       return success;
     });
@@ -127,6 +131,8 @@ class WalletService {
       errorDto.errorLog = onError;
       errorDto.feature = 'Delete wallet';
       errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
 
       return success;
     });
@@ -161,6 +167,8 @@ class WalletService {
       errorDto.errorLog = onError;
       errorDto.feature = 'Update wallet';
       errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
 
       return success;
     });
@@ -219,6 +227,8 @@ class WalletService {
       errorDto.errorLog = onError;
       errorDto.feature = 'Get wallets by userId';
       errorDto.userId = userId;
+
+      this.smartErrorService.saveError(errorDto);
 
       return wallets;
     });
