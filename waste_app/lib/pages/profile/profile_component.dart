@@ -1,3 +1,4 @@
+import 'package:package_info/package_info.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
@@ -26,6 +27,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   bool totalWasteThisYearLoading = true;
   bool isWalletOwner = false;
   bool loading = false;
+  String appVersion = '1.0.4';
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   SpendsService spendService;
@@ -36,6 +38,15 @@ class ProfileComponentState extends State<ProfileComponent> {
     this.spendService = SpendsService();
     this.walletService = WalletService();
     this.authService = AuthService();
+    this.getAppVersion();
+  }
+
+  Future<void> getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    if (packageInfo.version != '1.0.0') {
+      this.appVersion = packageInfo.version;
+    }
   }
 
   List<Wallet> wallets;
@@ -158,7 +169,7 @@ class ProfileComponentState extends State<ProfileComponent> {
     showAboutDialog(
       context: context,
       applicationName: 'Waste',
-      applicationVersion: '1.0.0',
+      applicationVersion: this.appVersion,
       applicationIcon: Container(
         child: Image.asset(
           'assets/images/ic_launcher_circle.png',
