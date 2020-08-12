@@ -159,6 +159,12 @@ class ProfileComponentState extends State<ProfileComponent> {
       context: context,
       applicationName: 'Waste',
       applicationVersion: '1.0.0',
+      applicationIcon: Container(
+        child: Image.asset(
+          'assets/images/ic_launcher_circle.png',
+          width: 50,
+        ),
+      ),
     );
   }
 
@@ -175,8 +181,7 @@ class ProfileComponentState extends State<ProfileComponent> {
         });
   }
 
-  _sendChangePasswordEmail()
-  async {
+  _sendChangePasswordEmail() async {
     String userMail = AuthService.currentUser.email;
 
     this.authService.sendResetPasswordEmail(userMail);
@@ -293,7 +298,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                       children: <Widget>[
                         Container(
                           alignment: Alignment.topLeft,
-                          margin: EdgeInsets.only(left: 10),
+                          margin: EdgeInsets.only(left: 20),
                           child: DropdownButton<String>(
                             value: dropdownWalletValue,
                             icon: Icon(Icons.keyboard_arrow_down),
