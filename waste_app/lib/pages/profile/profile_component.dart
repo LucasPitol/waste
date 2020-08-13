@@ -176,6 +176,27 @@ class ProfileComponentState extends State<ProfileComponent> {
           width: 50,
         ),
       ),
+      children: [
+        Container(
+          child: Text(
+            '• Editar/excluir desperdícios',
+            style: TextStyle(color: Colors.grey.shade700),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10),
+          child: Text(
+            '• Tapa no layout',
+            style: TextStyle(color: Colors.grey.shade700),
+          ),
+        ),
+        Container(
+          child: Text(
+            '• Correção de bugs',
+            style: TextStyle(color: Colors.grey.shade700),
+          ),
+        ),
+      ],
     );
   }
 
