@@ -66,7 +66,7 @@ class WalletService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Create new wallet';
       errorDto.userId = uid;
 
@@ -95,7 +95,7 @@ class WalletService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Delete wallet spends';
       errorDto.userId = AuthService.currentUser.uid;
 
@@ -128,7 +128,7 @@ class WalletService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Delete wallet';
       errorDto.userId = AuthService.currentUser.uid;
 
@@ -164,7 +164,7 @@ class WalletService {
       updateUserWalletsLocal(wallets);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Update wallet';
       errorDto.userId = AuthService.currentUser.uid;
 
@@ -224,7 +224,7 @@ class WalletService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Get wallets by userId';
       errorDto.userId = userId;
 

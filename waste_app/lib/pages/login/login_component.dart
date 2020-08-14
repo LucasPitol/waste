@@ -67,7 +67,7 @@ class _LoginComponentState extends State<LoginComponent> {
       await _openInfoDialog(title, content);
     } else {
       UserDto userTemp = await this.authService.login(_loginForm);
-
+      
       if (userTemp == null) {
         String title = this.userDto.language == Constants.languages[0]
             ? 'Alerta'

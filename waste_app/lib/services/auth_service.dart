@@ -90,10 +90,10 @@ class AuthService {
 
       return userDtoTemp;
     }).catchError((onError) {
-      print(onError);
-
+      
+      print('erro login');
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Login';
       errorDto.userId = 'email: ' + userMail;
 
@@ -142,7 +142,7 @@ class AuthService {
       this._clearLocalStorage();
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Auto login';
       errorDto.userId = uid;
 
@@ -211,7 +211,7 @@ class AuthService {
         print(onError);
 
         SmartError errorDto = SmartError();
-        errorDto.errorLog = onError;
+        errorDto.errorLog = onError.toString();
         errorDto.feature = 'Create new user';
         errorDto.userId = 'email: ' + userMail;
 
@@ -248,7 +248,7 @@ class AuthService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Check if user exists';
       errorDto.userId = uid;
 
@@ -300,7 +300,7 @@ class AuthService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Send reset password email';
       errorDto.userId = 'email: ' + userMail;
 

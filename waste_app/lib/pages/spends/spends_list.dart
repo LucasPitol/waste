@@ -13,31 +13,35 @@ class SpendsListComponent extends StatelessWidget {
     String amount = Constants.getAmountFormated(item.spent);
 
     return Container(
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(top: 10, bottom: 5),
-            decoration: Styles.loginBox,
-            child: ListTile(
-              title: Text(
-                item.reason,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                (DateFormat.E(Constants.ptLanguage).format(item.spendDate) +
-                    ', ' +
-                    DateFormat.d().format(item.spendDate) +
-                    '  ' +
-                    DateFormat.Hm().format(item.spendDate)),
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              trailing: Text(
-                '-' + amount,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+      margin: EdgeInsets.only(top: 10, bottom: 5),
+      decoration: Styles.loginBox,
+      child: Material(
+        borderRadius: Styles.defaultBorderRadius,
+        child: InkWell(
+          borderRadius: Styles.defaultBorderRadius,
+          splashColor: Colors.deepPurple.shade100,
+          onLongPress: () {
+            print('aa');
+          },
+          child: ListTile(
+            title: Text(
+              item.reason,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              (DateFormat.E(Constants.ptLanguage).format(item.spendDate) +
+                  ', ' +
+                  DateFormat.d().format(item.spendDate) +
+                  '  ' +
+                  DateFormat.Hm().format(item.spendDate)),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Text(
+              '-' + amount,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

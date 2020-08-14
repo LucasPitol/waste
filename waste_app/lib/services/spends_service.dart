@@ -35,7 +35,7 @@ class SpendsService {
     }).catchError((onError) {
       print(onError);
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Waste';
       errorDto.userId = uid;
 
@@ -87,7 +87,7 @@ class SpendsService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Get list of months/spends';
       errorDto.userId = AuthService.currentUser.uid;
 
@@ -128,7 +128,7 @@ class SpendsService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Get total waste by year';
       errorDto.userId = user.uid;
 
@@ -184,7 +184,7 @@ class SpendsService {
       print(onError);
 
       SmartError errorDto = SmartError();
-      errorDto.errorLog = onError;
+      errorDto.errorLog = onError.toString();
       errorDto.feature = 'Get list of spends by month';
       errorDto.userId = user.uid;
 
