@@ -308,7 +308,7 @@ class SpendsComponentState extends State<SpendsComponent>
                                         child: new CircularProgressIndicator(),
                                       ),
                                     )
-                                  : SpendsListComponent(spendList),
+                                  : SpendsListComponent(spendList, refreshData),
                             ),
                           ),
                         ],

@@ -7,23 +7,25 @@ import 'package:waste_app/utils/styles.dart';
 
 class SpendsListComponent extends StatefulWidget {
   List<SpendItem> spends;
-  SpendsListComponent(this.spends);
+  Function updateData;
+  SpendsListComponent(this.spends, this.updateData);
   @override
-  _SpendsListComponentState createState() => _SpendsListComponentState(spends);
+  _SpendsListComponentState createState() => _SpendsListComponentState(spends, updateData);
 }
 
 class _SpendsListComponentState extends State<SpendsListComponent> {
   final List<SpendItem> spends;
+  Function updateData;
 
-  _SpendsListComponentState(this.spends);
+  _SpendsListComponentState(this.spends, this.updateData);
 
   void _goToEditWaste(SpendItem spendId) async {
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => EditSpendComponent(spendId)));
 
-    // if (refresh != null && refresh) {
-    //   _updatePageContent();
-    // }
+    if (refresh != null && refresh) {
+      this.updateData();
+    }
   }
 
   Widget createTile(SpendItem item) {
