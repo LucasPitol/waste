@@ -2,6 +2,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/edit_waste_form.dart';
+import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -13,10 +14,10 @@ import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class EditSpendComponent extends StatefulWidget {
-  String spendId;
-  EditSpendComponent(this.spendId);
+  SpendItem spend;
+  EditSpendComponent(this.spend);
   @override
-  _EditSpendComponenState createState() => _EditSpendComponenState(spendId);
+  _EditSpendComponenState createState() => _EditSpendComponenState(spend);
 }
 
 class _EditSpendComponenState extends State<EditSpendComponent> {
@@ -25,15 +26,15 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   List<Wallet> wallets;
   EditWasteForm editWasteForm;
   bool loading = false;
-  String spendId;
+  SpendItem spend;
   final _editSpendFormKey = GlobalKey<FormState>();
 
   WalletService walletService;
   SpendsService spendsService;
   AuthService authService;
 
-  _EditSpendComponenState(String spendId) {
-    this.spendId = spendId;
+  _EditSpendComponenState(SpendItem spend) {
+    this.spend = spend;
     this.walletService = WalletService();
     this.editWasteForm = EditWasteForm();
     this.spendsService = SpendsService();
@@ -43,6 +44,13 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   void initState() {
     super.initState();
     this._getUserWallets();
+    this._buildForm();
+  }
+
+  void _buildForm() {
+    editWasteForm.reason.text = spend.reason;
+    editWasteForm.waste.text = spend.spent.toString();
+    editWasteForm.spendDate = spend.spendDate;
   }
 
   void _selectDate() {

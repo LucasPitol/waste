@@ -176,7 +176,7 @@ class SpendsService {
         double waste = double.parse(obj['waste'].toString());
 
         var spend =
-            SpendItem(obj['userId'], obj['reason'], spendDate.toDate(), waste, spendId);
+            SpendItem(obj['userId'], obj['reason'], spendDate.toDate(), waste, spendId, obj['walletId']);
 
         spendsList.add(spend);
       });

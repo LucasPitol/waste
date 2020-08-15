@@ -17,7 +17,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
 
   _SpendsListComponentState(this.spends);
 
-  void _goToEditWaste(String spendId) async {
+  void _goToEditWaste(SpendItem spendId) async {
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => EditSpendComponent(spendId)));
 
@@ -38,7 +38,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
           borderRadius: Styles.defaultBorderRadius,
           splashColor: Colors.deepPurple.shade100,
           onLongPress: () {
-            _goToEditWaste(item.spendId);
+            _goToEditWaste(item);
           },
           child: ListTile(
             title: Text(
