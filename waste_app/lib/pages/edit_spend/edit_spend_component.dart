@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/edit_waste_form.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/pages/dialogs/confirm_dialog.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -116,8 +117,32 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     }
   }
 
-  _deleteWaste() {
-    print('delete');
+  Future<void> _deleteWaste() async {
+    String title = 'Excluir desperdício?';
+
+    String subtitle = 'Não será possível recuperar o gasto';
+
+    bool delete = await _openConfirmDialog(title, subtitle);
+
+    if (delete != null && delete) {
+      setState(() {
+        this.loading = true;
+      });
+
+      var success = await this.spendsService.deleteWaste(spend.spendId);
+
+      if (success) {
+        Navigator.pop(context, true);
+      }
+    }
+  }
+
+  Future<bool> _openConfirmDialog(String title, String content) async {
+    return await showDialog<bool>(
+        context: context,
+        builder: (builder) {
+          return ConfirmDialogComponent(title, content);
+        });
   }
 
   @override

@@ -81,7 +81,32 @@ class SpendsService {
       errorDto.userId = uid;
 
       this.smartErrorService.saveError(errorDto);
-      
+
+      return success;
+    });
+    return success;
+  }
+
+  Future<bool> deleteWaste(String spendId) async {
+    bool success = false;
+
+    await this
+        .dbReference
+        .collection('spends')
+        .document(spendId)
+        .delete()
+        .then((onValue) {
+      success = true;
+      return success;
+    }).catchError((onError) {
+      print(onError);
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Delete waste';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
       return success;
     });
     return success;
