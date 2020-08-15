@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/pages/edit_spend/edit_spend_component.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
-class SpendsListComponent extends StatelessWidget {
+class SpendsListComponent extends StatefulWidget {
+  List<SpendItem> spends;
+  SpendsListComponent(this.spends);
+  @override
+  _SpendsListComponentState createState() => _SpendsListComponentState(spends);
+}
+
+class _SpendsListComponentState extends State<SpendsListComponent> {
   final List<SpendItem> spends;
 
-  SpendsListComponent(this.spends);
+  _SpendsListComponentState(this.spends);
+
+  void _goToEditWaste(String spendId) async {
+    var refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => EditSpendComponent(spendId)));
+
+    // if (refresh != null && refresh) {
+    //   _updatePageContent();
+    // }
+  }
 
   Widget createTile(SpendItem item) {
     String amount = Constants.getAmountFormated(item.spent);
@@ -21,7 +38,7 @@ class SpendsListComponent extends StatelessWidget {
           borderRadius: Styles.defaultBorderRadius,
           splashColor: Colors.deepPurple.shade100,
           onLongPress: () {
-            print('aa');
+            _goToEditWaste(item.spendId);
           },
           child: ListTile(
             title: Text(

@@ -169,13 +169,14 @@ class SpendsService {
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((item) {
+        String spendId = item.documentID;
         var obj = item.data;
 
         Timestamp spendDate = obj['spendDate'];
         double waste = double.parse(obj['waste'].toString());
 
         var spend =
-            SpendItem(obj['userId'], obj['reason'], spendDate.toDate(), waste);
+            SpendItem(obj['userId'], obj['reason'], spendDate.toDate(), waste, spendId);
 
         spendsList.add(spend);
       });

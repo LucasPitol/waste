@@ -3,6 +3,7 @@ class SpendItem {
   String reason;
   DateTime spendDate;
   double spent;
+  String spendId;
 
-  SpendItem(this.uid, this.reason, this.spendDate, this.spent);
+  SpendItem(this.uid, this.reason, this.spendDate, this.spent, this.spendId);
 }
