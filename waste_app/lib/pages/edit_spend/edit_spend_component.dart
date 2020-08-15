@@ -128,7 +128,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
               margin: EdgeInsets.only(left: 20, top: 10),
               child: Text(
                 this.userDto.language == Constants.languages[0]
-                    ? 'Editar desperdicio'
+                    ? 'Editar desperdício'
                     : 'Edit waste',
                 style: TextStyle(
                   color: Colors.white,
@@ -263,6 +263,16 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                               style:
                                   TextStyle(color: Colors.white, fontSize: 18),
                             ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 40),
+                        child: FlatButton(
+                          onPressed: _deleteWaste,
+                          child: Text(
+                            'Excluir',
+                            style: TextStyle(color: Colors.red),
                           ),
                         ),
                       ),
