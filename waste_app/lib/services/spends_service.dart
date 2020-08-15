@@ -1,3 +1,4 @@
+import 'package:waste_app/models/edit_waste_form.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/new_waste_form.dart';
@@ -44,6 +45,45 @@ class SpendsService {
       return success;
     });
     success = true;
+    return success;
+  }
+
+  Future<bool> updateWaste(EditWasteForm form) async {
+    bool success = false;
+
+    String uid = AuthService.currentUser.uid;
+
+    Timestamp spendDate = Timestamp.fromDate(form.spendDate);
+    Timestamp lastUpdateDate = Timestamp.fromDate(DateTime.now());
+
+    String reason = form.reason.text;
+    String walletId = form.walletId;
+    String spendId = form.spendId;
+
+    String wasteString = form.waste.text.replaceAll(',', '');
+    double waste = double.parse(wasteString);
+
+    await dbReference.collection('spends').document(spendId).setData({
+      'reason': reason,
+      'spendDate': spendDate,
+      'userId': uid,
+      'walletId': walletId,
+      'waste': waste,
+      'lastUpdate': lastUpdateDate,
+    }, merge: true).then((onValue) {
+      success = true;
+      return success;
+    }).catchError((onError) {
+      print(onError);
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Update waste';
+      errorDto.userId = uid;
+
+      this.smartErrorService.saveError(errorDto);
+      
+      return success;
+    });
     return success;
   }
 
@@ -175,8 +215,8 @@ class SpendsService {
         Timestamp spendDate = obj['spendDate'];
         double waste = double.parse(obj['waste'].toString());
 
-        var spend =
-            SpendItem(obj['userId'], obj['reason'], spendDate.toDate(), waste, spendId, obj['walletId']);
+        var spend = SpendItem(obj['userId'], obj['reason'], spendDate.toDate(),
+            waste, spendId, obj['walletId']);
 
         spendsList.add(spend);
       });

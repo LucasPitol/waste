@@ -49,8 +49,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
   void _buildForm() {
     editWasteForm.reason.text = spend.reason;
-    editWasteForm.waste.text = spend.spent.toString();
+    editWasteForm.waste.text = (spend.spent * 10).toString();
     editWasteForm.spendDate = spend.spendDate;
+    editWasteForm.spendId = spend.spendId;
   }
 
   void _selectDate() {
@@ -60,6 +61,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
         doneStyle: TextStyle(color: Colors.deepPurple),
       ),
       locale: LocaleType.pt,
+      currentTime: spend.spendDate,
       showTitleActions: true,
       minTime: DateTime(1810, 1, 1),
       maxTime: DateTime.now().add(
@@ -94,8 +96,24 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     });
   }
 
-  _updateWaste() {
-    print('update');
+  Future<void> _updateWaste() async {
+    setState(() {
+      this.loading = true;
+    });
+
+    FocusScope.of(context).unfocus();
+
+    this.editWasteForm.walletId = dropdownWalletValue;
+
+    var success = await this.spendsService.updateWaste(editWasteForm);
+
+    setState(() {
+      this.loading = false;
+    });
+
+    if (success) {
+      Navigator.pop(context, true);
+    }
   }
 
   _deleteWaste() {
