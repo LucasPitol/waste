@@ -1,7 +1,7 @@
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 class Constants {
-  static List<String> languages = ['Português', 'English'];
+  static List<String> languages = ['pt', 'en'];
 
   static String ptLanguage = 'pt_BR';
 

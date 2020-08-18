@@ -24,8 +24,6 @@ class _LoginComponentState extends State<LoginComponent> {
   BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(50.0));
   Color mainColor = Colors.grey.shade50;
 
-  String dropdownValue = 'Português';
-
   bool loading = false;
 
   AuthService authService;
@@ -42,7 +40,6 @@ class _LoginComponentState extends State<LoginComponent> {
     this.authService = AuthService();
     this._loginForm = LoginForm();
     this.userDto = AuthService.currentUser;
-    this.userDto.language = dropdownValue;
     this.selectHandler = selectHandlerTemp;
   }
 

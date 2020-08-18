@@ -31,8 +31,21 @@ class _MyAppState extends State<MyApp> {
         .addPostFrameCallback((_) => this._updateMainState());
   }
 
+  void setAppLanguage() {
+    Locale locale = Localizations.localeOf(context);
+
+    String languageCode = locale.languageCode;
+
+    if (languageCode != 'pt') {
+      AuthService.currentUser.language = 'en';
+    } else {
+      AuthService.currentUser.language = 'pt';
+    }
+  }
+
   void _updateMainState() {
     setState(() {
+      this.setAppLanguage();
       this.currentUser = AuthService.currentUser;
       this.isAuthenticated = AuthService.isAuthenticated();
     });
