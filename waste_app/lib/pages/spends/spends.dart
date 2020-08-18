@@ -19,6 +19,11 @@ class SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
   List<SpendByMonthDto> spendsByMonthDtoList = [];
 
+  String localeLanguage =
+      AuthService.currentUser.language == Constants.languages[0]
+          ? Constants.ptLanguage
+          : Constants.enLanguage;
+
   List<SpendItem> spendList = [];
 
   double totalWaste = 0.0;
@@ -145,7 +150,8 @@ class SpendsComponentState extends State<SpendsComponent>
   }
 
   Widget createTile(SpendByMonthDto item) {
-    bool monthSelected = (item.date.year == this.dateSelected.year) && (item.date.month == this.dateSelected.month);
+    bool monthSelected = (item.date.year == this.dateSelected.year) &&
+        (item.date.month == this.dateSelected.month);
 
     return GestureDetector(
       onTap: () {
@@ -176,7 +182,7 @@ class SpendsComponentState extends State<SpendsComponent>
               alignment: Alignment.center,
               margin: EdgeInsets.only(top: 10),
               child: Text(
-                DateFormat.MMMM(Constants.ptLanguage).format(item.date),
+                DateFormat.MMMM(localeLanguage).format(item.date),
                 style: Styles.dateAndSpendStyle,
               ),
             ),
@@ -222,7 +228,7 @@ class SpendsComponentState extends State<SpendsComponent>
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(left: 40, top: 10),
                           child: Text(
-                            DateFormat.MMMM(Constants.ptLanguage)
+                            DateFormat.MMMM(localeLanguage)
                                 .format(dateSelected),
                             style: Styles.dateAndSpendStyle,
                           ),
