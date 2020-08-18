@@ -47,9 +47,13 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
 
     authService.sendResetPasswordEmail(mail);
 
-    String text = 'Enviamos um link para escolher uma nova senha';
+    String text = this.userDto.language == Constants.languages[0]
+        ? 'Enviamos um link para escolher uma nova senha'
+        : 'We sent a link to recover your password';
 
-    await _openInfoDialog('Verifique seu email', text);
+    String title = this.userDto.language == Constants.languages[0] ? 'Verifique seu email' : 'Check out your email';
+
+    await _openInfoDialog(title, text);
 
     Navigator.pop(context, true);
   }
@@ -144,7 +148,9 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                 margin: EdgeInsets.only(top: 15),
                 alignment: Alignment.topCenter,
                 child: Text(
-                  'Redefinir senha',
+                  this.userDto.language == Constants.languages[0]
+                      ? 'Redefinir senha'
+                      : 'Recover password',
                   style: TextStyle(
                     color: Colors.grey.shade600,
                     fontWeight: FontWeight.bold,
