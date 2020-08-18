@@ -23,6 +23,7 @@ class ProfileComponent extends StatefulWidget {
 
 class ProfileComponentState extends State<ProfileComponent> {
   UserDto userDto = AuthService.currentUser;
+  String languageCode;
   double totalWasteThisYear = 0.0;
   bool totalWasteThisYearLoading = true;
   bool isWalletOwner = false;
@@ -35,6 +36,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   AuthService authService;
 
   ProfileComponentState() {
+    this.languageCode = this.userDto.language;
     this.spendService = SpendsService();
     this.walletService = WalletService();
     this.authService = AuthService();
@@ -179,7 +181,9 @@ class ProfileComponentState extends State<ProfileComponent> {
       children: [
         Container(
           child: Text(
-            'Seu parceiro Waste te ajuda a desperdiçar menos seu suado dinheiro',
+            this.languageCode == Constants.languages[0]
+                ? 'Seu parceiro Waste te ajuda a desperdiçar menos seu suado dinheiro'
+                : 'Your partner Waste helps you waste less of your hard-earned money',
             style: TextStyle(color: Colors.grey.shade700),
           ),
         ),
@@ -205,9 +209,15 @@ class ProfileComponentState extends State<ProfileComponent> {
 
     this.authService.sendResetPasswordEmail(userMail);
 
-    String text = 'Enviamos um link para escolher uma nova senha';
+    String text = this.languageCode == Constants.languages[0]
+        ? 'Enviamos um link para escolher uma nova senha'
+        : 'We sent a link to recover your password';
 
-    await _openInfoDialog('Verifique seu email', text);
+    String title = this.languageCode == Constants.languages[0]
+        ? 'Verifique seu email'
+        : 'Check your email';
+
+    await _openInfoDialog(title, text);
 
     Navigator.pop(context);
   }
@@ -252,19 +262,34 @@ class ProfileComponentState extends State<ProfileComponent> {
               GestureDetector(
                 onTap: _createNewWallet,
                 child: DrawerMenuItem(
-                    'Nova carteira', Icons.account_balance_wallet),
+                    this.languageCode == Constants.languages[0]
+                        ? 'Nova carteira'
+                        : 'New wallet',
+                    Icons.account_balance_wallet),
               ),
               GestureDetector(
                 onTap: _sendChangePasswordEmail,
-                child: DrawerMenuItem('Alterar senha', Icons.lock_outline),
+                child: DrawerMenuItem(
+                    this.languageCode == Constants.languages[0]
+                        ? 'Alterar senha'
+                        : 'Change password',
+                    Icons.lock_outline),
               ),
               GestureDetector(
                 onTap: _openAboutDialog,
-                child: DrawerMenuItem('Sobre', Icons.info_outline),
+                child: DrawerMenuItem(
+                    this.languageCode == Constants.languages[0]
+                        ? 'Sobre'
+                        : 'About',
+                    Icons.info_outline),
               ),
               GestureDetector(
                 onTap: _logout,
-                child: DrawerMenuItem('Sair', Icons.exit_to_app),
+                child: DrawerMenuItem(
+                    this.languageCode == Constants.languages[0]
+                        ? 'Sair'
+                        : 'Logout',
+                    Icons.exit_to_app),
               ),
             ],
           ),
@@ -352,8 +377,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                                 child: FlatButton(
                                   onPressed: _goToEditWalletPage,
                                   child: Text(
-                                    this.userDto.language ==
-                                            Constants.languages[0]
+                                    this.languageCode == Constants.languages[0]
                                         ? 'Editar'
                                         : 'Edit',
                                     style: TextStyle(
@@ -381,7 +405,9 @@ class ProfileComponentState extends State<ProfileComponent> {
                         Container(
                           margin: EdgeInsets.only(top: 10, bottom: 5),
                           child: Text(
-                            'Gastos em 2020',
+                            this.languageCode == Constants.languages[0]
+                                ? 'Gastos em 2020'
+                                : 'Spending in 2020',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,

@@ -17,10 +17,12 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
   TextEditingController walletNameController = TextEditingController();
   AuthService authService;
   UserDto userDto = AuthService.currentUser;
+  String languageCode;
   List<Wallet> wallets;
   var _formKey;
 
   _NewWalletDialogComponentState() {
+    this.languageCode = this.userDto.language;
     this.authService = AuthService();
     wallets = userDto.walletList;
     this._formKey = GlobalKey<FormState>();
@@ -52,7 +54,9 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                 shape: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0)),
                 title: Text(
-                  'Nova carteira',
+                  this.languageCode == Constants.languages[0]
+                      ? 'Nova carteira'
+                      : 'New wallet',
                   style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                 ),
                 content: Theme(
@@ -70,12 +74,16 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                         }
 
                         if (_isRepeated(value)) {
-                          return 'Já tem uma carteira com esse nome';
+                          return this.languageCode == Constants.languages[0]
+                              ? 'Já tem uma carteira com esse nome'
+                              : 'You already have a wallet with this name';
                         }
                         return null;
                       },
                       decoration: Styles.getTextFieldDecorationUnderline(
-                          'Nome da carteira'),
+                          this.languageCode == Constants.languages[0]
+                              ? 'Nome da carteira'
+                              : 'Wallet name'),
                     ),
                   ),
                 ),
@@ -86,7 +94,9 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       closeDialog(false);
                     },
                     child: Text(
-                      'Cancelar',
+                      this.languageCode == Constants.languages[0]
+                          ? 'Cancelar'
+                          : 'Cancel',
                       style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -98,7 +108,9 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       }
                     },
                     child: Text(
-                      'Criar',
+                      this.languageCode == Constants.languages[0]
+                          ? 'Criar'
+                          : 'Create',
                       style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
                     ),
                   ),
