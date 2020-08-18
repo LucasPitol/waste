@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
 import 'package:waste_app/pages/edit_spend/edit_spend_component.dart';
+import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -10,18 +11,23 @@ class SpendsListComponent extends StatefulWidget {
   Function updateData;
   SpendsListComponent(this.spends, this.updateData);
   @override
-  _SpendsListComponentState createState() => _SpendsListComponentState(spends, updateData);
+  _SpendsListComponentState createState() =>
+      _SpendsListComponentState(spends, updateData);
 }
 
 class _SpendsListComponentState extends State<SpendsListComponent> {
+  String localeLanguage =
+      AuthService.currentUser.language == Constants.languages[0]
+          ? Constants.ptLanguage
+          : Constants.enLanguage;
   final List<SpendItem> spends;
   Function updateData;
 
   _SpendsListComponentState(this.spends, this.updateData);
 
   void _goToEditWaste(SpendItem spendId) async {
-    var refresh = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => EditSpendComponent(spendId)));
+    var refresh = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => EditSpendComponent(spendId)));
 
     if (refresh != null && refresh) {
       this.updateData();
@@ -48,7 +54,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-              (DateFormat.E(Constants.ptLanguage).format(item.spendDate) +
+              (DateFormat.E(localeLanguage).format(item.spendDate) +
                   ', ' +
                   DateFormat.d().format(item.spendDate) +
                   '  ' +

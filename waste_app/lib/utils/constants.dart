@@ -4,6 +4,7 @@ class Constants {
   static List<String> languages = ['pt', 'en'];
 
   static String ptLanguage = 'pt_BR';
+  static String enLanguage = 'en-GB';
 
   static String getDefaultEmptyFieldMsg(String language) {
     return language == languages[0] ? 'Campo obrigatório' : 'Required field';
