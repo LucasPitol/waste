@@ -153,7 +153,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                       : 'Recover password',
                   style: TextStyle(
                     color: Colors.grey.shade600,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                     fontSize: 18,
                   ),
                 ),

@@ -39,11 +39,11 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                     borderRadius: BorderRadius.circular(16.0)),
                 title: Text(
                   this.title,
-                  style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                 ),
                 content: Text(
                   this.subtitle,
-                  style: GoogleFonts.quicksand(color: Colors.grey),
+                  style: GoogleFonts.poppins(color: Colors.grey),
                 ),
                 actions: <Widget>[
                   FlatButton(
@@ -53,7 +53,7 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                     },
                     child: Text(
                       'Cancelar',
-                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                     ),
                   ),
                   FlatButton(
@@ -63,7 +63,7 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                     },
                     child: Text(
                       'Excluir',
-                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                     ),
                   ),
                 ],

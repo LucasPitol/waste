@@ -251,7 +251,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                         this.userDto.name,
                         style: TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                           fontSize: 16,
                         ),
                       ),
@@ -311,7 +311,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                       'Waste',
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                         fontSize: 18,
                       ),
                     ),
@@ -348,9 +348,9 @@ class ProfileComponentState extends State<ProfileComponent> {
                             icon: Icon(Icons.keyboard_arrow_down),
                             iconSize: 24,
                             elevation: 16,
-                            style: GoogleFonts.quicksand(
+                            style: GoogleFonts.poppins(
                               textStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.black,
                                 fontSize: 14,
                               ),
@@ -381,7 +381,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                                         ? 'Editar'
                                         : 'Edit',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w500,
                                       fontSize: 14.0,
                                       color: Colors.deepPurple,
                                     ),
@@ -409,8 +409,8 @@ class ProfileComponentState extends State<ProfileComponent> {
                                 ? 'Gastos em 2020'
                                 : 'Spending in 2020',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -432,7 +432,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                                           totalWasteThisYear),
                                   style: TextStyle(
                                     color: Colors.deepPurple,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     fontSize: 18,
                                   ),
                                 ),

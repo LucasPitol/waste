@@ -51,7 +51,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
           child: ListTile(
             title: Text(
               item.reason,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.w500),
             ),
             subtitle: Text(
               (DateFormat.E(localeLanguage).format(item.spendDate) +
@@ -59,11 +59,11 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
                   DateFormat.d().format(item.spendDate) +
                   '  ' +
                   DateFormat.Hm().format(item.spendDate)),
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.w400),
             ),
             trailing: Text(
               '-' + amount,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -98,7 +98,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
               child: Text(
                 'Nenhum gasto',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),

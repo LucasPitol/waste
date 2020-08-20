@@ -141,7 +141,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                     : 'New waste',
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   fontSize: 18,
                 ),
               ),
@@ -230,7 +230,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                           icon: Icon(Icons.keyboard_arrow_down),
                           iconSize: 24,
                           elevation: 16,
-                          style: GoogleFonts.quicksand(
+                          style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               color: Colors.black,
                               fontSize: 16,

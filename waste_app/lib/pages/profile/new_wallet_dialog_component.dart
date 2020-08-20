@@ -57,7 +57,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                   this.languageCode == Constants.languages[0]
                       ? 'Nova carteira'
                       : 'New wallet',
-                  style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                 ),
                 content: Theme(
                   data: Styles.mainTheme,
@@ -97,7 +97,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       this.languageCode == Constants.languages[0]
                           ? 'Cancelar'
                           : 'Cancel',
-                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                     ),
                   ),
                   FlatButton(
@@ -111,7 +111,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       this.languageCode == Constants.languages[0]
                           ? 'Criar'
                           : 'Create',
-                      style: GoogleFonts.quicksand(fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
                     ),
                   ),
                 ],

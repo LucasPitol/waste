@@ -18,10 +18,11 @@ class ManageWalletsAppBar extends StatelessWidget
       backgroundColor: Styles.mainBackgroundColor,
       title: Text(
         this.title,
-        style: GoogleFonts.quicksand(
+        style: GoogleFonts.poppins(
           textStyle: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
             color: Colors.black,
+            fontSize: 18,
           ),
         ),
       ),

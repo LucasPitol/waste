@@ -138,7 +138,7 @@ class _EditWalletState extends State<EditWallet> {
                               ? 'Excluir carteira'
                               : 'Delete wallet',
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                             fontSize: 14.0,
                             color: Colors.deepPurple,
                           ),
@@ -188,7 +188,7 @@ class _EditWalletState extends State<EditWallet> {
                           color: Colors.deepPurple,
                           child: Text(
                             'Salvar',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                            style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         ),
                       ),

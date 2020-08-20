@@ -18,8 +18,8 @@ class DrawerMenuItem extends StatelessWidget {
             child: Text(
               this.displayName,
               style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),

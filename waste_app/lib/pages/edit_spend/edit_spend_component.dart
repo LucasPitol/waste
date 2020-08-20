@@ -183,7 +183,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                     : 'Edit waste',
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   fontSize: 18,
                 ),
               ),
@@ -272,7 +272,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                           icon: Icon(Icons.keyboard_arrow_down),
                           iconSize: 24,
                           elevation: 16,
-                          style: GoogleFonts.quicksand(
+                          style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
@@ -312,7 +312,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                             child: Text(
                               'Atualizar',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
+                                  TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ),
                         ),

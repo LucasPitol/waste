@@ -8,12 +8,12 @@ class Styles {
     cursorColor: Colors.deepPurple,
     primaryColor: Colors.deepPurple,
     textSelectionHandleColor: Colors.deepPurple,
-    textTheme: GoogleFonts.quicksandTextTheme(),
+    textTheme: GoogleFonts.poppinsTextTheme(),
   );
 
   static TextStyle dateAndSpendStyle = TextStyle(
     color: Colors.deepPurple.shade50,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.w500,
     fontSize: 18.0,
   );
 
