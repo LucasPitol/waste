@@ -22,7 +22,12 @@ class EditSpendComponent extends StatefulWidget {
 }
 
 class _EditSpendComponenState extends State<EditSpendComponent> {
+  String localeLanguage =
+      AuthService.currentUser.language == Constants.languages[0]
+          ? Constants.ptLanguage
+          : Constants.enLanguage;
   UserDto userDto = AuthService.currentUser;
+  String languageCode;
   String dropdownWalletValue;
   List<Wallet> wallets;
   EditWasteForm editWasteForm;
@@ -35,6 +40,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   AuthService authService;
 
   _EditSpendComponenState(SpendItem spend) {
+    this.languageCode = this.userDto.language;
     this.spend = spend;
     this.walletService = WalletService();
     this.editWasteForm = EditWasteForm();
@@ -61,7 +67,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
       theme: DatePickerTheme(
         doneStyle: TextStyle(color: Colors.deepPurple),
       ),
-      locale: LocaleType.pt,
+      locale: this.languageCode == Constants.languages[0]
+          ? LocaleType.pt
+          : LocaleType.en,
       currentTime: spend.spendDate,
       showTitleActions: true,
       minTime: DateTime(1810, 1, 1),
@@ -118,9 +126,13 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   }
 
   Future<void> _deleteWaste() async {
-    String title = 'Excluir desperdício?';
+    String title = this.languageCode == Constants.languages[0]
+        ? 'Excluir desperdício?'
+        : 'Delete waste?';
 
-    String subtitle = 'Não será possível recuperar o gasto';
+    String subtitle = this.languageCode == Constants.languages[0]
+        ? 'Não será possível recuperar o gasto'
+        : 'Won\'t be able to recover it';
 
     bool delete = await _openConfirmDialog(title, subtitle);
 
@@ -231,7 +243,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                             }
                             return null;
                           },
-                          decoration: this.userDto.language ==
+                          decoration: this.languageCode ==
                                   Constants.languages[0]
                               ? Styles.getTextFieldDecorationUnderline(
                                   'Desperdício')
@@ -245,7 +257,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                             margin:
                                 EdgeInsets.only(top: 20, bottom: 20, right: 10),
                             child: Text(
-                              'Data:',
+                              this.languageCode == Constants.languages[0]
+                                  ? 'Data:'
+                                  : 'Date:',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -257,7 +271,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                               margin: EdgeInsets.only(
                                   top: 20, bottom: 20, left: 10),
                               child: Text(
-                                DateFormat.yMd(Constants.ptLanguage)
+                                DateFormat.yMd(localeLanguage)
                                     .add_jm()
                                     .format(this.editWasteForm.spendDate),
                                 style: TextStyle(fontSize: 16),
@@ -310,7 +324,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                             },
                             color: Colors.deepPurple,
                             child: Text(
-                              'Atualizar',
+                              this.languageCode == Constants.languages[0]
+                                  ? 'Atualizar'
+                                  : 'Update',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             ),
@@ -322,7 +338,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                         child: FlatButton(
                           onPressed: _deleteWaste,
                           child: Text(
-                            'Excluir',
+                            this.languageCode == Constants.languages[0]
+                                ? 'Excluir'
+                                : 'Delete',
                             style: TextStyle(color: Colors.red),
                           ),
                         ),
