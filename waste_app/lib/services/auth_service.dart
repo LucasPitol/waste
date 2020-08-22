@@ -79,6 +79,7 @@ class AuthService {
       AuthService.currentUser.email = user['email'];
       AuthService.currentUser.name = user['displayName'];
       AuthService.currentUser.uid = uid;
+      AuthService.currentUser.language = user['language'];
       AuthService.currentUser.walletList = wallets;
       AuthService.currentUser.currentWalletId = wallets[0].id;
 
@@ -131,6 +132,7 @@ class AuthService {
         AuthService.currentUser.email = user['email'];
         AuthService.currentUser.name = user['displayName'];
         AuthService.currentUser.uid = uid;
+        AuthService.currentUser.language = user['language'];
         AuthService.currentUser.walletList = wallets;
         AuthService.currentUser.currentWalletId = wallets[0].id;
       } else {
