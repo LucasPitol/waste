@@ -19,11 +19,13 @@ class EditWallet extends StatefulWidget {
 class _EditWalletState extends State<EditWallet> {
   AuthService authService;
   var userDto = AuthService.currentUser;
+  var languageCode = AuthService.currentUser.language;
   Wallet currentWallet;
   String walletIdToEdit;
   var _formKey;
   bool loading = false;
   TextEditingController walletNameController;
+  String appBarTitle;
 
   WalletService walletService;
 
@@ -35,6 +37,9 @@ class _EditWalletState extends State<EditWallet> {
     this.currentWallet = walletService.getWallet(walletId);
     this.walletNameController = TextEditingController();
     this.walletNameController.text = currentWallet.name;
+    this.appBarTitle = this.languageCode == Constants.languages[0]
+        ? 'Editar carteira'
+        : 'Edit wallet';
   }
 
   void initState() {
@@ -78,18 +83,25 @@ class _EditWalletState extends State<EditWallet> {
     List<Wallet> wallets = this.walletService.getUserWalletsLocal();
 
     if (wallets.length <= 1) {
-      title = 'Não é possivel excluir sua unica carteira, quer reseta-la?';
+      title = this.languageCode == Constants.languages[0]
+          ? 'Não é possivel excluir sua unica carteira, quer reseta-la?'
+          : 'You can\'t delete your unique wallet, would you like to restore?';
 
-      subtitle = 'Todos os gastos de ' +
-          currentWallet.name +
-          ' carteira serão apagados';
+      subtitle = this.languageCode == Constants.languages[0]
+          ? ('Todos os gastos de ' +
+              currentWallet.name +
+              ' carteira serão apagados')
+          : ('All spends of this wallet will be deleted');
 
       deleteWallet = false;
     } else {
-      title = 'Excluir ' + currentWallet.name + '?';
+      title = this.languageCode == Constants.languages[0]
+          ? ('Excluir ' + currentWallet.name + '?')
+          : ('Delete ' + currentWallet.name + '?');
 
-      subtitle =
-          'Todos os gastos relacionados a carteira tambem serão apagados';
+      subtitle = this.languageCode == Constants.languages[0]
+          ? 'Todos os gastos relacionados a carteira tambem serão apagados'
+          : 'All spends related to this wallet will be deleted';
     }
 
     bool delete = await _openConfirmDialog(title, subtitle);
@@ -120,7 +132,7 @@ class _EditWalletState extends State<EditWallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ManageWalletsAppBar(context, 'Editar carteira'),
+      appBar: ManageWalletsAppBar(context, this.appBarTitle),
       body: Stack(
         children: <Widget>[
           Container(
@@ -158,7 +170,9 @@ class _EditWalletState extends State<EditWallet> {
                           }
 
                           if (_isWalletNameRepeated(value)) {
-                            return 'Já tem uma carteira com esse nome';
+                            return this.languageCode == Constants.languages[0]
+                                ? 'Já tem uma carteira com esse nome'
+                                : 'You already have a wallet with this name';
                           }
 
                           return null;
@@ -187,7 +201,9 @@ class _EditWalletState extends State<EditWallet> {
                           },
                           color: Colors.deepPurple,
                           child: Text(
-                            'Salvar',
+                            this.languageCode == Constants.languages[0]
+                                ? 'Salvar'
+                                : 'Save',
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         ),
