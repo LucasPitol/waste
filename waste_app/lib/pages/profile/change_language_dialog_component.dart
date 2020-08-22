@@ -43,7 +43,7 @@ class _ChangeLanguageDialogComponentState
       this.dropdownWalletValue = languageCode;
     });
 
-    // this.authService.changeLAnguage(languageCode);
+    this.authService.changeLanguage(languageCode);
 
     closeDialog(true);
   }

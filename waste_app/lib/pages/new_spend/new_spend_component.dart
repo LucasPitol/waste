@@ -23,7 +23,6 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
           ? Constants.ptLanguage
           : Constants.enLanguage;
   UserDto userDto = AuthService.currentUser;
-  String languageCode;
 
   List<Wallet> wallets;
   String dropdownWalletValue;
@@ -65,7 +64,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
       theme: DatePickerTheme(
         doneStyle: TextStyle(color: Colors.deepPurple),
       ),
-      locale: this.languageCode == Constants.languages[0]
+      locale: this.userDto.language == Constants.languages[0]
           ? LocaleType.pt
           : LocaleType.en,
       showTitleActions: true,
@@ -211,9 +210,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                             margin:
                                 EdgeInsets.only(top: 20, bottom: 20, right: 10),
                             child: Text(
-                              this.languageCode == Constants.languages[0]
+                              this.userDto.language == Constants.languages[0]
                                   ? 'Data:'
-                                  : 'Date',
+                                  : 'Date: ',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -278,7 +277,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                             },
                             color: Colors.deepPurple,
                             child: Text(
-                              this.languageCode == Constants.languages[0]
+                              this.userDto.language == Constants.languages[0]
                                   ? 'Salvar'
                                   : 'Save',
                               style:

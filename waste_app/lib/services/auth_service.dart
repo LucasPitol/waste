@@ -25,8 +25,17 @@ class AuthService {
     this.walletService = WalletService();
   }
 
-  static void changeLanguage(String language) {
-    AuthService.currentUser.language = language;
+  void changeLanguage(String newLanguage) {
+    currentUser.language = newLanguage;
+
+    String uid = currentUser.uid;
+
+    DocumentReference docRef = dbReference.collection('user').document(uid);
+
+    docRef.setData({
+      'language': newLanguage,
+      'lastUpdate': Timestamp.fromDate(DateTime.now())
+    }, merge: true);
   }
 
   static isAuthenticated() {
