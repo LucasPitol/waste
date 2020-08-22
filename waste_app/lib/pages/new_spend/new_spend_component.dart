@@ -18,7 +18,13 @@ class NewSpendComponent extends StatefulWidget {
 }
 
 class _NewSpendComponenState extends State<NewSpendComponent> {
+  String localeLanguage =
+      AuthService.currentUser.language == Constants.languages[0]
+          ? Constants.ptLanguage
+          : Constants.enLanguage;
   UserDto userDto = AuthService.currentUser;
+  String languageCode;
+
   List<Wallet> wallets;
   String dropdownWalletValue;
   final _formKey = GlobalKey<FormState>();
@@ -59,7 +65,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
       theme: DatePickerTheme(
         doneStyle: TextStyle(color: Colors.deepPurple),
       ),
-      locale: LocaleType.pt,
+      locale: this.languageCode == Constants.languages[0]
+          ? LocaleType.pt
+          : LocaleType.en,
       showTitleActions: true,
       minTime: DateTime(1810, 1, 1),
       maxTime: DateTime.now().add(
@@ -203,7 +211,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                             margin:
                                 EdgeInsets.only(top: 20, bottom: 20, right: 10),
                             child: Text(
-                              'Data:',
+                              this.languageCode == Constants.languages[0]
+                                  ? 'Data:'
+                                  : 'Date',
                               style: TextStyle(fontSize: 16),
                             ),
                           ),
@@ -215,7 +225,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                               margin: EdgeInsets.only(
                                   top: 20, bottom: 20, left: 10),
                               child: Text(
-                                DateFormat.yMd(Constants.ptLanguage)
+                                DateFormat.yMd(this.localeLanguage)
                                     .add_jm()
                                     .format(this.newWasteForm.spendDate),
                                 style: TextStyle(fontSize: 16),
@@ -268,7 +278,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                             },
                             color: Colors.deepPurple,
                             child: Text(
-                              'Salvar',
+                              this.languageCode == Constants.languages[0]
+                                  ? 'Salvar'
+                                  : 'Save',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 18),
                             ),
