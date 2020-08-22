@@ -52,7 +52,8 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
               opacity: a1.value,
               child: AlertDialog(
                 shape: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
                 title: Text(
                   this.languageCode == Constants.languages[0]
                       ? 'Nova carteira'

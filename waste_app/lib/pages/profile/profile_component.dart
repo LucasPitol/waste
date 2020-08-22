@@ -15,6 +15,8 @@ import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 
+import 'change_language_dialog_component.dart';
+
 class ProfileComponent extends StatefulWidget {
   ProfileComponent({Key key}) : super(key: key);
   @override
@@ -101,6 +103,27 @@ class ProfileComponentState extends State<ProfileComponent> {
     if (refresh != null && refresh) {
       _updatePageContent();
     }
+  }
+
+  Future<void> _changeLanguage() async {
+    List res = await _openChangeLanguageDialod();
+
+    if (res != null && res.isNotEmpty && res[0]) {
+      print(res[1]);
+      Navigator.pop(context);
+
+      setState(() {
+        this.languageCode = res[1];
+      });
+    }
+  }
+
+  Future<List> _openChangeLanguageDialod() async {
+    return await showDialog<List>(
+        context: context,
+        builder: (builder) {
+          return ChangeLanguageDialogComponent();
+        });
   }
 
   Future<void> _createNewWallet() async {
@@ -276,7 +299,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                     Icons.lock_outline),
               ),
               GestureDetector(
-                onTap: _createNewWallet,
+                onTap: _changeLanguage,
                 child: DrawerMenuItem(
                     this.languageCode == Constants.languages[0]
                         ? 'Idioma'
