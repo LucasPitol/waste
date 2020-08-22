@@ -276,6 +276,14 @@ class ProfileComponentState extends State<ProfileComponent> {
                     Icons.lock_outline),
               ),
               GestureDetector(
+                onTap: _createNewWallet,
+                child: DrawerMenuItem(
+                    this.languageCode == Constants.languages[0]
+                        ? 'Idioma'
+                        : 'language',
+                    Icons.language),
+              ),
+              GestureDetector(
                 onTap: _openAboutDialog,
                 child: DrawerMenuItem(
                     this.languageCode == Constants.languages[0]
@@ -378,7 +386,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                                   onPressed: _goToEditWalletPage,
                                   child: Text(
                                     this.languageCode == Constants.languages[0]
-                                        ? 'Editar' 
+                                        ? 'Editar'
                                         : 'Edit',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
