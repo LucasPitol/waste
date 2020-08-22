@@ -32,14 +32,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   void setAppLanguage() {
-    Locale locale = Localizations.localeOf(context);
+    if (AuthService.currentUser.language == null ||
+        AuthService.currentUser.language == 'auto') {
+      Locale locale = Localizations.localeOf(context);
 
-    String languageCode = locale.languageCode;
+      String languageCode = locale.languageCode;
 
-    if (languageCode != 'pt') {
-      AuthService.currentUser.language = 'en';
-    } else {
-      AuthService.currentUser.language = 'pt';
+      if (languageCode != 'pt') {
+        AuthService.currentUser.language = 'en';
+      } else {
+        AuthService.currentUser.language = 'pt';
+      }
     }
   }
 
