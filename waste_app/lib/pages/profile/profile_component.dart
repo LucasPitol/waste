@@ -378,7 +378,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                                   onPressed: _goToEditWalletPage,
                                   child: Text(
                                     this.languageCode == Constants.languages[0]
-                                        ? 'Editar'
+                                        ? 'Editar' 
                                         : 'Edit',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,

@@ -90,7 +90,6 @@ class AuthService {
 
       return userDtoTemp;
     }).catchError((onError) {
-      
       print('erro login');
       SmartError errorDto = SmartError();
       errorDto.errorLog = onError.toString();
@@ -189,6 +188,7 @@ class AuthService {
         'displayName': name,
         'email': userMail,
         'password': passwordEncrypt,
+        'language': 'auto',
         'creationDate': Timestamp.fromDate(DateTime.now())
       }).then((onValue) async {
         String uid = onValue.documentID;
@@ -319,12 +319,21 @@ class AuthService {
 
     String pathUrl = 'https://waste-dev.web.app/verification/' + uid;
 
-    String body = 'Bem vindo, ' +
-        userName +
-        '\n' +
-        'Caso não tenha se cadastrado no app Waste, acesse ' +
-        pathUrl +
-        ' para excluir a conta vinculada a este email.';
+    var languageCode = currentUser.language;
+
+    String body = languageCode == Constants.languages[0]
+        ? ('Bem vindo, ' +
+            userName +
+            '\n' +
+            'Caso não tenha se cadastrado no app Waste, acesse ' +
+            pathUrl +
+            ' para excluir a conta vinculada a este email.')
+        : 'Welcome, ' +
+            userName +
+            '\n' +
+            'If you haven\'t registered at Waste app, go to ' +
+            pathUrl +
+            ' and delete the account related to this email.';
 
     String subject = 'Welcome to Waste';
 
