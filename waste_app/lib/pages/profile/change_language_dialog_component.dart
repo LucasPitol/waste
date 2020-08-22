@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:waste_app/models/language_and_code_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -14,10 +15,37 @@ class ChangeLanguageDialogComponent extends StatefulWidget {
 class _ChangeLanguageDialogComponentState
     extends State<ChangeLanguageDialogComponent> {
   AuthService authService;
+  String dropdownWalletValue;
+  List<LanguageAndCodeDto> options;
   String currentLanguageCode = AuthService.currentUser.language;
 
   _ChangeLanguageDialogComponentState() {
     this.authService = AuthService();
+    this.options = List<LanguageAndCodeDto>();
+    this.setOptions();
+  }
+
+  setOptions() {
+    this.dropdownWalletValue = currentLanguageCode;
+
+    String autoCode = 'auto';
+    this.options.add(LanguageAndCodeDto('Auto', autoCode));
+
+    String enCode = Constants.languages[1];
+    this.options.add(LanguageAndCodeDto('English', enCode));
+
+    String ptCode = Constants.languages[0];
+    this.options.add(LanguageAndCodeDto('Português', ptCode));
+  }
+
+  void switchLanguage(String languageCode) {
+    setState(() {
+      this.dropdownWalletValue = languageCode;
+    });
+
+    // this.authService.changeLAnguage(languageCode);
+
+    closeDialog(true);
   }
 
   @override
@@ -47,32 +75,37 @@ class _ChangeLanguageDialogComponentState
               ),
               content: Theme(
                 data: Styles.mainTheme,
-                child: Container(),
+                child: Container(
+                  height: 80,
+                  child: DropdownButton<String>(
+                    value: dropdownWalletValue,
+                    icon: Icon(Icons.keyboard_arrow_down),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        fontSize: 14,
+                      ),
+                    ),
+                    underline: Container(
+                      height: 1,
+                      color: Colors.white10,
+                    ),
+                    onChanged: (String newValue) {
+                      switchLanguage(newValue);
+                    },
+                    items: options.map<DropdownMenuItem<String>>(
+                        (LanguageAndCodeDto item) {
+                      return DropdownMenuItem<String>(
+                        value: item.code,
+                        child: Text(item.displayName),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
-              actions: <Widget>[
-                FlatButton(
-                  textColor: Colors.black,
-                  onPressed: () {
-                    closeDialog(false);
-                  },
-                  child: Text(
-                    this.currentLanguageCode == Constants.languages[0]
-                        ? 'Cancelar'
-                        : 'Cancel',
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-                  ),
-                ),
-                FlatButton(
-                  textColor: Colors.deepPurple,
-                  onPressed: () async {
-                    closeDialog(true);
-                  },
-                  child: Text(
-                    'Ok',
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
             ),
           ),
         );
@@ -86,7 +119,7 @@ class _ChangeLanguageDialogComponentState
   }
 
   closeDialog(bool action) {
-    String newLanguage = 'abc';
+    String newLanguage = this.dropdownWalletValue;
 
     Navigator.pop(context, [action, newLanguage]);
     Navigator.pop(context, [action, newLanguage]);
