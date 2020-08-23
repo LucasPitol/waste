@@ -10,6 +10,7 @@ import 'models/user_dto.dart';
 import 'services/auth_service.dart';
 import 'utils/constants.dart';
 import 'utils/styles.dart';
+import 'dart:ui' as ui;
 
 void main() {
   initializeDateFormatting(Constants.ptLanguage).then((_) => runApp(Phoenix(
@@ -34,10 +35,9 @@ class _MyAppState extends State<MyApp> {
   void setAppLanguage() {
     if (AuthService.currentUser.language == null ||
         AuthService.currentUser.language == 'auto') {
-      Locale locale = Localizations.localeOf(context);
+      var languageCode = ui.window.locale.languageCode;
 
-      String languageCode = locale.languageCode;
-
+      print(languageCode);
       if (languageCode != 'pt') {
         AuthService.currentUser.language = 'en';
       } else {
