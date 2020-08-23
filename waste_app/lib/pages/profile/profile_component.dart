@@ -109,7 +109,6 @@ class ProfileComponentState extends State<ProfileComponent> {
     List res = await _openChangeLanguageDialod();
 
     if (res != null && res.isNotEmpty && res[0]) {
-      print(res[1]);
       Navigator.pop(context);
 
       setState(() {
