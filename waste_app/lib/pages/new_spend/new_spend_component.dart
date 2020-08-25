@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/new_waste_form.dart';
+import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
@@ -25,6 +26,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   UserDto userDto = AuthService.currentUser;
 
   List<Wallet> wallets;
+  List<SpendingCategory> spendingCategoryList;
   String dropdownWalletValue;
   final _formKey = GlobalKey<FormState>();
   NewWasteForm newWasteForm;
@@ -39,11 +41,21 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     this.newWasteForm = NewWasteForm();
     this.spendsService = SpendsService();
     this.authService = AuthService();
+    this.spendingCategoryList = List<SpendingCategory>();
   }
 
   void initState() {
     super.initState();
     this._getUserWallets();
+    this._getSpendingCategories();
+  }
+
+  Future<void> _getSpendingCategories() async {
+    List<SpendingCategory> listTemp = await this.spendsService.getSpendingCategories();
+
+    setState(() {
+      this.spendingCategoryList = listTemp;
+    });
   }
 
   void _getUserWallets() {
