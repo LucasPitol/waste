@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:waste_app/models/new_waste_form.dart';
-import 'package:waste_app/models/spending_category.dart';
-import 'package:waste_app/models/user_dto.dart';
-import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
-import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
+import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/models/new_waste_form.dart';
+import 'package:waste_app/models/user_dto.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewSpendComponent extends StatefulWidget {
   @override
@@ -51,7 +51,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   }
 
   Future<void> _getSpendingCategories() async {
-    List<SpendingCategory> listTemp = await this.spendsService.getSpendingCategories();
+    List<SpendingCategory> listTemp =
+        await this.spendsService.getSpendingCategories();
 
     setState(() {
       this.spendingCategoryList = listTemp;
@@ -214,6 +215,11 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                   'Desperdício')
                               : Styles.getTextFieldDecorationUnderline('Waste'),
                         ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: 10, bottom: 10, left: 20, right: 20),
+                        child: Text('fila da puta'),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
