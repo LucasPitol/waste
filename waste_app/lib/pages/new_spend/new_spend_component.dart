@@ -13,6 +13,8 @@ import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'category_bottom_sheet_component.dart';
+
 class NewSpendComponent extends StatefulWidget {
   @override
   _NewSpendComponenState createState() => _NewSpendComponenState();
@@ -104,6 +106,25 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
         );
       },
     );
+  }
+
+  void changeCategory(String newValue) {
+    if (newValue != null) {
+      var categorySelectedTemp =
+          this.spendingCategoryList.where((element) => element.value == newValue).first;
+      setState(() {
+        this.categorySelected = categorySelectedTemp;
+      });
+    }
+  }
+
+  void _openCategoryBottomSheet() {
+    Future<String> selectedValue = showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return CategoryBottomSheetComponent(this.spendingCategoryList, categorySelected.value);
+        });
+        selectedValue.then((value) => this.changeCategory(value));
   }
 
   Future<void> _saveNewWaste() async {
@@ -230,10 +251,13 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Categoria:'
                                     : 'Category:',
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                               ),
                             ),
                             GestureDetector(
+                              onTap: () {
+                                _openCategoryBottomSheet();
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 child: categorySelected != null
@@ -265,8 +289,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                               child: Text(
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Data:'
-                                    : 'Date: ',
-                                style: TextStyle(fontSize: 16),
+                                    : 'Date:',
+                                style: TextStyle(color: Colors.grey.shade600,fontSize: 16),
                               ),
                             ),
                             GestureDetector(
