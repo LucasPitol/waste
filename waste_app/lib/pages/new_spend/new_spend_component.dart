@@ -36,6 +36,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   SpendsService spendsService;
   AuthService authService;
 
+  SpendingCategory categorySelected;
+
   _NewSpendComponenState() {
     this.walletService = WalletService();
     this.newWasteForm = NewWasteForm();
@@ -56,6 +58,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
     setState(() {
       this.spendingCategoryList = listTemp;
+      this.categorySelected =
+          listTemp.where((element) => element.value == 'others').first;
     });
   }
 
@@ -176,8 +180,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        margin: EdgeInsets.only(
-                            top: 20, bottom: 10, left: 20, right: 20),
+                        margin: EdgeInsets.only(top: 15, left: 20, right: 20),
                         child: TextFormField(
                           maxLength: 50,
                           controller: newWasteForm.reason,
@@ -218,38 +221,70 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                       ),
                       Container(
                         margin: EdgeInsets.only(
-                            top: 10, bottom: 10, left: 20, right: 20),
-                        child: Text('fila da puta'),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            margin:
-                                EdgeInsets.only(top: 20, bottom: 20, right: 10),
-                            child: Text(
-                              this.userDto.language == Constants.languages[0]
-                                  ? 'Data:'
-                                  : 'Date: ',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              _selectDate();
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 10),
+                            top: 20, bottom: 10, left: 20, right: 20),
+                        child: Stack(
+                          children: [
+                            Container(
+                              alignment: Alignment.topLeft,
                               child: Text(
-                                DateFormat.yMd(this.localeLanguage)
-                                    .add_jm()
-                                    .format(this.newWasteForm.spendDate),
+                                this.userDto.language == Constants.languages[0]
+                                    ? 'Categoria:'
+                                    : 'Category:',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ),
-                          ),
-                        ],
+                            GestureDetector(
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: categorySelected != null
+                                    ? Text(
+                                        this.userDto.language ==
+                                                Constants.languages[0]
+                                            ? categorySelected.displayNamePt
+                                            : categorySelected.displayNameEn,
+                                        style: TextStyle(fontSize: 16),
+                                      )
+                                    : Container(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        height: 1,
+                        child: Divider(),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: 30, left: 20, bottom: 20, right: 10),
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                this.userDto.language == Constants.languages[0]
+                                    ? 'Data:'
+                                    : 'Date: ',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _selectDate();
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  DateFormat.yMd(this.localeLanguage)
+                                      .add_jm()
+                                      .format(this.newWasteForm.spendDate),
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
                         child: DropdownButton<String>(
