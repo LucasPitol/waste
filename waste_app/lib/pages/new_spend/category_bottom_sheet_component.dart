@@ -60,7 +60,7 @@ class _CategoryBottomSheetComponentState
               margin: EdgeInsets.only(left: 20),
               alignment: Alignment.centerLeft,
               child: Icon(
-                Icons.local_bar,
+                Constants.getCategoryIcon(item.value),
                 color: Colors.deepPurple,
               ),
             ),
