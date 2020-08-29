@@ -47,16 +47,23 @@ class _CategoryBottomSheetComponentState
         this._selectCategory(itemValue);
       },
       child: Container(
-        margin: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-        padding: EdgeInsets.only(top: 5, bottom: 5),
+        padding: EdgeInsets.only(top: 10, bottom: 10),
         decoration: BoxDecoration(
-          borderRadius: Styles.defaultBorderRadius,
+          // borderRadius: Styles.defaultBorderRadius,
           color: isCategorySelected
               ? Colors.deepPurple.shade100
               : Styles.mainBackgroundColor,
         ),
         child: Stack(
           children: [
+            Container(
+              margin: EdgeInsets.only(left: 20),
+              alignment: Alignment.centerLeft,
+              child: Icon(
+                Icons.local_bar,
+                color: Colors.deepPurple,
+              ),
+            ),
             Container(
               alignment: Alignment.center,
               child: Text(
@@ -86,7 +93,7 @@ class _CategoryBottomSheetComponentState
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
+                padding: EdgeInsets.only(bottom: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: this
