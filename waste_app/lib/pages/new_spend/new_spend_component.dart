@@ -137,6 +137,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     this.authService.userExists(context);
 
     this.newWasteForm.walletId = dropdownWalletValue;
+    this.newWasteForm.categoryId = categorySelected.id;
     var success = await this.spendsService.waste(newWasteForm);
 
     setState(() {

@@ -4,6 +4,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 class NewWasteForm {
   TextEditingController reason;
   MoneyMaskedTextController waste;
+  String categoryId;
   DateTime spendDate;
   String walletId;
 

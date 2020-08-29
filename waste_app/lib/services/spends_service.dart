@@ -24,6 +24,7 @@ class SpendsService {
 
     String reason = form.reason.text;
     String walletId = form.walletId;
+    String categoryId = form.categoryId;
 
     String wasteString = form.waste.text.replaceAll(',', '');
     double waste = double.parse(wasteString);
@@ -34,6 +35,7 @@ class SpendsService {
       'spendDate': spendDate,
       'userId': uid,
       'walletId': walletId,
+      'categoryId': categoryId,
       'waste': waste
     }).catchError((onError) {
       print(onError);
