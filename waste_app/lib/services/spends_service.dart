@@ -9,10 +9,13 @@ import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'smart_error_service.dart';
+import 'spending_categories_service.dart';
 
 class SpendsService {
   final dbReference = Firestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
+  SpendingCategoriesService spendingCategoriesService = SpendingCategoriesService();
+
 
   Future<bool> waste(NewWasteForm form) async {
     bool success = false;
@@ -37,6 +40,8 @@ class SpendsService {
       'walletId': walletId,
       'categoryId': categoryId,
       'waste': waste
+    }).then((onValue) {
+      this.spendingCategoriesService.incrementSpendsWithThisCategory(categoryId);
     }).catchError((onError) {
       print(onError);
       SmartError errorDto = SmartError();
