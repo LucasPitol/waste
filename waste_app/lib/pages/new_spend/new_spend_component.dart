@@ -110,8 +110,10 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   void changeCategory(String newValue) {
     if (newValue != null) {
-      var categorySelectedTemp =
-          this.spendingCategoryList.where((element) => element.value == newValue).first;
+      var categorySelectedTemp = this
+          .spendingCategoryList
+          .where((element) => element.value == newValue)
+          .first;
       setState(() {
         this.categorySelected = categorySelectedTemp;
       });
@@ -122,9 +124,10 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     Future<String> selectedValue = showModalBottomSheet(
         context: context,
         builder: (builder) {
-          return CategoryBottomSheetComponent(this.spendingCategoryList, categorySelected.value);
+          return CategoryBottomSheetComponent(
+              this.spendingCategoryList, categorySelected.value);
         });
-        selectedValue.then((value) => this.changeCategory(value));
+    selectedValue.then((value) => this.changeCategory(value));
   }
 
   Future<void> _saveNewWaste() async {
@@ -252,7 +255,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Categoria:'
                                     : 'Category:',
-                                style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                                style: TextStyle(
+                                    color: Colors.grey.shade600, fontSize: 16),
                               ),
                             ),
                             GestureDetector(
@@ -291,7 +295,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Data:'
                                     : 'Date:',
-                                style: TextStyle(color: Colors.grey.shade600,fontSize: 16),
+                                style: TextStyle(
+                                    color: Colors.grey.shade600, fontSize: 16),
                               ),
                             ),
                             GestureDetector(

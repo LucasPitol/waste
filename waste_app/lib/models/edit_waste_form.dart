@@ -7,6 +7,7 @@ class EditWasteForm {
   DateTime spendDate;
   String walletId;
   String spendId;
+  String categoryId;
 
   EditWasteForm() {
     this.reason = new TextEditingController();

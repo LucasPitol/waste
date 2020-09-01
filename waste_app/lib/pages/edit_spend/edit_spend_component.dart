@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/edit_waste_form.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/pages/dialogs/confirm_dialog.dart';
+import 'package:waste_app/pages/new_spend/category_bottom_sheet_component.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -33,6 +35,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   EditWasteForm editWasteForm;
   bool loading = false;
   SpendItem spend;
+  List<SpendingCategory> spendingCategoryList;
+  SpendingCategory categorySelected;
   final _editSpendFormKey = GlobalKey<FormState>();
 
   WalletService walletService;
@@ -46,12 +50,40 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     this.editWasteForm = EditWasteForm();
     this.spendsService = SpendsService();
     this.authService = AuthService();
+    this.spendingCategoryList = List<SpendingCategory>();
   }
 
   void initState() {
     super.initState();
     this._getUserWallets();
     this._buildForm();
+    this._getSpendingCategories();
+  }
+
+  Future<void> _getSpendingCategories() async {
+    List<SpendingCategory> listTemp =
+        await this.spendsService.getSpendingCategories();
+
+    String categoryId = spend.categoryId;
+
+    setState(() {
+      this.spendingCategoryList = listTemp;
+      this.categorySelected = categoryId != null
+          ? listTemp.where((element) => element.id == categoryId).first
+          : listTemp.where((element) => element.value == 'others').first;
+    });
+  }
+
+  void changeCategory(String newValue) {
+    if (newValue != null) {
+      var categorySelectedTemp = this
+          .spendingCategoryList
+          .where((element) => element.value == newValue)
+          .first;
+      setState(() {
+        this.categorySelected = categorySelectedTemp;
+      });
+    }
   }
 
   void _buildForm() {
@@ -59,6 +91,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     editWasteForm.waste.text = (spend.spent * 10).toString();
     editWasteForm.spendDate = spend.spendDate;
     editWasteForm.spendId = spend.spendId;
+    editWasteForm.categoryId = spend.categoryId;
   }
 
   void _selectDate() {
@@ -114,7 +147,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
     this.editWasteForm.walletId = dropdownWalletValue;
 
-    var success = await this.spendsService.updateWaste(editWasteForm);
+    this.editWasteForm.categoryId = categorySelected.id;
+
+    var success = await this.spendsService.updateWaste(editWasteForm, spend.categoryId);
 
     setState(() {
       this.loading = false;
@@ -147,6 +182,16 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
         Navigator.pop(context, true);
       }
     }
+  }
+
+  void _openCategoryBottomSheet() {
+    Future<String> selectedValue = showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return CategoryBottomSheetComponent(
+              this.spendingCategoryList, categorySelected.value);
+        });
+    selectedValue.then((value) => this.changeCategory(value));
   }
 
   Future<bool> _openConfirmDialog(String title, String content) async {
@@ -250,35 +295,77 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                               : Styles.getTextFieldDecorationUnderline('Waste'),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            margin:
-                                EdgeInsets.only(top: 20, bottom: 20, right: 10),
-                            child: Text(
-                              this.languageCode == Constants.languages[0]
-                                  ? 'Data:'
-                                  : 'Date:',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              _selectDate();
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 10),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: 20, bottom: 10, left: 20, right: 20),
+                        child: Stack(
+                          children: [
+                            Container(
+                              alignment: Alignment.topLeft,
                               child: Text(
-                                DateFormat.yMd(localeLanguage)
-                                    .add_jm()
-                                    .format(this.editWasteForm.spendDate),
-                                style: TextStyle(fontSize: 16),
+                                this.userDto.language == Constants.languages[0]
+                                    ? 'Categoria:'
+                                    : 'Category:',
+                                style: TextStyle(
+                                    color: Colors.grey.shade600, fontSize: 16),
                               ),
                             ),
-                          ),
-                        ],
+                            GestureDetector(
+                              onTap: () {
+                                _openCategoryBottomSheet();
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: categorySelected != null
+                                    ? Text(
+                                        this.userDto.language ==
+                                                Constants.languages[0]
+                                            ? categorySelected.displayNamePt
+                                            : categorySelected.displayNameEn,
+                                        style: TextStyle(fontSize: 16),
+                                      )
+                                    : Container(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        height: 1,
+                        child: Divider(),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                            top: 30, left: 20, bottom: 20, right: 10),
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                this.userDto.language == Constants.languages[0]
+                                    ? 'Data:'
+                                    : 'Date:',
+                                style: TextStyle(
+                                    color: Colors.grey.shade600, fontSize: 16),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _selectDate();
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  DateFormat.yMd(this.localeLanguage)
+                                      .add_jm()
+                                      .format(this.editWasteForm.spendDate),
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
                         child: DropdownButton<String>(

@@ -57,7 +57,7 @@ class SpendsService {
     return success;
   }
 
-  Future<bool> updateWaste(EditWasteForm form) async {
+  Future<bool> updateWaste(EditWasteForm form, String previousCategoryId) async {
     bool success = false;
 
     String uid = AuthService.currentUser.uid;
@@ -68,6 +68,7 @@ class SpendsService {
     String reason = form.reason.text;
     String walletId = form.walletId;
     String spendId = form.spendId;
+    String categoryId = form.categoryId;
 
     String wasteString = form.waste.text.replaceAll(',', '');
     double waste = double.parse(wasteString);
@@ -79,8 +80,16 @@ class SpendsService {
       'walletId': walletId,
       'waste': waste,
       'lastUpdate': lastUpdateDate,
+      'categoryId': categoryId,
     }, merge: true).then((onValue) {
       success = true;
+
+      if (categoryId != previousCategoryId) {
+        this.spendingCategoriesService.decrementSpendsWithThisCategory(previousCategoryId);
+        this.spendingCategoriesService.incrementSpendsWithThisCategory(categoryId);
+      }
+      
+
       return success;
     }).catchError((onError) {
       print(onError);
@@ -291,7 +300,7 @@ class SpendsService {
         double waste = double.parse(obj['waste'].toString());
 
         var spend = SpendItem(obj['userId'], obj['reason'], spendDate.toDate(),
-            waste, spendId, obj['walletId']);
+            waste, spendId, obj['walletId'], obj['categoryId']);
 
         spendsList.add(spend);
       });
