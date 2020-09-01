@@ -176,7 +176,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
         this.loading = true;
       });
 
-      var success = await this.spendsService.deleteWaste(spend.spendId);
+      var success = await this.spendsService.deleteWaste(spend.spendId, spend.categoryId);
 
       if (success) {
         Navigator.pop(context, true);

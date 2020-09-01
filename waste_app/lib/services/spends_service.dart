@@ -14,8 +14,8 @@ import 'spending_categories_service.dart';
 class SpendsService {
   final dbReference = Firestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
-  SpendingCategoriesService spendingCategoriesService = SpendingCategoriesService();
-
+  SpendingCategoriesService spendingCategoriesService =
+      SpendingCategoriesService();
 
   Future<bool> waste(NewWasteForm form) async {
     bool success = false;
@@ -41,7 +41,9 @@ class SpendsService {
       'categoryId': categoryId,
       'waste': waste
     }).then((onValue) {
-      this.spendingCategoriesService.incrementSpendsWithThisCategory(categoryId);
+      this
+          .spendingCategoriesService
+          .incrementSpendsWithThisCategory(categoryId);
     }).catchError((onError) {
       print(onError);
       SmartError errorDto = SmartError();
@@ -57,7 +59,8 @@ class SpendsService {
     return success;
   }
 
-  Future<bool> updateWaste(EditWasteForm form, String previousCategoryId) async {
+  Future<bool> updateWaste(
+      EditWasteForm form, String previousCategoryId) async {
     bool success = false;
 
     String uid = AuthService.currentUser.uid;
@@ -85,10 +88,13 @@ class SpendsService {
       success = true;
 
       if (categoryId != previousCategoryId) {
-        this.spendingCategoriesService.decrementSpendsWithThisCategory(previousCategoryId);
-        this.spendingCategoriesService.incrementSpendsWithThisCategory(categoryId);
+        this
+            .spendingCategoriesService
+            .decrementSpendsWithThisCategory(previousCategoryId);
+        this
+            .spendingCategoriesService
+            .incrementSpendsWithThisCategory(categoryId);
       }
-      
 
       return success;
     }).catchError((onError) {
@@ -105,7 +111,7 @@ class SpendsService {
     return success;
   }
 
-  Future<bool> deleteWaste(String spendId) async {
+  Future<bool> deleteWaste(String spendId, String spendCategoryId) async {
     bool success = false;
 
     await this
@@ -116,6 +122,10 @@ class SpendsService {
         .then((onValue) {
       success = true;
       return success;
+    }).then((value) {
+      this
+        .spendingCategoriesService
+        .decrementSpendsWithThisCategory(spendCategoryId);
     }).catchError((onError) {
       print(onError);
       SmartError errorDto = SmartError();
@@ -247,8 +257,10 @@ class SpendsService {
         categories.add(category);
       });
       return isPtLanguage
-          ? (categories.sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
-          : (categories.sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));
+          ? (categories
+              .sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
+          : (categories
+              .sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));
     }).catchError((onError) {
       print(onError);
 
