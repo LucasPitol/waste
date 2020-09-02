@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/smart_error.dart';
+import 'package:waste_app/models/spending_category.dart';
+import 'package:waste_app/utils/constants.dart';
 
 import 'auth_service.dart';
 import 'smart_error_service.dart';
@@ -18,9 +20,8 @@ class SpendingCategoriesService {
       int previousSpendsCount = category['spendsWithThisCategoryCount'];
 
       if (previousSpendsCount != null && previousSpendsCount > 0) {
-
         int newSpendCount = (previousSpendsCount - 1);
-        
+
         docRef.setData({
           'spendsWithThisCategoryCount': newSpendCount,
         }, merge: true).catchError((onError) {
@@ -63,5 +64,45 @@ class SpendingCategoriesService {
         this.smartErrorService.saveError(errorDto);
       });
     });
+  }
+
+  Future<List<SpendingCategory>> getCategoriesById(
+      List<String> categoryIdItems) async {
+        bool isPtLanguage =
+        AuthService.currentUser.language == Constants.languages[0];
+    List<SpendingCategory> categories = List<SpendingCategory>();
+
+    await this
+        .dbReference
+        .collection('spendingCategories')
+        .where('categoryId', arrayContains: categoryIdItems)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((element) {
+        String categoryId = element.documentID;
+        var obj = element.data;
+
+        SpendingCategory category = SpendingCategory(categoryId,
+            obj['displayNamePt'], obj['displayNameEn'], obj['value']);
+
+        categories.add(category);
+      });
+      return categories;
+    }).catchError((onError) {
+      print(onError);
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'get spendingCategories by ids';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
+      return isPtLanguage
+          ? (categories
+              .sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
+          : (categories
+              .sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));;
+    });
+    return categories;
   }
 }

@@ -3,8 +3,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -18,6 +20,7 @@ class SpendsComponent extends StatefulWidget {
 class SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
   List<SpendByMonthDto> spendsByMonthDtoList = [];
+  List<SpendingCategory> categoriesAvailable = [];
 
   String localeLanguage =
       AuthService.currentUser.language == Constants.languages[0]
@@ -31,12 +34,15 @@ class SpendsComponentState extends State<SpendsComponent>
   DateTime dateSelected = DateTime.now();
 
   bool listLoading = true;
+  bool categoriesLoading = true;
   bool spendsByMonthLoading = true;
   bool headerExpanded = false;
   double appbarHeight = 80.0;
   double menuHeight = 0.0;
 
   SpendsService spendsService = SpendsService();
+  SpendingCategoriesService spendingCategoriesService =
+      SpendingCategoriesService();
   AuthService authService = AuthService();
 
   Animation<double> openAnimation, closeAnimation;
@@ -110,6 +116,7 @@ class SpendsComponentState extends State<SpendsComponent>
     setState(() {
       this.listLoading = true;
       this.spendList = [];
+      this.categoriesLoading = true;
     });
 
     this.spendList = await this.spendsService.getSpendsByMonth(date);
@@ -117,10 +124,37 @@ class SpendsComponentState extends State<SpendsComponent>
     if (spendList.isNotEmpty) {
       this.calculateTotalWaste();
       this.dateSelected = this.spendList.first.spendDate;
+      this.getCategories();
     }
 
     setState(() {
       this.listLoading = false;
+    });
+  }
+
+  Future<void> getCategories() async {
+    List<String> categoryIdItems = [];
+    this.categoriesAvailable = [];
+
+    for (SpendItem spend in spendList) {
+      String categoryId = spend.categoryId;
+      if (categoryId != null && categoryId.isNotEmpty) {
+        categoryIdItems.add(categoryId);
+      }
+    }
+
+    if (categoryIdItems.isNotEmpty) {
+      List<SpendingCategory> categoriesAvailableTemp = await this
+          .spendingCategoriesService
+          .getCategoriesById(categoryIdItems);
+      this
+          .categoriesAvailable
+          .add(SpendingCategory('0', 'Todos', 'All', 'all'));
+      this.categoriesAvailable.addAll(categoriesAvailableTemp);
+    }
+
+    setState(() {
+      this.categoriesLoading = false;
     });
   }
 
@@ -200,6 +234,12 @@ class SpendsComponentState extends State<SpendsComponent>
         //   color: Colors.deepPurple.shade700,
         // ),
       ),
+    );
+  }
+
+  Widget createFilterChip(SpendingCategory item) {
+    return Container(
+      child: Text(item.displayNamePt),
     );
   }
 
@@ -300,6 +340,21 @@ class SpendsComponentState extends State<SpendsComponent>
                     child: Center(
                       child: Column(
                         children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: categoriesLoading
+                                ? Container()
+                                : SingleChildScrollView(
+                                    physics: BouncingScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    child: Column(
+                                      children: this
+                                          .categoriesAvailable
+                                          .map((item) => createFilterChip(item))
+                                          .toList(),
+                                    ),
+                                  ),
+                          ),
                           Flexible(
                             child: Container(
                               alignment: Alignment.topCenter,
