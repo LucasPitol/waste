@@ -39,6 +39,7 @@ class SpendsComponentState extends State<SpendsComponent>
   bool headerExpanded = false;
   double appbarHeight = 80.0;
   double menuHeight = 0.0;
+  SpendingCategory categorySelected;
 
   SpendsService spendsService = SpendsService();
   SpendingCategoriesService spendingCategoriesService =
@@ -136,6 +137,10 @@ class SpendsComponentState extends State<SpendsComponent>
     List<String> categoryIdItems = [];
     this.categoriesAvailable = [];
 
+    this.categoriesAvailable.add(SpendingCategory('0', 'Todos', 'All', 'all'));
+
+    this.categorySelected = this.categoriesAvailable[0];
+
     for (SpendItem spend in spendList) {
       String categoryId = spend.categoryId;
       if (categoryId != null && categoryId.isNotEmpty) {
@@ -147,9 +152,7 @@ class SpendsComponentState extends State<SpendsComponent>
       List<SpendingCategory> categoriesAvailableTemp = await this
           .spendingCategoriesService
           .getCategoriesById(categoryIdItems);
-      this
-          .categoriesAvailable
-          .add(SpendingCategory('0', 'Todos', 'All', 'all'));
+
       this.categoriesAvailable.addAll(categoriesAvailableTemp);
     }
 
@@ -230,17 +233,37 @@ class SpendsComponentState extends State<SpendsComponent>
             ),
           ],
         ),
-        // Divider(
-        //   color: Colors.deepPurple.shade700,
-        // ),
       ),
     );
   }
 
   Widget createFilterChip(SpendingCategory item) {
-    return Container(
-      child: Text(item.displayNamePt),
-    );
+    bool isCategorySelected = item.id == this.categorySelected.id;
+
+    return GestureDetector(
+        onTap: () {
+          setState(() {
+            this.categorySelected = item;
+          });
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 5),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+          decoration: BoxDecoration(
+            borderRadius: Styles.defaultBorderRadius,
+            border: Border.all(color: Colors.deepPurple),
+            color: isCategorySelected
+                ? Colors.deepPurple
+                : Styles.mainBackgroundColor,
+          ),
+          child: Text(
+            item.displayNamePt,
+            style: TextStyle(
+                color: isCategorySelected
+                    ? Colors.deepPurple.shade50
+                    : Colors.deepPurple),
+          ),
+        ));
   }
 
   @override
@@ -337,28 +360,35 @@ class SpendsComponentState extends State<SpendsComponent>
                   color: Colors.transparent,
                   child: Material(
                     elevation: 16.0,
-                    child: Center(
+                    child: Container(
                       child: Column(
                         children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: categoriesLoading
-                                ? Container()
-                                : SingleChildScrollView(
-                                    physics: BouncingScrollPhysics(),
+                          categoriesLoading
+                              ? Container(
+                                  height: 50,
+                                )
+                              : Container(
+                                alignment: Alignment.centerLeft,
+                                  child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
-                                    child: Column(
-                                      children: this
-                                          .categoriesAvailable
-                                          .map((item) => createFilterChip(item))
-                                          .toList(),
+                                    physics: const BouncingScrollPhysics(),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 25, vertical: 10),
+                                      child: Row(
+                                        children: categoriesAvailable
+                                            .map((item) =>
+                                                createFilterChip(item))
+                                            .toList(),
+                                      ),
                                     ),
                                   ),
-                          ),
+                                ),
                           Flexible(
                             child: Container(
                               alignment: Alignment.topCenter,
-                              margin: EdgeInsets.only(left: 20, right: 20),
+                              margin: EdgeInsets.only(
+                                  left: 20, right: 20, bottom: 10),
                               child: listLoading
                                   ? Container(
                                       width: double.infinity,
