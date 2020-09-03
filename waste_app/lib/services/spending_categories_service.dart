@@ -68,14 +68,14 @@ class SpendingCategoriesService {
 
   Future<List<SpendingCategory>> getCategoriesById(
       List<String> categoryIdItems) async {
-        bool isPtLanguage =
+    bool isPtLanguage =
         AuthService.currentUser.language == Constants.languages[0];
     List<SpendingCategory> categories = List<SpendingCategory>();
 
     await this
         .dbReference
         .collection('spendingCategories')
-        .where('categoryId', arrayContains: categoryIdItems)
+        .where('categoryId', whereIn: categoryIdItems)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((element) {
@@ -87,7 +87,11 @@ class SpendingCategoriesService {
 
         categories.add(category);
       });
-      return categories;
+      return isPtLanguage
+          ? (categories
+              .sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
+          : (categories
+              .sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));
     }).catchError((onError) {
       print(onError);
       SmartError errorDto = SmartError();
@@ -97,11 +101,7 @@ class SpendingCategoriesService {
 
       this.smartErrorService.saveError(errorDto);
 
-      return isPtLanguage
-          ? (categories
-              .sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
-          : (categories
-              .sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));;
+      return categories;
     });
     return categories;
   }
