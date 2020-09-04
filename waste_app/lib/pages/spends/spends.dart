@@ -243,7 +243,7 @@ class SpendsComponentState extends State<SpendsComponent>
     return GestureDetector(
         onTap: () {
           setState(() {
-            this.categorySelected = item;
+            this.categorySelected = isCategorySelected ? this.categoriesAvailable[0] : item;
           });
         },
         child: Container(
