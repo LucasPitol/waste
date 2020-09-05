@@ -275,6 +275,65 @@ class SpendsService {
     return categories;
   }
 
+  Future<List<SpendItem>> getSpendsByMonthFiltered(DateTime completeDate, String categoryId) async {
+    List<SpendItem> spendsList = List<SpendItem>();
+
+    DateTime fistDayOfCurrentMonth =
+        DateTime(completeDate.year, completeDate.month, 1);
+
+    Timestamp fistDayOfCurrentMonthTimestamp =
+        Timestamp.fromDate(fistDayOfCurrentMonth);
+
+    DateTime firstDayOfNextMonth =
+        DateTime(completeDate.year, completeDate.month + 1, 1, 23, 59, 59);
+
+    DateTime lastDayOfCurrentMonth =
+        firstDayOfNextMonth.add(Duration(days: -1));
+
+    Timestamp lastDayOfCurrentMonthTimestamp =
+        Timestamp.fromDate(lastDayOfCurrentMonth);
+
+    UserDto user = AuthService.currentUser;
+    String walletId = user.currentWalletId;
+
+    await dbReference
+        .collection('spends')
+        .where('walletId', isEqualTo: walletId)
+        .where('spendDate',
+            isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
+        .where('spendDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
+        .where('categoryId', isEqualTo: categoryId)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((item) {
+        String spendId = item.documentID;
+        var obj = item.data;
+
+        Timestamp spendDate = obj['spendDate'];
+        double waste = double.parse(obj['waste'].toString());
+
+        var spend = SpendItem(obj['userId'], obj['reason'], spendDate.toDate(),
+            waste, spendId, obj['walletId'], obj['categoryId']);
+
+        spendsList.add(spend);
+      });
+      return spendsList.sort((a, b) => b.spendDate.compareTo(a.spendDate));
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Get list of spends by month';
+      errorDto.userId = user.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
+      return spendsList;
+    });
+
+    return spendsList;
+  }
+
   Future<List<SpendItem>> getSpendsByMonth(DateTime completeDate) async {
     List<SpendItem> spendsList = List<SpendItem>();
 

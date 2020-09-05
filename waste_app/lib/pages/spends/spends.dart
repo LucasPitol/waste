@@ -120,7 +120,13 @@ class SpendsComponentState extends State<SpendsComponent>
       this.categoriesLoading = true;
     });
 
-    this.spendList = await this.spendsService.getSpendsByMonth(date);
+    String categorySelectedId = this.categorySelected == null ? '0' : this.categorySelected.id;
+
+    if (categorySelectedId == '0') {
+      this.spendList = await this.spendsService.getSpendsByMonth(date);
+    } else {
+      this.spendList = await this.spendsService.getSpendsByMonthFiltered(date, categorySelectedId);
+    }
 
     if (spendList.isNotEmpty) {
       this.calculateTotalWaste();
@@ -134,6 +140,10 @@ class SpendsComponentState extends State<SpendsComponent>
   }
 
   Future<void> getCategories() async {
+    setState(() {
+      this.categoriesLoading = true;
+    });
+
     List<String> categoryIdItems = [];
     this.categoriesAvailable = [];
 
@@ -237,14 +247,25 @@ class SpendsComponentState extends State<SpendsComponent>
     );
   }
 
+  void _filterSpends() {
+    String categorySelectedId = this.categorySelected.id;
+
+    
+    this._getSpends(this.dateSelected);
+    
+  }
+
   Widget createFilterChip(SpendingCategory item) {
     bool isCategorySelected = item.id == this.categorySelected.id;
 
     return GestureDetector(
         onTap: () {
           setState(() {
-            this.categorySelected = isCategorySelected ? this.categoriesAvailable[0] : item;
+            this.categorySelected =
+                isCategorySelected ? this.categoriesAvailable[0] : item;
           });
+
+          this._filterSpends();
         },
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 5),
@@ -368,7 +389,7 @@ class SpendsComponentState extends State<SpendsComponent>
                                   height: 50,
                                 )
                               : Container(
-                                alignment: Alignment.centerLeft,
+                                  alignment: Alignment.centerLeft,
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     physics: const BouncingScrollPhysics(),
