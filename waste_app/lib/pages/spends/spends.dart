@@ -39,7 +39,8 @@ class SpendsComponentState extends State<SpendsComponent>
   bool headerExpanded = false;
   double appbarHeight = 80.0;
   double menuHeight = 0.0;
-  SpendingCategory categorySelected;
+  SpendingCategory categorySelected =
+      SpendingCategory('0', 'Todos', 'All', 'all');
 
   SpendsService spendsService = SpendsService();
   SpendingCategoriesService spendingCategoriesService =
@@ -78,8 +79,7 @@ class SpendsComponentState extends State<SpendsComponent>
           });
         },
       );
-    SchedulerBinding.instance
-        .addPostFrameCallback((_) => this._getCurrentSpends());
+    SchedulerBinding.instance.addPostFrameCallback((_) => this.refreshData());
   }
 
   Future<void> _getSpendsByMonthDtoList() async {
@@ -96,11 +96,6 @@ class SpendsComponentState extends State<SpendsComponent>
     });
   }
 
-  _getCurrentSpends() {
-    var now = DateTime.now();
-    _getSpends(now);
-  }
-
   void calculateTotalWaste() {
     double total = 0.0;
 
@@ -113,25 +108,27 @@ class SpendsComponentState extends State<SpendsComponent>
     });
   }
 
-  Future<void> _getSpends(DateTime date) async {
+  Future<void> _getSpends(DateTime date, String categorySelectedId) async {
     setState(() {
       this.listLoading = true;
       this.spendList = [];
-      this.categoriesLoading = true;
     });
-
-    String categorySelectedId = this.categorySelected == null ? '0' : this.categorySelected.id;
 
     if (categorySelectedId == '0') {
       this.spendList = await this.spendsService.getSpendsByMonth(date);
+
+      if (categoriesAvailable.isEmpty || categoriesAvailable.length <= 1) {
+        this.getCategories();
+      }
     } else {
-      this.spendList = await this.spendsService.getSpendsByMonthFiltered(date, categorySelectedId);
+      this.spendList = await this
+          .spendsService
+          .getSpendsByMonthFiltered(date, categorySelectedId);
     }
 
     if (spendList.isNotEmpty) {
       this.calculateTotalWaste();
       this.dateSelected = this.spendList.first.spendDate;
-      this.getCategories();
     }
 
     setState(() {
@@ -186,7 +183,8 @@ class SpendsComponentState extends State<SpendsComponent>
 
   void refreshData() {
     this.spendsByMonthDtoList = [];
-    this._getSpends(dateSelected);
+    this._getSpends(dateSelected, this.categorySelected.id);
+    this.categorySelected = SpendingCategory('0', 'Todos', 'All', 'all');
   }
 
   @override
@@ -207,7 +205,10 @@ class SpendsComponentState extends State<SpendsComponent>
           this.totalWaste = item.spent;
         });
         _handleHeaderPress();
-        _getSpends(item.date);
+        this.categoriesAvailable = [];
+        this.categorySelected = SpendingCategory('0', 'Todos', 'All', 'all');
+        this.categoriesAvailable.add(categorySelected);
+        _getSpends(item.date, this.categorySelected.id);
       },
       child: Container(
         margin: EdgeInsets.only(top: 5, bottom: 5),
@@ -247,14 +248,6 @@ class SpendsComponentState extends State<SpendsComponent>
     );
   }
 
-  void _filterSpends() {
-    String categorySelectedId = this.categorySelected.id;
-
-    
-    this._getSpends(this.dateSelected);
-    
-  }
-
   Widget createFilterChip(SpendingCategory item) {
     bool isCategorySelected = item.id == this.categorySelected.id;
 
@@ -265,7 +258,9 @@ class SpendsComponentState extends State<SpendsComponent>
                 isCategorySelected ? this.categoriesAvailable[0] : item;
           });
 
-          this._filterSpends();
+          String categoryId = isCategorySelected ? '0' : item.id;
+
+          this._getSpends(this.dateSelected, categoryId);
         },
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 5),
