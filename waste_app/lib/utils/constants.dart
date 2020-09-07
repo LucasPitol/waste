@@ -9,6 +9,7 @@ class Constants {
   static String enLanguage = 'en-GB';
 
   static Map<String, IconData> categoryIconDict = {
+    'bankRate': Icons.account_balance,
     'education': Icons.school,
     'drugStore': Icons.local_pharmacy,
     'food': Icons.fastfood,
@@ -18,6 +19,7 @@ class Constants {
     'market': Icons.shopping_cart,
     'recreation': Icons.local_bar,
     'transport': Icons.directions_bus,
+    'salary': Icons.work,
     'shopping': Icons.shopping_basket,
   };
 
