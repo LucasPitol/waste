@@ -466,6 +466,37 @@ class ProfileComponentState extends State<ProfileComponent> {
                     alignment: Alignment.center,
                     child: PieChartProfileComponent(graphDto),
                   ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 40),
+                    child: Stack(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text('01/01/2020'),
+                            Text('até'),
+                            Text('20/08/2020'),
+                          ],
+                        ),
+                        Container(
+                          width: 45,
+                          height: 45,
+                          decoration: Styles.loginBox,
+                          child: Material(
+                            borderRadius: Styles.circularBorderRadius,
+                            child: InkWell(
+                              borderRadius: Styles.circularBorderRadius,
+                              child: Icon(
+                                Icons.calendar_today,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
