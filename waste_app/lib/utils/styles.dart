@@ -19,11 +19,23 @@ class Styles {
   );
 
   static BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(20));
-  static BorderRadius circularBorderRadius = BorderRadius.all(Radius.circular(100));
+  static BorderRadius circularBorderRadius = BorderRadius.all(Radius.circular(200));
 
   static BoxDecoration loginBox = BoxDecoration(
     color: mainBackgroundColor,
     borderRadius: defaultBorderRadius,
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.shade400,
+        offset: Offset(0, 0),
+        blurRadius: 2,
+      ),
+    ],
+  );
+
+  static BoxDecoration circleBox = BoxDecoration(
+    color: mainBackgroundColor,
+    shape: BoxShape.circle,
     boxShadow: [
       BoxShadow(
         color: Colors.grey.shade400,

@@ -468,24 +468,25 @@ class ProfileComponentState extends State<ProfileComponent> {
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 40),
-                    child: Stack(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text('01/01/2020'),
-                            Text('até'),
-                            Text('20/08/2020'),
-                          ],
-                        ),
                         Container(
                           width: 45,
                           height: 45,
-                          decoration: Styles.loginBox,
+                        ),
+                        Text('01/01/2020'),
+                        Text('até'),
+                        Text('20/08/2020'),
+                        Container(
+                          width: 45,
+                          height: 45,
+                          decoration: Styles.circleBox,
                           child: Material(
                             borderRadius: Styles.circularBorderRadius,
                             child: InkWell(
+                              onTap: () {},
                               borderRadius: Styles.circularBorderRadius,
                               child: Icon(
                                 Icons.calendar_today,
