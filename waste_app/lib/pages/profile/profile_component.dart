@@ -3,6 +3,7 @@ import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:waste_app/pages/profile/drawer_menu_item.dart';
+import 'package:waste_app/pages/profile/pire_chart_profile.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
@@ -31,6 +32,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   bool isWalletOwner = false;
   bool loading = false;
   String appVersion = '1.0.4';
+  Map<String, double> graphDto;
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   SpendsService spendService;
@@ -169,10 +171,22 @@ class ProfileComponentState extends State<ProfileComponent> {
     this._getTotalWasteThisYear();
   }
 
+  _buildGraphData() {
+    Map<String, double> spendsByCategoryMapLocal = new Map<String, double>();
+
+    spendsByCategoryMapLocal.putIfAbsent('Passagem', () => 200.0);
+    spendsByCategoryMapLocal.putIfAbsent('Comida', () => 150.0);
+    spendsByCategoryMapLocal.putIfAbsent('Lazer', () => 120.0);
+    spendsByCategoryMapLocal.putIfAbsent('Internet', () => 50.0);
+    graphDto = spendsByCategoryMapLocal;
+  }
+
   Future<void> _getTotalWasteThisYear() async {
     setState(() {
       totalWasteThisYearLoading = true;
     });
+
+    this._buildGraphData();
 
     DateTime now = DateTime.now();
 
@@ -366,92 +380,91 @@ class ProfileComponentState extends State<ProfileComponent> {
               margin: EdgeInsets.only(top: 50),
               decoration: Styles.containerDecoration,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.topLeft,
-                          margin: EdgeInsets.only(left: 20),
-                          child: DropdownButton<String>(
-                            value: dropdownWalletValue,
-                            icon: Icon(Icons.keyboard_arrow_down),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                                fontSize: 14,
-                              ),
-                            ),
-                            underline: Container(
-                              height: 1,
-                              color: Colors.white10,
-                            ),
-                            onChanged: (String newValue) {
-                              switchWallets(newValue);
-                            },
-                            items: wallets
-                                .map<DropdownMenuItem<String>>((Wallet item) {
-                              return DropdownMenuItem<String>(
-                                value: item.id,
-                                child: Text(item.name),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        isWalletOwner
-                            ? Container(
-                                alignment: Alignment.topRight,
-                                child: FlatButton(
-                                  onPressed: _goToEditWalletPage,
-                                  child: Text(
-                                    this.languageCode == Constants.languages[0]
-                                        ? 'Editar'
-                                        : 'Edit',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14.0,
-                                      color: Colors.deepPurple,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  Stack(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
-                        alignment: Alignment.topCenter,
-                        margin: EdgeInsets.only(top: 50),
-                        width: 200,
-                        child: Container(
-                          child: totalWasteThisYearLoading
-                              ? Container(
-                                  width: double.infinity,
-                                  alignment: Alignment.center,
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                        accentColor: Colors.deepPurple),
-                                    child: new CircularProgressIndicator(),
-                                  ),
-                                )
-                              : Text(
-                                  '-' +
-                                      Constants.getAmountFormated(
-                                          totalWasteThisYear),
-                                  style: TextStyle(
-                                    color: Colors.deepPurple,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 18,
-                                  ),
-                                ),
+                        alignment: Alignment.topLeft,
+                        margin: EdgeInsets.only(left: 20),
+                        child: DropdownButton<String>(
+                          value: dropdownWalletValue,
+                          icon: Icon(Icons.keyboard_arrow_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          ),
+                          underline: Container(
+                            height: 1,
+                            color: Colors.white10,
+                          ),
+                          onChanged: (String newValue) {
+                            switchWallets(newValue);
+                          },
+                          items: wallets
+                              .map<DropdownMenuItem<String>>((Wallet item) {
+                            return DropdownMenuItem<String>(
+                              value: item.id,
+                              child: Text(item.name),
+                            );
+                          }).toList(),
                         ),
                       ),
+                      isWalletOwner
+                          ? Container(
+                              alignment: Alignment.topRight,
+                              child: FlatButton(
+                                onPressed: _goToEditWalletPage,
+                                child: Text(
+                                  this.languageCode == Constants.languages[0]
+                                      ? 'Editar'
+                                      : 'Edit',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14.0,
+                                    color: Colors.deepPurple,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(),
                     ],
+                  ),
+                  Container(
+                    child: Container(
+                      child: totalWasteThisYearLoading
+                          ? Container(
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              child: Theme(
+                                data: Theme.of(context)
+                                    .copyWith(accentColor: Colors.deepPurple),
+                                child: new CircularProgressIndicator(),
+                              ),
+                            )
+                          : Text(
+                              '-' +
+                                  Constants.getAmountFormated(
+                                      totalWasteThisYear),
+                              style: TextStyle(
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                              ),
+                            ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: PieChartProfileComponent(graphDto),
                   ),
                 ],
               ),

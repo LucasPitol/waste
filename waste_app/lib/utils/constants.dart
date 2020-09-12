@@ -23,6 +23,13 @@ class Constants {
     'shopping': Icons.shopping_basket,
   };
 
+  static List<Color> chartColorList = [
+    Colors.deepPurple[900],
+    Colors.deepPurple,
+    Colors.deepPurple[300],
+    Colors.deepPurple[100],
+  ];
+
   static IconData getCategoryIcon(String value) {
     return categoryIconDict.containsKey(value)
         ? categoryIconDict[value]
