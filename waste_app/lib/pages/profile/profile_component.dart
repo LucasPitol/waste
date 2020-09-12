@@ -422,30 +422,13 @@ class ProfileComponentState extends State<ProfileComponent> {
                       ],
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.topCenter,
-                    margin: EdgeInsets.only(top: 20),
-                    width: 200,
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurple.shade50,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(top: 10, bottom: 5),
-                          child: Text(
-                            this.languageCode == Constants.languages[0]
-                                ? 'Gastos em 2020'
-                                : 'Spending in 2020',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(bottom: 10),
+                  Stack(
+                    children: [
+                      Container(
+                        alignment: Alignment.topCenter,
+                        margin: EdgeInsets.only(top: 50),
+                        width: 200,
+                        child: Container(
                           child: totalWasteThisYearLoading
                               ? Container(
                                   width: double.infinity,
@@ -467,8 +450,8 @@ class ProfileComponentState extends State<ProfileComponent> {
                                   ),
                                 ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
