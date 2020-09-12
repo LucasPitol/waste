@@ -17,19 +17,28 @@ class PieChartProfileComponent extends StatelessWidget {
         animationDuration: Duration(milliseconds: 400),
         chartLegendSpacing: 32.0,
         chartRadius: MediaQuery.of(context).size.width / 2.6,
-        showChartValuesInPercentage: true,
-        showChartValues: true,
-        showChartValuesOutside: false,
-        chartValueBackgroundColor: Colors.deepPurple[50],
         colorList: Constants.chartColorList,
-        showLegends: true,
-        legendPosition: LegendPosition.right,
-        decimalPlaces: 1,
-        showChartValueLabel: true,
-        initialAngle: 0,
-        chartValueStyle: defaultChartValueStyle.copyWith(
-          color: Colors.blueGrey[900].withOpacity(0.9),
+        legendOptions: LegendOptions(
+          legendPosition: LegendPosition.right,
+          legendShape: BoxShape.circle,
+          legendTextStyle: TextStyle(color: Colors.grey.shade900),
+          showLegendsInRow: false,
         ),
+        chartValuesOptions: ChartValuesOptions(
+          chartValueBackgroundColor: Colors.deepPurple.shade50,
+          // chartValueStyle: 
+          decimalPlaces: 1,
+          showChartValues: true,
+          showChartValuesInPercentage: true,
+          showChartValuesOutside: false,
+        ),
+
+        // showLegends: true,
+        // showChartValueLabel: true,
+        // initialAngle: 0,
+        // chartValueStyle: defaultChartValueStyle.copyWith(
+        //   color: Colors.blueGrey[900].withOpacity(0.9),
+        // ),
         chartType: ChartType.disc,
       ),
     );
