@@ -476,9 +476,18 @@ class ProfileComponentState extends State<ProfileComponent> {
                           width: 45,
                           height: 45,
                         ),
-                        Text('01/01/2020'),
-                        Text('até'),
-                        Text('20/08/2020'),
+                        Text(
+                          '01/01/2020',
+                          style: Styles.poppinsText,
+                        ),
+                        Text(
+                          'até',
+                          style: Styles.poppinsTextGrey,
+                        ),
+                        Text(
+                          '20/08/2020',
+                          style: Styles.poppinsText,
+                        ),
                         Container(
                           width: 45,
                           height: 45,

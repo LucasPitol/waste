@@ -18,8 +18,16 @@ class Styles {
     fontSize: 18.0,
   );
 
-  static BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(20));
-  static BorderRadius circularBorderRadius = BorderRadius.all(Radius.circular(200));
+  static TextStyle poppinsText =
+      TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w500);
+
+      static TextStyle poppinsTextGrey =
+      TextStyle(color: Colors.grey, fontWeight: FontWeight.w500);
+
+  static BorderRadius defaultBorderRadius =
+      BorderRadius.all(Radius.circular(20));
+  static BorderRadius circularBorderRadius =
+      BorderRadius.all(Radius.circular(200));
 
   static BoxDecoration loginBox = BoxDecoration(
     color: mainBackgroundColor,
@@ -68,8 +76,7 @@ class Styles {
 
   static getTextFieldDecorationUnderline(String value) {
     return InputDecoration(
-      border: UnderlineInputBorder(
-      ),
+      border: UnderlineInputBorder(),
       enabledBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.grey.shade300),
       ),
