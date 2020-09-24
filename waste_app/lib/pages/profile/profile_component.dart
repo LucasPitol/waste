@@ -32,7 +32,6 @@ class ProfileComponentState extends State<ProfileComponent> {
   bool isWalletOwner = false;
   bool loading = false;
   String appVersion = '1.0.4';
-  Map<String, double> graphDto;
   DateTime startDate = null;
   DateTime endDate = null;
   ProfileDto profileDto;
@@ -175,24 +174,13 @@ class ProfileComponentState extends State<ProfileComponent> {
     this._getTotalProfileData();
   }
 
-  _buildGraphData() {
-    Map<String, double> spendsByCategoryMapLocal = new Map<String, double>();
-
-    spendsByCategoryMapLocal.putIfAbsent('Passagem', () => 200.0);
-    spendsByCategoryMapLocal.putIfAbsent('Comida', () => 150.0);
-    spendsByCategoryMapLocal.putIfAbsent('Lazer', () => 120.0);
-    spendsByCategoryMapLocal.putIfAbsent('Internet', () => 50.0);
-    graphDto = spendsByCategoryMapLocal;
-  }
-
   Future<void> _getTotalProfileData() async {
     setState(() {
       totalWasteThisYearLoading = true;
     });
 
-    this._buildGraphData();
-
-    ProfileDto profileDtoTemp = await this.spendService.getProfileData(this.startDate, this.endDate);
+    ProfileDto profileDtoTemp =
+        await this.spendService.getProfileData(this.startDate, this.endDate);
 
     this.profileDto = profileDtoTemp;
 
@@ -466,7 +454,18 @@ class ProfileComponentState extends State<ProfileComponent> {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    child: PieChartProfileComponent(graphDto),
+                    child: totalWasteThisYearLoading
+                        ? Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Theme(
+                              data: Theme.of(context)
+                                  .copyWith(accentColor: Colors.deepPurple),
+                              child: new CircularProgressIndicator(),
+                            ),
+                          )
+                        : PieChartProfileComponent(
+                            profileDto.spendsByCategoryMap),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 40),
@@ -497,9 +496,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                           child: Material(
                             borderRadius: Styles.circularBorderRadius,
                             child: InkWell(
-                              onTap: () {
-
-                              },
+                              onTap: () {},
                               borderRadius: Styles.circularBorderRadius,
                               child: Icon(
                                 Icons.calendar_today,

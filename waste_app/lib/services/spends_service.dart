@@ -195,6 +195,7 @@ class SpendsService {
   Future<ProfileDto> getProfileData(
       DateTime startDate, DateTime endDate) async {
     var profileData = ProfileDto();
+    Map<String, double> spendsByCategoryMapLocal = new Map<String, double>();
     double totalWaste = 0.0;
 
     if (startDate == null) {
@@ -209,7 +210,10 @@ class SpendsService {
     Timestamp endDateTimestamp = Timestamp.fromDate(endDate);
 
     UserDto user = AuthService.currentUser;
+    bool isPt = user.language == Constants.languages[0];
     String walletId = user.currentWalletId;
+
+    var categories = await this.getSpendingCategories();
 
     await dbReference
         .collection('spends')
@@ -223,8 +227,41 @@ class SpendsService {
 
         double waste = double.parse(obj['waste'].toString());
         totalWaste = totalWaste + waste;
+
+        var wasteCategoryId = obj['categoryId'];
+
+        if (wasteCategoryId != null) {
+          var category = categories
+              .where((element) => element.id == wasteCategoryId)
+              .first;
+
+          String key = isPt ? category.displayNamePt : category.displayNameEn;
+
+          if (spendsByCategoryMapLocal.containsKey(key)) {
+            double wasteByCategory = spendsByCategoryMapLocal[key];
+            wasteByCategory = wasteByCategory + waste;
+            spendsByCategoryMapLocal.remove(key);
+            spendsByCategoryMapLocal.putIfAbsent(key, () => wasteByCategory);
+          } else {
+            spendsByCategoryMapLocal.putIfAbsent(key, () => waste);
+          }
+        }
       });
       profileData.totalWaste = totalWaste;
+
+      var sortedKeys = spendsByCategoryMapLocal.keys.toList(growable: false)
+        ..sort((k1, k2) => spendsByCategoryMapLocal[k2]
+            .compareTo(spendsByCategoryMapLocal[k1]));
+      var sortedMap = Map<String, double>.fromIterable(sortedKeys,
+          key: (k) => k, value: (k) => spendsByCategoryMapLocal[k]);
+
+      for (int i = 0; i < sortedKeys.length; i++) {
+        if (i >= 4) {
+          sortedMap.remove(sortedKeys[i]);
+        }
+      }
+
+      profileData.spendsByCategoryMap = sortedMap;
       return profileData;
     }).catchError((onError) {
       SmartError errorDto = SmartError();
