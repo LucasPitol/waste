@@ -1,4 +1,5 @@
 import 'package:package_info/package_info.dart';
+import 'package:waste_app/models/profile_dto.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
@@ -27,12 +28,14 @@ class ProfileComponent extends StatefulWidget {
 class ProfileComponentState extends State<ProfileComponent> {
   UserDto userDto = AuthService.currentUser;
   String languageCode;
-  double totalWasteThisYear = 0.0;
   bool totalWasteThisYearLoading = true;
   bool isWalletOwner = false;
   bool loading = false;
   String appVersion = '1.0.4';
   Map<String, double> graphDto;
+  DateTime startDate = null;
+  DateTime endDate = null;
+  ProfileDto profileDto;
   var scaffoldKey = GlobalKey<ScaffoldState>();
 
   SpendsService spendService;
@@ -44,6 +47,7 @@ class ProfileComponentState extends State<ProfileComponent> {
     this.spendService = SpendsService();
     this.walletService = WalletService();
     this.authService = AuthService();
+    this.profileDto = ProfileDto();
     this.getAppVersion();
   }
 
@@ -64,7 +68,7 @@ class ProfileComponentState extends State<ProfileComponent> {
     this.authService.userExists(context);
     this._getUserWallets();
     this._updatePermission();
-    this._getTotalWasteThisYear();
+    this._getTotalProfileData();
   }
 
   bool isEndDrawerOpen() {
@@ -93,7 +97,7 @@ class ProfileComponentState extends State<ProfileComponent> {
 
     this.walletService.switchWallet(walletId);
 
-    this._getTotalWasteThisYear();
+    this._getTotalProfileData();
     this._updatePermission();
   }
 
@@ -168,7 +172,7 @@ class ProfileComponentState extends State<ProfileComponent> {
   _updatePageContent() {
     this._getUserWallets();
     this._updatePermission();
-    this._getTotalWasteThisYear();
+    this._getTotalProfileData();
   }
 
   _buildGraphData() {
@@ -181,18 +185,16 @@ class ProfileComponentState extends State<ProfileComponent> {
     graphDto = spendsByCategoryMapLocal;
   }
 
-  Future<void> _getTotalWasteThisYear() async {
+  Future<void> _getTotalProfileData() async {
     setState(() {
       totalWasteThisYearLoading = true;
     });
 
     this._buildGraphData();
 
-    DateTime now = DateTime.now();
+    ProfileDto profileDtoTemp = await this.spendService.getProfileData(this.startDate, this.endDate);
 
-    double total = await this.spendService.getTotalWasteByYear(now);
-
-    this.totalWasteThisYear = total;
+    this.profileDto = profileDtoTemp;
 
     setState(() {
       this.totalWasteThisYearLoading = false;
@@ -453,7 +455,7 @@ class ProfileComponentState extends State<ProfileComponent> {
                           : Text(
                               '-' +
                                   Constants.getAmountFormated(
-                                      totalWasteThisYear),
+                                      this.profileDto.totalWaste),
                               style: TextStyle(
                                 color: Colors.deepPurple,
                                 fontWeight: FontWeight.w500,
@@ -495,7 +497,9 @@ class ProfileComponentState extends State<ProfileComponent> {
                           child: Material(
                             borderRadius: Styles.circularBorderRadius,
                             child: InkWell(
-                              onTap: () {},
+                              onTap: () {
+
+                              },
                               borderRadius: Styles.circularBorderRadius,
                               child: Icon(
                                 Icons.calendar_today,

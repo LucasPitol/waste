@@ -1,4 +1,5 @@
 import 'package:waste_app/models/edit_waste_form.dart';
+import 'package:waste_app/models/profile_dto.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -124,8 +125,8 @@ class SpendsService {
       return success;
     }).then((value) {
       this
-        .spendingCategoriesService
-        .decrementSpendsWithThisCategory(spendCategoryId);
+          .spendingCategoriesService
+          .decrementSpendsWithThisCategory(spendCategoryId);
     }).catchError((onError) {
       print(onError);
       SmartError errorDto = SmartError();
@@ -191,15 +192,21 @@ class SpendsService {
     return spendsByMonthDtoList;
   }
 
-  Future<double> getTotalWasteByYear(DateTime completeDate) async {
+  Future<ProfileDto> getProfileData(
+      DateTime startDate, DateTime endDate) async {
+    var profileData = ProfileDto();
     double totalWaste = 0.0;
 
-    DateTime firstDayOfTheYear = DateTime(completeDate.year, 1, 1);
-    Timestamp firstDayOfTheYearTimestamp =
-        Timestamp.fromDate(firstDayOfTheYear);
+    if (startDate == null) {
+      DateTime today = DateTime.now();
 
-    DateTime lastDayOfTheYear = DateTime(completeDate.year, 12, 31);
-    Timestamp lastDayOfTheYearTimestamp = Timestamp.fromDate(lastDayOfTheYear);
+      startDate = DateTime(today.year, 1, 1);
+
+      endDate = today;
+    }
+    Timestamp startDateTimestamp = Timestamp.fromDate(startDate);
+
+    Timestamp endDateTimestamp = Timestamp.fromDate(endDate);
 
     UserDto user = AuthService.currentUser;
     String walletId = user.currentWalletId;
@@ -207,29 +214,29 @@ class SpendsService {
     await dbReference
         .collection('spends')
         .where('walletId', isEqualTo: walletId)
-        .where('spendDate', isGreaterThanOrEqualTo: firstDayOfTheYearTimestamp)
-        .where('spendDate', isLessThanOrEqualTo: lastDayOfTheYearTimestamp)
+        .where('spendDate', isGreaterThanOrEqualTo: startDateTimestamp)
+        .where('spendDate', isLessThanOrEqualTo: endDateTimestamp)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((item) {
         var obj = item.data;
+
         double waste = double.parse(obj['waste'].toString());
         totalWaste = totalWaste + waste;
       });
-      return totalWaste;
+      profileData.totalWaste = totalWaste;
+      return profileData;
     }).catchError((onError) {
-      print(onError);
-
       SmartError errorDto = SmartError();
       errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Get total waste by year';
+      errorDto.feature = 'Get total waste (profile)';
       errorDto.userId = user.uid;
 
       this.smartErrorService.saveError(errorDto);
 
-      return totalWaste;
+      return profileData;
     });
-    return totalWaste;
+    return profileData;
   }
 
   Future<List<SpendingCategory>> getSpendingCategories() async {
@@ -275,7 +282,8 @@ class SpendsService {
     return categories;
   }
 
-  Future<List<SpendItem>> getSpendsByMonthFiltered(DateTime completeDate, String categoryId) async {
+  Future<List<SpendItem>> getSpendsByMonthFiltered(
+      DateTime completeDate, String categoryId) async {
     List<SpendItem> spendsList = List<SpendItem>();
 
     DateTime fistDayOfCurrentMonth =
