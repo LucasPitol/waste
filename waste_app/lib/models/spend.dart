@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Spend {
   DateTime creationDate;
+  String categoryId;
   String reason;
   DateTime spendDate;
   String userId;
@@ -11,11 +12,16 @@ class Spend {
   Spend(DocumentSnapshot doc) {
     var objMapp = doc.data;
 
-    this.creationDate = objMapp['creationDate'];
+    Timestamp spendDateTimestamp = objMapp['spendDate'];
+    Timestamp creationDateTimestamp = objMapp['creationDate'];
+
+    this.creationDate = creationDateTimestamp.toDate();
     this.reason = objMapp['reason'];
-    this.spendDate = objMapp['spendDate'];
+    this.spendDate = spendDateTimestamp.toDate();
     this.userId = objMapp['userId'];
     this.walletId = objMapp['walletId'];
-    this.waste = objMapp['waste'];
+    this.categoryId = objMapp['categoryId'];
+
+    this.waste = double.parse(objMapp['waste'].toString());
   }
 }

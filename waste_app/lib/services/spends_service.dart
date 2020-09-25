@@ -1,3 +1,4 @@
+import 'package:waste_app/db/spends_dao.dart';
 import 'package:waste_app/models/forms/edit_waste_form.dart';
 import 'package:waste_app/models/dtos/graph_category_dto.dart';
 import 'package:waste_app/models/dtos/profile_dto.dart';
@@ -15,6 +16,7 @@ import 'spending_categories_service.dart';
 
 class SpendsService {
   final dbReference = Firestore.instance;
+  SpendsDao dao = SpendsDao();
   SmartErrorService smartErrorService = SmartErrorService();
   SpendingCategoriesService spendingCategoriesService =
       SpendingCategoriesService();
@@ -217,72 +219,52 @@ class SpendsService {
 
     var categories = await this.getSpendingCategories();
 
-    await dbReference
-        .collection('spends')
-        .where('walletId', isEqualTo: walletId)
-        .where('spendDate', isGreaterThanOrEqualTo: startDateTimestamp)
-        .where('spendDate', isLessThanOrEqualTo: endDateTimestamp)
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((item) {
-        var obj = item.data;
+    var spends = await this.dao.getSpendsByDateInterval(
+        walletId, startDateTimestamp, endDateTimestamp);
 
-        double waste = double.parse(obj['waste'].toString());
-        totalWaste = totalWaste + waste;
+    spends.forEach((spend) {
+      double waste = spend.waste;
+      totalWaste = totalWaste + waste;
 
-        var wasteCategoryId = obj['categoryId'];
+      var wasteCategoryId = spend.categoryId;
 
-        if (wasteCategoryId != null) {
-          var category = categories
-              .where((element) => element.id == wasteCategoryId)
-              .first;
+      if (wasteCategoryId != null) {
+        var category =
+            categories.where((element) => element.id == wasteCategoryId).first;
 
-          String key = isPt ? category.displayNamePt : category.displayNameEn;
+        String key = isPt ? category.displayNamePt : category.displayNameEn;
 
-          var graphItem = GraphCategoryDto();
+        var graphItem = GraphCategoryDto();
 
+        if (spendsByCategoryMapLocal.containsKey(key)) {
+          double wasteByCategory = spendsByCategoryMapLocal[key];
 
-          if (spendsByCategoryMapLocal.containsKey(key)) {
+          wasteByCategory = wasteByCategory + waste;
 
-            double wasteByCategory = spendsByCategoryMapLocal[key];
-            
-            wasteByCategory = wasteByCategory + waste;
-            
-            spendsByCategoryMapLocal.remove(key);
-            
-            spendsByCategoryMapLocal.putIfAbsent(key, () => wasteByCategory);
-          
-          } else {
-            spendsByCategoryMapLocal.putIfAbsent(key, () => waste);
-          }
-        }
-      });
-      profileData.totalWaste = totalWaste;
+          spendsByCategoryMapLocal.remove(key);
 
-      var sortedKeys = spendsByCategoryMapLocal.keys.toList(growable: false)
-        ..sort((k1, k2) => spendsByCategoryMapLocal[k2]
-            .compareTo(spendsByCategoryMapLocal[k1]));
-      var sortedMap = Map<String, double>.fromIterable(sortedKeys,
-          key: (k) => k, value: (k) => spendsByCategoryMapLocal[k]);
-
-      for (int i = 0; i < sortedKeys.length; i++) {
-        if (i >= 4) {
-          sortedMap.remove(sortedKeys[i]);
+          spendsByCategoryMapLocal.putIfAbsent(key, () => wasteByCategory);
+        } else {
+          spendsByCategoryMapLocal.putIfAbsent(key, () => waste);
         }
       }
-
-      profileData.spendsByCategoryMap = sortedMap;
-      return profileData;
-    }).catchError((onError) {
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Get total waste (profile)';
-      errorDto.userId = user.uid;
-
-      this.smartErrorService.saveError(errorDto);
-
-      return profileData;
     });
+
+    profileData.totalWaste = totalWaste;
+
+    var sortedKeys = spendsByCategoryMapLocal.keys.toList(growable: false)
+      ..sort((k1, k2) =>
+          spendsByCategoryMapLocal[k2].compareTo(spendsByCategoryMapLocal[k1]));
+    var sortedMap = Map<String, double>.fromIterable(sortedKeys,
+        key: (k) => k, value: (k) => spendsByCategoryMapLocal[k]);
+
+    for (int i = 0; i < sortedKeys.length; i++) {
+      if (i >= 4) {
+        sortedMap.remove(sortedKeys[i]);
+      }
+    }
+
+    profileData.spendsByCategoryMap = sortedMap;
     return profileData;
   }
 
