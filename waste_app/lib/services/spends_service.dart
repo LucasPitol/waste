@@ -1,4 +1,5 @@
 import 'package:waste_app/models/edit_waste_form.dart';
+import 'package:waste_app/models/graph_category_dto.dart';
 import 'package:waste_app/models/profile_dto.dart';
 import 'package:waste_app/models/spend_by_month_dto.dart';
 import 'package:waste_app/models/spending_category.dart';
@@ -196,6 +197,7 @@ class SpendsService {
       DateTime startDate, DateTime endDate) async {
     var profileData = ProfileDto();
     Map<String, double> spendsByCategoryMapLocal = new Map<String, double>();
+    var graphItemList = List<GraphCategoryDto>();
     double totalWaste = 0.0;
 
     if (startDate == null) {
@@ -237,11 +239,19 @@ class SpendsService {
 
           String key = isPt ? category.displayNamePt : category.displayNameEn;
 
+          var graphItem = GraphCategoryDto();
+
+
           if (spendsByCategoryMapLocal.containsKey(key)) {
+
             double wasteByCategory = spendsByCategoryMapLocal[key];
+            
             wasteByCategory = wasteByCategory + waste;
+            
             spendsByCategoryMapLocal.remove(key);
+            
             spendsByCategoryMapLocal.putIfAbsent(key, () => wasteByCategory);
+          
           } else {
             spendsByCategoryMapLocal.putIfAbsent(key, () => waste);
           }
