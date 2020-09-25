@@ -1,8 +1,8 @@
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:waste_app/models/edit_waste_form.dart';
-import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/models/forms/edit_waste_form.dart';
+import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/pages/dialogs/confirm_dialog.dart';
 import 'package:waste_app/pages/new_spend/category_bottom_sheet_component.dart';

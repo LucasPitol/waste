@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/pages/edit_spend/edit_spend_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';

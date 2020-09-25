@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
-import 'package:waste_app/models/spend_by_month_dto.dart';
-import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
+import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
 import 'package:waste_app/services/auth_service.dart';

@@ -1,11 +1,11 @@
-import 'package:waste_app/models/edit_waste_form.dart';
-import 'package:waste_app/models/graph_category_dto.dart';
-import 'package:waste_app/models/profile_dto.dart';
-import 'package:waste_app/models/spend_by_month_dto.dart';
+import 'package:waste_app/models/forms/edit_waste_form.dart';
+import 'package:waste_app/models/dtos/graph_category_dto.dart';
+import 'package:waste_app/models/dtos/profile_dto.dart';
+import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
 import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/models/new_waste_form.dart';
-import 'package:waste_app/models/spend_item_dto.dart';
+import 'package:waste_app/models/forms/new_waste_form.dart';
+import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/user_dto.dart';

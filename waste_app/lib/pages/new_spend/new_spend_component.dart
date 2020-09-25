@@ -4,7 +4,7 @@ import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/models/new_waste_form.dart';
+import 'package:waste_app/models/forms/new_waste_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/utils/constants.dart';

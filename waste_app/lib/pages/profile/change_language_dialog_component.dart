@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:waste_app/models/language_and_code_dto.dart';
+import 'package:waste_app/models/dtos/language_and_code_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';

@@ -1,5 +1,5 @@
 import 'package:package_info/package_info.dart';
-import 'package:waste_app/models/profile_dto.dart';
+import 'package:waste_app/models/dtos/profile_dto.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';

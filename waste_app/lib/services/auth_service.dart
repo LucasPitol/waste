@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:waste_app/models/login_form.dart';
+import 'package:waste_app/models/forms/login_form.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
