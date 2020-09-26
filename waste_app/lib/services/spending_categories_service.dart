@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/db/spending_category_dao.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -8,48 +9,21 @@ import 'smart_error_service.dart';
 
 class SpendingCategoriesService {
   final dbReference = Firestore.instance;
+  SpendingCategoryDao dao = SpendingCategoryDao();
   SmartErrorService smartErrorService = SmartErrorService();
 
   Future<List<SpendingCategory>> getSpendingCategories() async {
     bool isPtLanguage =
         AuthService.currentUser.language == Constants.languages[0];
 
-    List<SpendingCategory> categories = List<SpendingCategory>();
+    List<SpendingCategory> categories = await this.dao.getSpendingCategories();
 
-    await this
-        .dbReference
-        .collection('spendingCategories')
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((item) {
-        String categoryId = item.documentID;
+    if (isPtLanguage) {
+      categories.sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt));
+    } else {
+      categories.sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn));
+    }
 
-        var obj = item.data;
-
-        String ptName = obj['displayNamePt'];
-        String enName = obj['displayNameEn'];
-        String value = obj['value'];
-
-        SpendingCategory category =
-            SpendingCategory(categoryId, ptName, enName, value);
-        categories.add(category);
-      });
-      return isPtLanguage
-          ? (categories
-              .sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
-          : (categories
-              .sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));
-    }).catchError((onError) {
-      print(onError);
-
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Get list categories';
-      errorDto.userId = AuthService.currentUser.uid;
-
-      this.smartErrorService.saveError(errorDto);
-      return categories;
-    });
     return categories;
   }
 
@@ -113,39 +87,15 @@ class SpendingCategoriesService {
       List<String> categoryIdItems) async {
     bool isPtLanguage =
         AuthService.currentUser.language == Constants.languages[0];
-    List<SpendingCategory> categories = List<SpendingCategory>();
+    List<SpendingCategory> categories =
+        await this.dao.getCategoriesById(categoryIdItems);
 
-    await this
-        .dbReference
-        .collection('spendingCategories')
-        .where('categoryId', whereIn: categoryIdItems)
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((element) {
-        String categoryId = element.documentID;
-        var obj = element.data;
+    if (isPtLanguage) {
+      categories.sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt));
+    } else {
+      categories.sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn));
+    }
 
-        SpendingCategory category = SpendingCategory(categoryId,
-            obj['displayNamePt'], obj['displayNameEn'], obj['value']);
-
-        categories.add(category);
-      });
-      return isPtLanguage
-          ? (categories
-              .sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
-          : (categories
-              .sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));
-    }).catchError((onError) {
-      print(onError);
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'get spendingCategories by ids';
-      errorDto.userId = AuthService.currentUser.uid;
-
-      this.smartErrorService.saveError(errorDto);
-
-      return categories;
-    });
     return categories;
   }
 }
