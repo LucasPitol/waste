@@ -10,6 +10,7 @@ import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -41,6 +42,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
   WalletService walletService;
   SpendsService spendsService;
+  SpendingCategoriesService spendingCategoriesService;
   AuthService authService;
 
   _EditSpendComponenState(SpendItem spend) {
@@ -49,6 +51,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     this.walletService = WalletService();
     this.editWasteForm = EditWasteForm();
     this.spendsService = SpendsService();
+    this.spendingCategoriesService = SpendingCategoriesService();
     this.authService = AuthService();
     this.spendingCategoryList = List<SpendingCategory>();
   }
@@ -62,7 +65,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
   Future<void> _getSpendingCategories() async {
     List<SpendingCategory> listTemp =
-        await this.spendsService.getSpendingCategories();
+        await this.spendingCategoriesService.getSpendingCategories();
 
     String categoryId = spend.categoryId;
 

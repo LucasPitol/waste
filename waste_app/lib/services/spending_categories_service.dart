@@ -10,6 +10,49 @@ class SpendingCategoriesService {
   final dbReference = Firestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
 
+  Future<List<SpendingCategory>> getSpendingCategories() async {
+    bool isPtLanguage =
+        AuthService.currentUser.language == Constants.languages[0];
+
+    List<SpendingCategory> categories = List<SpendingCategory>();
+
+    await this
+        .dbReference
+        .collection('spendingCategories')
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((item) {
+        String categoryId = item.documentID;
+
+        var obj = item.data;
+
+        String ptName = obj['displayNamePt'];
+        String enName = obj['displayNameEn'];
+        String value = obj['value'];
+
+        SpendingCategory category =
+            SpendingCategory(categoryId, ptName, enName, value);
+        categories.add(category);
+      });
+      return isPtLanguage
+          ? (categories
+              .sort((a, b) => a.displayNamePt.compareTo(b.displayNamePt)))
+          : (categories
+              .sort((a, b) => a.displayNameEn.compareTo(b.displayNameEn)));
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Get list categories';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+      return categories;
+    });
+    return categories;
+  }
+
   void decrementSpendsWithThisCategory(String categoryId) {
     DocumentReference docRef =
         this.dbReference.collection('spendingCategories').document(categoryId);

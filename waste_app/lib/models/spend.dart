@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Spend {
+  String spendId;
   DateTime creationDate;
   String categoryId;
   String reason;
@@ -15,6 +16,7 @@ class Spend {
     Timestamp spendDateTimestamp = objMapp['spendDate'];
     Timestamp creationDateTimestamp = objMapp['creationDate'];
 
+    this.spendId = doc.documentID;
     this.creationDate = creationDateTimestamp.toDate();
     this.reason = objMapp['reason'];
     this.spendDate = spendDateTimestamp.toDate();

@@ -1,6 +1,7 @@
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/models/spending_category.dart';
+import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -36,6 +37,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   WalletService walletService;
   SpendsService spendsService;
+  SpendingCategoriesService spendingCategoriesService;
   AuthService authService;
 
   SpendingCategory categorySelected;
@@ -44,6 +46,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     this.walletService = WalletService();
     this.newWasteForm = NewWasteForm();
     this.spendsService = SpendsService();
+    this.spendingCategoriesService = SpendingCategoriesService();
     this.authService = AuthService();
     this.spendingCategoryList = List<SpendingCategory>();
   }
@@ -56,7 +59,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   Future<void> _getSpendingCategories() async {
     List<SpendingCategory> listTemp =
-        await this.spendsService.getSpendingCategories();
+        await this.spendingCategoriesService.getSpendingCategories();
 
     setState(() {
       this.spendingCategoryList = listTemp;
