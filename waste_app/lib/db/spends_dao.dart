@@ -90,6 +90,34 @@ class SpendsDao {
     return success;
   }
 
+  Future<bool> deleteWastesByWalletId(String walletId) async {
+    bool success = false;
+
+    await dbReference
+        .collection('spends')
+        .where('walletId', isEqualTo: walletId)
+        .getDocuments()
+        .then((onValue) {
+      for (DocumentSnapshot ds in onValue.documents) {
+        ds.reference.delete();
+      }
+      success = true;
+      return success;
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Delete wallet spends';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
+      return success;
+    });
+    return success;
+  }
+
   Future<bool> deleteWaste(String spendId) async {
     bool success = true;
 

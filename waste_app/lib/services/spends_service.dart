@@ -50,6 +50,10 @@ class SpendsService {
     return success;
   }
 
+  Future<bool> deleteWastesByWalletId(String walletId) async {
+    return await this.dao.deleteWastesByWalletId(walletId);
+  }
+
   Future<bool> deleteWaste(String spendId, String spendCategoryId) async {
     bool success = false;
 

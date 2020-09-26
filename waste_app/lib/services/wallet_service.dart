@@ -1,14 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/db/wallet_dao.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/wallet.dart';
 
 import 'auth_service.dart';
 import 'smart_error_service.dart';
+import 'spends_service.dart';
 
 class WalletService {
   final dbReference = Firestore.instance;
+  WalletDao dao = WalletDao();
   SmartErrorService smartErrorService = SmartErrorService();
-
+  SpendsService spendsService = SpendsService();
 
   bool isOwner(String walletId, String uid) {
     List<Wallet> wallets = getUserWalletsLocal();
@@ -48,62 +51,16 @@ class WalletService {
 
     List<String> membersId = [uid];
 
-    Timestamp creationDate = Timestamp.fromDate(DateTime.now());
+    success = await this.dao.createNewWallet(walletName, uid, membersId);
 
-    await dbReference.collection('wallets').add({
-      'creationDate': creationDate,
-      'membersId': membersId,
-      'name': walletName,
-      'ownerId': uid
-    }).then((onValue) async {
-      success = true;
-      List<Wallet> wallets = await getWalletsByUserId(uid);
+    List<Wallet> wallets = await getWalletsByUserId(uid);
 
-      updateUserWalletsLocal(wallets);
-
-      return success;
-    }).catchError((onError) {
-      print(onError);
-
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Create new wallet';
-      errorDto.userId = uid;
-
-      this.smartErrorService.saveError(errorDto);
-      
-      return success;
-    });
-
+    updateUserWalletsLocal(wallets);
     return success;
   }
 
   Future<bool> deleteWalletSpends(String walletId) async {
     bool success = false;
-
-    await dbReference
-        .collection('spends')
-        .where('walletId', isEqualTo: walletId)
-        .getDocuments()
-        .then((onValue) {
-      for (DocumentSnapshot ds in onValue.documents) {
-        ds.reference.delete();
-      }
-      success = true;
-      return success;
-    }).catchError((onError) {
-      print(onError);
-
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Delete wallet spends';
-      errorDto.userId = AuthService.currentUser.uid;
-
-      this.smartErrorService.saveError(errorDto);
-
-      return success;
-    });
-    return success;
   }
 
   Future<bool> deleteWallet(String walletId, String userId) async {
@@ -111,32 +68,16 @@ class WalletService {
 
     bool x = await this.deleteWalletSpends(walletId);
 
-    await dbReference
-        .collection('wallets')
-        .document(walletId)
-        .delete()
-        .then((onValue) async {
+    success = await this.dao.deleteWallet(walletId);
+
+    if (success) {
       List<Wallet> wallets = await getWalletsByUserId(userId);
 
       updateUserWalletsLocal(wallets);
-      
+
       AuthService.currentUser.currentWalletId =
           AuthService.currentUser.walletList[0].id;
-      success = true;
-      return success;
-    }).catchError((onError) {
-      print(onError);
-
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Delete wallet';
-      errorDto.userId = AuthService.currentUser.uid;
-
-      this.smartErrorService.saveError(errorDto);
-
-      return success;
-    });
-
+    }
     return success;
   }
 
@@ -147,31 +88,14 @@ class WalletService {
   Future<bool> updateWallet(Wallet newWallet) async {
     bool success = false;
 
-    String walletId = newWallet.id;
+    success = await this.dao.updateWallet(newWallet);
 
-    Timestamp lastUpdate = Timestamp.fromDate(DateTime.now());
-
-    await dbReference.collection('wallets').document(walletId).setData(
-        {'name': newWallet.name, 'lastUpdate': lastUpdate},
-        merge: true).then((onValue) {
-      success = true;
-      return success;
-    }).catchError((onError) async {
-      print(onError);
-
+    if (!success) {
       List<Wallet> wallets = await getWalletsByUserId(newWallet.ownerId);
 
       updateUserWalletsLocal(wallets);
+    }
 
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Update wallet';
-      errorDto.userId = AuthService.currentUser.uid;
-
-      this.smartErrorService.saveError(errorDto);
-
-      return success;
-    });
     return success;
   }
 
