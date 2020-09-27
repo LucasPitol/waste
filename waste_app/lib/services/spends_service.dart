@@ -163,9 +163,18 @@ class SpendsService {
     var sortedMap = Map<String, double>.fromIterable(sortedKeys,
         key: (k) => k, value: (k) => spendsByCategoryMapLocal[k]);
 
+    double totalOthers = 0.0;
+
     for (int i = 0; i < sortedKeys.length; i++) {
-      if (i >= 4) {
+      if (i >= 3) {
+        totalOthers = totalOthers + (sortedMap[sortedKeys[i]]);
+
         sortedMap.remove(sortedKeys[i]);
+
+        if (i == (sortedKeys.length - 1)) {
+          String key = isPt ? 'Demais' : 'The others';
+          sortedMap.putIfAbsent(key, () => totalOthers);
+        }
       }
     }
 

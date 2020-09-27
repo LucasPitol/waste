@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:waste_app/models/dtos/profile_dto.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
@@ -26,6 +27,10 @@ class ProfileComponent extends StatefulWidget {
 }
 
 class ProfileComponentState extends State<ProfileComponent> {
+  String localeLanguage =
+      AuthService.currentUser.language == Constants.languages[0]
+          ? Constants.ptLanguage
+          : Constants.enLanguage;
   UserDto userDto = AuthService.currentUser;
   String languageCode;
   bool totalWasteThisYearLoading = true;
@@ -178,6 +183,14 @@ class ProfileComponentState extends State<ProfileComponent> {
     setState(() {
       totalWasteThisYearLoading = true;
     });
+
+    if (startDate == null) {
+      DateTime today = DateTime.now();
+
+      startDate = DateTime(today.year, 1, 1);
+
+      endDate = today;
+    }
 
     ProfileDto profileDtoTemp =
         await this.spendService.getProfileData(this.startDate, this.endDate);
@@ -478,33 +491,39 @@ class ProfileComponentState extends State<ProfileComponent> {
                           height: 45,
                         ),
                         Text(
-                          '01/01/2020',
+                          DateFormat.yMd(localeLanguage).format(startDate),
                           style: Styles.poppinsText,
                         ),
                         Text(
-                          'até',
+                          this.languageCode == Constants.languages[0]
+                              ? 'até'
+                              : 'to',
                           style: Styles.poppinsTextGrey,
                         ),
                         Text(
-                          '20/08/2020',
+                          DateFormat.yMd(localeLanguage).format(endDate),
                           style: Styles.poppinsText,
                         ),
                         Container(
                           width: 45,
                           height: 45,
-                          decoration: Styles.circleBox,
-                          child: Material(
-                            borderRadius: Styles.circularBorderRadius,
-                            child: InkWell(
-                              onTap: () {},
-                              borderRadius: Styles.circularBorderRadius,
-                              child: Icon(
-                                Icons.calendar_today,
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                          ),
                         ),
+                        // Container(
+                        //   width: 45,
+                        //   height: 45,
+                        //   decoration: Styles.circleBox,
+                        //   child: Material(
+                        //     borderRadius: Styles.circularBorderRadius,
+                        //     child: InkWell(
+                        //       onTap: () {},
+                        //       borderRadius: Styles.circularBorderRadius,
+                        //       child: Icon(
+                        //         Icons.calendar_today,
+                        //         color: Colors.deepPurple,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
