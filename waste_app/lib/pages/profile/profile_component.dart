@@ -416,7 +416,10 @@ class ProfileComponentState extends State<ProfileComponent> {
                               .map<DropdownMenuItem<String>>((Wallet item) {
                             return DropdownMenuItem<String>(
                               value: item.id,
-                              child: Text(item.name),
+                              child: Text(
+                                item.name,
+                                style: Styles.poppinsText,
+                              ),
                             );
                           }).toList(),
                         ),
