@@ -56,11 +56,16 @@ class _MainComponentState extends State<MainComponent> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(50)),
+          side: BorderSide(color: Colors.grey.shade900),
+        ),
         onPressed: _goToNewSpendPage,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.black,
+        splashColor: Colors.deepPurple.shade300,
         child: Icon(
           Icons.add,
-          color: Colors.deepPurple.shade50,
+          color: Colors.deepPurple,
         ),
       ),
       floatingActionButtonLocation: this._addFabLocation,
@@ -74,7 +79,6 @@ class _MainComponentState extends State<MainComponent> {
   ];
 
   void _onItemTapped(int index) {
-
     if (_selectedIndex == 1 && index == 0) {
       if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
         Navigator.pop(profileComponentGlobalKey.currentContext);
@@ -90,9 +94,9 @@ class _MainComponentState extends State<MainComponent> {
     return BottomNavigationBar(
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      unselectedItemColor: Colors.deepPurple.shade300,
-      selectedItemColor: Colors.deepPurple.shade100,
-      backgroundColor: Colors.deepPurple,
+      unselectedItemColor: Colors.grey.shade100,
+      selectedItemColor: Colors.deepPurple,
+      backgroundColor: Colors.black,
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: const <BottomNavigationBarItem>[

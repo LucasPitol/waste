@@ -287,6 +287,7 @@ class SpendsComponentState extends State<SpendsComponent>
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.deepPurple,
+      statusBarIconBrightness: Brightness.dark,
     ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
