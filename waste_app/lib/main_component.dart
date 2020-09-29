@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 
+import 'pages/new_revenue/new_revenue_component.dart';
 import 'pages/new_spend/new_spend_component.dart';
 
 class MainComponent extends StatefulWidget {
@@ -26,6 +27,17 @@ class _MainComponentState extends State<MainComponent> {
 
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
+
+    if (refresh != null && refresh) {
+      _refreshData();
+    }
+  }
+
+  void _goToNewRevenuePage() async {
+    fabKey.currentState.close();
+
+    var refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => NewRevenueComponent()));
 
     if (refresh != null && refresh) {
       _refreshData();
@@ -89,7 +101,7 @@ class _MainComponentState extends State<MainComponent> {
               Icons.trending_up,
               color: Colors.green,
             ),
-            onPressed: _goToNewSpendPage,
+            onPressed: _goToNewRevenuePage,
           ),
         ],
       ),
