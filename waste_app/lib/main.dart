@@ -56,9 +56,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.deepPurple,
-    ));
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //   statusBarColor: Colors.deepPurple,
+    // ));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Styles.mainTheme,

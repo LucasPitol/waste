@@ -44,6 +44,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
             return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return Scaffold(
+                  backgroundColor: Styles.mainBackgroundColor,
                   body: Stack(
                     children: <Widget>[
                       SingleChildScrollView(
@@ -71,7 +72,9 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         right: 20,
                                       ),
                                       child: TextFormField(
-                                        textCapitalization: TextCapitalization.sentences,
+                                        style: TextStyle(color: Colors.grey.shade100),
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
                                         controller: name,
                                         validator: (value) {
                                           if (value.isEmpty) {
@@ -97,6 +100,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         right: 20,
                                       ),
                                       child: TextFormField(
+                                        style: TextStyle(color: Colors.grey.shade100),
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         controller: userMail,
@@ -128,6 +132,8 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         right: 20,
                                       ),
                                       child: TextFormField(
+                                        style: TextStyle(
+                                            color: Colors.grey.shade100),
                                         controller: password,
                                         validator: (value) {
                                           if (value.isEmpty) {
@@ -146,9 +152,10 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                             borderRadius: Styles
                                                 .defaultTextFieldBorderRadius,
                                             borderSide: BorderSide(
-                                              color: Colors.grey.shade300,
+                                              color: Colors.grey.shade900,
                                             ),
                                           ),
+                                          labelStyle: TextStyle(color: Colors.grey),
                                           labelText: userDto.language ==
                                                   Constants.languages[0]
                                               ? 'senha'
@@ -165,6 +172,8 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         right: 20,
                                       ),
                                       child: TextFormField(
+                                        style: TextStyle(
+                                            color: Colors.grey.shade100),
                                         controller: rePassword,
                                         validator: (value) {
                                           if (value.isEmpty) {
@@ -190,9 +199,10 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                             borderRadius: Styles
                                                 .defaultTextFieldBorderRadius,
                                             borderSide: BorderSide(
-                                              color: Colors.grey.shade300,
+                                              color: Colors.grey.shade900,
                                             ),
                                           ),
+                                          labelStyle: TextStyle(color: Colors.grey),
                                           labelText: userDto.language ==
                                                   Constants.languages[0]
                                               ? 'confirme a senha'
@@ -234,7 +244,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                                 ? 'Cadastrar'
                                                 : 'Register',
                                             style: TextStyle(
-                                              color: Colors.white,
+                                              color: Styles.mainBackgroundColor,
                                               fontSize: 18.0,
                                             ),
                                           ),
@@ -254,7 +264,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                         child: GestureDetector(
                           child: Icon(
                             Icons.close,
-                            color: Colors.grey,
+                            color: Colors.grey.shade100,
                           ),
                           onTap: () {
                             _goBack();

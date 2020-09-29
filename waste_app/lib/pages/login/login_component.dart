@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -64,7 +65,7 @@ class _LoginComponentState extends State<LoginComponent> {
       await _openInfoDialog(title, content);
     } else {
       UserDto userTemp = await this.authService.login(_loginForm);
-      
+
       if (userTemp == null) {
         String title = this.userDto.language == Constants.languages[0]
             ? 'Alerta'
@@ -141,7 +142,11 @@ class _LoginComponentState extends State<LoginComponent> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.black,
+    ));
     return Scaffold(
+      backgroundColor: Styles.mainBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
@@ -174,6 +179,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 right: 20,
                               ),
                               child: TextFormField(
+                                style: TextStyle(color: Colors.grey.shade100),
                                 keyboardType: TextInputType.emailAddress,
                                 controller: _loginForm.userMail,
                                 validator: (value) {
@@ -185,7 +191,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                   return null;
                                 },
                                 decoration:
-                                    Styles.getTextFieldDecoration('e-mail'),
+                                    Styles.getTextFieldDecoration('email'),
                               ),
                             ),
                             Container(
@@ -195,6 +201,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                   left: 20,
                                   right: 20),
                               child: TextFormField(
+                                style: TextStyle(color: Colors.grey.shade100),
                                 controller: _loginForm.password,
                                 validator: (value) {
                                   if (value.isEmpty) {
@@ -211,8 +218,9 @@ class _LoginComponentState extends State<LoginComponent> {
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: defaultBorderRadius,
                                     borderSide:
-                                        BorderSide(color: Colors.grey.shade300),
+                                        BorderSide(color: Colors.grey.shade900),
                                   ),
+                                  labelStyle: TextStyle(color: Colors.grey),
                                   labelText: this.userDto.language ==
                                           Constants.languages[0]
                                       ? 'senha'
@@ -224,7 +232,7 @@ class _LoginComponentState extends State<LoginComponent> {
                             Container(
                               margin: EdgeInsets.only(
                                   top: defaultMargin,
-                                  bottom: defaultMargin,
+                                  bottom: 30,
                                   left: 20,
                                   right: 20),
                               child: ButtonTheme(
@@ -246,7 +254,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                         ? 'Entrar'
                                         : 'Login',
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: Styles.mainBackgroundColor,
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.w500),
                                   ),

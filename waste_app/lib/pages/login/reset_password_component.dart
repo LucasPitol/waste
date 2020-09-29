@@ -61,6 +61,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Styles.mainBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(
@@ -77,6 +78,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                         right: 20,
                       ),
                       child: TextFormField(
+                        style: TextStyle(color: Colors.grey.shade100),
                         keyboardType: TextInputType.emailAddress,
                         controller: userMailController,
                         validator: (value) {
@@ -121,7 +123,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                                 ? 'Redefinir'
                                 : 'Reset',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Styles.mainBackgroundColor,
                               fontSize: 18.0,
                             ),
                           ),
@@ -137,7 +139,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                 child: GestureDetector(
                   child: Icon(
                     Icons.close,
-                    color: Colors.grey,
+                    color: Colors.grey.shade100,
                   ),
                   onTap: () {
                     _goBack();
@@ -152,8 +154,8 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                       ? 'Redefinir senha'
                       : 'Recover password',
                   style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade100,
+                    fontWeight: FontWeight.w700,
                     fontSize: 18,
                   ),
                 ),

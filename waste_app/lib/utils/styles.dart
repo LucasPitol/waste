@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Styles {
-  static Color mainBackgroundColor = Colors.grey.shade50;
+  static Color mainBackgroundColor = Colors.black;
 
   static ThemeData mainTheme = ThemeData(
     cursorColor: Colors.deepPurple,
@@ -32,13 +32,13 @@ class Styles {
   static BoxDecoration loginBox = BoxDecoration(
     color: mainBackgroundColor,
     borderRadius: defaultBorderRadius,
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.shade400,
-        offset: Offset(0, 0),
-        blurRadius: 2,
-      ),
-    ],
+    // boxShadow: [
+    //   BoxShadow(
+    //     color: Colors.grey.shade400,
+    //     offset: Offset(0, 0),
+    //     blurRadius: 2,
+    //   ),
+    // ],
   );
 
   static BoxDecoration circleBox = BoxDecoration(
@@ -68,9 +68,10 @@ class Styles {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: defaultTextFieldBorderRadius,
-        borderSide: BorderSide(color: Colors.grey.shade300),
+        borderSide: BorderSide(color: Colors.grey.shade900),
       ),
       labelText: value,
+      labelStyle: TextStyle(color: Colors.grey)
     );
   }
 
