@@ -35,6 +35,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   List<Wallet> wallets;
   EditWasteForm editWasteForm;
   bool loading = false;
+  bool isPtLanguage;
   SpendItem spend;
   List<SpendingCategory> spendingCategoryList;
   SpendingCategory categorySelected;
@@ -46,6 +47,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   AuthService authService;
 
   _EditSpendComponenState(SpendItem spend) {
+    this.isPtLanguage = userDto.language == Constants.languages[0];
     this.languageCode = this.userDto.language;
     this.spend = spend;
     this.walletService = WalletService();
@@ -274,7 +276,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return Constants.getDefaultEmptyFieldMsg(
-                                  userDto.language);
+                                  isPtLanguage);
                             }
                             return null;
                           },
@@ -295,7 +297,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return Constants.getDefaultEmptyFieldMsg(
-                                  userDto.language);
+                                  isPtLanguage);
                             }
                             return null;
                           },
@@ -373,7 +375,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                                   DateFormat.yMd(this.localeLanguage)
                                       .add_jm()
                                       .format(this.editWasteForm.spendDate),
-                                  style: TextStyle(fontSize: 16, color: Colors.grey.shade100),
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey.shade100),
                                 ),
                               ),
                             ),
@@ -428,8 +432,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                               this.languageCode == Constants.languages[0]
                                   ? 'Atualizar'
                                   : 'Update',
-                              style:
-                                  TextStyle(color: Styles.mainBackgroundColor, fontSize: 16),
+                              style: TextStyle(
+                                  color: Styles.mainBackgroundColor,
+                                  fontSize: 16),
                             ),
                           ),
                         ),

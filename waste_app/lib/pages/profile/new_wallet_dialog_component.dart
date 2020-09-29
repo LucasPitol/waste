@@ -19,9 +19,11 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
   UserDto userDto = AuthService.currentUser;
   String languageCode;
   List<Wallet> wallets;
+  bool isPtLanguage;
   var _formKey;
 
   _NewWalletDialogComponentState() {
+    this.isPtLanguage = userDto.language == Constants.languages[0];
     this.languageCode = this.userDto.language;
     this.authService = AuthService();
     wallets = userDto.walletList;
@@ -71,7 +73,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       validator: (value) {
                         if (value.isEmpty) {
                           return Constants.getDefaultEmptyFieldMsg(
-                              userDto.language);
+                              isPtLanguage);
                         }
 
                         if (_isRepeated(value)) {

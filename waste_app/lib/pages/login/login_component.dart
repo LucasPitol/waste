@@ -24,6 +24,7 @@ class _LoginComponentState extends State<LoginComponent> {
   double defaultMargin = 10.0;
   BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(50.0));
   Color mainColor = Colors.grey.shade50;
+  bool isPtLanguage;
 
   bool loading = false;
 
@@ -41,6 +42,7 @@ class _LoginComponentState extends State<LoginComponent> {
     this.authService = AuthService();
     this._loginForm = LoginForm();
     this.userDto = AuthService.currentUser;
+    this.isPtLanguage = userDto.language == Constants.languages[0];
     this.selectHandler = selectHandlerTemp;
   }
 
@@ -186,7 +188,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 validator: (value) {
                                   if (value.isEmpty) {
                                     return Constants.getDefaultEmptyFieldMsg(
-                                        userDto.language);
+                                        isPtLanguage);
                                   }
 
                                   return null;
@@ -207,7 +209,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                 validator: (value) {
                                   if (value.isEmpty) {
                                     return Constants.getDefaultEmptyFieldMsg(
-                                        userDto.language);
+                                        isPtLanguage);
                                   }
 
                                   return null;

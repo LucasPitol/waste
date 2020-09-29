@@ -15,12 +15,14 @@ class ResetPasswordComponent extends StatefulWidget {
 
 class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
   bool loading = false;
+  bool isPtLanguage;
   UserDto userDto = AuthService.currentUser;
   final _formKey = GlobalKey<FormState>();
   TextEditingController userMailController;
   AuthService authService;
 
   _ResetPasswordComponentState(String userMail) {
+    this.isPtLanguage = userDto.language == Constants.languages[0];
     this.authService = AuthService();
     this.userMailController = TextEditingController();
     this.userMailController.text = userMail.trim();
@@ -84,7 +86,7 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                         validator: (value) {
                           if (value.isEmpty) {
                             return Constants.getDefaultEmptyFieldMsg(
-                                userDto.language);
+                                isPtLanguage);
                           }
 
                           if (!value.contains('.com') || !value.contains('@')) {

@@ -34,6 +34,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   final _formKey = GlobalKey<FormState>();
   NewWasteForm newWasteForm;
   bool loading = false;
+  bool isPtLanguage;
 
   WalletService walletService;
   SpendsService spendsService;
@@ -43,6 +44,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   SpendingCategory categorySelected;
 
   _NewSpendComponenState() {
+    this.isPtLanguage = userDto.language == Constants.languages[0];
     this.walletService = WalletService();
     this.newWasteForm = NewWasteForm();
     this.spendsService = SpendsService();
@@ -221,7 +223,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return Constants.getDefaultEmptyFieldMsg(
-                                  userDto.language);
+                                  isPtLanguage);
                             }
                             return null;
                           },
@@ -242,7 +244,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return Constants.getDefaultEmptyFieldMsg(
-                                  userDto.language);
+                                  isPtLanguage);
                             }
                             return null;
                           },
@@ -378,8 +380,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                               this.userDto.language == Constants.languages[0]
                                   ? 'Salvar'
                                   : 'Save',
-                              style:
-                                  TextStyle(color: Styles.mainBackgroundColor, fontSize: 18),
+                              style: TextStyle(
+                                  color: Styles.mainBackgroundColor,
+                                  fontSize: 18),
                             ),
                           ),
                         ),

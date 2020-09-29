@@ -26,10 +26,12 @@ class _EditWalletState extends State<EditWallet> {
   bool loading = false;
   TextEditingController walletNameController;
   String appBarTitle;
+  bool isPtLanguage;
 
   WalletService walletService;
 
   _EditWalletState(String walletId) {
+    this.isPtLanguage = userDto.language == Constants.languages[0];
     this.walletIdToEdit = walletId;
     this.authService = AuthService();
     this.walletService = WalletService();
@@ -166,7 +168,7 @@ class _EditWalletState extends State<EditWallet> {
                         validator: (value) {
                           if (value.isEmpty) {
                             return Constants.getDefaultEmptyFieldMsg(
-                                userDto.language);
+                                isPtLanguage);
                           }
 
                           if (_isWalletNameRepeated(value)) {

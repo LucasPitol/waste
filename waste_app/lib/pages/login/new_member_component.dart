@@ -17,6 +17,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
             TextEditingController password = new TextEditingController();
             TextEditingController rePassword = new TextEditingController();
             bool loading = false;
+            bool isPtLanguage = userDto.language == Constants.languages[0];
 
             void _goBack() {
               Navigator.pop(context, false);
@@ -72,7 +73,8 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         right: 20,
                                       ),
                                       child: TextFormField(
-                                        style: TextStyle(color: Colors.grey.shade100),
+                                        style: TextStyle(
+                                            color: Colors.grey.shade100),
                                         textCapitalization:
                                             TextCapitalization.sentences,
                                         controller: name,
@@ -80,7 +82,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                           if (value.isEmpty) {
                                             return Constants
                                                 .getDefaultEmptyFieldMsg(
-                                                    userDto.language);
+                                                    isPtLanguage);
                                           }
                                           return null;
                                         },
@@ -100,7 +102,8 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                         right: 20,
                                       ),
                                       child: TextFormField(
-                                        style: TextStyle(color: Colors.grey.shade100),
+                                        style: TextStyle(
+                                            color: Colors.grey.shade100),
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         controller: userMail,
@@ -108,7 +111,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                           if (value.isEmpty) {
                                             return Constants
                                                 .getDefaultEmptyFieldMsg(
-                                                    userDto.language);
+                                                    isPtLanguage);
                                           }
 
                                           if (!value.contains('.com') ||
@@ -139,7 +142,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                           if (value.isEmpty) {
                                             return Constants
                                                 .getDefaultEmptyFieldMsg(
-                                                    userDto.language);
+                                                    isPtLanguage);
                                           }
                                           return null;
                                         },
@@ -155,7 +158,8 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                               color: Colors.grey.shade900,
                                             ),
                                           ),
-                                          labelStyle: TextStyle(color: Colors.grey),
+                                          labelStyle:
+                                              TextStyle(color: Colors.grey),
                                           labelText: userDto.language ==
                                                   Constants.languages[0]
                                               ? 'senha'
@@ -179,7 +183,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                           if (value.isEmpty) {
                                             return Constants
                                                 .getDefaultEmptyFieldMsg(
-                                                    userDto.language);
+                                                    isPtLanguage);
                                           }
 
                                           if (value != password.text) {
@@ -202,7 +206,8 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                               color: Colors.grey.shade900,
                                             ),
                                           ),
-                                          labelStyle: TextStyle(color: Colors.grey),
+                                          labelStyle:
+                                              TextStyle(color: Colors.grey),
                                           labelText: userDto.language ==
                                                   Constants.languages[0]
                                               ? 'confirme a senha'

@@ -36,8 +36,8 @@ class Constants {
         : Icons.attach_money;
   }
 
-  static String getDefaultEmptyFieldMsg(String language) {
-    return language == languages[0] ? 'Campo obrigatório' : 'Required field';
+  static String getDefaultEmptyFieldMsg(bool isPt) {
+    return isPt ? 'Campo obrigatório' : 'Required field';
   }
 
   static String getPasswordNotMatchMsg(String language) {

@@ -27,6 +27,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
 
   _NewRevenueComponenState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
+    this.newRevenueForm = NewRevenueForm();
     this.revenuesService = RevenuesService();
     this.walletService = WalletService();
   }
@@ -76,6 +77,55 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.only(left: 20, top: 10),
+              child: Text(
+                this.userDto.language == Constants.languages[0]
+                    ? 'Nova receita'
+                    : 'New revenue',
+                style: TextStyle(
+                  color: Styles.mainBackgroundColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: 50),
+              decoration: Styles.containerDecoration,
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 15, left: 20, right: 20),
+                        child: TextFormField(
+                          style: TextStyle(color: Colors.grey.shade100),
+                          maxLength: 50,
+                          controller: newRevenueForm.reason,
+                          textCapitalization: TextCapitalization.sentences,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return Constants.getDefaultEmptyFieldMsg(
+                                  isPtLanguage);
+                            }
+                            return null;
+                          },
+                          decoration: this.userDto.language ==
+                                  Constants.languages[0]
+                              ? Styles.getTextFieldDecorationUnderline('Motivo')
+                              : Styles.getTextFieldDecorationUnderline(
+                                  'Reason'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
