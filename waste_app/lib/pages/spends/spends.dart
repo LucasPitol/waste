@@ -365,7 +365,7 @@ class SpendsComponentState extends State<SpendsComponent>
                         margin: EdgeInsets.only(bottom: 30),
                         child: Icon(
                           Icons.arrow_drop_up,
-                          color: Colors.deepPurple.shade300,
+                          color: Styles.mainBackgroundColor,
                           size: 60,
                         ),
                       ),

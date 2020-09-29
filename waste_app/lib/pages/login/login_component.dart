@@ -144,6 +144,7 @@ class _LoginComponentState extends State<LoginComponent> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.black,
+      statusBarIconBrightness: Brightness.light,
     ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,

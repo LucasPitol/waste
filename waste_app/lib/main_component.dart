@@ -1,3 +1,4 @@
+import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
@@ -12,6 +13,8 @@ class MainComponent extends StatefulWidget {
 GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
 GlobalKey<ProfileComponentState> profileComponentGlobalKey = GlobalKey();
 
+final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
+
 class _MainComponentState extends State<MainComponent> {
   FloatingActionButtonLocation _addFabLocation =
       FloatingActionButtonLocation.centerDocked;
@@ -19,6 +22,8 @@ class _MainComponentState extends State<MainComponent> {
   int _selectedIndex = 0;
 
   void _goToNewSpendPage() async {
+    fabKey.currentState.close();
+
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
 
@@ -55,19 +60,52 @@ class _MainComponentState extends State<MainComponent> {
       body: Container(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(50)),
-          side: BorderSide(color: Colors.grey.shade900),
+      floatingActionButton: FabCircularMenu(
+        key: fabKey,
+        alignment: Alignment.bottomCenter,
+        fabMargin: EdgeInsets.only(bottom: 45, right: 35),
+        animationDuration: Duration(milliseconds: 300),
+        ringDiameter: 200,
+        ringColor: Colors.white10,
+        fabColor: Colors.black,
+        fabCloseIcon: Icon(
+          Icons.close,
+          color: Colors.deepPurple,
         ),
-        onPressed: _goToNewSpendPage,
-        backgroundColor: Colors.black,
-        splashColor: Colors.deepPurple.shade300,
-        child: Icon(
+        fabOpenIcon: Icon(
           Icons.add,
           color: Colors.deepPurple,
         ),
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.trending_down,
+              color: Colors.red,
+            ),
+            onPressed: _goToNewSpendPage,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.trending_up,
+              color: Colors.green,
+            ),
+            onPressed: _goToNewSpendPage,
+          ),
+        ],
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.all(Radius.circular(50)),
+      //     side: BorderSide(color: Colors.grey.shade900),
+      //   ),
+      //   onPressed: _goToNewSpendPage,
+      //   backgroundColor: Colors.black,
+      //   splashColor: Colors.deepPurple.shade300,
+      //   child: Icon(
+      //     Icons.add,
+      //     color: Colors.deepPurple,
+      //   ),
+      // ),
       floatingActionButtonLocation: this._addFabLocation,
       bottomNavigationBar: this._buildBottomNavAppBar(),
     );
@@ -79,6 +117,10 @@ class _MainComponentState extends State<MainComponent> {
   ];
 
   void _onItemTapped(int index) {
+    if (fabKey.currentState.isOpen) {
+      fabKey.currentState.close();
+    }
+
     if (_selectedIndex == 1 && index == 0) {
       if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
         Navigator.pop(profileComponentGlobalKey.currentContext);
@@ -94,7 +136,7 @@ class _MainComponentState extends State<MainComponent> {
     return BottomNavigationBar(
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      unselectedItemColor: Colors.grey.shade100,
+      unselectedItemColor: Colors.grey,
       selectedItemColor: Colors.deepPurple,
       backgroundColor: Colors.black,
       currentIndex: _selectedIndex,

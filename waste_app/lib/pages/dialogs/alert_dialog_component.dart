@@ -34,12 +34,17 @@ class _AlertDialogComponentState extends State<AlertDialogComponent> {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
+                backgroundColor: Colors.black,
                 shape: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade900),
                     borderRadius: BorderRadius.circular(16.0)),
-                title: Text(this.title),
+                title: Text(
+                  this.title,
+                  style: TextStyle(color: Colors.grey.shade100),
+                ),
                 content: Text(
                   this.content,
-                  style: TextStyle(color: Colors.grey.shade700),
+                  style: TextStyle(color: Colors.grey),
                 ),
                 actions: <Widget>[
                   FlatButton(

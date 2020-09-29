@@ -21,7 +21,7 @@ class Styles {
   static TextStyle poppinsText =
       TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w500);
 
-      static TextStyle poppinsTextGrey =
+  static TextStyle poppinsTextGrey =
       TextStyle(color: Colors.grey, fontWeight: FontWeight.w500);
 
   static BorderRadius defaultBorderRadius =
@@ -42,17 +42,17 @@ class Styles {
   );
 
   static BoxDecoration spendCard = BoxDecoration(
-    color: mainBackgroundColor,
-    borderRadius: defaultBorderRadius,
-    border: Border.all(color: Colors.grey.shade900)
-    // boxShadow: [
-    //   BoxShadow(
-    //     color: Colors.grey.shade400,
-    //     offset: Offset(0, 0),
-    //     blurRadius: 2,
-    //   ),
-    // ],
-  );
+      color: mainBackgroundColor,
+      borderRadius: defaultBorderRadius,
+      border: Border.all(color: Colors.grey.shade900)
+      // boxShadow: [
+      //   BoxShadow(
+      //     color: Colors.grey.shade400,
+      //     offset: Offset(0, 0),
+      //     blurRadius: 2,
+      //   ),
+      // ],
+      );
 
   static BoxDecoration circleBox = BoxDecoration(
     color: mainBackgroundColor,
@@ -76,16 +76,15 @@ class Styles {
 
   static getTextFieldDecoration(String value) {
     return InputDecoration(
-      border: OutlineInputBorder(
-        borderRadius: defaultTextFieldBorderRadius,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: defaultTextFieldBorderRadius,
-        borderSide: BorderSide(color: Colors.grey.shade900),
-      ),
-      labelText: value,
-      labelStyle: TextStyle(color: Colors.grey)
-    );
+        border: OutlineInputBorder(
+          borderRadius: defaultTextFieldBorderRadius,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: defaultTextFieldBorderRadius,
+          borderSide: BorderSide(color: Colors.grey.shade900),
+        ),
+        labelText: value,
+        labelStyle: TextStyle(color: Colors.grey));
   }
 
   static getTextFieldDecorationUnderline(String value) {
