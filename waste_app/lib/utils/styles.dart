@@ -91,9 +91,10 @@ class Styles {
     return InputDecoration(
       border: UnderlineInputBorder(),
       enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey.shade300),
+        borderSide: BorderSide(color: Colors.grey.shade900),
       ),
       labelText: value,
+      labelStyle: TextStyle(color: Colors.grey),
     );
   }
 }

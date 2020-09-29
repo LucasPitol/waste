@@ -85,6 +85,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
       context,
       theme: DatePickerTheme(
         doneStyle: TextStyle(color: Colors.deepPurple),
+        backgroundColor: Styles.mainBackgroundColor,
+        cancelStyle: TextStyle(color: Colors.grey),
+        itemStyle: TextStyle(color: Colors.grey.shade100),
       ),
       locale: this.userDto.language == Constants.languages[0]
           ? LocaleType.pt
@@ -158,6 +161,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomPadding: true,
       body: SafeArea(
         child: Stack(
@@ -177,7 +181,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                       },
                       child: Icon(
                         Icons.close,
-                        color: Colors.white,
+                        color: Styles.mainBackgroundColor,
                       ),
                     ),
                   ),
@@ -192,8 +196,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                     ? 'Novo gasto'
                     : 'New waste',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                  color: Styles.mainBackgroundColor,
+                  fontWeight: FontWeight.w700,
                   fontSize: 18,
                 ),
               ),
@@ -210,6 +214,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                       Container(
                         margin: EdgeInsets.only(top: 15, left: 20, right: 20),
                         child: TextFormField(
+                          style: TextStyle(color: Colors.grey.shade100),
                           maxLength: 50,
                           controller: newWasteForm.reason,
                           textCapitalization: TextCapitalization.sentences,
@@ -231,6 +236,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                         margin: EdgeInsets.only(
                             top: 10, bottom: 10, left: 20, right: 20),
                         child: TextFormField(
+                          style: TextStyle(color: Colors.grey.shade100),
                           controller: newWasteForm.waste,
                           keyboardType: TextInputType.number,
                           validator: (value) {
@@ -258,8 +264,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Categoria:'
                                     : 'Category:',
-                                style: TextStyle(
-                                    color: Colors.grey.shade600, fontSize: 16),
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
                               ),
                             ),
                             GestureDetector(
@@ -274,7 +280,10 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                                 Constants.languages[0]
                                             ? categorySelected.displayNamePt
                                             : categorySelected.displayNameEn,
-                                        style: TextStyle(fontSize: 16),
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey.shade100,
+                                        ),
                                       )
                                     : Container(),
                               ),
@@ -285,7 +294,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                       Container(
                         margin: EdgeInsets.only(left: 20, right: 20),
                         height: 1,
-                        child: Divider(),
+                        child: Divider(color: Colors.grey.shade900),
                       ),
                       Container(
                         margin: EdgeInsets.only(
@@ -298,8 +307,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Data:'
                                     : 'Date:',
-                                style: TextStyle(
-                                    color: Colors.grey.shade600, fontSize: 16),
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
                               ),
                             ),
                             GestureDetector(
@@ -312,7 +321,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                   DateFormat.yMd(this.localeLanguage)
                                       .add_jm()
                                       .format(this.newWasteForm.spendDate),
-                                  style: TextStyle(fontSize: 16),
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey.shade100),
                                 ),
                               ),
                             ),
@@ -321,19 +332,20 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                       ),
                       Container(
                         child: DropdownButton<String>(
+                          dropdownColor: Styles.mainBackgroundColor,
                           value: dropdownWalletValue,
                           icon: Icon(Icons.keyboard_arrow_down),
                           iconSize: 24,
                           elevation: 16,
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
-                              color: Colors.black,
+                              color: Colors.grey.shade100,
                               fontSize: 16,
                             ),
                           ),
                           underline: Container(
                             height: 1,
-                            color: Colors.white10,
+                            color: Colors.grey.shade900,
                           ),
                           onChanged: (String newValue) {
                             switchWallets(newValue);
@@ -367,7 +379,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                                   ? 'Salvar'
                                   : 'Save',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
+                                  TextStyle(color: Styles.mainBackgroundColor, fontSize: 18),
                             ),
                           ),
                         ),

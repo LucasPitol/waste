@@ -36,7 +36,7 @@ class _AlertDialogComponentState extends State<AlertDialogComponent> {
               child: AlertDialog(
                 backgroundColor: Colors.black,
                 shape: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade900),
+                    borderSide: BorderSide(color: Colors.grey.shade900),
                     borderRadius: BorderRadius.circular(16.0)),
                 title: Text(
                   this.title,

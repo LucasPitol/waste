@@ -51,7 +51,7 @@ class _CategoryBottomSheetComponentState
         decoration: BoxDecoration(
           // borderRadius: Styles.defaultBorderRadius,
           color: isCategorySelected
-              ? Colors.deepPurple.shade100
+              ? Colors.deepPurple
               : Styles.mainBackgroundColor,
         ),
         child: Stack(
@@ -61,14 +61,21 @@ class _CategoryBottomSheetComponentState
               alignment: Alignment.centerLeft,
               child: Icon(
                 Constants.getCategoryIcon(item.value),
-                color: Colors.deepPurple,
+                color: isCategorySelected
+                    ? Styles.mainBackgroundColor
+                    : Colors.deepPurple,
               ),
             ),
             Container(
               alignment: Alignment.center,
               child: Text(
                 isPtLanguage ? item.displayNamePt : item.displayNameEn,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: isCategorySelected
+                      ? Styles.mainBackgroundColor
+                      : Colors.grey.shade100,
+                ),
               ),
             ),
           ],
@@ -80,13 +87,14 @@ class _CategoryBottomSheetComponentState
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Styles.mainBackgroundColor,
       child: Column(
         children: [
           Container(
             margin: EdgeInsets.only(top: 10),
             child: Icon(
               Icons.maximize,
-              color: Colors.grey.shade300,
+              color: Colors.grey.shade900,
               size: 50,
             ),
           ),

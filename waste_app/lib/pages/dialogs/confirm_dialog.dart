@@ -35,11 +35,16 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
+                backgroundColor: Colors.black,
                 shape: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade900),
                     borderRadius: BorderRadius.circular(16.0)),
                 title: Text(
                   this.title,
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade100,
+                  ),
                 ),
                 content: Text(
                   this.subtitle,
@@ -47,13 +52,13 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                 ),
                 actions: <Widget>[
                   FlatButton(
-                    textColor: Colors.black,
+                    textColor: Colors.deepPurple,
                     onPressed: () {
                       closeDialog(false);
                     },
                     child: Text(
                       'Cancelar',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
                   FlatButton(
@@ -63,7 +68,7 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                     },
                     child: Text(
                       'Excluir',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],

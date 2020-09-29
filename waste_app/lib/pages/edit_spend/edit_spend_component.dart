@@ -102,6 +102,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
       context,
       theme: DatePickerTheme(
         doneStyle: TextStyle(color: Colors.deepPurple),
+        backgroundColor: Styles.mainBackgroundColor,
+        cancelStyle: TextStyle(color: Colors.grey),
+        itemStyle: TextStyle(color: Colors.grey.shade100),
       ),
       locale: this.languageCode == Constants.languages[0]
           ? LocaleType.pt
@@ -152,7 +155,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
     this.editWasteForm.categoryId = categorySelected.id;
 
-    var success = await this.spendsService.updateWaste(editWasteForm, spend.categoryId);
+    var success =
+        await this.spendsService.updateWaste(editWasteForm, spend.categoryId);
 
     setState(() {
       this.loading = false;
@@ -179,7 +183,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
         this.loading = true;
       });
 
-      var success = await this.spendsService.deleteWaste(spend.spendId, spend.categoryId);
+      var success =
+          await this.spendsService.deleteWaste(spend.spendId, spend.categoryId);
 
       if (success) {
         Navigator.pop(context, true);
@@ -208,6 +213,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomPadding: true,
       body: SafeArea(
         child: Stack(
@@ -227,7 +233,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                       },
                       child: Icon(
                         Icons.close,
-                        color: Colors.white,
+                        color: Styles.mainBackgroundColor,
                       ),
                     ),
                   ),
@@ -242,8 +248,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                     ? 'Editar desperdício'
                     : 'Edit waste',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                  color: Styles.mainBackgroundColor,
+                  fontWeight: FontWeight.w700,
                   fontSize: 18,
                 ),
               ),
@@ -261,6 +267,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                         margin: EdgeInsets.only(
                             top: 20, bottom: 10, left: 20, right: 20),
                         child: TextFormField(
+                          style: TextStyle(color: Colors.grey.shade100),
                           maxLength: 50,
                           controller: editWasteForm.reason,
                           textCapitalization: TextCapitalization.sentences,
@@ -282,6 +289,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                         margin: EdgeInsets.only(
                             top: 10, bottom: 10, left: 20, right: 20),
                         child: TextFormField(
+                          style: TextStyle(color: Colors.grey.shade100),
                           controller: editWasteForm.waste,
                           keyboardType: TextInputType.number,
                           validator: (value) {
@@ -309,8 +317,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Categoria:'
                                     : 'Category:',
-                                style: TextStyle(
-                                    color: Colors.grey.shade600, fontSize: 16),
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
                               ),
                             ),
                             GestureDetector(
@@ -325,7 +333,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                                                 Constants.languages[0]
                                             ? categorySelected.displayNamePt
                                             : categorySelected.displayNameEn,
-                                        style: TextStyle(fontSize: 16),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey.shade100),
                                       )
                                     : Container(),
                               ),
@@ -349,8 +359,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                                 this.userDto.language == Constants.languages[0]
                                     ? 'Data:'
                                     : 'Date:',
-                                style: TextStyle(
-                                    color: Colors.grey.shade600, fontSize: 16),
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
                               ),
                             ),
                             GestureDetector(
@@ -363,7 +373,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                                   DateFormat.yMd(this.localeLanguage)
                                       .add_jm()
                                       .format(this.editWasteForm.spendDate),
-                                  style: TextStyle(fontSize: 16),
+                                  style: TextStyle(fontSize: 16, color: Colors.grey.shade100),
                                 ),
                               ),
                             ),
@@ -372,19 +382,20 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                       ),
                       Container(
                         child: DropdownButton<String>(
+                          dropdownColor: Styles.mainBackgroundColor,
                           value: dropdownWalletValue,
                           icon: Icon(Icons.keyboard_arrow_down),
                           iconSize: 24,
                           elevation: 16,
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
-                              color: Colors.black,
+                              color: Colors.grey.shade100,
                               fontSize: 16,
                             ),
                           ),
                           underline: Container(
                             height: 1,
-                            color: Colors.white10,
+                            color: Colors.grey.shade900,
                           ),
                           onChanged: (String newValue) {
                             switchWallets(newValue);
@@ -418,7 +429,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                                   ? 'Atualizar'
                                   : 'Update',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+                                  TextStyle(color: Styles.mainBackgroundColor, fontSize: 16),
                             ),
                           ),
                         ),
