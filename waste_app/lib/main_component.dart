@@ -3,7 +3,6 @@ import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 
 import 'pages/new_spend/new_spend_component.dart';
-import 'services/auth_service.dart';
 
 class MainComponent extends StatefulWidget {
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
 import 'package:waste_app/models/dtos/spend_item_dto.dart';
@@ -214,7 +215,7 @@ class SpendsComponentState extends State<SpendsComponent>
         margin: EdgeInsets.only(top: 5, bottom: 5),
         decoration: BoxDecoration(
           borderRadius: Styles.defaultBorderRadius,
-          color: monthSelected ? Colors.deepPurple.shade700 : Colors.deepPurple,
+          color: monthSelected ? Colors.deepPurple.shade300 : Colors.deepPurple,
         ),
         child: Stack(
           children: <Widget>[
@@ -276,7 +277,7 @@ class SpendsComponentState extends State<SpendsComponent>
             item.displayNamePt,
             style: TextStyle(
                 color: isCategorySelected
-                    ? Colors.deepPurple.shade50
+                    ? Styles.mainBackgroundColor
                     : Colors.deepPurple),
           ),
         ));
@@ -284,7 +285,11 @@ class SpendsComponentState extends State<SpendsComponent>
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.deepPurple,
+    ));
     return Scaffold(
+      backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomPadding: true,
       body: SafeArea(
         child: Stack(
@@ -333,7 +338,7 @@ class SpendsComponentState extends State<SpendsComponent>
                                 alignment: Alignment.center,
                                 child: Theme(
                                   data: Theme.of(context)
-                                      .copyWith(accentColor: Colors.white),
+                                      .copyWith(accentColor: Styles.mainBackgroundColor),
                                   child: new CircularProgressIndicator(),
                                 ),
                               )
@@ -359,7 +364,7 @@ class SpendsComponentState extends State<SpendsComponent>
                         margin: EdgeInsets.only(bottom: 30),
                         child: Icon(
                           Icons.arrow_drop_up,
-                          color: Colors.deepPurple.shade100,
+                          color: Colors.deepPurple.shade300,
                           size: 60,
                         ),
                       ),
@@ -377,6 +382,7 @@ class SpendsComponentState extends State<SpendsComponent>
                   child: Material(
                     elevation: 16.0,
                     child: Container(
+                      color: Styles.mainBackgroundColor,
                       child: Column(
                         children: <Widget>[
                           categoriesLoading
@@ -390,7 +396,7 @@ class SpendsComponentState extends State<SpendsComponent>
                                     physics: const BouncingScrollPhysics(),
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 25, vertical: 10),
+                                          horizontal: 20, vertical: 10),
                                       child: Row(
                                         children: categoriesAvailable
                                             .map((item) =>

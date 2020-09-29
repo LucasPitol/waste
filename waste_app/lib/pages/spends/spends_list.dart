@@ -39,8 +39,9 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
 
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 5),
-      decoration: Styles.loginBox,
+      decoration: Styles.spendCard,
       child: Material(
+        color: Styles.mainBackgroundColor,
         borderRadius: Styles.defaultBorderRadius,
         child: InkWell(
           borderRadius: Styles.defaultBorderRadius,
@@ -51,7 +52,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
           child: ListTile(
             title: Text(
               item.reason,
-              style: TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey.shade100),
             ),
             subtitle: Text(
               (DateFormat.E(localeLanguage).format(item.spendDate) +
@@ -59,11 +60,11 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
                   DateFormat.d().format(item.spendDate) +
                   '  ' +
                   DateFormat.Hm().format(item.spendDate)),
-              style: TextStyle(fontWeight: FontWeight.w400),
+              style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
             ),
             trailing: Text(
               '-' + amount,
-              style: TextStyle(fontWeight: FontWeight.w500),
+              style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey.shade100),
             ),
           ),
         ),
@@ -83,8 +84,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     physics: const BouncingScrollPhysics(),
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                    child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children:

@@ -13,8 +13,8 @@ class Styles {
   );
 
   static TextStyle dateAndSpendStyle = TextStyle(
-    color: Colors.deepPurple.shade50,
-    fontWeight: FontWeight.w500,
+    color: Styles.mainBackgroundColor,
+    fontWeight: FontWeight.w700,
     fontSize: 18.0,
   );
 
@@ -32,6 +32,19 @@ class Styles {
   static BoxDecoration loginBox = BoxDecoration(
     color: mainBackgroundColor,
     borderRadius: defaultBorderRadius,
+    // boxShadow: [
+    //   BoxShadow(
+    //     color: Colors.grey.shade400,
+    //     offset: Offset(0, 0),
+    //     blurRadius: 2,
+    //   ),
+    // ],
+  );
+
+  static BoxDecoration spendCard = BoxDecoration(
+    color: mainBackgroundColor,
+    borderRadius: defaultBorderRadius,
+    border: Border.all(color: Colors.grey.shade900)
     // boxShadow: [
     //   BoxShadow(
     //     color: Colors.grey.shade400,
