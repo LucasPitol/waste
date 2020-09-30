@@ -10,6 +10,7 @@ class Styles {
     accentColor: Colors.deepPurple.shade900,
     textSelectionHandleColor: Colors.deepPurple,
     textTheme: GoogleFonts.poppinsTextTheme(),
+    backgroundColor: mainBackgroundColor,
   );
 
   static TextStyle dateAndSpendStyle = TextStyle(
