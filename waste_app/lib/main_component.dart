@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 
+import 'pages/home/home_conponent.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'pages/new_spend/new_spend_component.dart';
 
@@ -105,25 +106,13 @@ class _MainComponentState extends State<MainComponent> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.all(Radius.circular(50)),
-      //     side: BorderSide(color: Colors.grey.shade900),
-      //   ),
-      //   onPressed: _goToNewSpendPage,
-      //   backgroundColor: Colors.black,
-      //   splashColor: Colors.deepPurple.shade300,
-      //   child: Icon(
-      //     Icons.add,
-      //     color: Colors.deepPurple,
-      //   ),
-      // ),
       floatingActionButtonLocation: this._addFabLocation,
       bottomNavigationBar: this._buildBottomNavAppBar(),
     );
   }
 
   final List<Widget> _widgetOptions = <Widget>[
+    HomeComponent(),
     SpendsComponent(key: spendsComponentGlobalKey),
     ProfileComponent(key: profileComponentGlobalKey),
   ];
@@ -154,6 +143,10 @@ class _MainComponentState extends State<MainComponent> {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text(''),
+        ),
         BottomNavigationBarItem(
           icon: Icon(Icons.money_off),
           title: Text(''),
