@@ -83,8 +83,23 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
       });
   }
 
-  _saveNewRevenue() {
-    
+  _saveNewRevenue() async {
+    setState(() {
+      this.loading = true;
+    });
+
+    FocusScope.of(context).unfocus();
+
+    this.newRevenueForm.walletId = dropdownWalletValue;
+    var success = await this.revenuesService.saveNewRevenue(newRevenueForm);
+
+    setState(() {
+      this.loading = false;
+    });
+
+    if (success) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override

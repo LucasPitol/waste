@@ -14,7 +14,7 @@ class SpendsDao {
       SpendingCategoriesService();
 
   Future<bool> saveNewWaste(NewWasteForm form) async {
-    bool success = true;
+    bool success = false;
     String uid = AuthService.currentUser.uid;
 
     Timestamp spendDate = Timestamp.fromDate(form.spendDate);
@@ -52,7 +52,7 @@ class SpendsDao {
   }
 
   Future<bool> updateWaste(EditWasteForm form) async {
-    bool success = true;
+    bool success = false;
     String uid = AuthService.currentUser.uid;
 
     Timestamp spendDate = Timestamp.fromDate(form.spendDate);
@@ -119,7 +119,7 @@ class SpendsDao {
   }
 
   Future<bool> deleteWaste(String spendId) async {
-    bool success = true;
+    bool success = false;
 
     await this
         .dbReference
