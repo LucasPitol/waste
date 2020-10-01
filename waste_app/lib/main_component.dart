@@ -122,7 +122,7 @@ class _MainComponentState extends State<MainComponent> {
       fabKey.currentState.close();
     }
 
-    if (_selectedIndex == 1 && index == 0) {
+    if (_selectedIndex == 2 && _selectedIndex != index) {
       if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
         Navigator.pop(profileComponentGlobalKey.currentContext);
       }
