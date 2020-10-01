@@ -63,20 +63,8 @@ class HomeComponentState extends State<HomeComponent> {
     transaction2.reason = 'Restaurante';
     transaction2.transactionDate = DateTime(2020, 09, 10);
 
-    var transaction3 = TransactionDto();
-    transaction3.ammount = -200.00;
-    transaction3.reason = 'Gasolina';
-    transaction3.transactionDate = DateTime(2020, 09, 10);
-
-    var transaction4 = TransactionDto();
-    transaction4.ammount = 5000.00;
-    transaction4.reason = 'pró-labore';
-    transaction4.transactionDate = DateTime(2020, 09, 5);
-
     transactions.add(transaction1);
     transactions.add(transaction2);
-    transactions.add(transaction3);
-    transactions.add(transaction4);
   }
 
   _buildScreenChipsOptions() {
@@ -84,12 +72,12 @@ class HomeComponentState extends State<HomeComponent> {
 
     var visionOpt = ScreenOptionChip();
     visionOpt.displayTextPt = 'Visão';
-    visionOpt.displayTextPt = 'Vision';
+    visionOpt.displayTextEn = 'Vision';
     visionOpt.id = 1;
 
     var membersOpt = ScreenOptionChip();
     membersOpt.displayTextPt = 'Membros';
-    membersOpt.displayTextPt = 'Members';
+    membersOpt.displayTextEn = 'Members';
     membersOpt.id = 2;
 
     screenOptions.add(visionOpt);
@@ -350,15 +338,31 @@ class HomeComponentState extends State<HomeComponent> {
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 10),
-                        alignment: Alignment.topRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            print('settings');
-                          },
-                          child: Icon(
-                            Icons.settings,
-                            color: Colors.grey.shade100,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  print('settings');
+                                },
+                                child: Icon(
+                                  Icons.refresh,
+                                  color: Colors.grey.shade100,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                print('settings');
+                              },
+                              child: Icon(
+                                Icons.settings,
+                                color: Colors.grey.shade100,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
