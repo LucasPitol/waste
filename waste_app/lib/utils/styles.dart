@@ -35,6 +35,11 @@ class Styles {
   static BorderRadius circularBorderRadius =
       BorderRadius.all(Radius.circular(200));
 
+  static BoxDecoration contentBox = BoxDecoration(
+    color: boxColor,
+    borderRadius: defaultBorderRadius,
+  );
+
   static BoxDecoration loginBox = BoxDecoration(
     color: mainBackgroundColor,
     borderRadius: defaultBorderRadius,

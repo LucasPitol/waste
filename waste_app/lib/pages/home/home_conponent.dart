@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/screen-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
@@ -16,9 +18,14 @@ class HomeComponent extends StatefulWidget {
 }
 
 class HomeComponentState extends State<HomeComponent> {
+  String localeLanguage =
+      AuthService.currentUser.language == Constants.languages[0]
+          ? Constants.ptLanguage
+          : Constants.enLanguage;
   UserDto userDto = AuthService.currentUser;
 
   List<ScreenOptionChip> screenOptions = [];
+  List<TransactionDto> transactions = [];
   int screenOptionSelected;
 
   WalletService walletService;
@@ -42,6 +49,34 @@ class HomeComponentState extends State<HomeComponent> {
     this._getUserWallets();
     // this._getTotalProfileData();
     this._updatePermission();
+    this._getScreenContent();
+  }
+
+  buildTransactionsMock() {
+    var transaction1 = TransactionDto();
+    transaction1.ammount = 500.00;
+    transaction1.reason = 'Dividendos';
+    transaction1.transactionDate = DateTime(2020, 09, 15);
+
+    var transaction2 = TransactionDto();
+    transaction2.ammount = -80.00;
+    transaction2.reason = 'Restaurante';
+    transaction2.transactionDate = DateTime(2020, 09, 10);
+
+    var transaction3 = TransactionDto();
+    transaction3.ammount = -200.00;
+    transaction3.reason = 'Gasolina';
+    transaction3.transactionDate = DateTime(2020, 09, 10);
+
+    var transaction4 = TransactionDto();
+    transaction4.ammount = 5000.00;
+    transaction4.reason = 'pró-labore';
+    transaction4.transactionDate = DateTime(2020, 09, 5);
+
+    transactions.add(transaction1);
+    transactions.add(transaction2);
+    transactions.add(transaction3);
+    transactions.add(transaction4);
   }
 
   _buildScreenChipsOptions() {
@@ -95,6 +130,113 @@ class HomeComponentState extends State<HomeComponent> {
     this._updatePermission();
   }
 
+  _getScreenContent() {
+    int screenOpt = this.screenOptionSelected;
+
+    switch (screenOpt) {
+      case 1:
+        this.buildTransactionsMock();
+        break;
+
+      case 2:
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  Widget _getScreenLayoutContent() {
+    int screenOpt = this.screenOptionSelected;
+
+    switch (screenOpt) {
+      case 1:
+        return Container(
+          width: double.infinity,
+          decoration: Styles.contentBox,
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    '50,000.00',
+                    style: TextStyle(
+                      color: Colors.grey.shade100,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Poupado',
+                    style: TextStyle(
+                      color: Colors.grey.shade100,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        'Transações',
+                        style: Styles.poppinsTextGrey,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // _goToEditWalletPage();
+                          print('Ver todas');
+                        },
+                        child: Text(
+                          isPtLanguage ? 'Ver todas' : 'See all',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    children: transactions
+                        .map((item) => createTileForTransactions(item))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+        break;
+
+      case 2:
+        return Container(
+          width: double.infinity,
+          decoration: Styles.contentBox,
+          child: Text(
+            'membros',
+            style: TextStyle(color: Colors.grey),
+          ),
+        );
+        break;
+
+      default:
+        return Container();
+        break;
+    }
+  }
+
   Widget createScreenOptionsChip(ScreenOptionChip item) {
     bool isOptionSelected = item.id == this.screenOptionSelected;
 
@@ -120,6 +262,42 @@ class HomeComponentState extends State<HomeComponent> {
         child: Text(
           displayText,
           style: displayTextStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget createTileForTransactions(TransactionDto item) {
+    String transactionDate =
+        DateFormat.Md(this.localeLanguage).format(item.transactionDate);
+
+    String ammount = item.ammount > 0
+        ? '+ ' + item.ammount.toStringAsFixed(2)
+        : item.ammount.toStringAsFixed(2);
+
+    return Container(
+      child: ListTile(
+        trailing: Text(
+          ammount,
+          style: TextStyle(
+            color: Colors.grey.shade100,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          item.reason,
+          style: TextStyle(
+              color: Colors.grey.shade100,
+              fontSize: 18,
+              fontWeight: FontWeight.w500),
+        ),
+        subtitle: Text(
+          transactionDate,
+          style: TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );
@@ -233,8 +411,8 @@ class HomeComponentState extends State<HomeComponent> {
                       isWalletOwner
                           ? Container(
                               alignment: Alignment.topRight,
-                              child: FlatButton(
-                                onPressed: () {
+                              child: GestureDetector(
+                                onTap: () {
                                   // _goToEditWalletPage();
                                   print('edit wallet');
                                 },
@@ -258,7 +436,7 @@ class HomeComponentState extends State<HomeComponent> {
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: EdgeInsets.symmetric(vertical: 20),
                       child: Row(
                         children: screenOptions
                             .map((item) => createScreenOptionsChip(item))
@@ -267,6 +445,7 @@ class HomeComponentState extends State<HomeComponent> {
                     ),
                   ),
                 ),
+                _getScreenLayoutContent(),
               ],
             ),
           ),
