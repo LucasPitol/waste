@@ -22,6 +22,9 @@ class Styles {
   static TextStyle poppinsText =
       TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w500);
 
+  static TextStyle poppinsTextLight =
+      TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w500);
+
   static TextStyle poppinsTextGrey =
       TextStyle(color: Colors.grey, fontWeight: FontWeight.w500);
 
