@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:waste_app/models/screen-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -16,6 +17,9 @@ class HomeComponent extends StatefulWidget {
 
 class HomeComponentState extends State<HomeComponent> {
   UserDto userDto = AuthService.currentUser;
+
+  List<ScreenOptionChip> screenOptions = [];
+  int screenOptionSelected;
 
   WalletService walletService;
   AuthService authService;
@@ -34,9 +38,27 @@ class HomeComponentState extends State<HomeComponent> {
   void initState() {
     super.initState();
     this.authService.userExists(context);
+    this._buildScreenChipsOptions();
     this._getUserWallets();
     // this._getTotalProfileData();
     this._updatePermission();
+  }
+
+  _buildScreenChipsOptions() {
+    screenOptionSelected = 1;
+
+    var visionOpt = ScreenOptionChip();
+    visionOpt.displayTextPt = 'Visão';
+    visionOpt.displayTextPt = 'Vision';
+    visionOpt.id = 1;
+
+    var membersOpt = ScreenOptionChip();
+    membersOpt.displayTextPt = 'Membros';
+    membersOpt.displayTextPt = 'Members';
+    membersOpt.id = 2;
+
+    screenOptions.add(visionOpt);
+    screenOptions.add(membersOpt);
   }
 
   void _updatePermission() {
@@ -71,6 +93,36 @@ class HomeComponentState extends State<HomeComponent> {
 
     // this._getTotalProfileData();
     this._updatePermission();
+  }
+
+  Widget createScreenOptionsChip(ScreenOptionChip item) {
+    bool isOptionSelected = item.id == this.screenOptionSelected;
+
+    String displayText = isPtLanguage ? item.displayTextPt : item.displayTextEn;
+
+    TextStyle displayTextStyle = TextStyle(
+        fontSize: 14,
+        color: isOptionSelected ? Colors.grey.shade100 : Colors.grey);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          this.screenOptionSelected = item.id;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color:
+              isOptionSelected ? Styles.boxColor : Styles.mainBackgroundColor,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Text(
+          displayText,
+          style: displayTextStyle,
+        ),
+      ),
+    );
   }
 
   @override
@@ -198,6 +250,21 @@ class HomeComponentState extends State<HomeComponent> {
                             )
                           : Container(),
                     ],
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: screenOptions
+                            .map((item) => createScreenOptionsChip(item))
+                            .toList(),
+                      ),
+                    ),
                   ),
                 ),
               ],

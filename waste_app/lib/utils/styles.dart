@@ -19,6 +19,8 @@ class Styles {
     fontSize: 18.0,
   );
 
+  static Color boxColor = Color(0xFFC8BDDB).withOpacity(0.1);
+
   static TextStyle poppinsText =
       TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w500);
 
