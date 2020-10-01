@@ -37,8 +37,8 @@ class _MainComponentState extends State<MainComponent> {
   void _goToNewRevenuePage() async {
     fabKey.currentState.close();
 
-    var refresh = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => NewRevenueComponent()));
+    var refresh = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => NewRevenueComponent()));
 
     if (refresh != null && refresh) {
       _refreshData();
@@ -47,10 +47,10 @@ class _MainComponentState extends State<MainComponent> {
 
   void _refreshData() {
     switch (_selectedIndex) {
-      case 0:
+      case 1:
         _updateSpendsPage();
         break;
-      case 1:
+      case 2:
         _updateProfilePage();
         break;
       default:
@@ -76,7 +76,7 @@ class _MainComponentState extends State<MainComponent> {
       floatingActionButton: FabCircularMenu(
         key: fabKey,
         alignment: Alignment.bottomCenter,
-        fabMargin: EdgeInsets.only(bottom: 45, right: 35),
+        fabMargin: EdgeInsets.only(bottom: 45, right: 32),
         animationDuration: Duration(milliseconds: 300),
         ringDiameter: 200,
         ringColor: Colors.white10,
@@ -114,6 +114,8 @@ class _MainComponentState extends State<MainComponent> {
   final List<Widget> _widgetOptions = <Widget>[
     HomeComponent(),
     SpendsComponent(key: spendsComponentGlobalKey),
+    Container(),
+    Container(),
     ProfileComponent(key: profileComponentGlobalKey),
   ];
 
@@ -122,11 +124,11 @@ class _MainComponentState extends State<MainComponent> {
       fabKey.currentState.close();
     }
 
-    if (_selectedIndex == 2 && _selectedIndex != index) {
-      if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
-        Navigator.pop(profileComponentGlobalKey.currentContext);
-      }
-    }
+    // if (_selectedIndex == 2 && _selectedIndex != index) {
+    //   if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
+    //     Navigator.pop(profileComponentGlobalKey.currentContext);
+    //   }
+    // }
 
     setState(() {
       _selectedIndex = index;
@@ -140,6 +142,7 @@ class _MainComponentState extends State<MainComponent> {
       unselectedItemColor: Colors.grey,
       selectedItemColor: Colors.deepPurple,
       backgroundColor: Colors.black,
+      type: BottomNavigationBarType.fixed,
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: const <BottomNavigationBarItem>[
@@ -149,6 +152,14 @@ class _MainComponentState extends State<MainComponent> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.money_off),
+          title: Text(''),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.arrow_drop_down),
+          title: Text(''),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.attach_money),
           title: Text(''),
         ),
         BottomNavigationBarItem(

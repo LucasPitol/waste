@@ -1,13 +1,13 @@
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:waste_app/models/forms/new_revenue_form.dart';
-import 'package:waste_app/services/revenues_service.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:flutter/material.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewRevenueComponent extends StatefulWidget {
   @override
@@ -28,13 +28,13 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
   NewRevenueForm newRevenueForm;
   bool loading = false;
 
-  RevenuesService revenuesService;
+  TransactionService transactionService;
   WalletService walletService;
 
   _NewRevenueComponenState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.newRevenueForm = NewRevenueForm();
-    this.revenuesService = RevenuesService();
+    this.transactionService = TransactionService();
     this.walletService = WalletService();
   }
 
@@ -91,7 +91,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
     FocusScope.of(context).unfocus();
 
     this.newRevenueForm.walletId = dropdownWalletValue;
-    var success = await this.revenuesService.saveNewRevenue(newRevenueForm);
+    var success = await this.transactionService.saveNewRevenue(newRevenueForm);
 
     setState(() {
       this.loading = false;

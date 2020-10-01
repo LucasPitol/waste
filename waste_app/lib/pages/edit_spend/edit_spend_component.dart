@@ -12,6 +12,7 @@ import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/spends_service.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -42,7 +43,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   final _editSpendFormKey = GlobalKey<FormState>();
 
   WalletService walletService;
-  SpendsService spendsService;
+  TransactionService transactionService;
   SpendingCategoriesService spendingCategoriesService;
   AuthService authService;
 
@@ -52,7 +53,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     this.spend = spend;
     this.walletService = WalletService();
     this.editWasteForm = EditWasteForm();
-    this.spendsService = SpendsService();
+    this.transactionService = TransactionService();
     this.spendingCategoriesService = SpendingCategoriesService();
     this.authService = AuthService();
     this.spendingCategoryList = List<SpendingCategory>();
@@ -157,8 +158,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
     this.editWasteForm.categoryId = categorySelected.id;
 
-    var success =
-        await this.spendsService.updateWaste(editWasteForm, spend.categoryId);
+    var success = await this
+        .transactionService
+        .updateWaste(editWasteForm, spend.categoryId);
 
     setState(() {
       this.loading = false;
@@ -185,8 +187,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
         this.loading = true;
       });
 
-      var success =
-          await this.spendsService.deleteWaste(spend.spendId, spend.categoryId);
+      var success = await this
+          .transactionService
+          .deleteWaste(spend.spendId, spend.categoryId);
 
       if (success) {
         Navigator.pop(context, true);

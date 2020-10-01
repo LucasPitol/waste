@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/forms/edit_waste_form.dart';
+import 'package:waste_app/models/forms/new_revenue_form.dart';
 import 'package:waste_app/models/forms/new_waste_form.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/spend.dart';
@@ -7,7 +8,7 @@ import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/smart_error_service.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
 
-class SpendsDao {
+class TransactionsDao {
   final dbReference = Firestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
   SpendingCategoriesService spendingCategoriesService =
@@ -26,15 +27,17 @@ class SpendsDao {
 
     String wasteString = form.waste.text.replaceAll(',', '');
     double waste = double.parse(wasteString);
+    double wasteNegative = waste * (-1);
 
-    await dbReference.collection('spends').add({
+    await dbReference.collection('transactions').add({
       'creationDate': creationDate,
       'reason': reason,
-      'spendDate': spendDate,
+      'transactionDate': spendDate,
       'userId': uid,
       'walletId': walletId,
       'categoryId': categoryId,
-      'waste': waste
+      'ammount': wasteNegative,
+      'type': 'WASTE'
     }).then((value) {
       success = true;
       return success;
@@ -60,20 +63,29 @@ class SpendsDao {
 
     String reason = form.reason.text;
     String walletId = form.walletId;
-    String spendId = form.spendId;
+    String transactionId = form.spendId;
     String categoryId = form.categoryId;
 
     String wasteString = form.waste.text.replaceAll(',', '');
     double waste = double.parse(wasteString);
 
-    await this.dbReference.collection('spends').document(spendId).setData({
+    if (waste > 0) {
+      waste = waste * (-1);
+    }
+
+    await this
+        .dbReference
+        .collection('transactions')
+        .document(transactionId)
+        .setData({
       'reason': reason,
-      'spendDate': spendDate,
+      'transactionDate': spendDate,
       'userId': uid,
       'walletId': walletId,
-      'waste': waste,
+      'ammount': waste,
       'lastUpdate': lastUpdateDate,
       'categoryId': categoryId,
+      'type': 'WASTE'
     }, merge: true).then((value) {
       success = true;
       return success;
@@ -90,41 +102,13 @@ class SpendsDao {
     return success;
   }
 
-  Future<bool> deleteWastesByWalletId(String walletId) async {
-    bool success = false;
-
-    await dbReference
-        .collection('spends')
-        .where('walletId', isEqualTo: walletId)
-        .getDocuments()
-        .then((onValue) {
-      for (DocumentSnapshot ds in onValue.documents) {
-        ds.reference.delete();
-      }
-      success = true;
-      return success;
-    }).catchError((onError) {
-      print(onError);
-
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Delete wallet spends';
-      errorDto.userId = AuthService.currentUser.uid;
-
-      this.smartErrorService.saveError(errorDto);
-
-      return success;
-    });
-    return success;
-  }
-
-  Future<bool> deleteWaste(String spendId) async {
+  Future<bool> deleteWaste(String transactionId) async {
     bool success = false;
 
     await this
         .dbReference
-        .collection('spends')
-        .document(spendId)
+        .collection('transactions')
+        .document(transactionId)
         .delete()
         .then((value) {
       success = true;
@@ -143,7 +127,62 @@ class SpendsDao {
     return success;
   }
 
-  Future<List<Spend>> getSpendsByDAteIntervalAndCategoryId(
+  Future<bool> deleteTransactionsByWalletId(String walletId) async {
+    bool success = false;
+
+    await dbReference
+        .collection('transactions')
+        .where('walletId', isEqualTo: walletId)
+        .getDocuments()
+        .then((onValue) {
+      for (DocumentSnapshot ds in onValue.documents) {
+        ds.reference.delete();
+      }
+      success = true;
+      return success;
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Delete wallet transactions';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
+      return success;
+    });
+    return success;
+  }
+
+  Future<List<Spend>> getSpendsByWalletId(String walletId) async {
+    var spends = List<Spend>();
+
+    await dbReference
+        .collection('transactions')
+        .where('walletId', isEqualTo: walletId)
+        .where('type', isEqualTo: 'WASTE')
+        .getDocuments()
+        .then((QuerySnapshot snapShot) {
+      snapShot.documents.forEach((item) {
+        var spend = Spend(item);
+
+        spends.add(spend);
+      });
+      return spends;
+    }).catchError((onError) {
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Get list of months/spends';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+      return spends;
+    });
+    return spends;
+  }
+
+  Future<List<Spend>> getSpendsByDateIntervalAndCategoryId(
       String walletId,
       Timestamp fistDayOfCurrentMonthTimestamp,
       Timestamp lastDayOfCurrentMonthTimestamp,
@@ -152,7 +191,7 @@ class SpendsDao {
     var user = AuthService.currentUser;
 
     await dbReference
-        .collection('spends')
+        .collection('transactions')
         .where('walletId', isEqualTo: walletId)
         .where('spendDate',
             isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
@@ -181,41 +220,16 @@ class SpendsDao {
     return spends;
   }
 
-  Future<List<Spend>> getSpendsByWalletId(String walletId) async {
-    var spends = List<Spend>();
-
-    await dbReference
-        .collection('spends')
-        .where('walletId', isEqualTo: walletId)
-        .getDocuments()
-        .then((QuerySnapshot snapShot) {
-      snapShot.documents.forEach((item) {
-        var spend = Spend(item);
-
-        spends.add(spend);
-      });
-      return spends;
-    }).catchError((onError) {
-      SmartError errorDto = SmartError();
-      errorDto.errorLog = onError.toString();
-      errorDto.feature = 'Get list of months/spends';
-      errorDto.userId = AuthService.currentUser.uid;
-
-      this.smartErrorService.saveError(errorDto);
-      return spends;
-    });
-    return spends;
-  }
-
   Future<List<Spend>> getSpendsByDateInterval(
       String walletId, Timestamp startDate, Timestamp endDate) async {
     var spends = List<Spend>();
 
     await dbReference
-        .collection('spends')
+        .collection('transactions')
         .where('walletId', isEqualTo: walletId)
         .where('spendDate', isGreaterThanOrEqualTo: startDate)
         .where('spendDate', isLessThanOrEqualTo: endDate)
+        .where('type', isEqualTo: 'WASTE')
         .getDocuments()
         .then((QuerySnapshot snapShot) {
       snapShot.documents.forEach((item) {
@@ -237,5 +251,42 @@ class SpendsDao {
       return spends;
     });
     return spends;
+  }
+
+  Future<bool> saveNewRevenue(NewRevenueForm form) async {
+    bool success = false;
+    String uid = AuthService.currentUser.uid;
+
+    Timestamp payDay = Timestamp.fromDate(form.payDay);
+    Timestamp creationDate = Timestamp.fromDate(DateTime.now());
+
+    String reason = form.reason.text;
+    String walletId = form.walletId;
+
+    String revenueString = form.revenueValue.text.replaceAll(',', '');
+    double revenue = double.parse(revenueString);
+
+    await dbReference.collection('transactions').add({
+      'creationDate': creationDate,
+      'reason': reason,
+      'transactionDate': payDay,
+      'userId': uid,
+      'walletId': walletId,
+      'ammount': revenue,
+      'type': 'REVENUE'
+    }).then((value) {
+      success = true;
+      return true;
+    }).catchError((onError) {
+      print(onError);
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Recive new revenue';
+      errorDto.userId = uid;
+
+      this.smartErrorService.saveError(errorDto);
+      return success;
+    });
+    return success;
   }
 }

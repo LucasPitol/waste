@@ -13,7 +13,7 @@ class Spend {
   Spend(DocumentSnapshot doc) {
     var objMapp = doc.data;
 
-    Timestamp spendDateTimestamp = objMapp['spendDate'];
+    Timestamp spendDateTimestamp = objMapp['transactionDate'];
     Timestamp creationDateTimestamp = objMapp['creationDate'];
 
     this.spendId = doc.documentID;
@@ -24,6 +24,6 @@ class Spend {
     this.walletId = objMapp['walletId'];
     this.categoryId = objMapp['categoryId'];
 
-    this.waste = double.parse(objMapp['waste'].toString());
+    this.waste = double.parse(objMapp['ammount'].toString());
   }
 }

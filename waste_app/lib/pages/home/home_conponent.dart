@@ -356,7 +356,7 @@ class HomeComponentState extends State<HomeComponent> {
         DateFormat.Md(this.localeLanguage).format(item.transactionDate);
 
     String ammount = item.ammount > 0
-        ? '+ ' + item.ammount.toStringAsFixed(2)
+        ? '+' + item.ammount.toStringAsFixed(2)
         : item.ammount.toStringAsFixed(2);
 
     return Container(

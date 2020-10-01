@@ -9,6 +9,7 @@ import 'package:waste_app/pages/spends/spends_list.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/spends_service.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -43,7 +44,7 @@ class SpendsComponentState extends State<SpendsComponent>
   SpendingCategory categorySelected =
       SpendingCategory('0', 'Todos', 'All', 'all');
 
-  SpendsService spendsService = SpendsService();
+  TransactionService transactionService = TransactionService();
   SpendingCategoriesService spendingCategoriesService =
       SpendingCategoriesService();
   AuthService authService = AuthService();
@@ -90,7 +91,7 @@ class SpendsComponentState extends State<SpendsComponent>
     });
 
     this.spendsByMonthDtoList =
-        await this.spendsService.getSpendsByMonthDtoList();
+        await this.transactionService.getSpendsByMonthDtoList();
 
     setState(() {
       this.spendsByMonthLoading = false;
@@ -116,14 +117,14 @@ class SpendsComponentState extends State<SpendsComponent>
     });
 
     if (categorySelectedId == '0') {
-      this.spendList = await this.spendsService.getSpendsByMonth(date);
+      this.spendList = await this.transactionService.getSpendsByMonth(date);
 
       if (categoriesAvailable.isEmpty || categoriesAvailable.length <= 1) {
         this.getCategories();
       }
     } else {
       this.spendList = await this
-          .spendsService
+          .transactionService
           .getSpendsByMonthFiltered(date, categorySelectedId);
     }
 
@@ -338,8 +339,8 @@ class SpendsComponentState extends State<SpendsComponent>
                                 width: double.infinity,
                                 alignment: Alignment.center,
                                 child: Theme(
-                                  data: Theme.of(context)
-                                      .copyWith(accentColor: Styles.mainBackgroundColor),
+                                  data: Theme.of(context).copyWith(
+                                      accentColor: Styles.mainBackgroundColor),
                                   child: new CircularProgressIndicator(),
                                 ),
                               )

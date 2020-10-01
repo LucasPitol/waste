@@ -5,13 +5,13 @@ import 'package:waste_app/models/wallet.dart';
 
 import 'auth_service.dart';
 import 'smart_error_service.dart';
-import 'spends_service.dart';
+import 'transactions_service.dart';
 
 class WalletService {
   final dbReference = Firestore.instance;
   WalletDao dao = WalletDao();
   SmartErrorService smartErrorService = SmartErrorService();
-  SpendsService spendsService = SpendsService();
+  TransactionService transactionService = TransactionService();
 
   bool isOwner(String walletId, String uid) {
     List<Wallet> wallets = getUserWalletsLocal();
@@ -59,14 +59,17 @@ class WalletService {
     return success;
   }
 
-  Future<bool> deleteWalletSpends(String walletId) async {
-    bool success = false;
+  Future<bool> deleteWalletTransactions(String walletId) async {
+    bool success =
+        await this.transactionService.deleteTransactionsByWalletId(walletId);
+
+    return success;
   }
 
   Future<bool> deleteWallet(String walletId, String userId) async {
     bool success = false;
 
-    bool x = await this.deleteWalletSpends(walletId);
+    bool x = await this.deleteWalletTransactions(walletId);
 
     success = await this.dao.deleteWallet(walletId);
 

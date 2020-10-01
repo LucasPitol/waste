@@ -3,6 +3,7 @@ import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/spends_service.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/forms/new_waste_form.dart';
@@ -38,6 +39,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   WalletService walletService;
   SpendsService spendsService;
+  TransactionService transactionService;
   SpendingCategoriesService spendingCategoriesService;
   AuthService authService;
 
@@ -48,6 +50,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     this.walletService = WalletService();
     this.newWasteForm = NewWasteForm();
     this.spendsService = SpendsService();
+    this.transactionService = TransactionService();
     this.spendingCategoriesService = SpendingCategoriesService();
     this.authService = AuthService();
     this.spendingCategoryList = List<SpendingCategory>();
@@ -149,7 +152,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
     this.newWasteForm.walletId = dropdownWalletValue;
     this.newWasteForm.categoryId = categorySelected.id;
-    var success = await this.spendsService.waste(newWasteForm);
+    var success = await this.transactionService.waste(newWasteForm);
 
     setState(() {
       this.loading = false;

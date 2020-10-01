@@ -115,7 +115,7 @@ class _EditWalletState extends State<EditWallet> {
 
       var success = deleteWallet
           ? await this.walletService.deleteWallet(walletIdToEdit, uid)
-          : await this.walletService.deleteWalletSpends(walletIdToEdit);
+          : await this.walletService.deleteWalletTransactions(walletIdToEdit);
 
       if (success) {
         Navigator.pop(context, true);
