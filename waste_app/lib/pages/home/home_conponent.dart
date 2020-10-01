@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:waste_app/models/dtos/member-dto.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/screen-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -26,6 +27,7 @@ class HomeComponentState extends State<HomeComponent> {
 
   List<ScreenOptionChip> screenOptions = [];
   List<TransactionDto> transactions = [];
+  List<MemberDto> members = [];
   int screenOptionSelected;
 
   WalletService walletService;
@@ -65,6 +67,21 @@ class HomeComponentState extends State<HomeComponent> {
 
     transactions.add(transaction1);
     transactions.add(transaction2);
+  }
+
+  buildMembersMock() {
+    var member1 = MemberDto();
+    member1.id = 1;
+    member1.name = 'Judas';
+    member1.email = 'judasso@gmail.com';
+
+    var member2 = MemberDto();
+    member2.id = 2;
+    member2.name = 'Jeca';
+    member2.email = 'jekinha@gmail.com';
+
+    members.add(member1);
+    members.add(member2);
   }
 
   _buildScreenChipsOptions() {
@@ -121,17 +138,21 @@ class HomeComponentState extends State<HomeComponent> {
   _getScreenContent() {
     int screenOpt = this.screenOptionSelected;
 
-    switch (screenOpt) {
-      case 1:
-        this.buildTransactionsMock();
-        break;
+    this.buildTransactionsMock();
+    this.buildMembersMock();
 
-      case 2:
-        break;
+    // switch (screenOpt) {
+    //   case 1:
+    //     this.buildTransactionsMock();
+    //     break;
 
-      default:
-        break;
-    }
+    //   case 2:
+    //     this.buildMembersMock();
+    //     break;
+
+    //   default:
+    //     break;
+    // }
   }
 
   Widget _getScreenLayoutContent() {
@@ -143,10 +164,11 @@ class HomeComponentState extends State<HomeComponent> {
           width: double.infinity,
           decoration: Styles.contentBox,
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            margin: EdgeInsets.symmetric(vertical: 10),
             child: Column(
               children: [
                 Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15),
                   alignment: Alignment.topLeft,
                   child: Text(
                     '50,000.00',
@@ -158,6 +180,7 @@ class HomeComponentState extends State<HomeComponent> {
                   ),
                 ),
                 Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15),
                   alignment: Alignment.topLeft,
                   child: Text(
                     'Poupado',
@@ -169,7 +192,7 @@ class HomeComponentState extends State<HomeComponent> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(vertical: 20),
+                  margin: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
@@ -212,9 +235,50 @@ class HomeComponentState extends State<HomeComponent> {
         return Container(
           width: double.infinity,
           decoration: Styles.contentBox,
-          child: Text(
-            'membros',
-            style: TextStyle(color: Colors.grey),
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        'Membros',
+                        style: TextStyle(
+                          color: Colors.grey.shade100,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          print('Novo membro');
+                        },
+                        child: Text(
+                          isPtLanguage ? 'Novo membro' : 'New member',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14.0,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: members
+                        .map((item) => createTileForMembers(item))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
         break;
@@ -250,6 +314,38 @@ class HomeComponentState extends State<HomeComponent> {
         child: Text(
           displayText,
           style: displayTextStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget createTileForMembers(MemberDto item) {
+    return Container(
+      child: ListTile(
+        trailing: GestureDetector(
+          onTap: () {
+            print('remove member');
+          },
+          child: Container(
+            child: Icon(
+              Icons.close,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        title: Text(
+          item.name,
+          style: TextStyle(
+              color: Colors.grey.shade100,
+              fontSize: 18,
+              fontWeight: FontWeight.w700),
+        ),
+        subtitle: Text(
+          item.email,
+          style: TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
     );
