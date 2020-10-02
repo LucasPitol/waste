@@ -25,9 +25,9 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
 
   _SpendsListComponentState(this.spends, this.updateData);
 
-  void _goToEditWaste(SpendItem spendId) async {
+  void _goToEditWaste(SpendItem transactionId) async {
     var refresh = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditSpendComponent(spendId)));
+        MaterialPageRoute(builder: (context) => EditSpendComponent(transactionId)));
 
     if (refresh != null && refresh) {
       this.updateData();
@@ -52,7 +52,8 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
           child: ListTile(
             title: Text(
               item.reason,
-              style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey.shade100),
+              style: TextStyle(
+                  fontWeight: FontWeight.w500, color: Colors.grey.shade100),
             ),
             subtitle: Text(
               (DateFormat.E(localeLanguage).format(item.spendDate) +
@@ -63,8 +64,9 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
               style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
             ),
             trailing: Text(
-              '-' + amount,
-              style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey.shade100),
+              amount,
+              style: TextStyle(
+                  fontWeight: FontWeight.w500, color: Colors.grey.shade100),
             ),
           ),
         ),
@@ -86,10 +88,9 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
                     physics: const BouncingScrollPhysics(),
                     child: Container(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:
-                              spends.map((item) => createTile(item)).toList(),
-                        )),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: spends.map((item) => createTile(item)).toList(),
+                    )),
                   ),
                 ),
               ],

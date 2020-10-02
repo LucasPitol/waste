@@ -1,17 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
 import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/spending_categories_service.dart';
-import 'package:waste_app/services/spends_service.dart';
-import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class SpendsComponent extends StatefulWidget {
   SpendsComponent({Key key}) : super(key: key);
@@ -240,7 +239,7 @@ class SpendsComponentState extends State<SpendsComponent>
               alignment: Alignment.centerRight,
               margin: EdgeInsets.only(right: 40, top: 10),
               child: Text(
-                '-' + Constants.getAmountFormated(item.spent),
+                Constants.getAmountFormated(item.spent),
                 style: Styles.dateAndSpendStyle,
               ),
             ),
@@ -323,7 +322,7 @@ class SpendsComponentState extends State<SpendsComponent>
                           alignment: Alignment.centerRight,
                           margin: EdgeInsets.only(right: 40, top: 10),
                           child: Text(
-                            '-' + Constants.getAmountFormated(totalWaste),
+                            Constants.getAmountFormated(totalWaste),
                             style: Styles.dateAndSpendStyle,
                           ),
                         ),

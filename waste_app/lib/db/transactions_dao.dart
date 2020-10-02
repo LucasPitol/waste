@@ -36,7 +36,7 @@ class TransactionsDao {
       'userId': uid,
       'walletId': walletId,
       'categoryId': categoryId,
-      'ammount': wasteNegative,
+      'amount': wasteNegative,
       'type': 'WASTE'
     }).then((value) {
       success = true;
@@ -82,7 +82,7 @@ class TransactionsDao {
       'transactionDate': spendDate,
       'userId': uid,
       'walletId': walletId,
-      'ammount': waste,
+      'amount': waste,
       'lastUpdate': lastUpdateDate,
       'categoryId': categoryId,
       'type': 'WASTE'
@@ -193,9 +193,9 @@ class TransactionsDao {
     await dbReference
         .collection('transactions')
         .where('walletId', isEqualTo: walletId)
-        .where('spendDate',
+        .where('transactionDate',
             isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
-        .where('spendDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
+        .where('transactionDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
         .where('categoryId', isEqualTo: categoryId)
         .getDocuments()
         .then((QuerySnapshot snapShot) {
@@ -227,8 +227,8 @@ class TransactionsDao {
     await dbReference
         .collection('transactions')
         .where('walletId', isEqualTo: walletId)
-        .where('spendDate', isGreaterThanOrEqualTo: startDate)
-        .where('spendDate', isLessThanOrEqualTo: endDate)
+        .where('transactionDate', isGreaterThanOrEqualTo: startDate)
+        .where('transactionDate', isLessThanOrEqualTo: endDate)
         .where('type', isEqualTo: 'WASTE')
         .getDocuments()
         .then((QuerySnapshot snapShot) {
@@ -272,7 +272,7 @@ class TransactionsDao {
       'transactionDate': payDay,
       'userId': uid,
       'walletId': walletId,
-      'ammount': revenue,
+      'amount': revenue,
       'type': 'REVENUE'
     }).then((value) {
       success = true;

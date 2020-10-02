@@ -24,6 +24,6 @@ class Spend {
     this.walletId = objMapp['walletId'];
     this.categoryId = objMapp['categoryId'];
 
-    this.waste = double.parse(objMapp['ammount'].toString());
+    this.waste = double.parse(objMapp['amount'].toString());
   }
 }

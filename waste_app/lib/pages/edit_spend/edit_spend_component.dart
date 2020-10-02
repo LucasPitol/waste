@@ -94,7 +94,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
   void _buildForm() {
     editWasteForm.reason.text = spend.reason;
-    editWasteForm.waste.text = (spend.spent * 10).toString();
+    double wastePositive = spend.spent * (-1);
+    editWasteForm.waste.text = (wastePositive * 10).toString();
     editWasteForm.spendDate = spend.spendDate;
     editWasteForm.spendId = spend.spendId;
     editWasteForm.categoryId = spend.categoryId;

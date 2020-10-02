@@ -8,6 +8,7 @@ import 'package:waste_app/models/screen-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -30,6 +31,7 @@ class HomeComponentState extends State<HomeComponent> {
   List<MemberDto> members = [];
   int screenOptionSelected;
 
+  TransactionService transactionService;
   WalletService walletService;
   AuthService authService;
 
@@ -40,6 +42,7 @@ class HomeComponentState extends State<HomeComponent> {
 
   HomeComponentState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
+    this.transactionService = TransactionService();
     this.walletService = WalletService();
     this.authService = AuthService();
   }
