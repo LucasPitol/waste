@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:waste_app/models/filter-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
@@ -20,6 +21,9 @@ class RevenuesComponentState extends State<RevenuesComponent> {
   UserDto userDto = AuthService.currentUser;
   bool isPtLanguage;
 
+  List<FilterOptionChip> filterOptions = [];
+  int filterSelected;
+
   TransactionService transactionService;
   AuthService authService;
 
@@ -32,6 +36,7 @@ class RevenuesComponentState extends State<RevenuesComponent> {
   void initState() {
     super.initState();
     this.updateAppBar();
+    this._buildFilterChipsOptions();
     this.authService.userExists(context);
   }
 
@@ -40,6 +45,86 @@ class RevenuesComponentState extends State<RevenuesComponent> {
       statusBarColor: Styles.mainBackgroundColor,
       statusBarIconBrightness: Brightness.light,
     ));
+  }
+
+  _buildFilterChipsOptions() {
+    filterSelected = 1;
+
+    var oneMonthOpt = FilterOptionChip();
+    oneMonthOpt.displayTextPt = '1 mês';
+    oneMonthOpt.displayTextEn = '1 month';
+    oneMonthOpt.id = 1;
+    oneMonthOpt.enable = true;
+
+    var threeMonthOpt = FilterOptionChip();
+    threeMonthOpt.displayTextPt = '3 meses';
+    threeMonthOpt.displayTextEn = '3 month';
+    threeMonthOpt.id = 2;
+    threeMonthOpt.enable = true;
+
+    var sixMonthOpt = FilterOptionChip();
+    sixMonthOpt.displayTextPt = '6 meses';
+    sixMonthOpt.displayTextEn = '6 month';
+    sixMonthOpt.id = 3;
+    sixMonthOpt.enable = false;
+
+    var oneYearOpt = FilterOptionChip();
+    oneYearOpt.displayTextPt = '1 ano';
+    oneYearOpt.displayTextEn = '1 year';
+    oneYearOpt.id = 4;
+    oneYearOpt.enable = false;
+
+    var fiveYearOpt = FilterOptionChip();
+    fiveYearOpt.displayTextPt = '5 anos';
+    fiveYearOpt.displayTextEn = '5 years';
+    fiveYearOpt.id = 5;
+    fiveYearOpt.enable = false;
+
+    filterOptions.add(oneMonthOpt);
+    filterOptions.add(threeMonthOpt);
+    filterOptions.add(sixMonthOpt);
+    filterOptions.add(oneYearOpt);
+    filterOptions.add(fiveYearOpt);
+  }
+
+  Widget createFilterOptionsChip(FilterOptionChip item) {
+    bool isOptionSelected = item.id == this.filterSelected;
+
+    bool enabled = item.enable;
+
+    String displayText = isPtLanguage ? item.displayTextPt : item.displayTextEn;
+
+    Color textColor;
+
+    if (enabled) {
+      textColor = isOptionSelected ? Styles.mainBackgroundColor : Colors.grey;
+    } else {
+      textColor = Colors.grey.shade900;
+    }
+
+    TextStyle displayTextStyle = TextStyle(fontSize: 14, color: textColor);
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (enabled) {
+            this.filterSelected = item.id;
+          }
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color:
+              isOptionSelected ? Colors.deepPurple : Styles.mainBackgroundColor,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Text(
+          displayText,
+          style: displayTextStyle,
+        ),
+      ),
+    );
   }
 
   @override
@@ -63,7 +148,7 @@ class RevenuesComponentState extends State<RevenuesComponent> {
                           'Receitas',
                           style: TextStyle(
                             color: Colors.grey.shade100,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w600,
                             fontSize: 24,
                           ),
                         ),
@@ -82,6 +167,21 @@ class RevenuesComponentState extends State<RevenuesComponent> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Row(
+                        children: filterOptions
+                            .map((item) => createFilterOptionsChip(item))
+                            .toList(),
+                      ),
+                    ),
                   ),
                 ),
               ],

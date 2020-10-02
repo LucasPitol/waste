@@ -178,7 +178,7 @@ class HomeComponentState extends State<HomeComponent> {
                     '50,000.00',
                     style: TextStyle(
                       color: Colors.grey.shade100,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                       fontSize: 24,
                     ),
                   ),
@@ -253,7 +253,7 @@ class HomeComponentState extends State<HomeComponent> {
                         'Membros',
                         style: TextStyle(
                           color: Colors.grey.shade100,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
                       ),
@@ -342,7 +342,7 @@ class HomeComponentState extends State<HomeComponent> {
           style: TextStyle(
               color: Colors.grey.shade100,
               fontSize: 18,
-              fontWeight: FontWeight.w700),
+              fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
           item.email,
@@ -421,7 +421,7 @@ class HomeComponentState extends State<HomeComponent> {
                               'Rombado',
                               style: TextStyle(
                                 color: Colors.grey.shade100,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 24,
                               ),
                             ),
