@@ -6,6 +6,7 @@ import 'package:waste_app/pages/spends/spends.dart';
 import 'pages/home/home_conponent.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'pages/new_spend/new_spend_component.dart';
+import 'pages/revenues/revenues_component.dart';
 
 class MainComponent extends StatefulWidget {
   @override
@@ -129,7 +130,7 @@ class _MainComponentState extends State<MainComponent> {
     HomeComponent(key: homeComponentGlobalKey),
     SpendsComponent(key: spendsComponentGlobalKey),
     Container(),
-    Container(),
+    RevenuesComponent(),
     ProfileComponent(key: profileComponentGlobalKey),
   ];
 
