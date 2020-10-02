@@ -14,7 +14,7 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class HomeComponent extends StatefulWidget {
-  // HomeComponent({Key key}) : super(key: key);
+  HomeComponent({Key key}) : super(key: key);
   @override
   HomeComponentState createState() => HomeComponentState();
 }
@@ -49,6 +49,7 @@ class HomeComponentState extends State<HomeComponent> {
 
   void initState() {
     super.initState();
+    this.updateAppBar();
     this.authService.userExists(context);
     this._buildScreenChipsOptions();
     this._getUserWallets();
@@ -390,12 +391,15 @@ class HomeComponentState extends State<HomeComponent> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  updateAppBar() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Styles.mainBackgroundColor,
       statusBarIconBrightness: Brightness.light,
     ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomPadding: true,

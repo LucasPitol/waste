@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/models/spending_category.dart';
@@ -165,6 +166,10 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.deepPurple,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomPadding: true,

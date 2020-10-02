@@ -12,6 +12,7 @@ class MainComponent extends StatefulWidget {
   _MainComponentState createState() => _MainComponentState();
 }
 
+GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
 GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
 GlobalKey<ProfileComponentState> profileComponentGlobalKey = GlobalKey();
 
@@ -29,6 +30,8 @@ class _MainComponentState extends State<MainComponent> {
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
 
+    _updateLayout();
+
     if (refresh != null && refresh) {
       _refreshData();
     }
@@ -40,8 +43,19 @@ class _MainComponentState extends State<MainComponent> {
     var refresh = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => NewRevenueComponent()));
 
+    _updateLayout();
+
     if (refresh != null && refresh) {
       _refreshData();
+    }
+  }
+
+  _updateLayout() {
+    switch (_selectedIndex) {
+      case 0:
+        homeComponentGlobalKey.currentState.updateAppBar();
+        break;
+      default:
     }
   }
 
@@ -112,7 +126,7 @@ class _MainComponentState extends State<MainComponent> {
   }
 
   final List<Widget> _widgetOptions = <Widget>[
-    HomeComponent(),
+    HomeComponent(key: homeComponentGlobalKey),
     SpendsComponent(key: spendsComponentGlobalKey),
     Container(),
     Container(),

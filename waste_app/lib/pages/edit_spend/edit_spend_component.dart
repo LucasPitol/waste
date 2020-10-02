@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -218,6 +219,10 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.deepPurple,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomPadding: true,
