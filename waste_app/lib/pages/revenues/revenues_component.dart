@@ -1,3 +1,4 @@
+import 'package:bezier_chart/bezier_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:waste_app/models/filter-option-chip.dart';
@@ -58,13 +59,13 @@ class RevenuesComponentState extends State<RevenuesComponent> {
 
     var threeMonthOpt = FilterOptionChip();
     threeMonthOpt.displayTextPt = '3 meses';
-    threeMonthOpt.displayTextEn = '3 month';
+    threeMonthOpt.displayTextEn = '3 months';
     threeMonthOpt.id = 2;
     threeMonthOpt.enable = true;
 
     var sixMonthOpt = FilterOptionChip();
     sixMonthOpt.displayTextPt = '6 meses';
-    sixMonthOpt.displayTextEn = '6 month';
+    sixMonthOpt.displayTextEn = '6 months';
     sixMonthOpt.id = 3;
     sixMonthOpt.enable = false;
 
@@ -175,7 +176,7 @@ class RevenuesComponentState extends State<RevenuesComponent> {
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
+                      padding: EdgeInsets.only(top: 20),
                       child: Row(
                         children: filterOptions
                             .map((item) => createFilterOptionsChip(item))
@@ -184,6 +185,95 @@ class RevenuesComponentState extends State<RevenuesComponent> {
                     ),
                   ),
                 ),
+                Container(
+                  height: 300,
+                  width: double.infinity,
+                  child: BezierChart(
+                    bezierChartScale: BezierChartScale.CUSTOM,
+                    xAxisCustomValues: [1, 2, 3, 4, 5, 6, 7, 8],
+                    footerValueBuilder: (double number) {
+                      String value = '';
+                      
+                      if (number == 1) {
+                        value = 'Jan';
+                      }
+
+                      if (number == 2) {
+                        value = 'Fev';
+                      }
+
+                      if (number == 3) {
+                        value = 'Mar';
+                      }
+
+                      if (number == 4) {
+                        value = 'Abr';
+                      }
+
+                      if (number == 5) {
+                        value = 'Mai';
+                      }
+
+                      if (number == 6) {
+                        value = 'Jun';
+                      }
+
+                      if (number == 7) {
+                        value = 'Jul';
+                      }
+
+                      if (number == 8) {
+                        value = 'Ago';
+                      }
+                      
+                      return value;
+                    },
+                    series: [
+                      BezierLine(
+                        lineColor: Colors.deepPurple,
+                        label: 'Receita',
+                        data: [
+                          DataPoint<double>(value: 1500.00, xAxis: 1),
+                          DataPoint<double>(value: 1500.00, xAxis: 2),
+                          DataPoint<double>(value: 1510.00, xAxis: 3),
+                          DataPoint<double>(value: 1550.00, xAxis: 4),
+                          DataPoint<double>(value: 1300.00, xAxis: 5),
+                          DataPoint<double>(value: 1350.00, xAxis: 6),
+                          DataPoint<double>(value: 1600.00, xAxis: 7),
+                          DataPoint<double>(value: 1580.00, xAxis: 8),
+                        ],
+                      ),
+                      BezierLine(
+                        lineColor: Colors.red.shade900,
+                        label: 'Despesa',
+                        data: [
+                          DataPoint<double>(value: 1300.00, xAxis: 1),
+                          DataPoint<double>(value: 1350.00, xAxis: 2),
+                          DataPoint<double>(value: 1280.00, xAxis: 3),
+                          DataPoint<double>(value: 1200.00, xAxis: 4),
+                          DataPoint<double>(value: 1400.00, xAxis: 5),
+                          DataPoint<double>(value: 1210.00, xAxis: 6),
+                          DataPoint<double>(value: 1150.00, xAxis: 7),
+                          DataPoint<double>(value: 1200.00, xAxis: 8),
+                        ],
+                      ),
+                    ],
+                    config: BezierChartConfig(
+                      displayLinesXAxis: true,
+                      xLinesColor: Colors.grey.shade900,
+                      verticalIndicatorStrokeWidth: 2.0,
+                      verticalIndicatorColor: Colors.grey,
+                      showVerticalIndicator: true,
+                      displayYAxis: true,
+                      displayDataPointWhenNoValue: false,
+                      startYAxisFromNonZeroValue: true,
+                      backgroundColor: Styles.mainBackgroundColor,
+                      stepsYAxis: 50,
+                      snap: false,
+                    ),
+                  ),
+                ),
+                
               ],
             ),
           ),
