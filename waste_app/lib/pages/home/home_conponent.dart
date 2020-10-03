@@ -60,12 +60,12 @@ class HomeComponentState extends State<HomeComponent> {
 
   buildTransactionsMock() {
     var transaction1 = TransactionDto();
-    transaction1.ammount = 500.00;
+    transaction1.amount = 500.00;
     transaction1.reason = 'Dividendos';
     transaction1.transactionDate = DateTime(2020, 09, 15);
 
     var transaction2 = TransactionDto();
-    transaction2.ammount = -80.00;
+    transaction2.amount = -80.00;
     transaction2.reason = 'Restaurante';
     transaction2.transactionDate = DateTime(2020, 09, 10);
 
@@ -359,9 +359,9 @@ class HomeComponentState extends State<HomeComponent> {
     String transactionDate =
         DateFormat.Md(this.localeLanguage).format(item.transactionDate);
 
-    String ammount = item.ammount > 0
-        ? '+' + item.ammount.toStringAsFixed(2)
-        : item.ammount.toStringAsFixed(2);
+    String ammount = item.amount > 0
+        ? '+' + item.amount.toStringAsFixed(2)
+        : item.amount.toStringAsFixed(2);
 
     return Container(
       child: ListTile(

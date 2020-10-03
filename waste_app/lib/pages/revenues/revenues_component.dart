@@ -1,6 +1,9 @@
 import 'package:bezier_chart/bezier_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:waste_app/models/dtos/revenue_block_dto.dart';
+import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/filter-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -22,6 +25,7 @@ class RevenuesComponentState extends State<RevenuesComponent> {
   UserDto userDto = AuthService.currentUser;
   bool isPtLanguage;
 
+  List<RevenueBlockDto> revenues = [];
   List<FilterOptionChip> filterOptions = [];
   int filterSelected;
 
@@ -38,6 +42,7 @@ class RevenuesComponentState extends State<RevenuesComponent> {
     super.initState();
     this.updateAppBar();
     this._buildFilterChipsOptions();
+    this._buildRevenuesMock();
     this.authService.userExists(context);
   }
 
@@ -86,6 +91,78 @@ class RevenuesComponentState extends State<RevenuesComponent> {
     filterOptions.add(sixMonthOpt);
     filterOptions.add(oneYearOpt);
     filterOptions.add(fiveYearOpt);
+  }
+
+  Widget createTileForRevenues(RevenueBlockDto item) {
+    String totalAmount = '+' + item.totalIncome.toStringAsFixed(2);
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        children: [
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  DateFormat.yMMM(this.localeLanguage).format(item.blockDate),
+                  style: Styles.poppinsTextGrey,
+                ),
+                Text(
+                  totalAmount,
+                  style: Styles.poppinsTextGrey,
+                ),
+              ],
+            ),
+          ),
+          Container(
+            child: Column(
+              children: item.revenues
+                  .map((item) => createTileForTransactions(item))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget createTileForTransactions(TransactionDto item) {
+    String transactionDate =
+        DateFormat.Md(this.localeLanguage).format(item.transactionDate);
+
+    String amount = item.amount > 0
+        ? '+' + item.amount.toStringAsFixed(2)
+        : item.amount.toStringAsFixed(2);
+
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      child: ListTile(
+        trailing: Text(
+          amount,
+          style: TextStyle(
+            color: Colors.grey.shade100,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        title: Text(
+          item.reason,
+          style: TextStyle(
+              color: Colors.grey.shade100,
+              fontSize: 14,
+              fontWeight: FontWeight.w500),
+        ),
+        subtitle: Text(
+          transactionDate,
+          style: TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget createFilterOptionsChip(FilterOptionChip item) {
@@ -193,7 +270,7 @@ class RevenuesComponentState extends State<RevenuesComponent> {
                     xAxisCustomValues: [1, 2, 3, 4, 5, 6, 7, 8],
                     footerValueBuilder: (double number) {
                       String value = '';
-                      
+
                       if (number == 1) {
                         value = 'Jan';
                       }
@@ -225,7 +302,7 @@ class RevenuesComponentState extends State<RevenuesComponent> {
                       if (number == 8) {
                         value = 'Ago';
                       }
-                      
+
                       return value;
                     },
                     series: [
@@ -273,12 +350,59 @@ class RevenuesComponentState extends State<RevenuesComponent> {
                     ),
                   ),
                 ),
-                
+                Container(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    '10% a.a',
+                    style: TextStyle(
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: revenues
+                        .map((item) => createTileForRevenues(item))
+                        .toList(),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  _buildRevenuesMock() {
+    var revenueBlock1 = RevenueBlockDto();
+    revenueBlock1.blockDate = DateTime(2020, 01);
+    revenueBlock1.isMonthly = true;
+    revenueBlock1.totalIncome = 1500;
+    var transaction1ForBlock1 = TransactionDto();
+    transaction1ForBlock1.amount = 1500;
+    transaction1ForBlock1.reason = 'Pró-labore (empresa x)';
+    transaction1ForBlock1.transactionDate = DateTime(2020, 01, 05);
+    revenueBlock1.revenues.add(transaction1ForBlock1);
+
+    var revenueBlock2 = RevenueBlockDto();
+    revenueBlock2.blockDate = DateTime(2020, 02);
+    revenueBlock2.isMonthly = true;
+    revenueBlock2.totalIncome = 1550;
+    var transaction1ForBlock2 = TransactionDto();
+    transaction1ForBlock2.amount = 1500;
+    transaction1ForBlock2.reason = 'Pró-labore (empresa x)';
+    transaction1ForBlock2.transactionDate = DateTime(2020, 02, 05);
+    var transaction2ForBlock2 = TransactionDto();
+    transaction2ForBlock2.amount = 50;
+    transaction2ForBlock2.reason = 'Dividendos';
+    transaction2ForBlock2.transactionDate = DateTime(2020, 02, 15);
+    revenueBlock2.revenues.add(transaction1ForBlock2);
+    revenueBlock2.revenues.add(transaction2ForBlock2);
+
+    revenues.add(revenueBlock1);
+    revenues.add(revenueBlock2);
   }
 }
