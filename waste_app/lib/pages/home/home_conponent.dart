@@ -418,7 +418,7 @@ class HomeComponentState extends State<HomeComponent> {
                           Container(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              'Rombado',
+                              this.userDto.name,
                               style: TextStyle(
                                 color: Colors.grey.shade100,
                                 fontWeight: FontWeight.w600,
