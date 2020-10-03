@@ -448,9 +448,10 @@ class HomeComponentState extends State<HomeComponent> {
                           children: [
                             Container(
                               margin: EdgeInsets.only(right: 15),
-                              child: GestureDetector(
+                              child: InkWell(
+                                borderRadius: Styles.circularBorderRadius,
                                 onTap: () {
-                                  print('settings');
+                                  this._getScreenContentData();
                                 },
                                 child: Icon(
                                   Icons.refresh,
@@ -458,7 +459,8 @@ class HomeComponentState extends State<HomeComponent> {
                                 ),
                               ),
                             ),
-                            GestureDetector(
+                            InkWell(
+                              borderRadius: Styles.circularBorderRadius,
                               onTap: () {
                                 print('settings');
                               },
