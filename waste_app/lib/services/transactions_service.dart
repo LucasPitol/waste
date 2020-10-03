@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/db/transactions_dao.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
 import 'package:waste_app/models/dtos/spend_item_dto.dart';
+import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/forms/edit_waste_form.dart';
 import 'package:waste_app/models/forms/new_revenue_form.dart';
 import 'package:waste_app/models/forms/new_waste_form.dart';
@@ -136,6 +137,10 @@ class TransactionService {
     spendsList.sort((a, b) => b.spendDate.compareTo(a.spendDate));
 
     return spendsList;
+  }
+
+  Future<List<TransactionDto>> getLast2Transactions(String walletId) async {
+    return await this.transactionsDao.getLast2Transactions(walletId);
   }
 
   Future<List<SpendItem>> getSpendsByMonthFiltered(

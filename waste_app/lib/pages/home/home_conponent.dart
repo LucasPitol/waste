@@ -37,6 +37,7 @@ class HomeComponentState extends State<HomeComponent> {
 
   bool isWalletOwner = false;
   bool isPtLanguage;
+  bool loading = true;
   List<Wallet> wallets;
   String dropdownWalletValue;
 
@@ -55,22 +56,13 @@ class HomeComponentState extends State<HomeComponent> {
     this._getUserWallets();
     // this._getTotalProfileData();
     this._updatePermission();
-    this._getScreenContent();
+    this._getScreenContentData();
   }
 
-  buildTransactionsMock() {
-    var transaction1 = TransactionDto();
-    transaction1.amount = 500.00;
-    transaction1.reason = 'Dividendos';
-    transaction1.transactionDate = DateTime(2020, 09, 15);
-
-    var transaction2 = TransactionDto();
-    transaction2.amount = -80.00;
-    transaction2.reason = 'Restaurante';
-    transaction2.transactionDate = DateTime(2020, 09, 10);
-
-    transactions.add(transaction1);
-    transactions.add(transaction2);
+  Future<List<TransactionDto>> getLast2Transactions() async {
+    return await this
+        .transactionService
+        .getLast2Transactions(dropdownWalletValue);
   }
 
   buildMembersMock() {
@@ -139,11 +131,19 @@ class HomeComponentState extends State<HomeComponent> {
     this._updatePermission();
   }
 
-  _getScreenContent() {
+  _getScreenContentData() async {
+    setState(() {
+      this.loading = true;
+    });
+
     int screenOpt = this.screenOptionSelected;
 
-    this.buildTransactionsMock();
+    this.transactions = await this.getLast2Transactions();
     this.buildMembersMock();
+
+    setState(() {
+      this.loading = false;
+    });
 
     // switch (screenOpt) {
     //   case 1:
@@ -202,7 +202,7 @@ class HomeComponentState extends State<HomeComponent> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        'Transações',
+                        isPtLanguage ? 'Transações' : 'Transactions',
                         style: Styles.poppinsTextGrey,
                       ),
                       GestureDetector(
@@ -357,7 +357,9 @@ class HomeComponentState extends State<HomeComponent> {
 
   Widget createTileForTransactions(TransactionDto item) {
     String transactionDate =
-        DateFormat.Md(this.localeLanguage).format(item.transactionDate);
+        DateFormat.Md(this.localeLanguage).format(item.transactionDate) +
+            ', ' +
+            DateFormat.Hm(this.localeLanguage).format(item.transactionDate);
 
     String ammount = item.amount > 0
         ? '+' + item.amount.toStringAsFixed(2)
@@ -552,7 +554,18 @@ class HomeComponentState extends State<HomeComponent> {
                     ),
                   ),
                 ),
-                _getScreenLayoutContent(),
+                loading
+                    ? Container(
+                        margin: EdgeInsets.symmetric(vertical: 60),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: Theme(
+                          data: Theme.of(context)
+                              .copyWith(accentColor: Colors.deepPurple),
+                          child: new CircularProgressIndicator(),
+                        ),
+                      )
+                    : _getScreenLayoutContent(),
               ],
             ),
           ),

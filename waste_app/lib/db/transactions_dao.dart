@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/forms/edit_waste_form.dart';
 import 'package:waste_app/models/forms/new_revenue_form.dart';
 import 'package:waste_app/models/forms/new_waste_form.dart';
@@ -155,6 +156,42 @@ class TransactionsDao {
     return success;
   }
 
+  Future<List<TransactionDto>> getLast2Transactions(String walletId) async {
+    List<TransactionDto> transactions = [];
+
+    await dbReference
+        .collection('transactions')
+        .where('walletId', isEqualTo: walletId)
+        .orderBy('transactionDate', descending: true)
+        .limit(2)
+        .getDocuments()
+        .then((QuerySnapshot snapShot) {
+      snapShot.documents.forEach((element) {
+        var objMap = element.data;
+        var transaction = TransactionDto();
+
+        Timestamp transactionDateTimestamp = objMap['transactionDate'];
+
+        transaction.amount = double.parse(objMap['amount'].toString());
+        transaction.reason = objMap['reason'];
+        transaction.transactionId = element.documentID;
+        transaction.transactionDate = transactionDateTimestamp.toDate();
+
+        transactions.add(transaction);
+      });
+      return transactions;
+    }).catchError((onError) {
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Get las 2 transactions';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+      return transactions;
+    });
+    return transactions;
+  }
+
   Future<List<Spend>> getSpendsByWalletId(String walletId) async {
     var spends = List<Spend>();
 
@@ -195,7 +232,8 @@ class TransactionsDao {
         .where('walletId', isEqualTo: walletId)
         .where('transactionDate',
             isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
-        .where('transactionDate', isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
+        .where('transactionDate',
+            isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
         .where('categoryId', isEqualTo: categoryId)
         .getDocuments()
         .then((QuerySnapshot snapShot) {
