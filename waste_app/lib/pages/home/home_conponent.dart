@@ -7,6 +7,7 @@ import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/screen-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/pages/settings/settings_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
@@ -127,7 +128,7 @@ class HomeComponentState extends State<HomeComponent> {
 
     this.walletService.switchWallet(walletId);
 
-    // this._getTotalProfileData();
+    this._getScreenContentData();
     this._updatePermission();
   }
 
@@ -223,11 +224,24 @@ class HomeComponentState extends State<HomeComponent> {
                   ),
                 ),
                 Container(
-                  child: Column(
-                    children: transactions
-                        .map((item) => createTileForTransactions(item))
-                        .toList(),
-                  ),
+                  child: transactions != null && transactions.isNotEmpty
+                      ? Column(
+                          children: transactions
+                              .map((item) => createTileForTransactions(item))
+                              .toList(),
+                        )
+                      : Container(
+                          child: Text(
+                            isPtLanguage
+                                ? 'Nenhuma transação'
+                                : 'No transactions',
+                            style: TextStyle(
+                              color: Colors.grey.shade100,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                 ),
               ],
             ),
@@ -355,6 +369,15 @@ class HomeComponentState extends State<HomeComponent> {
     );
   }
 
+  _goToSettings() async {
+    var refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SettingsComponent()));
+
+    if (refresh != null && refresh) {
+      // _updatePageContent();
+    }
+  }
+
   Widget createTileForTransactions(TransactionDto item) {
     String transactionDate =
         DateFormat.Md(this.localeLanguage).format(item.transactionDate) +
@@ -462,7 +485,7 @@ class HomeComponentState extends State<HomeComponent> {
                             InkWell(
                               borderRadius: Styles.circularBorderRadius,
                               onTap: () {
-                                print('settings');
+                                _goToSettings();
                               },
                               child: Icon(
                                 Icons.settings,
