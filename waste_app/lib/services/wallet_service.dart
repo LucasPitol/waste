@@ -137,12 +137,17 @@ class WalletService {
           members.add(item);
         });
 
+        var totalBalanceStr = walletRef['totalBalance'];
+
+        double totalBalance = totalBalanceStr != null ? double.parse(totalBalanceStr.toString()) : 0.0;
+
         Wallet wallet = Wallet(
           walletId,
           creationDateFormated,
           members,
           walletRef['name'],
           walletRef['ownerId'],
+          totalBalance
         );
         wallets.add(wallet);
       });

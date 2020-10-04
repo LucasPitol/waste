@@ -41,6 +41,7 @@ class HomeComponentState extends State<HomeComponent> {
   bool loading = true;
   List<Wallet> wallets;
   String dropdownWalletValue;
+  Wallet currentWallet;
 
   HomeComponentState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
@@ -118,12 +119,14 @@ class HomeComponentState extends State<HomeComponent> {
 
     setState(() {
       wallets = walletsTemp;
+      currentWallet = wallets.where((w) => w.id == dropdownWalletValue).first;
     });
   }
 
   void switchWallets(String walletId) {
     setState(() {
       this.dropdownWalletValue = walletId;
+      currentWallet = wallets.where((w) => w.id == walletId).first;
     });
 
     this.walletService.switchWallet(walletId);
@@ -176,7 +179,7 @@ class HomeComponentState extends State<HomeComponent> {
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    '50,000.00',
+                    Constants.getAmountFormated(currentWallet.totalBalance),
                     style: TextStyle(
                       color: Colors.grey.shade100,
                       fontWeight: FontWeight.w600,
