@@ -373,8 +373,12 @@ class HomeComponentState extends State<HomeComponent> {
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => SettingsComponent()));
 
+    this.userDto = AuthService.currentUser;
+
     if (refresh != null && refresh) {
-      // _updatePageContent();
+      this.isPtLanguage = userDto.language == Constants.languages[0];
+      this._getUserWallets();
+      this._getScreenContentData();
     }
   }
 

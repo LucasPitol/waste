@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/dtos/language_and_code_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -15,6 +17,7 @@ class SettingsComponent extends StatefulWidget {
 class _SettingsComponentState extends State<SettingsComponent> {
   UserDto userDto = AuthService.currentUser;
   AuthService authService;
+  WalletService walletService;
 
   bool isPtLanguage;
   bool hasChanges = false;
@@ -25,6 +28,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
   _SettingsComponentState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.authService = AuthService();
+    this.walletService = WalletService();
     this.options = List<LanguageAndCodeDto>();
     this.setOptions();
   }
@@ -65,6 +69,25 @@ class _SettingsComponentState extends State<SettingsComponent> {
 
   _getOut() {
     Navigator.pop(context, hasChanges);
+  }
+
+  Future<void> _createNewWallet() async {
+    List res = await _openNewWalletDialog();
+
+    if (res != null && res.isNotEmpty && res[0]) {
+
+      var refresh = await this.walletService.createNewWallet(res[1]);
+
+      this.hasChanges = true;
+    }
+  }
+
+  Future<List> _openNewWalletDialog() async {
+    return await showDialog<List>(
+        context: context,
+        builder: (builder) {
+          return NewWalletDialogComponent();
+        });
   }
 
   @override
@@ -120,7 +143,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                   margin: EdgeInsets.only(top: 40),
                   child: InkWell(
                     onTap: () {
-                      print('new wallet');
+                      _createNewWallet();
                     },
                     child: Stack(
                       children: [

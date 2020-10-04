@@ -53,20 +53,29 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
+                backgroundColor: Colors.black,
                 shape: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey.shade900),
                   borderRadius: BorderRadius.circular(16.0),
                 ),
                 title: Text(
                   this.languageCode == Constants.languages[0]
                       ? 'Nova carteira'
                       : 'New wallet',
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                  style: GoogleFonts.poppins(
+                    color: Colors.grey.shade100,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 content: Theme(
                   data: Styles.mainTheme,
                   child: Form(
                     key: _formKey,
                     child: TextFormField(
+                      style: TextStyle(
+                        color: Colors.grey.shade100,
+                        fontWeight: FontWeight.w500,
+                      ),
                       cursorColor: Colors.deepPurple,
                       controller: walletNameController,
                       textCapitalization: TextCapitalization.sentences,
@@ -92,7 +101,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                 ),
                 actions: <Widget>[
                   FlatButton(
-                    textColor: Colors.black,
+                    textColor: Colors.grey,
                     onPressed: () {
                       closeDialog(false);
                     },
@@ -100,7 +109,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       this.languageCode == Constants.languages[0]
                           ? 'Cancelar'
                           : 'Cancel',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
                   FlatButton(
@@ -114,7 +123,7 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       this.languageCode == Constants.languages[0]
                           ? 'Criar'
                           : 'Create',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
