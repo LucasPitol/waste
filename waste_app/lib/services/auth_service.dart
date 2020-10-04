@@ -321,8 +321,8 @@ class AuthService {
 
   void sendNewUserEmail(String uid, String userMail, String userName) {
     var gmailOpts = new GmailSmtpOptions();
-    gmailOpts.username = 'waste.helpme@gmail.com';
-    gmailOpts.password = 'Perereca20';
+    gmailOpts.username = Infos.accountServiceMail;
+    gmailOpts.password = Infos.accountServiceMailPass;
 
     var emailTransport = new SmtpTransport(gmailOpts);
 
@@ -336,17 +336,17 @@ class AuthService {
         ? ('Bem vindo, ' +
             userName +
             '\n' +
-            'Caso não tenha se cadastrado no app Waste, acesse ' +
+            'Caso não tenha se cadastrado no app Meudin, acesse ' +
             pathUrl +
             ' para excluir a conta vinculada a este email.')
         : 'Welcome, ' +
             userName +
             '\n' +
-            'If you haven\'t registered at Waste app, go to ' +
+            'If you haven\'t registered at Meudin app, go to ' +
             pathUrl +
             ' and delete the account related to this email.';
 
-    String subject = 'Welcome to Waste';
+    String subject = 'Welcome to Meudin';
 
     envelope.from = gmailOpts.username;
     envelope.recipients.add(userMail);

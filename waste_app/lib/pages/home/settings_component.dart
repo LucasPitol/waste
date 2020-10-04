@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info/package_info.dart';
 import 'package:waste_app/models/dtos/language_and_code_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
@@ -24,6 +27,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
   String dropdownLanguageValue;
   List<LanguageAndCodeDto> options;
   String currentLanguageCode = AuthService.currentUser.language;
+  String appVersion = '2.0.0';
 
   _SettingsComponentState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
@@ -31,6 +35,15 @@ class _SettingsComponentState extends State<SettingsComponent> {
     this.walletService = WalletService();
     this.options = List<LanguageAndCodeDto>();
     this.setOptions();
+    this.getAppVersion();
+  }
+
+  Future<void> getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    if (packageInfo.version != '1.0.0') {
+      this.appVersion = packageInfo.version;
+    }
   }
 
   setOptions() {
@@ -71,6 +84,35 @@ class _SettingsComponentState extends State<SettingsComponent> {
     Navigator.pop(context, hasChanges);
   }
 
+  void _logout() {
+    this.authService.signOut();
+    Phoenix.rebirth(context);
+  }
+
+  void _openAboutDialog() {
+    showAboutDialog(
+      context: context,
+      applicationName: 'Meudin',
+      applicationVersion: this.appVersion,
+      applicationIcon: Container(
+        child: Image.asset(
+          'assets/images/ic_launcher_circle.png',
+          width: 50,
+        ),
+      ),
+      children: [
+        Container(
+          child: Text(
+            isPtLanguage
+                ? 'Seu parceiro Meudin te ajuda a desperdiçar menos seu suado dinheiro'
+                : 'Your partner Meudin helps you waste less of your hard-earned money',
+            style: TextStyle(color: Colors.grey.shade700),
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<void> _createNewWallet() async {
     List res = await _openNewWalletDialog();
 
@@ -87,6 +129,30 @@ class _SettingsComponentState extends State<SettingsComponent> {
         context: context,
         builder: (builder) {
           return NewWalletDialogComponent();
+        });
+  }
+
+  _sendChangePasswordEmail() async {
+    String userMail = AuthService.currentUser.email;
+
+    this.authService.sendResetPasswordEmail(userMail);
+
+    String text = isPtLanguage
+        ? 'Enviamos um link para escolher uma nova senha'
+        : 'We sent a link to recover your password';
+
+    String title = isPtLanguage
+        ? 'Verifique seu email'
+        : 'Check your email';
+
+    await _openInfoDialog(title, text);
+  }
+
+  Future<void> _openInfoDialog(String title, String content) async {
+    await showDialog<String>(
+        context: context,
+        builder: (builder) {
+          return AlertDialogComponent(title, content);
         });
   }
 
@@ -171,7 +237,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                   margin: EdgeInsets.only(top: 10),
                   child: InkWell(
                     onTap: () {
-                      print('Change password');
+                      _sendChangePasswordEmail();
                     },
                     child: Stack(
                       children: [
@@ -255,7 +321,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                   margin: EdgeInsets.only(top: 10),
                   child: InkWell(
                     onTap: () {
-                      print('About');
+                     _openAboutDialog();
                     },
                     child: Stack(
                       children: [
@@ -283,7 +349,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                   margin: EdgeInsets.only(top: 10),
                   child: InkWell(
                     onTap: () {
-                      print('Logout');
+                     _logout();
                     },
                     child: Stack(
                       children: [

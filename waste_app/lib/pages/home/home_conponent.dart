@@ -7,7 +7,7 @@ import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/screen-option-chip.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:waste_app/pages/settings/settings_component.dart';
+import 'package:waste_app/pages/home/settings_component.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
