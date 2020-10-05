@@ -8,6 +8,7 @@ import 'package:waste_app/models/spend.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/smart_error_service.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
+import 'package:waste_app/services/wallet_service.dart';
 
 class TransactionsDao {
   final dbReference = Firestore.instance;
@@ -312,8 +313,11 @@ class TransactionsDao {
       'walletId': walletId,
       'amount': revenue,
       'type': 'REVENUE'
-    }).then((value) {
+    }).then((value) async {
       success = true;
+
+      await WalletService.incrementBallance(form.walletId, revenue);
+
       return true;
     }).catchError((onError) {
       print(onError);

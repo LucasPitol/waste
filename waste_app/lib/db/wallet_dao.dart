@@ -61,6 +61,51 @@ class WalletDao {
     return success;
   }
 
+  Future<Wallet> getWalletById(String walletId) async {
+    Wallet wallet;
+
+    await this
+        .dbReference
+        .collection('wallets')
+        .document(walletId)
+        .get()
+        .then((value) {
+      var objMap = value.data;
+      List<String> members = [];
+
+      var totalBalanceStr = objMap['totalBalance'];
+      double totalBalance = totalBalanceStr != null
+          ? double.parse(totalBalanceStr.toString())
+          : 0.0;
+
+      Timestamp creationDate = objMap['creationDate'];
+      DateTime creationDateFormated = creationDate.toDate();
+
+      List<dynamic> membersDynamic = objMap['membersId'];
+
+      membersDynamic.forEach((item) {
+        members.add(item);
+      });
+
+      wallet = Wallet(value.documentID, creationDateFormated, members,
+          objMap['name'], objMap['ownerId'], totalBalance);
+
+      return wallet;
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'get wallet ny id';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
+      return wallet;
+    });
+    return wallet;
+  }
+
   Future<bool> updateWallet(Wallet newWallet) async {
     bool success = false;
 
@@ -68,9 +113,11 @@ class WalletDao {
 
     Timestamp lastUpdate = Timestamp.fromDate(DateTime.now());
 
-    await dbReference.collection('wallets').document(walletId).setData(
-        {'name': newWallet.name, 'lastUpdate': lastUpdate},
-        merge: true).then((onValue) {
+    await dbReference.collection('wallets').document(walletId).setData({
+      'name': newWallet.name,
+      'lastUpdate': lastUpdate,
+      'totalBalance': newWallet.totalBalance
+    }, merge: true).then((onValue) {
       success = true;
       return success;
     }).catchError((onError) {

@@ -139,16 +139,12 @@ class WalletService {
 
         var totalBalanceStr = walletRef['totalBalance'];
 
-        double totalBalance = totalBalanceStr != null ? double.parse(totalBalanceStr.toString()) : 0.0;
+        double totalBalance = totalBalanceStr != null
+            ? double.parse(totalBalanceStr.toString())
+            : 0.0;
 
-        Wallet wallet = Wallet(
-          walletId,
-          creationDateFormated,
-          members,
-          walletRef['name'],
-          walletRef['ownerId'],
-          totalBalance
-        );
+        Wallet wallet = Wallet(walletId, creationDateFormated, members,
+            walletRef['name'], walletRef['ownerId'], totalBalance);
         wallets.add(wallet);
       });
       return wallets.sort((a, b) => a.creationDate.compareTo(b.creationDate));
@@ -165,5 +161,19 @@ class WalletService {
       return wallets;
     });
     return wallets;
+  }
+
+  static incrementBallance(String walletId, double value) async {
+    WalletDao walletDao = WalletDao();
+
+    var wallet = await walletDao.getWalletById(walletId);
+
+    double previousValue = wallet.totalBalance;
+
+    double newBalance = previousValue + value;
+
+    wallet.totalBalance = newBalance;
+
+    var success = await walletDao.updateWallet(wallet);
   }
 }
