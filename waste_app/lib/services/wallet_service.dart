@@ -176,4 +176,18 @@ class WalletService {
 
     var success = await walletDao.updateWallet(wallet);
   }
+
+  static decrementBallance(String walletId, double value) async {
+    WalletDao walletDao = WalletDao();
+
+    var wallet = await walletDao.getWalletById(walletId);
+
+    double previousValue = wallet.totalBalance;
+
+    double newBalance = previousValue - value;
+
+    wallet.totalBalance = newBalance;
+
+    var success = await walletDao.updateWallet(wallet);
+  }
 }
