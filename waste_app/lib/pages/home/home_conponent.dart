@@ -55,10 +55,23 @@ class HomeComponentState extends State<HomeComponent> {
     this.updateAppBar();
     this.authService.userExists(context);
     this._buildScreenChipsOptions();
-    this._getUserWallets();
+    this.updatePageContent();
     // this._getTotalProfileData();
     this._updatePermission();
-    this._getScreenContentData();
+  }
+
+  updatePageContent() async {
+
+    setState(() {
+      this.loading = true;
+    });
+
+    await this._getUserWallets();
+    await this._getScreenContentData();
+
+    setState(() {
+      this.loading = false;
+    });
   }
 
   Future<List<TransactionDto>> getLast2Transactions() async {
@@ -131,23 +144,28 @@ class HomeComponentState extends State<HomeComponent> {
 
     this.walletService.switchWallet(walletId);
 
-    this._getScreenContentData();
+    this._refreshTransactionsOnly();
     this._updatePermission();
   }
 
-  _getScreenContentData() async {
+  _refreshTransactionsOnly() async {
     setState(() {
       this.loading = true;
     });
+
+    await this._getScreenContentData();
+    
+    setState(() {
+      this.loading = false;
+    });
+  }
+
+  _getScreenContentData() async {
 
     int screenOpt = this.screenOptionSelected;
 
     this.transactions = await this.getLast2Transactions();
     this.buildMembersMock();
-
-    setState(() {
-      this.loading = false;
-    });
 
     // switch (screenOpt) {
     //   case 1:
@@ -380,8 +398,7 @@ class HomeComponentState extends State<HomeComponent> {
 
     if (refresh != null && refresh) {
       this.isPtLanguage = userDto.language == Constants.languages[0];
-      this._getUserWallets();
-      this._getScreenContentData();
+      this.updatePageContent();
     }
   }
 
@@ -392,8 +409,8 @@ class HomeComponentState extends State<HomeComponent> {
             DateFormat.Hm(this.localeLanguage).format(item.transactionDate);
 
     String ammount = item.amount > 0
-        ? '+' + item.amount.toStringAsFixed(2)
-        : item.amount.toStringAsFixed(2);
+        ? '+' +  Constants.getAmountFormated(item.amount)
+        :  Constants.getAmountFormated(item.amount);
 
     return Container(
       child: ListTile(
@@ -481,7 +498,7 @@ class HomeComponentState extends State<HomeComponent> {
                               child: InkWell(
                                 borderRadius: Styles.circularBorderRadius,
                                 onTap: () {
-                                  this._getScreenContentData();
+                                  this.updatePageContent();
                                 },
                                 child: Icon(
                                   Icons.refresh,
