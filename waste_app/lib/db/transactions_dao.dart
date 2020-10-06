@@ -40,8 +40,11 @@ class TransactionsDao {
       'categoryId': categoryId,
       'amount': wasteNegative,
       'type': 'WASTE'
-    }).then((value) {
+    }).then((value) async {
       success = true;
+
+      await WalletService.decrementBallance(form.walletId, waste);
+
       return success;
     }).catchError((onError) {
       print(onError);
@@ -318,7 +321,7 @@ class TransactionsDao {
 
       await WalletService.incrementBallance(form.walletId, revenue);
 
-      return true;
+      return success;
     }).catchError((onError) {
       print(onError);
       SmartError errorDto = SmartError();
