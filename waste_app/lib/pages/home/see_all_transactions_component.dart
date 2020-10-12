@@ -6,6 +6,7 @@ import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
+import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
@@ -25,6 +26,7 @@ class _SeeAllTransactionsComponentState
           : Constants.enLanguage;
   UserDto userDto = AuthService.currentUser;
   TransactionService transactionService;
+  WalletService walletService;
   AuthService authService;
 
   bool transactionsLoading = true;
@@ -34,6 +36,7 @@ class _SeeAllTransactionsComponentState
 
   _SeeAllTransactionsComponentState(Wallet currentWallet) {
     this.transactionService = TransactionService();
+    this.walletService = WalletService();
     this.authService = AuthService();
     this.currentWallet = currentWallet;
   }
@@ -48,12 +51,14 @@ class _SeeAllTransactionsComponentState
     // this.getTransactions();
   }
 
+  _getOut() {
+    Navigator.pop(context);
+  }
+
   _getTotalBalance() {
     setState(() {
-      this.balanceLoading = true;
+      this.balanceLoading = false;
     });
-
-    print(currentWallet.name);
   }
 
   Widget createTileForTransactions(TransactionDto item) {
@@ -112,10 +117,77 @@ class _SeeAllTransactionsComponentState
             child: Column(
               children: [
                 Container(
+                  child: Stack(
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          'Transações',
+                          style: TextStyle(
+                            color: Colors.grey.shade100,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 15),
+                              child: InkWell(
+                                borderRadius: Styles.circularBorderRadius,
+                                onTap: () {
+                                  this.updatePageContent();
+                                },
+                                child: Icon(
+                                  Icons.refresh,
+                                  color: Colors.grey.shade100,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              borderRadius: Styles.circularBorderRadius,
+                              onTap: () {
+                                _getOut();
+                              },
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.grey.shade100,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
                   child: balanceLoading
                       ? Constants.getDefaultLoadingWidget(context)
                       : Column(
-                          children: [Text('Saldo')],
+                          children: [
+                            Text(
+                              'Saldo',
+                              style: TextStyle(
+                                color: Colors.grey.shade100,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                Constants.getAmountFormated(
+                                    currentWallet.totalBalance),
+                                style: TextStyle(
+                                  color: Colors.grey.shade100,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                 ),
                 Container(
