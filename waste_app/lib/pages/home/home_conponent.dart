@@ -403,7 +403,7 @@ class HomeComponentState extends State<HomeComponent> {
 
   _openSeeAllTransactionsPage() {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => SeeAllTransactionsComponent()));
+        MaterialPageRoute(builder: (context) => SeeAllTransactionsComponent(this.currentWallet)));
   }
 
   Widget createTileForTransactions(TransactionDto item) {

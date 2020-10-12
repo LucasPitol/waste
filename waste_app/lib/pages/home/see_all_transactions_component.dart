@@ -3,15 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class SeeAllTransactionsComponent extends StatefulWidget {
+  Wallet currentWallet;
+  SeeAllTransactionsComponent(this.currentWallet);
   @override
   _SeeAllTransactionsComponentState createState() =>
-      _SeeAllTransactionsComponentState();
+      _SeeAllTransactionsComponentState(currentWallet);
 }
 
 class _SeeAllTransactionsComponentState
@@ -25,12 +28,32 @@ class _SeeAllTransactionsComponentState
   AuthService authService;
 
   bool transactionsLoading = true;
-  bool ballanceLoading = true;
+  bool balanceLoading = true;
   List<TransactionDto> transactions = [];
+  Wallet currentWallet;
 
-  _SeeAllTransactionsComponentState() {
+  _SeeAllTransactionsComponentState(Wallet currentWallet) {
     this.transactionService = TransactionService();
     this.authService = AuthService();
+    this.currentWallet = currentWallet;
+  }
+
+  void initState() {
+    super.initState();
+    this.updatePageContent();
+  }
+
+  updatePageContent() {
+    this._getTotalBalance();
+    // this.getTransactions();
+  }
+
+  _getTotalBalance() {
+    setState(() {
+      this.balanceLoading = true;
+    });
+
+    print(currentWallet.name);
   }
 
   Widget createTileForTransactions(TransactionDto item) {
@@ -89,7 +112,7 @@ class _SeeAllTransactionsComponentState
             child: Column(
               children: [
                 Container(
-                  child: ballanceLoading
+                  child: balanceLoading
                       ? Constants.getDefaultLoadingWidget(context)
                       : Column(
                           children: [Text('Saldo')],
