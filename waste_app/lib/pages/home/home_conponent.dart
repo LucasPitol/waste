@@ -14,6 +14,8 @@ import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
+import 'see_all_transactions_component.dart';
+
 class HomeComponent extends StatefulWidget {
   HomeComponent({Key key}) : super(key: key);
   @override
@@ -61,7 +63,6 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   updatePageContent() async {
-
     setState(() {
       this.loading = true;
     });
@@ -154,14 +155,13 @@ class HomeComponentState extends State<HomeComponent> {
     });
 
     await this._getScreenContentData();
-    
+
     setState(() {
       this.loading = false;
     });
   }
 
   _getScreenContentData() async {
-
     int screenOpt = this.screenOptionSelected;
 
     this.transactions = await this.getLast2Transactions();
@@ -229,8 +229,7 @@ class HomeComponentState extends State<HomeComponent> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          // _goToEditWalletPage();
-                          print('Ver todas');
+                          _openSeeAllTransactionsPage();
                         },
                         child: Text(
                           isPtLanguage ? 'Ver todas' : 'See all',
@@ -402,6 +401,11 @@ class HomeComponentState extends State<HomeComponent> {
     }
   }
 
+  _openSeeAllTransactionsPage() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => SeeAllTransactionsComponent()));
+  }
+
   Widget createTileForTransactions(TransactionDto item) {
     String transactionDate =
         DateFormat.Md(this.localeLanguage).format(item.transactionDate) +
@@ -409,8 +413,8 @@ class HomeComponentState extends State<HomeComponent> {
             DateFormat.Hm(this.localeLanguage).format(item.transactionDate);
 
     String ammount = item.amount > 0
-        ? '+' +  Constants.getAmountFormated(item.amount)
-        :  Constants.getAmountFormated(item.amount);
+        ? '+' + Constants.getAmountFormated(item.amount)
+        : Constants.getAmountFormated(item.amount);
 
     return Container(
       child: ListTile(

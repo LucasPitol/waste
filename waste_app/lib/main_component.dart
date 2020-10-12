@@ -62,6 +62,9 @@ class _MainComponentState extends State<MainComponent> {
 
   void _refreshData() {
     switch (_selectedIndex) {
+      case 0:
+        _updateHomePage();
+        break;
       case 1:
         _updateSpendsPage();
         break;
@@ -71,6 +74,10 @@ class _MainComponentState extends State<MainComponent> {
       default:
         break;
     }
+  }
+
+  void _updateHomePage() {
+    homeComponentGlobalKey.currentState.updatePageContent();
   }
 
   void _updateSpendsPage() {
