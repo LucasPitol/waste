@@ -160,6 +160,42 @@ class TransactionsDao {
     return success;
   }
 
+  Future<List<TransactionDto>> getTransactionsByWalletId(String walletId) async {
+    List<TransactionDto> transactions = [];
+
+    await dbReference
+        .collection('transactions')
+        .where('walletId', isEqualTo: walletId)
+        .orderBy('transactionDate', descending: true)
+        // .limit(2)
+        .getDocuments()
+        .then((QuerySnapshot snapShot) {
+      snapShot.documents.forEach((element) {
+        var objMap = element.data;
+        var transaction = TransactionDto();
+
+        Timestamp transactionDateTimestamp = objMap['transactionDate'];
+
+        transaction.amount = double.parse(objMap['amount'].toString());
+        transaction.reason = objMap['reason'];
+        transaction.transactionId = element.documentID;
+        transaction.transactionDate = transactionDateTimestamp.toDate();
+
+        transactions.add(transaction);
+      });
+      return transactions;
+    }).catchError((onError) {
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Get transactions by wallet id';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+      return transactions;
+    });
+    return transactions;
+  }
+
   Future<List<TransactionDto>> getLast2Transactions(String walletId) async {
     List<TransactionDto> transactions = [];
 

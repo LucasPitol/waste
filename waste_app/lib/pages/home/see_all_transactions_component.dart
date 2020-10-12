@@ -48,7 +48,23 @@ class _SeeAllTransactionsComponentState
 
   updatePageContent() {
     this._getTotalBalance();
-    // this.getTransactions();
+    this._getTransactions();
+  }
+
+  _getTransactions() {
+    setState(() {
+      this.transactionsLoading = true;
+    });
+
+    String walletId = currentWallet.id;
+
+    this.transactionService.getTransactionsByWalletId(walletId).then((value) {
+      this.transactions = value;
+
+      setState(() {
+        this.transactionsLoading = false;
+      });
+    });
   }
 
   _getOut() {
@@ -169,14 +185,20 @@ class _SeeAllTransactionsComponentState
                       ? Constants.getDefaultLoadingWidget(context)
                       : Column(
                           children: [
-                            Text(
-                              'Saldo',
-                              style: TextStyle(
-                                color: Colors.grey.shade100,
-                                fontWeight: FontWeight.w500,
+                            Container(
+                              alignment: Alignment.topLeft,
+                              margin: EdgeInsets.only(top: 20),
+                              child: Text(
+                                'Saldo',
+                                style: TextStyle(
+                                  color: Colors.grey.shade100,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                             Container(
+                              margin: EdgeInsets.only(bottom: 10),
+                              alignment: Alignment.topLeft,
                               child: Text(
                                 Constants.getAmountFormated(
                                     currentWallet.totalBalance),
@@ -191,6 +213,7 @@ class _SeeAllTransactionsComponentState
                         ),
                 ),
                 Container(
+                  margin: EdgeInsets.symmetric(vertical: 20),
                   child: transactionsLoading
                       ? Constants.getDefaultLoadingWidget(context)
                       : Column(
