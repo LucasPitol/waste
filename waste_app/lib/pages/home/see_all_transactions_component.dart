@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:waste_app/models/dtos/transaction_block_dto.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
@@ -31,7 +32,7 @@ class _SeeAllTransactionsComponentState
 
   bool transactionsLoading = true;
   bool balanceLoading = true;
-  List<TransactionDto> transactions = [];
+  List<TransactionBlockDto> transactionBlockList = [];
   Wallet currentWallet;
 
   _SeeAllTransactionsComponentState(Wallet currentWallet) {
@@ -59,7 +60,7 @@ class _SeeAllTransactionsComponentState
     String walletId = currentWallet.id;
 
     this.transactionService.getTransactionsByWalletId(walletId).then((value) {
-      this.transactions = value;
+      this.transactionBlockList = value;
 
       setState(() {
         this.transactionsLoading = false;
@@ -75,6 +76,34 @@ class _SeeAllTransactionsComponentState
     setState(() {
       this.balanceLoading = false;
     });
+  }
+
+  Widget createTileForTransactionsBlock(TransactionBlockDto item) {
+    String blockMonth =
+        DateFormat.MMMM(this.localeLanguage).format(item.blockDate);
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 40),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.only(bottom: 10),
+            child: Text(
+              blockMonth,
+              style: Styles.poppinsTextGrey,
+            ),
+          ),
+          Container(
+            child: Column(
+              children: item.transactions
+                  .map((transaction) => createTileForTransactions(transaction))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget createTileForTransactions(TransactionDto item) {
@@ -217,8 +246,9 @@ class _SeeAllTransactionsComponentState
                   child: transactionsLoading
                       ? Constants.getDefaultLoadingWidget(context)
                       : Column(
-                          children: transactions
-                              .map((item) => createTileForTransactions(item))
+                          children: transactionBlockList
+                              .map((item) =>
+                                  createTileForTransactionsBlock(item))
                               .toList(),
                         ),
                 ),

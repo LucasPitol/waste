@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/dtos/transaction_block_dto.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/forms/edit_waste_form.dart';
 import 'package:waste_app/models/forms/new_revenue_form.dart';
@@ -160,8 +161,12 @@ class TransactionsDao {
     return success;
   }
 
-  Future<List<TransactionDto>> getTransactionsByWalletId(String walletId) async {
-    List<TransactionDto> transactions = [];
+  Future<List<TransactionBlockDto>> getTransactionsByWalletId(
+      String walletId) async {
+    // List<TransactionDto> transactions = [];
+    List<TransactionBlockDto> transactionBlockList = [];
+    Map<DateTime, List<TransactionDto>> transactionByMonthMap =
+        Map<DateTime, List<TransactionDto>>();
 
     await dbReference
         .collection('transactions')
@@ -175,15 +180,49 @@ class TransactionsDao {
         var transaction = TransactionDto();
 
         Timestamp transactionDateTimestamp = objMap['transactionDate'];
+        DateTime transactionDate = transactionDateTimestamp.toDate();
 
         transaction.amount = double.parse(objMap['amount'].toString());
         transaction.reason = objMap['reason'];
         transaction.transactionId = element.documentID;
-        transaction.transactionDate = transactionDateTimestamp.toDate();
+        transaction.transactionDate = transactionDate;
 
-        transactions.add(transaction);
+        DateTime key = DateTime(transactionDate.year, transactionDate.month, 1);
+
+        if (transactionByMonthMap.containsKey(key)) {
+          var values = transactionByMonthMap[key];
+
+          values.add(transaction);
+
+          transactionByMonthMap.remove(key);
+
+          transactionByMonthMap.putIfAbsent(key, () => values);
+        } else {
+          // primeira entrada
+          var list = List<TransactionDto>();
+          list.add(transaction);
+          transactionByMonthMap.putIfAbsent(key, () => list);
+        }
+        // transactions.add(transaction);
       });
-      return transactions;
+
+      var sortedKeys = transactionByMonthMap.keys.toList(growable: false)
+        ..sort((k1, k2) => k2.compareTo(k1));
+      var sortedMap = Map<DateTime, List<TransactionDto>>.fromIterable(
+          sortedKeys,
+          key: (k) => k,
+          value: (k) => transactionByMonthMap[k]);
+
+      sortedMap.forEach((key, value) {
+        TransactionBlockDto transactionBlock = TransactionBlockDto();
+
+        transactionBlock.blockDate = key;
+        transactionBlock.transactions = value;
+
+        transactionBlockList.add(transactionBlock);
+      });
+
+      return transactionBlockList;
     }).catchError((onError) {
       SmartError errorDto = SmartError();
       errorDto.errorLog = onError.toString();
@@ -191,9 +230,9 @@ class TransactionsDao {
       errorDto.userId = AuthService.currentUser.uid;
 
       this.smartErrorService.saveError(errorDto);
-      return transactions;
+      return transactionBlockList;
     });
-    return transactions;
+    return transactionBlockList;
   }
 
   Future<List<TransactionDto>> getLast2Transactions(String walletId) async {
