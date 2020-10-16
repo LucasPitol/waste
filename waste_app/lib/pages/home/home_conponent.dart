@@ -1,20 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:waste_app/models/dtos/member-dto.dart';
+import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
+import 'package:waste_app/pages/home/settings_component.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/screen-option-chip.dart';
-import 'package:waste_app/models/user_dto.dart';
-import 'package:waste_app/models/wallet.dart';
-import 'package:waste_app/pages/home/settings_component.dart';
-import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
+import 'package:waste_app/models/dtos/member-dto.dart';
+import 'package:waste_app/services/auth_service.dart';
+import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
-
 import 'see_all_transactions_component.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+
 
 class HomeComponent extends StatefulWidget {
   HomeComponent({Key key}) : super(key: key);
@@ -161,24 +162,19 @@ class HomeComponentState extends State<HomeComponent> {
     });
   }
 
-  _getScreenContentData() async {
-    int screenOpt = this.screenOptionSelected;
+  void _goToEditWalletPage() async {
+    String walletId = this.userDto.currentWalletId;
+    var refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => EditWallet(walletId)));
 
+    if (refresh != null && refresh) {
+      updatePageContent();
+    }
+  }
+
+  _getScreenContentData() async {
     this.transactions = await this.getLast2Transactions();
     this.buildMembersMock();
-
-    // switch (screenOpt) {
-    //   case 1:
-    //     this.buildTransactionsMock();
-    //     break;
-
-    //   case 2:
-    //     this.buildMembersMock();
-    //     break;
-
-    //   default:
-    //     break;
-    // }
   }
 
   Widget _getScreenLayoutContent() {
@@ -187,6 +183,7 @@ class HomeComponentState extends State<HomeComponent> {
     switch (screenOpt) {
       case 1:
         return Container(
+          margin: EdgeInsets.only(top: 20),
           width: double.infinity,
           decoration: Styles.contentBox,
           child: Container(
@@ -402,8 +399,11 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   _openSeeAllTransactionsPage() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => SeeAllTransactionsComponent(this.currentWallet)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                SeeAllTransactionsComponent(this.currentWallet)));
   }
 
   Widget createTileForTransactions(TransactionDto item) {
@@ -575,8 +575,7 @@ class HomeComponentState extends State<HomeComponent> {
                               alignment: Alignment.topRight,
                               child: GestureDetector(
                                 onTap: () {
-                                  // _goToEditWalletPage();
-                                  print('edit wallet');
+                                  _goToEditWalletPage();
                                 },
                                 child: Text(
                                   isPtLanguage ? 'Editar' : 'Edit',
@@ -592,21 +591,21 @@ class HomeComponentState extends State<HomeComponent> {
                     ],
                   ),
                 ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Row(
-                        children: screenOptions
-                            .map((item) => createScreenOptionsChip(item))
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   alignment: Alignment.centerLeft,
+                //   child: SingleChildScrollView(
+                //     scrollDirection: Axis.horizontal,
+                //     physics: const BouncingScrollPhysics(),
+                //     child: Padding(
+                //       padding: EdgeInsets.symmetric(vertical: 20),
+                //       child: Row(
+                //         children: screenOptions
+                //             .map((item) => createScreenOptionsChip(item))
+                //             .toList(),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 loading
                     ? Container(
                         margin: EdgeInsets.symmetric(vertical: 60),

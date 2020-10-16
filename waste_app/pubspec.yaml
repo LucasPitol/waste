@@ -34,7 +34,7 @@ dependencies:
   mailer2: ^1.2.5
   package_info: ^0.4.1
   flutter_native_splash: ^0.1.9
-  fab_circular_menu: ^1.0.0
+  fab_circular_menu: ^1.0.1
   bezier_chart: ^1.0.17+1
 
   # The following adds the Cupertino Icons font to your application.

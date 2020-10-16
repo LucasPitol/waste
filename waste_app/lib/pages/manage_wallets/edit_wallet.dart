@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/pages/dialogs/confirm_dialog.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
-import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
+import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
-
+import 'package:flutter/material.dart';
 import 'manage_wallets_app_bar.dart';
 
 class EditWallet extends StatefulWidget {
@@ -134,6 +133,7 @@ class _EditWalletState extends State<EditWallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Styles.mainBackgroundColor,
       appBar: ManageWalletsAppBar(context, this.appBarTitle),
       body: Stack(
         children: <Widget>[
@@ -163,6 +163,7 @@ class _EditWalletState extends State<EditWallet> {
                       margin: EdgeInsets.only(
                           top: 20, bottom: 10, left: 20, right: 20),
                       child: TextFormField(
+                        style: TextStyle(color: Colors.grey.shade100),
                         controller: walletNameController,
                         textCapitalization: TextCapitalization.sentences,
                         validator: (value) {
@@ -206,7 +207,11 @@ class _EditWalletState extends State<EditWallet> {
                             this.languageCode == Constants.languages[0]
                                 ? 'Salvar'
                                 : 'Save',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),

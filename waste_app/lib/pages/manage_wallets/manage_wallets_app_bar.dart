@@ -21,7 +21,7 @@ class ManageWalletsAppBar extends StatelessWidget
         style: GoogleFonts.poppins(
           textStyle: TextStyle(
             fontWeight: FontWeight.w500,
-            color: Colors.black,
+            color: Colors.grey.shade100,
             fontSize: 18,
           ),
         ),
@@ -32,7 +32,7 @@ class ManageWalletsAppBar extends StatelessWidget
         },
         child: Icon(
           Icons.keyboard_backspace,
-          color: Colors.grey,
+          color: Colors.grey.shade100,
         ),
       ),
     );

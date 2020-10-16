@@ -1,12 +1,10 @@
-import 'package:fab_circular_menu/fab_circular_menu.dart';
-import 'package:flutter/material.dart';
 import 'package:waste_app/pages/profile/profile_component.dart';
-import 'package:waste_app/pages/spends/spends.dart';
-
-import 'pages/home/home_conponent.dart';
+import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
+import 'package:waste_app/pages/spends/spends.dart';
 import 'pages/new_spend/new_spend_component.dart';
-import 'pages/revenues/revenues_component.dart';
+import 'pages/home/home_conponent.dart';
+import 'package:flutter/material.dart';
 
 class MainComponent extends StatefulWidget {
   @override
@@ -68,9 +66,6 @@ class _MainComponentState extends State<MainComponent> {
       case 1:
         _updateSpendsPage();
         break;
-      case 2:
-        _updateProfilePage();
-        break;
       default:
         break;
     }
@@ -82,10 +77,6 @@ class _MainComponentState extends State<MainComponent> {
 
   void _updateSpendsPage() {
     spendsComponentGlobalKey.currentState.refreshData();
-  }
-
-  void _updateProfilePage() {
-    profileComponentGlobalKey.currentState.refreshData();
   }
 
   @override
@@ -136,9 +127,8 @@ class _MainComponentState extends State<MainComponent> {
   final List<Widget> _widgetOptions = <Widget>[
     HomeComponent(key: homeComponentGlobalKey),
     SpendsComponent(key: spendsComponentGlobalKey),
-    Container(),
-    RevenuesComponent(),
-    ProfileComponent(key: profileComponentGlobalKey),
+    // Container(),
+    // RevenuesComponent(),
   ];
 
   void _onItemTapped(int index) {
@@ -176,18 +166,18 @@ class _MainComponentState extends State<MainComponent> {
           icon: Icon(Icons.money_off),
           title: Text(''),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.arrow_drop_down),
-          title: Text(''),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.attach_money),
-          title: Text(''),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          title: Text(''),
-        ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.arrow_drop_down),
+        //   title: Text(''),
+        // ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.attach_money),
+        //   title: Text(''),
+        // ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.account_circle),
+        //   title: Text(''),
+        // ),
       ],
     );
   }
