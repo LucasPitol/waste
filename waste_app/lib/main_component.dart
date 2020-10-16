@@ -1,4 +1,3 @@
-import 'package:waste_app/pages/profile/profile_component.dart';
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
@@ -13,7 +12,6 @@ class MainComponent extends StatefulWidget {
 
 GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
 GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
-GlobalKey<ProfileComponentState> profileComponentGlobalKey = GlobalKey();
 
 final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
 
