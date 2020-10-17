@@ -5,6 +5,7 @@ import 'pages/new_spend/new_spend_component.dart';
 import 'pages/home/home_conponent.dart';
 import 'package:flutter/material.dart';
 
+
 class MainComponent extends StatefulWidget {
   @override
   _MainComponentState createState() => _MainComponentState();
@@ -81,8 +82,27 @@ class _MainComponentState extends State<MainComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: true,
-      body: Container(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: Stack(
+        children: [
+          Container(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 32.5,
+              width: 65,
+              color: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.grey.shade900,
+                    borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(40.0),
+                        topRight: const Radius.circular(40.0))),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FabCircularMenu(
         key: fabKey,

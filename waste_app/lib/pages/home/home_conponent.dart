@@ -183,7 +183,7 @@ class HomeComponentState extends State<HomeComponent> {
     switch (screenOpt) {
       case 1:
         return Container(
-          margin: EdgeInsets.only(top: 20),
+          margin: EdgeInsets.only(top: 20), // remover depois 
           width: double.infinity,
           decoration: Styles.contentBox,
           child: Container(
