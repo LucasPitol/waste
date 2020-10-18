@@ -1,3 +1,11 @@
+.content {
+    color: #fafafa;
+}
+
+.dialog-title {
+    color: #fafafa;
+}
+
 .sub-text {
     color: #9E9E9E;
 }
@@ -6,4 +14,8 @@
     margin-top: 20px;
     /* width: 100%; */
     float: right;
+}
+
+.btn {
+    color: black;
 }

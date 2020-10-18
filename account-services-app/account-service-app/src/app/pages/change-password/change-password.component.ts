@@ -92,7 +92,8 @@ export class ChangePasswordComponent implements OnInit {
                 title: title,
                 text: text,
                 subText: subText
-            }
+            },
+            panelClass: 'dianlog-container'
         })
 
         alertDialog.afterClosed().subscribe(result => {
@@ -111,7 +112,8 @@ export class ChangePasswordComponent implements OnInit {
                 title: title,
                 text: text,
                 subText: subText
-            }
+            },
+            panelClass: 'dianlog-container'
         })
     }
 

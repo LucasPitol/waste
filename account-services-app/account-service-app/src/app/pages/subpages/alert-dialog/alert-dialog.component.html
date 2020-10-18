@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
+<h1 mat-dialog-title class="dialog-title">{{data.title}}</h1>
 <div class="content" mat-dialog-content>
     <span>{{data.text}}</span>
     <p class="sub-text">{{data.subText}}</p>
@@ -6,6 +6,6 @@
 </div>
 <div mat-dialog-actions class="btn-area">
     <!-- <button mat-button color="primary" (click)="onNoClick()">Cancelar</button> -->
-    <button mat-raised-button color="primary" (click)="onNoClick()">Ok</button>
+    <button class="btn" mat-raised-button color="primary" (click)="onNoClick()">Ok</button>
 
 </div>
