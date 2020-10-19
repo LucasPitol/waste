@@ -1,22 +1,20 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:waste_app/services/spending_categories_service.dart';
+import 'package:waste_app/services/transactions_service.dart';
+import 'package:waste_app/models/forms/new_waste_form.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/models/spending_category.dart';
-import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/spends_service.dart';
-import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/models/forms/new_waste_form.dart';
 import 'package:waste_app/models/user_dto.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'category_bottom_sheet_component.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'category_bottom_sheet_component.dart';
 
 class NewSpendComponent extends StatefulWidget {
   @override
@@ -32,7 +30,8 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   List<Wallet> wallets;
   List<SpendingCategory> spendingCategoryList;
-  String dropdownWalletValue;
+  String currentWalletId;
+  Wallet currentWallet;
   final _formKey = GlobalKey<FormState>();
   NewWasteForm newWasteForm;
   bool loading = false;
@@ -77,13 +76,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   void _getUserWallets() {
     wallets = this.walletService.getUserWalletsLocal();
 
-    this.dropdownWalletValue = this.walletService.getCurrentWalletId();
-  }
+    this.currentWalletId = this.walletService.getCurrentWalletId();
 
-  void switchWallets(String walletId) {
-    setState(() {
-      this.dropdownWalletValue = walletId;
-    });
+    this.currentWallet = wallets.where((w) => currentWalletId == w.id).first;
   }
 
   void _selectDate() {
@@ -151,7 +146,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
     this.authService.userExists(context);
 
-    this.newWasteForm.walletId = dropdownWalletValue;
+    this.newWasteForm.walletId = this.currentWalletId;
     this.newWasteForm.categoryId = categorySelected.id;
     var success = await this.transactionService.waste(newWasteForm);
 
@@ -341,32 +336,14 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                         ),
                       ),
                       Container(
-                        child: DropdownButton<String>(
-                          dropdownColor: Styles.mainBackgroundColor,
-                          value: dropdownWalletValue,
-                          icon: Icon(Icons.keyboard_arrow_down),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                              color: Colors.grey.shade100,
-                              fontSize: 16,
-                            ),
+                        margin: EdgeInsets.only(top: 10),
+                        child: Text(
+                          currentWallet.name,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey.shade100,
+                            fontWeight: FontWeight.w500,
                           ),
-                          underline: Container(
-                            height: 1,
-                            color: Colors.grey.shade900,
-                          ),
-                          onChanged: (String newValue) {
-                            switchWallets(newValue);
-                          },
-                          items: wallets
-                              .map<DropdownMenuItem<String>>((Wallet item) {
-                            return DropdownMenuItem<String>(
-                              value: item.id,
-                              child: Text(item.name),
-                            );
-                          }).toList(),
                         ),
                       ),
                       Container(

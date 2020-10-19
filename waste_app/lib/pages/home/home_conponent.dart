@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-
 class HomeComponent extends StatefulWidget {
   HomeComponent({Key key}) : super(key: key);
   @override
@@ -83,6 +82,8 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   buildMembersMock() {
+    members = [];
+    
     var member1 = MemberDto();
     member1.id = 1;
     member1.name = 'Judas';
@@ -183,7 +184,6 @@ class HomeComponentState extends State<HomeComponent> {
     switch (screenOpt) {
       case 1:
         return Container(
-          margin: EdgeInsets.only(top: 20), // remover depois 
           width: double.infinity,
           decoration: Styles.contentBox,
           child: Container(
@@ -591,21 +591,21 @@ class HomeComponentState extends State<HomeComponent> {
                     ],
                   ),
                 ),
-                // Container(
-                //   alignment: Alignment.centerLeft,
-                //   child: SingleChildScrollView(
-                //     scrollDirection: Axis.horizontal,
-                //     physics: const BouncingScrollPhysics(),
-                //     child: Padding(
-                //       padding: EdgeInsets.symmetric(vertical: 20),
-                //       child: Row(
-                //         children: screenOptions
-                //             .map((item) => createScreenOptionsChip(item))
-                //             .toList(),
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      child: Row(
+                        children: screenOptions
+                            .map((item) => createScreenOptionsChip(item))
+                            .toList(),
+                      ),
+                    ),
+                  ),
+                ),
                 loading
                     ? Container(
                         margin: EdgeInsets.symmetric(vertical: 60),
