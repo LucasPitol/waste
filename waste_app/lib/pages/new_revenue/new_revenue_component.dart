@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:waste_app/models/forms/new_revenue_form.dart';
+import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -290,6 +291,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                 ),
               ),
             ),
+            LoadingBlock(this.loading),
           ],
         ),
       ),
