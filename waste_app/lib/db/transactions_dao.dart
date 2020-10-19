@@ -108,7 +108,7 @@ class TransactionsDao {
     return success;
   }
 
-  Future<bool> deleteWaste(String transactionId) async {
+  Future<bool> deleteWaste(String transactionId, String walletId, double spent) async {
     bool success = false;
 
     await this
@@ -116,8 +116,11 @@ class TransactionsDao {
         .collection('transactions')
         .document(transactionId)
         .delete()
-        .then((value) {
+        .then((value) async {
       success = true;
+
+      await WalletService.incrementBallance(walletId, spent);
+
       return success;
     }).catchError((onError) {
       print(onError);

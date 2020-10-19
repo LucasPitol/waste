@@ -52,10 +52,10 @@ class TransactionService {
     return success;
   }
 
-  Future<bool> deleteWaste(String transactionId, String spendCategoryId) async {
+  Future<bool> deleteWaste(String transactionId, String spendCategoryId, String walletId, double spent) async {
     bool success = false;
 
-    success = await this.transactionsDao.deleteWaste(transactionId);
+    success = await this.transactionsDao.deleteWaste(transactionId, walletId, spent);
 
     this
         .spendingCategoriesService
@@ -140,7 +140,8 @@ class TransactionService {
     return spendsList;
   }
 
-  Future<List<TransactionBlockDto>> getTransactionsByWalletId(String walletId) async {
+  Future<List<TransactionBlockDto>> getTransactionsByWalletId(
+      String walletId) async {
     return await this.transactionsDao.getTransactionsByWalletId(walletId);
   }
 

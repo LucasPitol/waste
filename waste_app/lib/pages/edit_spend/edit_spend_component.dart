@@ -12,7 +12,6 @@ import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
-import 'package:waste_app/services/spends_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -189,9 +188,10 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
         this.loading = true;
       });
 
-      var success = await this
-          .transactionService
-          .deleteWaste(spend.spendId, spend.categoryId);
+      double spent = spend.spent * -1;
+
+      var success = await this.transactionService.deleteWaste(
+          spend.spendId, spend.categoryId, dropdownWalletValue, spent);
 
       if (success) {
         Navigator.pop(context, true);
