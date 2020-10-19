@@ -1,9 +1,9 @@
 .content {
-    color: #fafafa;
+    color: #212121;
 }
 
 .dialog-title {
-    color: #fafafa;
+    color: #212121;
 }
 
 .sub-text {
@@ -17,5 +17,5 @@
 }
 
 .btn {
-    color: black;
+    /* color: black; */
 }

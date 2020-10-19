@@ -54,7 +54,7 @@ html, body { height: 100%; }
 }
 
 .dianlog-container mat-dialog-container {
-    background-color: #212121;
+    /* background-color: #212121; */
 }
 
 .waste-title {
