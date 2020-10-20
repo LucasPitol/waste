@@ -9,6 +9,7 @@ import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'category_bottom_sheet_component.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -30,8 +31,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
   List<Wallet> wallets;
   List<SpendingCategory> spendingCategoryList;
-  String currentWalletId;
-  Wallet currentWallet;
+  String dropdownWalletValue;
   final _formKey = GlobalKey<FormState>();
   NewWasteForm newWasteForm;
   bool loading = false;
@@ -76,9 +76,13 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
   void _getUserWallets() {
     wallets = this.walletService.getUserWalletsLocal();
 
-    this.currentWalletId = this.walletService.getCurrentWalletId();
+    this.dropdownWalletValue = this.walletService.getCurrentWalletId();
+  }
 
-    this.currentWallet = wallets.where((w) => currentWalletId == w.id).first;
+  void switchWallets(String walletId) {
+    setState(() {
+      this.dropdownWalletValue = walletId;
+    });
   }
 
   void _selectDate() {
@@ -146,7 +150,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
 
     this.authService.userExists(context);
 
-    this.newWasteForm.walletId = this.currentWalletId;
+    this.newWasteForm.walletId = this.dropdownWalletValue;
     this.newWasteForm.categoryId = categorySelected.id;
     var success = await this.transactionService.waste(newWasteForm);
 
@@ -336,14 +340,32 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: Text(
-                          currentWallet.name,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade100,
-                            fontWeight: FontWeight.w500,
+                        child: DropdownButton<String>(
+                          dropdownColor: Styles.mainBackgroundColor,
+                          value: dropdownWalletValue,
+                          icon: Icon(Icons.keyboard_arrow_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              color: Colors.grey.shade100,
+                              fontSize: 16,
+                            ),
                           ),
+                          underline: Container(
+                            height: 1,
+                            color: Colors.grey.shade900,
+                          ),
+                          onChanged: (String newValue) {
+                            switchWallets(newValue);
+                          },
+                          items: wallets
+                              .map<DropdownMenuItem<String>>((Wallet item) {
+                            return DropdownMenuItem<String>(
+                              value: item.id,
+                              child: Text(item.name),
+                            );
+                          }).toList(),
                         ),
                       ),
                       Container(

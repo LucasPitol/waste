@@ -25,8 +25,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
 
   bool isPtLanguage;
   List<Wallet> wallets;
-  String currentWalletId;
-  Wallet currentWallet;
+  String dropdownWalletValue;
   final _formKey = GlobalKey<FormState>();
   NewRevenueForm newRevenueForm;
   bool loading = false;
@@ -49,9 +48,13 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
   void _getUserWallets() {
     wallets = this.walletService.getUserWalletsLocal();
 
-    this.currentWalletId = this.walletService.getCurrentWalletId();
+    this.dropdownWalletValue = this.walletService.getCurrentWalletId();
+  }
 
-    this.currentWallet = wallets.where((w) => currentWalletId == w.id).first;
+  void switchWallets(String walletId) {
+    setState(() {
+      this.dropdownWalletValue = walletId;
+    });
   }
 
   Future<void> _openDatePicker(BuildContext context) async {
@@ -89,7 +92,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
 
     FocusScope.of(context).unfocus();
 
-    this.newRevenueForm.walletId = this.currentWalletId;
+    this.newRevenueForm.walletId = this.dropdownWalletValue;
     var success = await this.transactionService.saveNewRevenue(newRevenueForm);
 
     setState(() {
@@ -231,14 +234,33 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: Text(
-                          currentWallet.name,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade100,
-                            fontWeight: FontWeight.w500,
+                        // margin: EdgeInsets.only(top: 10),
+                        child: DropdownButton<String>(
+                          dropdownColor: Styles.mainBackgroundColor,
+                          value: dropdownWalletValue,
+                          icon: Icon(Icons.keyboard_arrow_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              color: Colors.grey.shade100,
+                              fontSize: 16,
+                            ),
                           ),
+                          underline: Container(
+                            height: 1,
+                            color: Colors.grey.shade900,
+                          ),
+                          onChanged: (String newValue) {
+                            switchWallets(newValue);
+                          },
+                          items: wallets
+                              .map<DropdownMenuItem<String>>((Wallet item) {
+                            return DropdownMenuItem<String>(
+                              value: item.id,
+                              child: Text(item.name),
+                            );
+                          }).toList(),
                         ),
                       ),
                       Container(

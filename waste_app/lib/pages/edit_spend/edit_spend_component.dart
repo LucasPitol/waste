@@ -32,7 +32,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
           : Constants.enLanguage;
   UserDto userDto = AuthService.currentUser;
   String languageCode;
-  String dropdownWalletValue;
+  String currentWalletId;
+  Wallet currentWallet;
   List<Wallet> wallets;
   EditWasteForm editWasteForm;
   bool loading = false;
@@ -139,13 +140,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   void _getUserWallets() {
     wallets = this.walletService.getUserWalletsLocal();
 
-    this.dropdownWalletValue = this.walletService.getCurrentWalletId();
-  }
+    this.currentWalletId = this.walletService.getCurrentWalletId();
 
-  void switchWallets(String walletId) {
-    setState(() {
-      this.dropdownWalletValue = walletId;
-    });
+    this.currentWallet = wallets.where((w) => currentWalletId == w.id).first;
   }
 
   Future<void> _updateWaste() async {
@@ -155,7 +152,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
     FocusScope.of(context).unfocus();
 
-    this.editWasteForm.walletId = dropdownWalletValue;
+    this.editWasteForm.walletId = this.currentWalletId;
 
     this.editWasteForm.categoryId = categorySelected.id;
 
@@ -190,8 +187,9 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
       double spent = spend.spent * -1;
 
-      var success = await this.transactionService.deleteWaste(
-          spend.spendId, spend.categoryId, dropdownWalletValue, spent);
+      var success = await this
+          .transactionService
+          .deleteWaste(spend.spendId, spend.categoryId, currentWalletId, spent);
 
       if (success) {
         Navigator.pop(context, true);
@@ -394,32 +392,14 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                         ),
                       ),
                       Container(
-                        child: DropdownButton<String>(
-                          dropdownColor: Styles.mainBackgroundColor,
-                          value: dropdownWalletValue,
-                          icon: Icon(Icons.keyboard_arrow_down),
-                          iconSize: 24,
-                          elevation: 16,
-                          style: GoogleFonts.poppins(
-                            textStyle: TextStyle(
-                              color: Colors.grey.shade100,
-                              fontSize: 16,
-                            ),
+                        margin: EdgeInsets.only(top: 10),
+                        child: Text(
+                          currentWallet.name,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey.shade100,
+                            fontWeight: FontWeight.w500,
                           ),
-                          underline: Container(
-                            height: 1,
-                            color: Colors.grey.shade900,
-                          ),
-                          onChanged: (String newValue) {
-                            switchWallets(newValue);
-                          },
-                          items: wallets
-                              .map<DropdownMenuItem<String>>((Wallet item) {
-                            return DropdownMenuItem<String>(
-                              value: item.id,
-                              child: Text(item.name),
-                            );
-                          }).toList(),
                         ),
                       ),
                       Container(
