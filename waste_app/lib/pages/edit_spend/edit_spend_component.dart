@@ -36,6 +36,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   Wallet currentWallet;
   List<Wallet> wallets;
   EditWasteForm editWasteForm;
+  EditWasteForm previousWasteForm;
   bool loading = false;
   bool isPtLanguage;
   SpendItem spend;
@@ -54,6 +55,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     this.spend = spend;
     this.walletService = WalletService();
     this.editWasteForm = EditWasteForm();
+    this.previousWasteForm = EditWasteForm();
     this.transactionService = TransactionService();
     this.spendingCategoriesService = SpendingCategoriesService();
     this.authService = AuthService();
@@ -100,6 +102,13 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     editWasteForm.spendDate = spend.spendDate;
     editWasteForm.spendId = spend.spendId;
     editWasteForm.categoryId = spend.categoryId;
+
+    previousWasteForm.reason.text = spend.reason;
+    double previousWastePositive = spend.spent * (-1);
+    previousWasteForm.waste.text = (previousWastePositive * 10).toString();
+    previousWasteForm.spendDate = spend.spendDate;
+    previousWasteForm.spendId = spend.spendId;
+    previousWasteForm.categoryId = spend.categoryId;
   }
 
   void _selectDate() {
@@ -158,7 +167,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
     var success = await this
         .transactionService
-        .updateWaste(editWasteForm, spend.categoryId);
+        .updateWaste(editWasteForm, previousWasteForm);
 
     setState(() {
       this.loading = false;

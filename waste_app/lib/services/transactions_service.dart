@@ -12,6 +12,7 @@ import 'package:waste_app/services/smart_error_service.dart';
 
 import 'auth_service.dart';
 import 'spending_categories_service.dart';
+import 'wallet_service.dart';
 
 class TransactionService {
   final dbReference = Firestore.instance;
@@ -33,12 +34,15 @@ class TransactionService {
   }
 
   Future<bool> updateWaste(
-      EditWasteForm form, String previousCategoryId) async {
+      EditWasteForm form, EditWasteForm previousForm) async {
     bool success = false;
 
     success = await this.transactionsDao.updateWaste(form);
 
+    String walletId = form.walletId;
+
     String categoryId = form.categoryId;
+    String previousCategoryId = previousForm.categoryId;
 
     if (categoryId != previousCategoryId) {
       this
@@ -49,13 +53,36 @@ class TransactionService {
           .incrementSpendsWithThisCategory(categoryId);
     }
 
+    String wasteString = form.waste.text.replaceAll(',', '');
+    double waste = double.parse(wasteString);
+
+    if (waste > 0) {
+      waste = waste * (-1);
+    }
+
+    String previousWasteString = previousForm.waste.text.replaceAll(',', '');
+    double previousWaste = double.parse(previousWasteString);
+
+    if (previousWaste > 0) {
+      previousWaste = previousWaste * (-1);
+    }
+
+    print(waste);
+    print(previousWaste);
+    if (waste != previousWaste) {
+      await WalletService.decrementBallance(walletId, previousWaste);
+      await WalletService.incrementBallance(walletId, waste);
+    }
+
     return success;
   }
 
-  Future<bool> deleteWaste(String transactionId, String spendCategoryId, String walletId, double spent) async {
+  Future<bool> deleteWaste(String transactionId, String spendCategoryId,
+      String walletId, double spent) async {
     bool success = false;
 
-    success = await this.transactionsDao.deleteWaste(transactionId, walletId, spent);
+    success =
+        await this.transactionsDao.deleteWaste(transactionId, walletId, spent);
 
     this
         .spendingCategoriesService
