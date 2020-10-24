@@ -107,8 +107,10 @@ class HomeComponentState extends State<HomeComponent> {
   void _updatePermission() {
     String walletId = this.userDto.currentWalletId;
     String uid = this.userDto.uid;
+
+    bool isOwner = this.walletService.isOwner(walletId, uid);
     setState(() {
-      this.isWalletOwner = this.walletService.isOwner(walletId, uid);
+      this.isWalletOwner = isOwner;
     });
   }
 
@@ -303,8 +305,11 @@ class HomeComponentState extends State<HomeComponent> {
                         ),
                       )
                     : Container(
-                      margin: EdgeInsets.only(top: 20, bottom: 10),
-                        child: Text(isPtLanguage ? 'Nenhum membro nessa carteira' : 'No members',
+                        margin: EdgeInsets.only(top: 20, bottom: 10),
+                        child: Text(
+                          isPtLanguage
+                              ? 'Nenhum membro nessa carteira'
+                              : 'No members',
                           style: Styles.poppinsTextLight,
                         ),
                       ),
@@ -353,17 +358,22 @@ class HomeComponentState extends State<HomeComponent> {
   Widget createTileForMembers(MemberDto item) {
     return Container(
       child: ListTile(
-        trailing: GestureDetector(
-          onTap: () {
-            print('remove member');
-          },
-          child: Container(
-            child: Icon(
-              Icons.close,
-              color: Colors.grey,
-            ),
-          ),
-        ),
+        trailing: isWalletOwner
+            ? GestureDetector(
+                onTap: () {
+                  print('remove member');
+                },
+                child: Container(
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
+            : Container(
+                width: 1,
+                height: 1,
+              ),
         title: Text(
           item.name,
           style: TextStyle(
@@ -569,19 +579,21 @@ class HomeComponentState extends State<HomeComponent> {
                       isWalletOwner
                           ? Container(
                               alignment: Alignment.topRight,
-                              child: GestureDetector(
-                                onTap: () {
-                                  _goToEditWalletPage();
-                                },
-                                child: Text(
-                                  isPtLanguage ? 'Editar' : 'Edit',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14.0,
-                                    color: Colors.deepPurple,
-                                  ),
-                                ),
-                              ),
+                              child: isWalletOwner
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        _goToEditWalletPage();
+                                      },
+                                      child: Text(
+                                        isPtLanguage ? 'Editar' : 'Edit',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14.0,
+                                          color: Colors.deepPurple,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
                             )
                           : Container(),
                     ],
