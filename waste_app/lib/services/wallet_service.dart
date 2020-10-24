@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/db/wallet_dao.dart';
+import 'package:waste_app/models/dtos/member-dto.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/wallet.dart';
 
@@ -100,6 +101,50 @@ class WalletService {
     }
 
     return success;
+  }
+
+  Future<List<MemberDto>> getMembersByWalletId(List<String> membersId) async {
+    List<MemberDto> members = List<MemberDto>();
+
+    String userId = AuthService.currentUser.uid;
+
+    membersId.remove(userId);
+
+    if (membersId.isNotEmpty) {
+      await dbReference
+          .collection('user')
+          .where('uid', whereIn: membersId)
+          .getDocuments()
+          .then((QuerySnapshot snapshot) async {
+        var docs = snapshot.documents;
+
+        docs.forEach((item) {
+          var obj = item.data;
+          var uid = item.documentID;
+
+          MemberDto member = MemberDto();
+          member.email = obj['email'];
+          member.id = uid;
+          member.name = obj['displayName'];
+
+          members.add(member);
+        });
+        return members;
+      }).catchError((onError) {
+        print(onError);
+
+        SmartError errorDto = SmartError();
+        errorDto.errorLog = onError.toString();
+        errorDto.feature = 'Get wallet members';
+        errorDto.userId = userId;
+
+        this.smartErrorService.saveError(errorDto);
+
+        return members;
+      });
+    }
+
+    return members;
   }
 
   Future<List<Wallet>> getWalletsByUserId(String userId) async {

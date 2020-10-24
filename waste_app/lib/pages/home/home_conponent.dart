@@ -75,27 +75,16 @@ class HomeComponentState extends State<HomeComponent> {
     });
   }
 
+  Future<List<MemberDto>> getMembers() async {
+    return this
+        .walletService
+        .getMembersByWalletId(this.currentWallet.membersId);
+  }
+
   Future<List<TransactionDto>> getLast2Transactions() async {
     return await this
         .transactionService
         .getLast2Transactions(dropdownWalletValue);
-  }
-
-  buildMembersMock() {
-    members = [];
-    
-    var member1 = MemberDto();
-    member1.id = 1;
-    member1.name = 'Judas';
-    member1.email = 'judasso@gmail.com';
-
-    var member2 = MemberDto();
-    member2.id = 2;
-    member2.name = 'Jeca';
-    member2.email = 'jekinha@gmail.com';
-
-    members.add(member1);
-    members.add(member2);
   }
 
   _buildScreenChipsOptions() {
@@ -175,7 +164,7 @@ class HomeComponentState extends State<HomeComponent> {
 
   _getScreenContentData() async {
     this.transactions = await this.getLast2Transactions();
-    this.buildMembersMock();
+    this.members = await this.getMembers();
   }
 
   Widget _getScreenLayoutContent() {
@@ -304,14 +293,21 @@ class HomeComponentState extends State<HomeComponent> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: Column(
-                    children: members
-                        .map((item) => createTileForMembers(item))
-                        .toList(),
-                  ),
-                ),
+                members.isNotEmpty
+                    ? Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Column(
+                          children: members
+                              .map((item) => createTileForMembers(item))
+                              .toList(),
+                        ),
+                      )
+                    : Container(
+                      margin: EdgeInsets.only(top: 20, bottom: 10),
+                        child: Text(isPtLanguage ? 'Nenhum membro nessa carteira' : 'No members',
+                          style: Styles.poppinsTextLight,
+                        ),
+                      ),
               ],
             ),
           ),

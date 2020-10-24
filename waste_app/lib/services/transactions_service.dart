@@ -67,8 +67,6 @@ class TransactionService {
       previousWaste = previousWaste * (-1);
     }
 
-    print(waste);
-    print(previousWaste);
     if (waste != previousWaste) {
       await WalletService.decrementBallance(walletId, previousWaste);
       await WalletService.incrementBallance(walletId, waste);
