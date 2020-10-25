@@ -116,7 +116,8 @@ class WalletDao {
     await dbReference.collection('wallets').document(walletId).setData({
       'name': newWallet.name,
       'lastUpdate': lastUpdate,
-      'totalBalance': newWallet.totalBalance
+      'totalBalance': newWallet.totalBalance,
+      'membersId': newWallet.membersId
     }, merge: true).then((onValue) {
       success = true;
       return success;

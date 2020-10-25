@@ -11,6 +11,7 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'remove_member_dialog.dart';
 import 'see_all_transactions_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -164,6 +165,29 @@ class HomeComponentState extends State<HomeComponent> {
     }
   }
 
+  _removeMember(MemberDto member) async {
+    bool deleteMember = await _openRemoveMemberDialog(member);
+
+    if (deleteMember != null && deleteMember) {
+
+      setState(() {
+        this.loading = true;
+      });
+      
+      await this.walletService.removeMember(member.id, this.dropdownWalletValue);
+      
+      this.updatePageContent();
+    }
+  }
+
+  Future<bool> _openRemoveMemberDialog(MemberDto member) async {
+    return await showDialog<bool>(
+        context: context,
+        builder: (builder) {
+          return RemoveMemberDialogComponent(member);
+        });
+  }
+
   _getScreenContentData() async {
     this.transactions = await this.getLast2Transactions();
     this.members = await this.getMembers();
@@ -279,19 +303,35 @@ class HomeComponentState extends State<HomeComponent> {
                           fontSize: 18,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          print('Novo membro');
-                        },
-                        child: Text(
-                          isPtLanguage ? 'Novo membro' : 'New member',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14.0,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
-                      ),
+                      isWalletOwner
+                          ? GestureDetector(
+                              onTap: () {
+                                print('Novo membro');
+                              },
+                              child: Text(
+                                isPtLanguage ? 'Novo membro' : 'New member',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14.0,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                print('deixar carteira');
+                              },
+                              child: Text(
+                                isPtLanguage
+                                    ? 'Deixar carteira'
+                                    : 'Leave wallet',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14.0,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -361,7 +401,7 @@ class HomeComponentState extends State<HomeComponent> {
         trailing: isWalletOwner
             ? GestureDetector(
                 onTap: () {
-                  print('remove member');
+                  this._removeMember(item);
                 },
                 child: Container(
                   child: Icon(
