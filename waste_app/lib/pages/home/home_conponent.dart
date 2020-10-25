@@ -11,6 +11,7 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'leave_wallet_dialog.dart';
 import 'remove_member_dialog.dart';
 import 'see_all_transactions_component.dart';
 import 'package:flutter/material.dart';
@@ -165,17 +166,48 @@ class HomeComponentState extends State<HomeComponent> {
     }
   }
 
+  _leavetWallet() async {
+    bool leave = await _openLeaveWalletDialog();
+
+    if (leave != null && leave) {
+      setState(() {
+        this.loading = true;
+      });
+
+      await this
+          .walletService
+          .removeMember(this.userDto.uid, this.dropdownWalletValue);
+
+      this.wallets.remove(this.dropdownWalletValue);
+
+      this.walletService.updateUserWalletsLocal(wallets);
+      this.walletService.switchWallet(this.wallets.first.id);
+
+      this._getUserWallets();
+      this.updatePageContent();
+    }
+  }
+
+  Future<bool> _openLeaveWalletDialog() async {
+    return await showDialog<bool>(
+        context: context,
+        builder: (builder) {
+          return LeaveWalletDialogComponent(this.currentWallet);
+        });
+  }
+
   _removeMember(MemberDto member) async {
     bool deleteMember = await _openRemoveMemberDialog(member);
 
     if (deleteMember != null && deleteMember) {
-
       setState(() {
         this.loading = true;
       });
-      
-      await this.walletService.removeMember(member.id, this.dropdownWalletValue);
-      
+
+      await this
+          .walletService
+          .removeMember(member.id, this.dropdownWalletValue);
+
       this.updatePageContent();
     }
   }
@@ -319,7 +351,7 @@ class HomeComponentState extends State<HomeComponent> {
                             )
                           : GestureDetector(
                               onTap: () {
-                                print('deixar carteira');
+                                this._leavetWallet();
                               },
                               child: Text(
                                 isPtLanguage

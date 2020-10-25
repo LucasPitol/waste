@@ -192,7 +192,9 @@ class WalletService {
             walletRef['name'], walletRef['ownerId'], totalBalance);
         wallets.add(wallet);
       });
-      return wallets.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+      wallets.sort((a, b) => a.creationDate.compareTo(b.creationDate));
+      this.updateUserWalletsLocal(wallets);
+      return wallets;
     }).catchError((onError) {
       print(onError);
 
