@@ -1,3 +1,4 @@
+import 'package:waste_app/pages/new_wallet_member/new_wallet_member_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:waste_app/pages/home/settings_component.dart';
 import 'package:waste_app/services/transactions_service.dart';
@@ -11,11 +12,11 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/styles.dart';
-import 'leave_wallet_dialog.dart';
-import 'remove_member_dialog.dart';
 import 'see_all_transactions_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'remove_member_dialog.dart';
+import 'leave_wallet_dialog.dart';
 import 'package:intl/intl.dart';
 
 class HomeComponent extends StatefulWidget {
@@ -338,7 +339,7 @@ class HomeComponentState extends State<HomeComponent> {
                       isWalletOwner
                           ? GestureDetector(
                               onTap: () {
-                                print('Novo membro');
+                                this._goToNewMemberPage();
                               },
                               child: Text(
                                 isPtLanguage ? 'Novo membro' : 'New member',
@@ -462,6 +463,15 @@ class HomeComponentState extends State<HomeComponent> {
         ),
       ),
     );
+  }
+
+  _goToNewMemberPage() async {
+    var refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => NewWalletMemberComponent(this.currentWallet)));
+
+    if (refresh != null && refresh) {
+      this.updatePageContent();
+    }
   }
 
   _goToSettings() async {
