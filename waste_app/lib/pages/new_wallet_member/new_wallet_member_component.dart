@@ -6,6 +6,8 @@ import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
+import 'new_member_info_component.dart';
+
 class NewWalletMemberComponent extends StatefulWidget {
   final Wallet currentWallet;
 
@@ -45,6 +47,14 @@ class _NewWalletMemberComponentComponenState
     ));
   }
 
+  void _infoBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return NewMemebrInfoSheetComponent(isPtLanguage);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +90,7 @@ class _NewWalletMemberComponentComponenState
                         child: InkWell(
                           borderRadius: Styles.circularBorderRadius,
                           onTap: () {
-                            print('infos');
+                            this._infoBottomSheet();
                           },
                           child: Icon(
                             Icons.help_outline,
@@ -151,9 +161,7 @@ class _NewWalletMemberComponentComponenState
                             },
                             color: Colors.deepPurple,
                             child: Text(
-                              isPtLanguage
-                                  ? 'Adicionar'
-                                  : 'Add',
+                              isPtLanguage ? 'Adicionar' : 'Add',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
