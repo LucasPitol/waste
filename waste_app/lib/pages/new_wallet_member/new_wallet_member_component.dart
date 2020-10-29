@@ -26,6 +26,7 @@ class _NewWalletMemberComponentComponenState
   Wallet currentWallet;
   TextEditingController memberMailController;
   var _formKey;
+  bool refresh = false;
 
   _NewWalletMemberComponentComponenState(Wallet wallet) {
     this.currentWallet = wallet;
@@ -55,6 +56,10 @@ class _NewWalletMemberComponentComponenState
         });
   }
 
+  _getOut() {
+    Navigator.pop(context, refresh);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +81,7 @@ class _NewWalletMemberComponentComponenState
                         child: InkWell(
                           borderRadius: Styles.circularBorderRadius,
                           onTap: () {
-                            // _getOut();
+                            _getOut();
                           },
                           child: Icon(
                             Icons.arrow_back,
