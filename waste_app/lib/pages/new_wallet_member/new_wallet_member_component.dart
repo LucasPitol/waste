@@ -1,4 +1,5 @@
 import 'package:waste_app/pages/shared/loading_block.dart';
+import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -28,6 +29,8 @@ class _NewWalletMemberComponentComponenState
   Wallet currentWallet;
   List<String> membersMailList;
   TextEditingController memberMailController;
+  WalletService walletService;
+  AuthService authService;
   var _formKey;
   bool refresh = false;
   bool loading = false;
@@ -39,6 +42,8 @@ class _NewWalletMemberComponentComponenState
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.memberMailController = TextEditingController();
     this._formKey = GlobalKey<FormState>();
+    this.walletService = WalletService();
+    this.authService = AuthService();
   }
 
   @override
@@ -83,6 +88,22 @@ class _NewWalletMemberComponentComponenState
   _getUser() {
     setState(() {
       this.loading = true;
+    });
+
+    String email = this.memberMailController.text;
+
+    this.authService.getMemberByEmail(email).then((member) {
+      setState(() {
+        this.loading = false;
+      });
+
+      if (member == null) {
+        //modal vagabundo não encontrado
+        print(member);
+      } else {
+        //modal de confirmação
+        print(member.name);
+      }
     });
   }
 

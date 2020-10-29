@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/dtos/member-dto.dart';
 import 'package:waste_app/models/forms/login_form.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -268,6 +269,44 @@ class AuthService {
       this.signOut();
       Phoenix.rebirth(context);
     });
+  }
+
+  Future<MemberDto> getMemberByEmail(String email) async {
+    MemberDto member;
+
+    await this
+        .dbReference
+        .collection('user')
+        .where('email', isEqualTo: email)
+        .getDocuments()
+        .then((value) {
+      var user = value.documents.first;
+
+      if (user != null) {
+        String userId = user.documentID;
+        var obj = user.data;
+
+        member = MemberDto();
+
+        member.email = email;
+        member.id = userId;
+        member.name = obj['displayName'];
+
+        return member;
+      }
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Get member by email';
+      errorDto.userId = currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+      return member;
+    });
+
+    return member;
   }
 
   Future<void> sendResetPasswordEmail(String userMail) async {
