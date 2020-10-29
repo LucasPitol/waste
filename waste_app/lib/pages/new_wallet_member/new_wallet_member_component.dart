@@ -10,12 +10,13 @@ import 'new_member_info_component.dart';
 
 class NewWalletMemberComponent extends StatefulWidget {
   final Wallet currentWallet;
+  final List<String> membersMail;
 
-  NewWalletMemberComponent(this.currentWallet);
+  NewWalletMemberComponent(this.currentWallet, this.membersMail);
 
   @override
   _NewWalletMemberComponentComponenState createState() =>
-      _NewWalletMemberComponentComponenState(currentWallet);
+      _NewWalletMemberComponentComponenState(currentWallet, membersMail);
 }
 
 class _NewWalletMemberComponentComponenState
@@ -24,12 +25,14 @@ class _NewWalletMemberComponentComponenState
 
   bool isPtLanguage;
   Wallet currentWallet;
+  List<String> membersMailList;
   TextEditingController memberMailController;
   var _formKey;
   bool refresh = false;
 
-  _NewWalletMemberComponentComponenState(Wallet wallet) {
+  _NewWalletMemberComponentComponenState(Wallet wallet, List<String> membersMail) {
     this.currentWallet = wallet;
+    this.membersMailList = membersMail;
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.memberMailController = TextEditingController();
     this._formKey = GlobalKey<FormState>();
@@ -62,6 +65,16 @@ class _NewWalletMemberComponentComponenState
 
   bool _isUserMail(String input) {
     return input == this.userDto.email;
+  }
+
+  bool _isAlreadyAdded(String input) {
+    bool alreadyAdded = false;
+
+    if (membersMailList.isNotEmpty) {
+      alreadyAdded = membersMailList.contains(input);
+    }
+
+    return alreadyAdded;
   }
 
   _getUser() {
@@ -147,6 +160,12 @@ class _NewWalletMemberComponentComponenState
                               return isPtLanguage
                                   ? 'Digite o email de outro usuário'
                                   : 'Enter another user\'s email';
+                            }
+
+                            if (_isAlreadyAdded(value)) {
+                              return isPtLanguage
+                                  ? 'Membro já adicionado'
+                                  : 'Member already added';
                             }
 
                             return null;

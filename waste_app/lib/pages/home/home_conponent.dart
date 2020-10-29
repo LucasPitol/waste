@@ -159,6 +159,7 @@ class HomeComponentState extends State<HomeComponent> {
 
   void _goToEditWalletPage() async {
     String walletId = this.userDto.currentWalletId;
+
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => EditWallet(walletId)));
 
@@ -466,8 +467,17 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   _goToNewMemberPage() async {
+    List<String> membersMail = List<String>();
+
+    members.forEach((element) {
+      membersMail.add(element.email);
+    });
+
     var refresh = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => NewWalletMemberComponent(this.currentWallet)));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                NewWalletMemberComponent(this.currentWallet, membersMail)));
 
     if (refresh != null && refresh) {
       this.updatePageContent();
