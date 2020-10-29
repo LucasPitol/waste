@@ -60,6 +60,14 @@ class _NewWalletMemberComponentComponenState
     Navigator.pop(context, refresh);
   }
 
+  bool _isUserMail(String input) {
+    return input == this.userDto.email;
+  }
+
+  _getUser() {
+    print('procurou');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,11 +143,11 @@ class _NewWalletMemberComponentComponenState
                                   isPtLanguage);
                             }
 
-                            // if (_isUserMail(value)) {
-                            //   return isPtLanguage
-                            //       ? 'Já tem uma carteira com esse nome'
-                            //       : 'You already have a wallet with this name';
-                            // }
+                            if (_isUserMail(value)) {
+                              return isPtLanguage
+                                  ? 'Digite o email de outro usuário'
+                                  : 'Enter another user\'s email';
+                            }
 
                             return null;
                           },
@@ -160,9 +168,9 @@ class _NewWalletMemberComponentComponenState
                               borderRadius: Styles.defaultTextFieldBorderRadius,
                             ),
                             onPressed: () async {
-                              // if (_formKey.currentState.validate()) {
-                              //   _updateWallet();
-                              // }
+                              if (_formKey.currentState.validate()) {
+                                _getUser();
+                              }
                             },
                             color: Colors.deepPurple,
                             child: Text(
