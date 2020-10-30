@@ -222,6 +222,18 @@ class WalletService {
     await this.dao.updateWallet(wallet);
   }
 
+  addNewMember(String memberId, String walletId) async {
+    Wallet wallet = await this.dao.getWalletById(walletId);
+
+    List<String> walletMembers = wallet.membersId;
+
+    walletMembers.add(memberId);
+
+    wallet.membersId = walletMembers;
+
+    await this.dao.updateWallet(wallet);
+  }
+
   static incrementBallance(String walletId, double value) async {
     WalletDao walletDao = WalletDao();
 

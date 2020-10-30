@@ -95,10 +95,6 @@ class _NewWalletMemberComponentComponenState
     String email = this.memberMailController.text;
 
     this.authService.getMemberByEmail(email).then((member) {
-      setState(() {
-        this.loading = false;
-      });
-
       String title;
       String text;
 
@@ -107,6 +103,10 @@ class _NewWalletMemberComponentComponenState
         text = isPtLanguage
             ? 'Usuário não encontrado, confirme o email digitado'
             : 'User not found, confirm the entered email';
+
+        setState(() {
+          this.loading = false;
+        });
 
         _openInfoDialog(title, text);
       } else {
@@ -128,11 +128,16 @@ class _NewWalletMemberComponentComponenState
 
         this
             ._openConfirmDialog(title, text, cancelOption, confirmOption)
-            .then((value) {
+            .then((value) async {
           if (value != null && value) {
-            //adicionar membro
+            await this.walletService.addNewMember(member.id, currentWallet.id);
 
             this.refresh = true;
+
+            setState(() {
+              this.loading = false;
+            });
+
             this._getOut();
           }
         });
