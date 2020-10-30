@@ -1,3 +1,4 @@
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -98,13 +99,25 @@ class _NewWalletMemberComponentComponenState
       });
 
       if (member == null) {
-        //modal vagabundo não encontrado
-        print(member);
+        String title = 'Ops...';
+        String text = isPtLanguage
+            ? 'Usuário não encontrado, confirme o email digitado'
+            : 'User not found, confirm the entered email';
+
+        _openInfoDialog(title, text);
       } else {
         //modal de confirmação
         print(member.name);
       }
     });
+  }
+
+  void _openInfoDialog(String title, String content) {
+    showDialog<String>(
+        context: context,
+        builder: (builder) {
+          return AlertDialogComponent(title, content);
+        });
   }
 
   @override
