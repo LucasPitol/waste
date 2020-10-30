@@ -9,6 +9,7 @@ import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
+import 'confirm_member_dialog.dart';
 import 'new_member_info_component.dart';
 
 class NewWalletMemberComponent extends StatefulWidget {
@@ -98,18 +99,55 @@ class _NewWalletMemberComponentComponenState
         this.loading = false;
       });
 
+      String title;
+      String text;
+
       if (member == null) {
-        String title = 'Ops...';
-        String text = isPtLanguage
+        title = 'Ops...';
+        text = isPtLanguage
             ? 'Usuário não encontrado, confirme o email digitado'
             : 'User not found, confirm the entered email';
 
         _openInfoDialog(title, text);
       } else {
-        //modal de confirmação
-        print(member.name);
+        title = isPtLanguage ? 'Adicionar novo membro?' : 'Add new member?';
+        text = isPtLanguage
+            ? 'Deseja adicionar ' +
+                member.name +
+                ' como membro da carteira \'' +
+                currentWallet.name +
+                '\'?'
+            : 'add ' +
+                member.name +
+                ' as \'' +
+                currentWallet.name +
+                '\' member?';
+
+        String cancelOption = isPtLanguage ? 'Cancelar' : 'Cancel';
+        String confirmOption = isPtLanguage ? 'Adicionar' : 'Add';
+
+        this
+            ._openConfirmDialog(title, text, cancelOption, confirmOption)
+            .then((value) {
+          if (value != null && value) {
+            //adicionar membro
+
+            this.refresh = true;
+            this._getOut();
+          }
+        });
       }
     });
+  }
+
+  Future<bool> _openConfirmDialog(String title, String content,
+      String cancelOption, String confirmOption) async {
+    return await showDialog<bool>(
+        context: context,
+        builder: (builder) {
+          return ConfirmMemberDialogComponent(
+              title, content, cancelOption, confirmOption);
+        });
   }
 
   void _openInfoDialog(String title, String content) {
