@@ -30,6 +30,8 @@ class Constants {
     Colors.deepPurple[100],
   ];
 
+  static int maximumTransactionsDiplayCount = 20;
+
   static getDefaultLoadingWidget(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 60),

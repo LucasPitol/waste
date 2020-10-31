@@ -165,7 +165,7 @@ class TransactionService {
     return spendsList;
   }
 
-  Future<List<TransactionBlockDto>> getTransactionsByWalletId(
+  Future<TransactionBlockDto> getTransactionsByWalletId(
       String walletId) async {
     return await this.transactionsDao.getTransactionsByWalletId(walletId);
   }

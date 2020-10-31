@@ -30,12 +30,15 @@ class _SeeAllTransactionsComponentState
   WalletService walletService;
   AuthService authService;
 
+  bool isPtLanguage;
   bool transactionsLoading = true;
   bool balanceLoading = true;
-  List<TransactionBlockDto> transactionBlockList = [];
+  List<TransactionMonthBlockDto> transactionByMonthBlockList = [];
   Wallet currentWallet;
+  bool reachedTheLimit = false;
 
   _SeeAllTransactionsComponentState(Wallet currentWallet) {
+    this.isPtLanguage = userDto.language == Constants.languages[0];
     this.transactionService = TransactionService();
     this.walletService = WalletService();
     this.authService = AuthService();
@@ -60,7 +63,9 @@ class _SeeAllTransactionsComponentState
     String walletId = currentWallet.id;
 
     this.transactionService.getTransactionsByWalletId(walletId).then((value) {
-      this.transactionBlockList = value;
+      this.transactionByMonthBlockList = value.transactionMonthBlockDtoList;
+
+      this.reachedTheLimit = value.reachedTheLimit;
 
       setState(() {
         this.transactionsLoading = false;
@@ -78,7 +83,7 @@ class _SeeAllTransactionsComponentState
     });
   }
 
-  Widget createTileForTransactionsBlock(TransactionBlockDto item) {
+  Widget createTileForTransactionsBlock(TransactionMonthBlockDto item) {
     String blockMonth =
         DateFormat.MMMM(this.localeLanguage).format(item.blockDate);
 
@@ -246,12 +251,34 @@ class _SeeAllTransactionsComponentState
                   child: transactionsLoading
                       ? Constants.getDefaultLoadingWidget(context)
                       : Column(
-                          children: transactionBlockList
+                          children: transactionByMonthBlockList
                               .map((item) =>
                                   createTileForTransactionsBlock(item))
                               .toList(),
                         ),
                 ),
+                this.reachedTheLimit
+                    ? Container(
+                        alignment: Alignment.bottomCenter,
+                        margin: EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          isPtLanguage
+                              ? 'Limitando até ' +
+                                  Constants.maximumTransactionsDiplayCount
+                                      .toString() +
+                                  ' transações, em breve o limite será estendido'
+                              : 'limiting up to ' +
+                                  Constants.maximumTransactionsDiplayCount
+                                      .toString() +
+                                  ' transactions, the limit will soon be extended',
+                          style: TextStyle(
+                            color: Colors.grey.shade100,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           ),

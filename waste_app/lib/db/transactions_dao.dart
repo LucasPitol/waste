@@ -10,6 +10,7 @@ import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/smart_error_service.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
+import 'package:waste_app/utils/constants.dart';
 
 class TransactionsDao {
   final dbReference = Firestore.instance;
@@ -108,7 +109,8 @@ class TransactionsDao {
     return success;
   }
 
-  Future<bool> deleteWaste(String transactionId, String walletId, double spent) async {
+  Future<bool> deleteWaste(
+      String transactionId, String walletId, double spent) async {
     bool success = false;
 
     await this
@@ -164,20 +166,24 @@ class TransactionsDao {
     return success;
   }
 
-  Future<List<TransactionBlockDto>> getTransactionsByWalletId(
-      String walletId) async {
+  Future<TransactionBlockDto> getTransactionsByWalletId(String walletId) async {
     // List<TransactionDto> transactions = [];
-    List<TransactionBlockDto> transactionBlockList = [];
+    TransactionBlockDto transactionBlockDto = TransactionBlockDto();
+    List<TransactionMonthBlockDto> transactionBlockList = [];
     Map<DateTime, List<TransactionDto>> transactionByMonthMap =
         Map<DateTime, List<TransactionDto>>();
+
+    int limit = Constants.maximumTransactionsDiplayCount;
 
     await dbReference
         .collection('transactions')
         .where('walletId', isEqualTo: walletId)
         .orderBy('transactionDate', descending: true)
-        // .limit(2)
+        .limit(limit)
         .getDocuments()
         .then((QuerySnapshot snapShot) {
+      transactionBlockDto.reachedTheLimit = snapShot.documents.length >= limit;
+
       snapShot.documents.forEach((element) {
         var objMap = element.data;
         var transaction = TransactionDto();
@@ -217,7 +223,7 @@ class TransactionsDao {
           value: (k) => transactionByMonthMap[k]);
 
       sortedMap.forEach((key, value) {
-        TransactionBlockDto transactionBlock = TransactionBlockDto();
+        TransactionMonthBlockDto transactionBlock = TransactionMonthBlockDto();
 
         transactionBlock.blockDate = key;
         transactionBlock.transactions = value;
@@ -225,7 +231,9 @@ class TransactionsDao {
         transactionBlockList.add(transactionBlock);
       });
 
-      return transactionBlockList;
+      transactionBlockDto.transactionMonthBlockDtoList = transactionBlockList;
+
+      return transactionBlockDto;
     }).catchError((onError) {
       SmartError errorDto = SmartError();
       errorDto.errorLog = onError.toString();
@@ -233,9 +241,9 @@ class TransactionsDao {
       errorDto.userId = AuthService.currentUser.uid;
 
       this.smartErrorService.saveError(errorDto);
-      return transactionBlockList;
+      return transactionBlockDto;
     });
-    return transactionBlockList;
+    return transactionBlockDto;
   }
 
   Future<List<TransactionDto>> getLast2Transactions(String walletId) async {
