@@ -114,13 +114,24 @@ class _SettingsComponentState extends State<SettingsComponent> {
   }
 
   Future<void> _createNewWallet() async {
-    List res = await _openNewWalletDialog();
+    int walletLimit = Constants.numberOfWalletsLimit;
+    int walletsOwnedCount = this.walletService.getNumberOfWalletsOwned();
 
-    if (res != null && res.isNotEmpty && res[0]) {
+    if (walletsOwnedCount >= walletLimit) {
+      String title = 'Ops...';
+      String content = isPtLanguage
+          ? 'Limite de carteiras excedido, em breve o limite será estendido'
+          : 'Wallet limit exceeded, the limit will soon be extended';
 
-      var refresh = await this.walletService.createNewWallet(res[1]);
+      _openInfoDialog(title, content);
+    } else {
+      List res = await _openNewWalletDialog();
 
-      this.hasChanges = true;
+      if (res != null && res.isNotEmpty && res[0]) {
+        var refresh = await this.walletService.createNewWallet(res[1]);
+
+        this.hasChanges = true;
+      }
     }
   }
 
@@ -141,9 +152,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
         ? 'Enviamos um link para escolher uma nova senha'
         : 'We sent a link to recover your password';
 
-    String title = isPtLanguage
-        ? 'Verifique seu email'
-        : 'Check your email';
+    String title = isPtLanguage ? 'Verifique seu email' : 'Check your email';
 
     await _openInfoDialog(title, text);
   }
@@ -321,7 +330,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                   margin: EdgeInsets.only(top: 10),
                   child: InkWell(
                     onTap: () {
-                     _openAboutDialog();
+                      _openAboutDialog();
                     },
                     child: Stack(
                       children: [
@@ -349,7 +358,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                   margin: EdgeInsets.only(top: 10),
                   child: InkWell(
                     onTap: () {
-                     _logout();
+                      _logout();
                     },
                     child: Stack(
                       children: [

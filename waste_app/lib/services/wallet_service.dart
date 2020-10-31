@@ -45,6 +45,19 @@ class WalletService {
     return containsList.isNotEmpty;
   }
 
+  int getNumberOfWalletsOwned() {
+    int walletsOwned = 0;
+    var user = AuthService.currentUser;
+    List<Wallet> wallets = user.walletList;
+
+    wallets.forEach((element) {
+      if (element.ownerId == user.uid) {
+        walletsOwned++;
+      }
+    });
+    return walletsOwned;
+  }
+
   Future<bool> createNewWallet(String walletName) async {
     bool success = false;
 
