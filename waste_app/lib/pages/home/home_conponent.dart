@@ -1,3 +1,4 @@
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/new_wallet_member/new_wallet_member_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:waste_app/pages/home/settings_component.dart';
@@ -466,21 +467,38 @@ class HomeComponentState extends State<HomeComponent> {
     );
   }
 
+  Future<void> _openInfoDialog(String title, String content) async {
+    await showDialog<String>(
+        context: context,
+        builder: (builder) {
+          return AlertDialogComponent(title, content);
+        });
+  }
+
   _goToNewMemberPage() async {
-    List<String> membersMail = List<String>();
+    if (currentWallet.membersId.length >= Constants.walletMembersLimit) {
+      String title = 'Ops..';
+      String text = isPtLanguage
+          ? 'Limite de membros excedido nessa carteira, em breve o limite será estendido'
+          : 'Limit of members exceeded in this wallet, soon the limit will be extended';
 
-    members.forEach((element) {
-      membersMail.add(element.email);
-    });
+      _openInfoDialog(title, text);
+    } else {
+      List<String> membersMail = List<String>();
 
-    var refresh = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                NewWalletMemberComponent(this.currentWallet, membersMail)));
+      members.forEach((element) {
+        membersMail.add(element.email);
+      });
 
-    if (refresh != null && refresh) {
-      this.updatePageContent();
+      var refresh = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  NewWalletMemberComponent(this.currentWallet, membersMail)));
+
+      if (refresh != null && refresh) {
+        this.updatePageContent();
+      }
     }
   }
 

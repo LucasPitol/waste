@@ -227,7 +227,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                   labelText: this.userDto.language ==
                                           Constants.languages[0]
                                       ? 'senha'
-                                      : 'pasword',
+                                      : 'password',
                                 ),
                                 obscureText: true,
                               ),

@@ -163,7 +163,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                           labelText: userDto.language ==
                                                   Constants.languages[0]
                                               ? 'senha'
-                                              : 'pasword',
+                                              : 'password',
                                         ),
                                         obscureText: true,
                                       ),
@@ -211,7 +211,7 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                           labelText: userDto.language ==
                                                   Constants.languages[0]
                                               ? 'confirme a senha'
-                                              : 'confirm pasword',
+                                              : 'confirm password',
                                         ),
                                         obscureText: true,
                                       ),

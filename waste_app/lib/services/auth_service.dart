@@ -118,7 +118,8 @@ class AuthService {
   void updateUserData(String uid) {
     DocumentReference docRef = dbReference.collection('user').document(uid);
 
-    docRef.setData({'lastAccess': Timestamp.fromDate(DateTime.now())},
+    docRef.setData(
+        {'lastAccess': Timestamp.fromDate(DateTime.now()), 'uid': uid},
         merge: true);
   }
 
@@ -204,6 +205,8 @@ class AuthService {
         'creationDate': Timestamp.fromDate(DateTime.now())
       }).then((onValue) async {
         String uid = onValue.documentID;
+
+        this.updateUserData(uid);
 
         await this._setUserIdToLocalStorage(uid);
 

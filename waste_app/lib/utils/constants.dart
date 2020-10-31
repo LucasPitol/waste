@@ -34,6 +34,8 @@ class Constants {
 
   static int sixMonthsInDays = 180;
 
+  static int walletMembersLimit = 2;
+
   static getDefaultLoadingWidget(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 60),

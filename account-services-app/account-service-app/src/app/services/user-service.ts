@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { UserVerificationDto } from '../models/user-verification';
 
 @Injectable()
@@ -21,16 +21,49 @@ export class UserService {
                 password: passwordEncrypt,
                 lastUpdate: new Date
             },
-            {
-                merge: true
-            }).then(onValue => {
-                observer.next(true)
-                //enviar email
-            }).catch(onError => {
-                console.error(onError)
-                observer.next(false)
-            })
+                {
+                    merge: true
+                }).then(onValue => {
+                    observer.next(true)
+                    //enviar email
+                }).catch(onError => {
+                    console.error(onError)
+                    observer.next(false)
+                })
         })
+    }
+
+    async removeMemberAccessToOtherWallets(uid: string) {
+        var walletsRef = await this.db
+            .collection('wallets')
+            .where('membersId', 'array-contains', uid)
+            .onSnapshot(querySnapshot => {
+                var walletsDocs = querySnapshot.docs
+
+                walletsDocs.forEach(async doc => {
+                    var walletId = doc.id
+
+                    console.log('wallet id: ' + walletId)
+
+                    var data = doc.data()
+
+                    var oldMembersList = data.membersId
+
+                    console.log('oldMembersList')
+                    console.log(oldMembersList)
+
+                    var newMembersId = oldMembersList.filter(item => item != uid)
+
+                    console.log('newMembersId')
+                    console.log(newMembersId)
+
+                    var walletCollectionRef = this.db.collection('wallets').doc(walletId)
+
+                    walletCollectionRef.set({
+                        membersId: newMembersId
+                    },{merge: true})
+                })
+            })
     }
 
     async deleteUser(uid: string) {
@@ -63,6 +96,8 @@ export class UserService {
             })
         //delet user
         await this.db.collection('user').doc(uid).delete()
+
+        this.removeMemberAccessToOtherWallets(uid)
     }
 
     getUserData(uid): Observable<any> {
