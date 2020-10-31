@@ -28,6 +28,9 @@ class SpendsComponentState extends State<SpendsComponent>
           ? Constants.ptLanguage
           : Constants.enLanguage;
 
+  bool isPtLanguage =
+      AuthService.currentUser.language == Constants.languages[0];
+
   List<SpendItem> spendList = [];
 
   double totalWaste = 0.0;
@@ -358,6 +361,22 @@ class SpendsComponentState extends State<SpendsComponent>
                               ),
                       ),
                     ),
+                    spendsByMonthDtoList.length >= 6
+                        ? Container(
+                            margin: EdgeInsets.only(left: 20, right: 20),
+                            alignment: Alignment.bottomCenter,
+                            child: Text(
+                              isPtLanguage
+                                  ? 'Limitando gastos até 6 meses, em breve o limite será estendido'
+                                  : 'Limiting spending up to 6 months, the limit will soon be extended',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          )
+                        : Container(),
                     GestureDetector(
                       onTap: _handleHeaderPress,
                       child: Container(

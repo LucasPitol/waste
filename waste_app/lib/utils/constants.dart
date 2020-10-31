@@ -32,6 +32,8 @@ class Constants {
 
   static int maximumTransactionsDiplayCount = 20;
 
+  static int sixMonthsInDays = 180;
+
   static getDefaultLoadingWidget(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 60),

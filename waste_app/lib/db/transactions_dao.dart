@@ -282,13 +282,14 @@ class TransactionsDao {
     return transactions;
   }
 
-  Future<List<Spend>> getSpendsByWalletId(String walletId) async {
+  Future<List<Spend>> getSpendsByWalletId(String walletId, Timestamp startDate) async {
     var spends = List<Spend>();
 
     await dbReference
         .collection('transactions')
         .where('walletId', isEqualTo: walletId)
         .where('type', isEqualTo: 'WASTE')
+        .where('transactionDate', isGreaterThanOrEqualTo: startDate)
         .getDocuments()
         .then((QuerySnapshot snapShot) {
       snapShot.documents.forEach((item) {

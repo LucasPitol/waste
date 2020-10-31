@@ -9,6 +9,7 @@ import 'package:waste_app/models/forms/new_revenue_form.dart';
 import 'package:waste_app/models/forms/new_waste_form.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/services/smart_error_service.dart';
+import 'package:waste_app/utils/constants.dart';
 
 import 'auth_service.dart';
 import 'spending_categories_service.dart';
@@ -98,7 +99,18 @@ class TransactionService {
 
     String walletId = AuthService.currentUser.currentWalletId;
 
-    var spends = await this.transactionsDao.getSpendsByWalletId(walletId);
+    DateTime today = DateTime.now();
+
+    int sixMonthsInDays = Constants.sixMonthsInDays;
+
+    DateTime startDateRaw = today.subtract(Duration(days: sixMonthsInDays));
+    DateTime startDate = DateTime(startDateRaw.year, startDateRaw.month, 1);
+
+    Timestamp startDateTimestamp = Timestamp.fromDate(startDate);
+
+    var spends = await this
+        .transactionsDao
+        .getSpendsByWalletId(walletId, startDateTimestamp);
 
     spends.forEach((spend) {
       DateTime spendDateComplete = spend.spendDate;
@@ -165,8 +177,7 @@ class TransactionService {
     return spendsList;
   }
 
-  Future<TransactionBlockDto> getTransactionsByWalletId(
-      String walletId) async {
+  Future<TransactionBlockDto> getTransactionsByWalletId(String walletId) async {
     return await this.transactionsDao.getTransactionsByWalletId(walletId);
   }
 
