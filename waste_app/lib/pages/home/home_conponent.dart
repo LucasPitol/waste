@@ -274,16 +274,20 @@ class HomeComponentState extends State<HomeComponent> {
                         isPtLanguage ? 'Transações' : 'Transactions',
                         style: Styles.poppinsTextGrey,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _openSeeAllTransactionsPage();
-                        },
-                        child: Text(
-                          isPtLanguage ? 'Ver todas' : 'See all',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14.0,
-                            color: Colors.deepPurple,
+                      Container(
+                        // alignment: Alignment.topRight,
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          onTap: () {
+                            this._openSeeAllTransactionsPage();
+                          },
+                          child: Text(
+                            isPtLanguage ? 'Ver todas' : 'See all',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14.0,
+                              color: Colors.deepPurple,
+                            ),
                           ),
                         ),
                       ),
@@ -689,21 +693,21 @@ class HomeComponentState extends State<HomeComponent> {
                       isWalletOwner
                           ? Container(
                               alignment: Alignment.topRight,
-                              child: isWalletOwner
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        _goToEditWalletPage();
-                                      },
-                                      child: Text(
-                                        isPtLanguage ? 'Editar' : 'Edit',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14.0,
-                                          color: Colors.deepPurple,
-                                        ),
-                                      ),
-                                    )
-                                  : Container(),
+                              child: InkWell(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                onTap: () {
+                                  this._goToEditWalletPage();
+                                },
+                                child: Text(
+                                  isPtLanguage ? 'Editar' : 'Edit',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14.0,
+                                    color: Colors.deepPurple,
+                                  ),
+                                ),
+                              ),
                             )
                           : Container(),
                     ],

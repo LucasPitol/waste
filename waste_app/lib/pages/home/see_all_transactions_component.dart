@@ -58,6 +58,7 @@ class _SeeAllTransactionsComponentState
   _getTransactions() {
     setState(() {
       this.transactionsLoading = true;
+      this.reachedTheLimit = false;
     });
 
     String walletId = currentWallet.id;

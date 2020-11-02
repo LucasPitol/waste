@@ -10,7 +10,8 @@ class ManageWalletsAppBar extends StatelessWidget
   @override
   final Size preferredSize;
 
-  ManageWalletsAppBar(this.context, this.title) : preferredSize = Size.fromHeight(60.0);
+  ManageWalletsAppBar(this.context, this.title)
+      : preferredSize = Size.fromHeight(60.0);
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +27,16 @@ class ManageWalletsAppBar extends StatelessWidget
           ),
         ),
       ),
-      leading: GestureDetector(
-        onTap: () {
-          Navigator.pop(context, false);
-        },
-        child: Icon(
-          Icons.keyboard_backspace,
-          color: Colors.grey.shade100,
+      leading: Container(
+        child: InkWell(
+          borderRadius: Styles.circularBorderRadius,
+          onTap: () {
+            Navigator.pop(context, false);
+          },
+          child: Icon(
+            Icons.keyboard_backspace,
+            color: Colors.grey.shade100,
+          ),
         ),
       ),
     );
