@@ -690,7 +690,9 @@ class HomeComponentState extends State<HomeComponent> {
                           }).toList(),
                         ),
                       ),
-                      isWalletOwner
+                      (isWalletOwner &&
+                              currentWallet != null &&
+                              currentWallet.name != 'Carteira Pessoal')
                           ? Container(
                               alignment: Alignment.topRight,
                               child: InkWell(
