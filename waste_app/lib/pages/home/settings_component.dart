@@ -233,7 +233,9 @@ class _SettingsComponentState extends State<SettingsComponent> {
                           margin: EdgeInsets.only(left: 40),
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            isPtLanguage ? 'Nova carteira' : 'New wallet',
+                            isPtLanguage
+                                ? 'Adicionar nova carteira'
+                                : 'Add new wallet',
                             style: settingsItemStyle,
                           ),
                         ),

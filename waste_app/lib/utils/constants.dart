@@ -36,7 +36,7 @@ class Constants {
 
   static int walletMembersLimit = 2;
 
-  static int numberOfWalletsLimit = 2;
+  static int numberOfWalletsLimit = 3;
 
   static getDefaultLoadingWidget(BuildContext context) {
     return Container(
