@@ -19,6 +19,7 @@ class Constants {
     'market': Icons.shopping_cart,
     'recreation': Icons.local_bar,
     'transport': Icons.directions_bus,
+    'vehicle': Icons.directions_car,
     'salary': Icons.work,
     'shopping': Icons.shopping_basket,
   };
