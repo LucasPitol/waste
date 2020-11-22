@@ -256,7 +256,7 @@ class HomeComponentState extends State<HomeComponent> {
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    'Poupado',
+                    isPtLanguage ? 'Caixa' : 'Balance',
                     style: TextStyle(
                       color: Colors.grey.shade100,
                       fontWeight: FontWeight.w500,
@@ -335,7 +335,7 @@ class HomeComponentState extends State<HomeComponent> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        'Membros',
+                        isPtLanguage ? 'Membros' : 'Members',
                         style: TextStyle(
                           color: Colors.grey.shade100,
                           fontWeight: FontWeight.w600,
@@ -602,7 +602,7 @@ class HomeComponentState extends State<HomeComponent> {
                           Container(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              'Plano básico',
+                              isPtLanguage ? 'Plano básico' : 'Standard plan',
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontWeight: FontWeight.w500,
