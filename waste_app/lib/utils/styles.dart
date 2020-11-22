@@ -85,6 +85,18 @@ class Styles {
     borderRadius: defaultBorderRadius,
   );
 
+  static ThemeData calendarThemeData = ThemeData.dark().copyWith(
+    primaryColor: Colors.deepPurple,
+    accentColor: Colors.deepPurple.shade900,
+    colorScheme: ColorScheme.dark(
+      primary: Colors.deepPurple,
+      background: mainBackgroundColor,
+    ),
+    buttonTheme: ButtonThemeData(
+      textTheme: ButtonTextTheme.primary,
+    ),
+  );
+
   static getTextFieldDecoration(String value) {
     return InputDecoration(
         border: OutlineInputBorder(

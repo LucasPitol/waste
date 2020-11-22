@@ -65,17 +65,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
         lastDate: DateTime(2101),
         builder: (BuildContext context, Widget child) {
           return Theme(
-            data: ThemeData.dark().copyWith(
-              primaryColor: Colors.deepPurple,
-              accentColor: Colors.deepPurple.shade900,
-              colorScheme: ColorScheme.dark(
-                primary: Colors.deepPurple,
-                background: Styles.mainBackgroundColor,
-              ),
-              buttonTheme: ButtonThemeData(
-                textTheme: ButtonTextTheme.primary,
-              ),
-            ),
+            data: Styles.calendarThemeData,
             child: child,
           );
         });

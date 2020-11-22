@@ -1,4 +1,3 @@
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/forms/new_waste_form.dart';
@@ -85,38 +84,50 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     });
   }
 
-  void _selectDate() {
-    DatePicker.showDateTimePicker(
-      context,
-      theme: DatePickerTheme(
-        doneStyle: TextStyle(color: Colors.deepPurple),
-        backgroundColor: Styles.mainBackgroundColor,
-        cancelStyle: TextStyle(color: Colors.grey),
-        itemStyle: TextStyle(color: Colors.grey.shade100),
-      ),
-      locale: this.userDto.language == Constants.languages[0]
-          ? LocaleType.pt
-          : LocaleType.en,
-      showTitleActions: true,
-      minTime: DateTime(1810, 1, 1),
-      maxTime: DateTime.now().add(
-        Duration(days: 35),
-      ),
-      onChanged: (newDate) {
-        setState(
-          () {
-            this.newWasteForm.spendDate = newDate;
-          },
-        );
-      },
-      onConfirm: (newDate) {
-        setState(
-          () {
-            this.newWasteForm.spendDate = newDate;
-          },
-        );
-      },
-    );
+  Future<void> _openTimePicker(BuildContext context) async {
+    TimeOfDay currentTime = TimeOfDay.fromDateTime(this.newWasteForm.spendDate);
+
+    final TimeOfDay picked = await showTimePicker(
+        context: context,
+        initialTime: currentTime,
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: Styles.calendarThemeData,
+            child: child,
+          );
+        });
+    if (picked != null) {
+      int hour = picked.hour;
+      int minute = picked.minute;
+
+      DateTime oldDate = this.newWasteForm.spendDate;
+
+      DateTime newDate =
+          DateTime(oldDate.year, oldDate.month, oldDate.day, hour, minute);
+
+      setState(() {
+        this.newWasteForm.spendDate = newDate;
+      });
+    }
+  }
+
+  Future<void> _openDatePicker(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: this.newWasteForm.spendDate,
+        firstDate: DateTime(2000, 8),
+        lastDate: DateTime(2101),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: Styles.calendarThemeData,
+            child: child,
+          );
+        });
+    if (picked != null) {
+      setState(() {
+        this.newWasteForm.spendDate = picked;
+      });
+    }
   }
 
   void changeCategory(String newValue) {
@@ -321,8 +332,9 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                _selectDate();
+                              onTap: () async {
+                                await _openDatePicker(context);
+                                _openTimePicker(context);
                               },
                               child: Container(
                                 alignment: Alignment.center,
