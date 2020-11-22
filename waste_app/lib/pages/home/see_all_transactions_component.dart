@@ -173,7 +173,7 @@ class _SeeAllTransactionsComponentState
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          'Transações',
+                          isPtLanguage ? 'Transações' : 'Transacions',
                           style: TextStyle(
                             color: Colors.grey.shade100,
                             fontWeight: FontWeight.w600,
@@ -224,7 +224,7 @@ class _SeeAllTransactionsComponentState
                               alignment: Alignment.topLeft,
                               margin: EdgeInsets.only(top: 20),
                               child: Text(
-                                'Saldo',
+                                isPtLanguage ? 'Caixa' : 'Balance',
                                 style: TextStyle(
                                   color: Colors.grey.shade100,
                                   fontWeight: FontWeight.w500,
