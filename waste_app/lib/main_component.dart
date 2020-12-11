@@ -2,8 +2,10 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 import 'pages/new_spend/new_spend_component.dart';
+import 'pages/profits/profits_component.dart';
 import 'pages/home/home_conponent.dart';
 import 'package:flutter/material.dart';
+
 
 
 class MainComponent extends StatefulWidget {
@@ -145,8 +147,9 @@ class _MainComponentState extends State<MainComponent> {
   final List<Widget> _widgetOptions = <Widget>[
     HomeComponent(key: homeComponentGlobalKey),
     SpendsComponent(key: spendsComponentGlobalKey),
-    // Container(),
-    // RevenuesComponent(),
+    Container(),
+    ProfitsComponent(),
+    Container(),
   ];
 
   void _onItemTapped(int index) {
@@ -184,18 +187,18 @@ class _MainComponentState extends State<MainComponent> {
           icon: Icon(Icons.money_off),
           title: Text(''),
         ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.arrow_drop_down),
-        //   title: Text(''),
-        // ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.attach_money),
-        //   title: Text(''),
-        // ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.account_circle),
-        //   title: Text(''),
-        // ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.arrow_drop_down),
+          title: Text(''),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.attach_money),
+          title: Text(''),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.pie_chart_outlined),
+          title: Text(''),
+        ),
       ],
     );
   }
