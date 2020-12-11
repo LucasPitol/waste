@@ -72,9 +72,6 @@ class ProfitsComponentState extends State<ProfitsComponent> {
   }
 
   Widget createTileForProfits(ProfitsBlockDto item) {
-
-    print(item.profit);
-    print(item.revenue);
     String profit = item.profit > 0
         ? '+' + item.profit.toStringAsFixed(2)
         : item.profit.toStringAsFixed(2);
@@ -82,6 +79,8 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     String revenue = item.revenue > 0
         ? '+' + item.revenue.toStringAsFixed(2)
         : item.revenue.toStringAsFixed(2);
+
+    String spend = item.spends.toStringAsFixed(2);
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -94,11 +93,11 @@ class ProfitsComponentState extends State<ProfitsComponent> {
               children: [
                 Text(
                   DateFormat.yMMM(this.localeLanguage).format(item.blockDate),
-                  style: Styles.poppinsTextGrey,
+                  style: Styles.poppinsText,
                 ),
                 Text(
                   profit,
-                  style: Styles.poppinsTextGrey,
+                  style: Styles.poppinsText,
                 ),
               ],
             ),
@@ -112,18 +111,31 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                     child: ListTile(
                       trailing: Text(
                         revenue,
-                        style: TextStyle(
-                          color: Colors.grey.shade100,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: Styles.poppinsTextGrey,
                       ),
                       title: Text(
                         isPtLanguage ? 'Receita' : 'Revenue',
-                        style: TextStyle(
-                            color: Colors.grey.shade100,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500),
+                        style: Styles.poppinsTextGrey,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Container(
+                    child: ListTile(
+                      trailing: Text(
+                        spend,
+                        style: Styles.poppinsTextGrey,
+                      ),
+                      title: Text(
+                        isPtLanguage ? 'Despesa' : 'Expense',
+                        style: Styles.poppinsTextGrey,
                       ),
                     ),
                   ),
@@ -203,16 +215,34 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                         ),
                       ),
                       Container(
-                        alignment: Alignment.topRight,
                         margin: EdgeInsets.only(top: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            print('settings');
-                          },
-                          child: Icon(
-                            Icons.refresh,
-                            color: Colors.grey.shade100,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 15),
+                              child: InkWell(
+                                borderRadius: Styles.circularBorderRadius,
+                                onTap: () {
+                                  print('update');
+                                },
+                                child: Icon(
+                                  Icons.refresh,
+                                  color: Colors.grey.shade100,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              borderRadius: Styles.circularBorderRadius,
+                              onTap: () {
+                                print('info');
+                              },
+                              child: Icon(
+                                Icons.help_outline,
+                                color: Colors.grey.shade100,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

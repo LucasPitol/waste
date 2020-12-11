@@ -22,7 +22,7 @@ class Styles {
   static Color boxColor = Color(0xFFC8BDDB).withOpacity(0.1);
 
   static TextStyle poppinsText =
-      TextStyle(color: Colors.grey.shade900, fontWeight: FontWeight.w500);
+      TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 16);
 
   static TextStyle poppinsTextLight =
       TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w500);
