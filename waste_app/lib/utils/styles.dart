@@ -19,6 +19,9 @@ class Styles {
     fontSize: 18.0,
   );
 
+  static Color primaryColor = Colors.deepPurple;
+  static Color secondaryColor = Colors.deepPurple.shade300;
+
   static Color boxColor = Color(0xFFC8BDDB).withOpacity(0.1);
 
   static TextStyle poppinsText =
