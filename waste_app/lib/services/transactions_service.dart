@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/db/transactions_dao.dart';
+import 'package:waste_app/models/dtos/profits_block_dto.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
 import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/models/dtos/transaction_block_dto.dart';
@@ -229,6 +230,25 @@ class TransactionService {
     spendsList.sort((a, b) => b.spendDate.compareTo(a.spendDate));
 
     return spendsList;
+  }
+
+  Future<List<ProfitsBlockDto>> getProfitsByMonth() async {
+
+    String walletId = AuthService.currentUser.currentWalletId;
+
+    DateTime now = DateTime.now();
+    DateTime firstDayOfCurrentMonth = DateTime(now.year, now.month, 1);
+
+    int sixMonthsInDays = Constants.sixMonthsInDays;
+
+    DateTime sixMonthsBefore = firstDayOfCurrentMonth.subtract(Duration(days: sixMonthsInDays));
+
+    Timestamp startDate = Timestamp.fromDate(sixMonthsBefore);
+    Timestamp endDate = Timestamp.fromDate(now);
+    
+    var transactions = await this.transactionsDao.getTransactionsByDateInterval(walletId, startDate, endDate);
+
+    
   }
 
   Future<bool> saveNewRevenue(NewRevenueForm form) async {

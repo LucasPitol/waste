@@ -30,6 +30,8 @@ class ProfitsComponentState extends State<ProfitsComponent> {
   List<BarChartGroupData> showingBarGroups;
   BarChartData chartData;
   int filterSelected;
+  bool graphLoading;
+  bool profitListLoading;
 
   TransactionService transactionService;
   AuthService authService;
@@ -46,7 +48,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     this.updateAppBar();
     this._buildFilterChipsOptions();
     this._buildGraphMock();
-    this._buildRevenuesMock();
+    this._updateData();
     this.authService.userExists(context);
   }
 
@@ -55,6 +57,29 @@ class ProfitsComponentState extends State<ProfitsComponent> {
       statusBarColor: Styles.mainBackgroundColor,
       statusBarIconBrightness: Brightness.light,
     ));
+  }
+
+  _updateData() {
+    setState(() {
+      this.graphLoading = true;
+      this.profitListLoading = true;
+    });
+
+    if (filterSelected == 1) {
+      this.transactionService.getProfitsByMonth().then((value) {
+
+        this.profitList = value;
+
+        setState(() {
+          this.profitListLoading = false;
+        });
+      });
+
+    }
+
+    setState(() {
+      this.graphLoading = false;
+    });
   }
 
   _buildFilterChipsOptions() {
@@ -444,20 +469,20 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     showingBarGroups = rawBarGroups;
   }
 
-  _buildRevenuesMock() {
-    var revenueBlock1 = ProfitsBlockDto();
-    revenueBlock1.blockDate = DateTime(2020, 01);
-    revenueBlock1.profit = 1050;
-    revenueBlock1.revenue = 2000;
-    revenueBlock1.spends = -950;
+  // _buildRevenuesMock() {
+  //   var revenueBlock1 = ProfitsBlockDto();
+  //   revenueBlock1.blockDate = DateTime(2020, 01);
+  //   revenueBlock1.profit = 1050;
+  //   revenueBlock1.revenue = 2000;
+  //   revenueBlock1.spends = -950;
 
-    var revenueBlock2 = ProfitsBlockDto();
-    revenueBlock2.blockDate = DateTime(2020, 02);
-    revenueBlock2.profit = 1050;
-    revenueBlock2.revenue = 2000;
-    revenueBlock2.spends = -950;
+  //   var revenueBlock2 = ProfitsBlockDto();
+  //   revenueBlock2.blockDate = DateTime(2020, 02);
+  //   revenueBlock2.profit = 1050;
+  //   revenueBlock2.revenue = 2000;
+  //   revenueBlock2.spends = -950;
 
-    profitList.add(revenueBlock1);
-    profitList.add(revenueBlock2);
-  }
+  //   profitList.add(revenueBlock1);
+  //   profitList.add(revenueBlock2);
+  // }
 }

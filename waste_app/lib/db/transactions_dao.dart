@@ -282,7 +282,8 @@ class TransactionsDao {
     return transactions;
   }
 
-  Future<List<Spend>> getSpendsByWalletId(String walletId, Timestamp startDate) async {
+  Future<List<Spend>> getSpendsByWalletId(
+      String walletId, Timestamp startDate) async {
     var spends = List<Spend>();
 
     await dbReference
@@ -309,6 +310,51 @@ class TransactionsDao {
     });
     return spends;
   }
+
+  Future<List<TransactionDto>> getTransactionsByDateInterval(
+      String walletId,
+      Timestamp fistDayOfCurrentMonthTimestamp,
+      Timestamp lastDayOfCurrentMonthTimestamp) async {
+
+        List<TransactionDto> transactions = List<TransactionDto>();
+
+        await dbReference
+        .collection('transactions')
+        .where('walletId', isEqualTo: walletId)
+        .where('transactionDate',
+            isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
+        .where('transactionDate',
+            isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
+        .getDocuments()
+        .then((QuerySnapshot snapShot) {
+      snapShot.documents.forEach((item) {
+        var objMap = item.data;
+
+        var transaction = TransactionDto();
+
+        Timestamp transactionDateTimestamp = objMap['transactionDate'];
+
+        transaction.amount = double.parse(objMap['amount'].toString());
+        transaction.transactionDate = transactionDateTimestamp.toDate();
+        transaction.transactionId = item.documentID;
+
+        transactions.add(transaction);
+      });
+      return transactions;
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Get transactions by date interval';
+      errorDto.userId = AuthService.currentUser.uid;
+
+      this.smartErrorService.saveError(errorDto);
+
+      return transactions;
+    });
+    return transactions;
+      }
 
   Future<List<Spend>> getSpendsByDateIntervalAndCategoryId(
       String walletId,
