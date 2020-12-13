@@ -286,7 +286,7 @@ class TransactionService {
         revenuesAmount = (revenues.map((e) => e.amount)).fold(0, (a, b) => a+b);
 
         profitsAmount = (revenuesAmount + spendsAmount);
-      } else {}
+      }
 
       blockDto.blockDate = element;
       blockDto.profit = profitsAmount;

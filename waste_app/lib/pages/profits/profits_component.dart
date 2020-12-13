@@ -67,14 +67,12 @@ class ProfitsComponentState extends State<ProfitsComponent> {
 
     if (filterSelected == 1) {
       this.transactionService.getProfitsByMonth().then((value) {
-
         this.profitList = value;
 
         setState(() {
           this.profitListLoading = false;
         });
       });
-
     }
 
     setState(() {
@@ -95,7 +93,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     yearlyOpt.displayTextPt = 'Anual';
     yearlyOpt.displayTextEn = 'Yearly';
     yearlyOpt.id = 2;
-    yearlyOpt.enable = false;
+    yearlyOpt.enable = true;
 
     filterOptions.add(monthlyOpt);
     filterOptions.add(yearlyOpt);
@@ -254,7 +252,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                               child: InkWell(
                                 borderRadius: Styles.circularBorderRadius,
                                 onTap: () {
-                                  print('update');
+                                  this._updateData();
                                 },
                                 child: Icon(
                                   Icons.refresh,
@@ -416,14 +414,25 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                         fontSize: 16),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    children: profitList
-                        .map((item) => createTileForProfits(item))
-                        .toList(),
-                  ),
-                ),
+                profitListLoading
+                    ? Container(
+                        margin: EdgeInsets.symmetric(vertical: 60),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: Theme(
+                          data: Theme.of(context)
+                              .copyWith(accentColor: Colors.deepPurple),
+                          child: new CircularProgressIndicator(),
+                        ),
+                      )
+                    : Container(
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        child: Column(
+                          children: profitList
+                              .map((item) => createTileForProfits(item))
+                              .toList(),
+                        ),
+                      ),
               ],
             ),
           ),
