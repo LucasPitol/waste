@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:waste_app/db/transactions_dao.dart';
 import 'package:waste_app/models/dtos/profits_block_dto.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
@@ -233,6 +234,7 @@ class TransactionService {
   }
 
   Future<List<ProfitsBlockDto>> getProfitsByMonth() async {
+    List<ProfitsBlockDto> profitsBlockList = List<ProfitsBlockDto>();
 
     String walletId = AuthService.currentUser.currentWalletId;
 
@@ -241,14 +243,59 @@ class TransactionService {
 
     int sixMonthsInDays = Constants.sixMonthsInDays;
 
-    DateTime sixMonthsBefore = firstDayOfCurrentMonth.subtract(Duration(days: sixMonthsInDays));
+    DateTime sixMonthsBefore =
+        firstDayOfCurrentMonth.subtract(Duration(days: sixMonthsInDays));
 
     Timestamp startDate = Timestamp.fromDate(sixMonthsBefore);
     Timestamp endDate = Timestamp.fromDate(now);
-    
-    var transactions = await this.transactionsDao.getTransactionsByDateInterval(walletId, startDate, endDate);
 
-    
+    List<TransactionDto> transactions = await this
+        .transactionsDao
+        .getTransactionsByDateInterval(walletId, startDate, endDate);
+
+    // Map<DateTime, List<TransactionDto>> transactionsMap = Map.fromIterable(
+    //     transactions,
+    //     key: (kvp) =>
+    //         DateTime(kvp.transactionDate.year, kvp.transactionDate.month),
+    //     value: (kvp) => kvp);
+
+    Map<DateTime, List<TransactionDto>> transactionsMap = groupBy(transactions,
+        (kvp) => DateTime(kvp.transactionDate.year, kvp.transactionDate.month));
+
+    var keys = transactionsMap.keys.toList().reversed;
+
+    keys.forEach((element) {
+      ProfitsBlockDto blockDto = ProfitsBlockDto();
+
+      List<TransactionDto> transactionsOfMonth;
+
+      double profitsAmount = 0;
+      double spendsAmount = 0;
+      double revenuesAmount = 0;
+
+      if (transactionsMap.containsKey(element)) {
+        
+        transactionsOfMonth = transactionsMap[element];
+
+        var spends = transactionsOfMonth.where((transaction) => transaction.amount < 0);
+
+        var revenues = transactionsOfMonth.where((transaction) => transaction.amount > 0);
+
+        spendsAmount = (spends.map((e) => e.amount)).fold(0, (a, b) => a+b);
+
+        revenuesAmount = (revenues.map((e) => e.amount)).fold(0, (a, b) => a+b);
+
+        profitsAmount = (revenuesAmount + spendsAmount);
+      } else {}
+
+      blockDto.blockDate = element;
+      blockDto.profit = profitsAmount;
+      blockDto.revenue = revenuesAmount;
+      blockDto.spends = spendsAmount;
+
+      profitsBlockList.add(blockDto);
+    });
+    return profitsBlockList;
   }
 
   Future<bool> saveNewRevenue(NewRevenueForm form) async {

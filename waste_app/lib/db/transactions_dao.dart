@@ -313,8 +313,8 @@ class TransactionsDao {
 
   Future<List<TransactionDto>> getTransactionsByDateInterval(
       String walletId,
-      Timestamp fistDayOfCurrentMonthTimestamp,
-      Timestamp lastDayOfCurrentMonthTimestamp) async {
+      Timestamp startDate,
+      Timestamp endDate) async {
 
         List<TransactionDto> transactions = List<TransactionDto>();
 
@@ -322,9 +322,9 @@ class TransactionsDao {
         .collection('transactions')
         .where('walletId', isEqualTo: walletId)
         .where('transactionDate',
-            isGreaterThanOrEqualTo: fistDayOfCurrentMonthTimestamp)
+            isGreaterThanOrEqualTo: startDate)
         .where('transactionDate',
-            isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
+            isLessThanOrEqualTo: endDate)
         .getDocuments()
         .then((QuerySnapshot snapShot) {
       snapShot.documents.forEach((item) {
