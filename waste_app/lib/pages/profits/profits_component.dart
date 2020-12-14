@@ -26,12 +26,10 @@ class ProfitsComponentState extends State<ProfitsComponent> {
 
   List<FilterOptionChip> filterOptions = [];
   List<ProfitsBlockDto> profitList = [];
-  List<BarChartGroupData> rawBarGroups;
-  List<BarChartGroupData> showingBarGroups;
-  BarChartData chartData;
+  List<BarChartGroupData> showingBarGroups = [];
+  Map<int, String> graphSubtitleMap;
   int filterSelected;
-  bool graphLoading;
-  bool profitListLoading;
+  bool loading;
 
   TransactionService transactionService;
   AuthService authService;
@@ -40,14 +38,13 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.transactionService = TransactionService();
     this.authService = AuthService();
-    this.chartData = BarChartData();
+    this.graphSubtitleMap = Map<int, String>();
   }
 
   void initState() {
     super.initState();
     this.updateAppBar();
     this._buildFilterChipsOptions();
-    this._buildGraphMock();
     this.updateData();
     this.authService.userExists(context);
   }
@@ -61,23 +58,20 @@ class ProfitsComponentState extends State<ProfitsComponent> {
 
   updateData() {
     setState(() {
-      this.graphLoading = true;
-      this.profitListLoading = true;
+      this.loading = true;
     });
 
     if (filterSelected == 1) {
       this.transactionService.getProfitsByMonth().then((value) {
         this.profitList = value;
 
+        this.getProfitsGraphData();
+
         setState(() {
-          this.profitListLoading = false;
+          this.loading = false;
         });
       });
     }
-
-    setState(() {
-      this.graphLoading = false;
-    });
   }
 
   _buildFilterChipsOptions() {
@@ -291,119 +285,108 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                     ),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20),
-                  child: BarChart(
-                    BarChartData(
-                      maxY: 20,
-                      barTouchData: BarTouchData(
-                        touchTooltipData: BarTouchTooltipData(
-                          tooltipBgColor: Colors.grey,
-                          getTooltipItem: (_a, _b, _c, _d) => null,
-                        ),
-                        // touchCallback: (response) {
-                        //   if (response.spot == null) {
-                        //     setState(() {
-                        //       touchedGroupIndex = -1;
-                        //       showingBarGroups = List.of(rawBarGroups);
-                        //     });
-                        //     return;
-                        //   }
+                loading
+                    ? Container()
+                    : Container(
+                        margin: EdgeInsets.symmetric(vertical: 20),
+                        child: BarChart(
+                          BarChartData(
+                            maxY: 2000,
+                            barTouchData: BarTouchData(
+                              touchTooltipData: BarTouchTooltipData(
+                                tooltipBgColor: Colors.grey,
+                                getTooltipItem: (_a, _b, _c, _d) => null,
+                              ),
+                              // touchCallback: (response) {
+                              //   if (response.spot == null) {
+                              //     setState(() {
+                              //       touchedGroupIndex = -1;
+                              //       showingBarGroups = List.of(rawBarGroups);
+                              //     });
+                              //     return;
+                              //   }
 
-                        //   touchedGroupIndex =
-                        //       response.spot.touchedBarGroupIndex;
+                              //   touchedGroupIndex =
+                              //       response.spot.touchedBarGroupIndex;
 
-                        //   setState(
-                        //     () {
-                        //       if (response.touchInput is FlLongPressEnd ||
-                        //           response.touchInput is FlPanEnd) {
-                        //         touchedGroupIndex = -1;
-                        //         showingBarGroups = List.of(rawBarGroups);
-                        //       } else {
-                        //         showingBarGroups = List.of(rawBarGroups);
-                        //         if (touchedGroupIndex != -1) {
-                        //           double sum = 0;
-                        //           for (BarChartRodData rod
-                        //               in showingBarGroups[touchedGroupIndex]
-                        //                   .barRods) {
-                        //             sum += rod.y;
-                        //           }
-                        //           final avg = sum /
-                        //               showingBarGroups[touchedGroupIndex]
-                        //                   .barRods
-                        //                   .length;
+                              //   setState(
+                              //     () {
+                              //       if (response.touchInput is FlLongPressEnd ||
+                              //           response.touchInput is FlPanEnd) {
+                              //         touchedGroupIndex = -1;
+                              //         showingBarGroups = List.of(rawBarGroups);
+                              //       } else {
+                              //         showingBarGroups = List.of(rawBarGroups);
+                              //         if (touchedGroupIndex != -1) {
+                              //           double sum = 0;
+                              //           for (BarChartRodData rod
+                              //               in showingBarGroups[touchedGroupIndex]
+                              //                   .barRods) {
+                              //             sum += rod.y;
+                              //           }
+                              //           final avg = sum /
+                              //               showingBarGroups[touchedGroupIndex]
+                              //                   .barRods
+                              //                   .length;
 
-                        //           showingBarGroups[touchedGroupIndex] =
-                        //               showingBarGroups[touchedGroupIndex]
-                        //                   .copyWith(
-                        //             barRods: showingBarGroups[touchedGroupIndex]
-                        //                 .barRods
-                        //                 .map((rod) {
-                        //               return rod.copyWith(y: avg);
-                        //             }).toList(),
-                        //           );
-                        //         }
-                        //       }
-                        //     },
-                        //   );
-                        // },
-                      ),
-                      titlesData: FlTitlesData(
-                        show: true,
-                        bottomTitles: SideTitles(
-                          showTitles: true,
-                          getTextStyles: (value) => const TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                          margin: 20,
-                          getTitles: (double value) {
-                            switch (value.toInt()) {
-                              case 0:
-                                return 'Jul';
-                              case 1:
-                                return 'Ago';
-                              case 2:
-                                return 'Set';
-                              case 3:
-                                return 'Out';
-                              case 4:
-                                return 'Nov';
-                              case 5:
-                                return 'Dez';
-                              default:
-                                return '';
-                            }
-                          },
-                        ),
-                        leftTitles: SideTitles(
-                          showTitles: true,
-                          getTextStyles: (value) => const TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                          margin: 32,
-                          reservedSize: 14,
-                          getTitles: (value) {
-                            if (value == 0) {
-                              return '1K';
-                            } else if (value == 10) {
-                              return '5K';
-                            } else if (value == 19) {
-                              return '10K';
-                            } else {
-                              return '';
-                            }
-                          },
+                              //           showingBarGroups[touchedGroupIndex] =
+                              //               showingBarGroups[touchedGroupIndex]
+                              //                   .copyWith(
+                              //             barRods: showingBarGroups[touchedGroupIndex]
+                              //                 .barRods
+                              //                 .map((rod) {
+                              //               return rod.copyWith(y: avg);
+                              //             }).toList(),
+                              //           );
+                              //         }
+                              //       }
+                              //     },
+                              //   );
+                              // },
+                            ),
+                            titlesData: FlTitlesData(
+                              show: true,
+                              bottomTitles: SideTitles(
+                                showTitles: true,
+                                getTextStyles: (value) => const TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                                margin: 20,
+                                getTitles: (double value) {
+                                  var index = value.toInt();
+
+                                  return this.graphSubtitleMap[index];
+                                },
+                              ),
+                              leftTitles: SideTitles(
+                                showTitles: true,
+                                getTextStyles: (value) => const TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                                margin: 32,
+                                reservedSize: 14,
+                                getTitles: (value) {
+                                  if (value == 0) {
+                                    return '1K';
+                                  } else if (value == 10) {
+                                    return '5K';
+                                  } else if (value == 19) {
+                                    return '10K';
+                                  } else {
+                                    return '';
+                                  }
+                                },
+                              ),
+                            ),
+                            borderData: FlBorderData(
+                              show: false,
+                            ),
+                            barGroups: showingBarGroups,
+                          ),
                         ),
                       ),
-                      borderData: FlBorderData(
-                        show: false,
-                      ),
-                      barGroups: showingBarGroups,
-                    ),
-                  ),
-                ),
                 Container(
                   alignment: Alignment.topRight,
                   child: Text(
@@ -414,7 +397,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                         fontSize: 16),
                   ),
                 ),
-                profitListLoading
+                loading
                     ? Container(
                         margin: EdgeInsets.symmetric(vertical: 60),
                         width: double.infinity,
@@ -456,42 +439,29 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     ]);
   }
 
-  _buildGraphMock() {
-    final barGroup1 = makeGroupData(0, 16, 15);
-    final barGroup2 = makeGroupData(1, 16, 15);
-    final barGroup3 = makeGroupData(2, 12, 15);
-    final barGroup4 = makeGroupData(3, 9, 16);
-    final barGroup5 = makeGroupData(4, 10, 15);
-    final barGroup6 = makeGroupData(5, 8, 19);
+  getProfitsGraphData() {
+    this.showingBarGroups = [];
+    this.graphSubtitleMap.clear();
 
-    final items = [
-      barGroup1,
-      barGroup2,
-      barGroup3,
-      barGroup4,
-      barGroup5,
-      barGroup6,
-    ];
+    int index = 0;
 
-    rawBarGroups = items;
+    var profitsraw = this.profitList;
 
-    showingBarGroups = rawBarGroups;
+    var profitsReverse = profitsraw.reversed;
+
+    profitsReverse.forEach((element) {
+      double spendsPositive = (element.spends * -1);
+
+      var barGroup = makeGroupData(index, spendsPositive, element.revenue);
+
+      showingBarGroups.add(barGroup);
+
+      String month =
+          DateFormat.MMM(this.localeLanguage).format(element.blockDate);
+
+      this.graphSubtitleMap.putIfAbsent(index, () => month);
+
+      index++;
+    });
   }
-
-  // _buildRevenuesMock() {
-  //   var revenueBlock1 = ProfitsBlockDto();
-  //   revenueBlock1.blockDate = DateTime(2020, 01);
-  //   revenueBlock1.profit = 1050;
-  //   revenueBlock1.revenue = 2000;
-  //   revenueBlock1.spends = -950;
-
-  //   var revenueBlock2 = ProfitsBlockDto();
-  //   revenueBlock2.blockDate = DateTime(2020, 02);
-  //   revenueBlock2.profit = 1050;
-  //   revenueBlock2.revenue = 2000;
-  //   revenueBlock2.spends = -950;
-
-  //   profitList.add(revenueBlock1);
-  //   profitList.add(revenueBlock2);
-  // }
 }

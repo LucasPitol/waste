@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:waste_app/db/transactions_dao.dart';
 import 'package:waste_app/models/dtos/profits_block_dto.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
@@ -252,12 +253,6 @@ class TransactionService {
     List<TransactionDto> transactions = await this
         .transactionsDao
         .getTransactionsByDateInterval(walletId, startDate, endDate);
-
-    // Map<DateTime, List<TransactionDto>> transactionsMap = Map.fromIterable(
-    //     transactions,
-    //     key: (kvp) =>
-    //         DateTime(kvp.transactionDate.year, kvp.transactionDate.month),
-    //     value: (kvp) => kvp);
 
     Map<DateTime, List<TransactionDto>> transactionsMap = groupBy(transactions,
         (kvp) => DateTime(kvp.transactionDate.year, kvp.transactionDate.month));
