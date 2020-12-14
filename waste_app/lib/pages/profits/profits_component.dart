@@ -30,6 +30,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
   Map<int, String> graphSubtitleMap;
   int filterSelected;
   bool loading;
+  double growth;
 
   TransactionService transactionService;
   AuthService authService;
@@ -387,16 +388,18 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                           ),
                         ),
                       ),
-                Container(
-                  alignment: Alignment.topRight,
-                  child: Text(
-                    '10% a.a',
-                    style: TextStyle(
-                        color: Colors.deepPurple,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16),
-                  ),
-                ),
+                loading
+                    ? Container()
+                    : Container(
+                        alignment: Alignment.topRight,
+                        child: Text(
+                          growth.toStringAsFixed(1) + '% a.m',
+                          style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16),
+                        ),
+                      ),
                 loading
                     ? Container(
                         margin: EdgeInsets.symmetric(vertical: 60),
@@ -444,10 +447,14 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     this.graphSubtitleMap.clear();
 
     int index = 0;
+    int itensLength = this.profitList.length;
 
     var profitsraw = this.profitList;
 
     var profitsReverse = profitsraw.reversed;
+
+    double profitOfLastMonth = 0;
+    double profitOfCurrentMonth = 0;
 
     profitsReverse.forEach((element) {
       double spendsPositive = (element.spends * -1);
@@ -461,7 +468,25 @@ class ProfitsComponentState extends State<ProfitsComponent> {
 
       this.graphSubtitleMap.putIfAbsent(index, () => month);
 
+      if (index == (itensLength - 3)) {
+        profitOfLastMonth = element.profit;
+      }
+
+      if (index == itensLength - 2) {
+        profitOfCurrentMonth = element.profit;
+      }
+
       index++;
     });
+
+    this.growth = _calculateGrowth(profitOfLastMonth, profitOfCurrentMonth);
+  }
+
+  double _calculateGrowth(double lastProfit, currentProfit) {
+    double step1 = (currentProfit - lastProfit);
+
+    double growthRaw = (step1 / lastProfit);
+
+    return (growthRaw * 100);
   }
 }
