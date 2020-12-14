@@ -15,6 +15,7 @@ class MainComponent extends StatefulWidget {
 
 GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
 GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
+GlobalKey<ProfitsComponentState> profitsComponentGlobalKey = GlobalKey();
 
 final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
 
@@ -67,9 +68,17 @@ class _MainComponentState extends State<MainComponent> {
       case 1:
         _updateSpendsPage();
         break;
+      case 3:
+        _updateProfitsPage();
+        break;
+      
       default:
         break;
     }
+  }
+
+  void _updateProfitsPage() {
+    profitsComponentGlobalKey.currentState.updateData();
   }
 
   void _updateHomePage() {
@@ -148,7 +157,7 @@ class _MainComponentState extends State<MainComponent> {
     HomeComponent(key: homeComponentGlobalKey),
     SpendsComponent(key: spendsComponentGlobalKey),
     Container(),
-    ProfitsComponent(),
+    ProfitsComponent(key: profitsComponentGlobalKey),
     Container(),
   ];
 

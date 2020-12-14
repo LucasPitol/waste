@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ProfitsComponent extends StatefulWidget {
-  // RevenuesComponent({Key key}) : super(key: key);
+  ProfitsComponent({Key key}) : super(key: key);
   @override
   ProfitsComponentState createState() => ProfitsComponentState();
 }
@@ -48,7 +48,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     this.updateAppBar();
     this._buildFilterChipsOptions();
     this._buildGraphMock();
-    this._updateData();
+    this.updateData();
     this.authService.userExists(context);
   }
 
@@ -59,7 +59,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     ));
   }
 
-  _updateData() {
+  updateData() {
     setState(() {
       this.graphLoading = true;
       this.profitListLoading = true;
@@ -252,7 +252,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                               child: InkWell(
                                 borderRadius: Styles.circularBorderRadius,
                                 onTap: () {
-                                  this._updateData();
+                                  this.updateData();
                                 },
                                 child: Icon(
                                   Icons.refresh,
