@@ -31,6 +31,10 @@ class ProfitsComponentState extends State<ProfitsComponent> {
   int filterSelected;
   bool loading;
   double growth;
+  double maxValueGraph;
+  double midValueGraph;
+  // String minValueGraph;
+  double reservedSizeGraph;
 
   TransactionService transactionService;
   AuthService authService;
@@ -367,14 +371,15 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14),
                                 margin: 32,
-                                reservedSize: 14,
+                                reservedSize: this.reservedSizeGraph,
                                 getTitles: (value) {
+                                  print(value);
                                   if (value == 0) {
-                                    return '1K';
-                                  } else if (value == 10) {
-                                    return '5K';
-                                  } else if (value == 19) {
-                                    return '10K';
+                                    return '';
+                                  } else if (value == midValueGraph) {
+                                    return midValueGraph.toStringAsFixed(2);
+                                  } else if (value == maxValueGraph) {
+                                    return maxValueGraph.toStringAsFixed(2);
                                   } else {
                                     return '';
                                   }
@@ -446,6 +451,10 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     this.showingBarGroups = [];
     this.graphSubtitleMap.clear();
 
+    double maxValue = 0;
+    double midValue = 0;
+    double minValue = 0;
+
     int index = 0;
     int itensLength = this.profitList.length;
 
@@ -458,8 +467,29 @@ class ProfitsComponentState extends State<ProfitsComponent> {
 
     profitsReverse.forEach((element) {
       double spendsPositive = (element.spends * -1);
+      double revenue = element.revenue;
 
-      var barGroup = makeGroupData(index, spendsPositive, element.revenue);
+      // if (index == 0) {
+      //   minValue = revenue >= spendsPositive ? spendsPositive : revenue;
+      // }
+
+      if (spendsPositive > maxValue) {
+        maxValue = spendsPositive;
+      }
+
+      if (revenue > maxValue) {
+        maxValue = revenue;
+      }
+
+      // if (spendsPositive < minValue) {
+      //   minValue = spendsPositive;
+      // }
+
+      // if (revenue < minValue) {
+      //   minValue = revenue;
+      // }
+
+      var barGroup = makeGroupData(index, spendsPositive, revenue);
 
       showingBarGroups.add(barGroup);
 
@@ -478,6 +508,12 @@ class ProfitsComponentState extends State<ProfitsComponent> {
 
       index++;
     });
+
+    this.maxValueGraph = maxValue;
+
+    this.midValueGraph = (maxValue / 2);
+
+    this.reservedSizeGraph = (maxValue * 0.01);
 
     this.growth = _calculateGrowth(profitOfLastMonth, profitOfCurrentMonth);
   }
