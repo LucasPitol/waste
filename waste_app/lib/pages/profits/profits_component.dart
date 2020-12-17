@@ -281,7 +281,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     child: Padding(
-                      padding: EdgeInsets.only(top: 20),
+                      padding: EdgeInsets.symmetric(vertical: 20),
                       child: Row(
                         children: filterOptions
                             .map((item) => createFilterOptionsChip(item))
@@ -296,7 +296,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                         margin: EdgeInsets.symmetric(vertical: 20),
                         child: BarChart(
                           BarChartData(
-                            maxY: 2000,
+                            maxY: this.maxValueGraph,
                             barTouchData: BarTouchData(
                               touchTooltipData: BarTouchTooltipData(
                                 tooltipBgColor: Colors.grey,
@@ -373,13 +373,12 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                                 margin: 32,
                                 reservedSize: this.reservedSizeGraph,
                                 getTitles: (value) {
-                                  print(value);
                                   if (value == 0) {
                                     return '';
                                   } else if (value == midValueGraph) {
-                                    return midValueGraph.toStringAsFixed(2);
+                                    return formatAmount(midValueGraph);
                                   } else if (value == maxValueGraph) {
-                                    return maxValueGraph.toStringAsFixed(2);
+                                    return formatAmount(maxValueGraph);
                                   } else {
                                     return '';
                                   }
@@ -509,9 +508,11 @@ class ProfitsComponentState extends State<ProfitsComponent> {
       index++;
     });
 
-    this.maxValueGraph = maxValue;
+    this.maxValueGraph = roundNumber(maxValue);
 
-    this.midValueGraph = (maxValue / 2);
+    midValue = (maxValue / 2);
+
+    this.midValueGraph = roundNumber(midValue);
 
     this.reservedSizeGraph = (maxValue * 0.01);
 
@@ -524,5 +525,20 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     double growthRaw = (step1 / lastProfit);
 
     return (growthRaw * 100);
+  }
+
+  double roundNumber(double number) {
+    double rest = number % 50;
+
+    if (rest != 0) {
+      double missing = (50 - rest);
+      number = (number + missing);
+    }
+
+    return number;
+  }
+
+  String formatAmount(double value) {
+    return NumberFormat.compact().format(value);
   }
 }
