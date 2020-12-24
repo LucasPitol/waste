@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:waste_app/pages/shared/info_bottom_sheet_component.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/profits_block_dto.dart';
 import 'package:waste_app/models/filter-option-chip.dart';
@@ -77,6 +78,19 @@ class ProfitsComponentState extends State<ProfitsComponent> {
         });
       });
     }
+  }
+
+  void _infoBottomSheet() {
+    String info = isPtLanguage
+        ? 'O grafico indica a relação entre as receitas e despesas dos respectivos meses, a barra roxa indica o total de receitas, a barra rosa indica as despesas. \n \n'
+            'Abaixo do grafico é possivel visualizar a porcentagem de crescimento com base nos lucros, o calculo é feito com a relação entre o mês passado com o retrasado. \n \n'
+            'Na listagem abaixo, cada bloco exibe o lucro do mês, a receita e despesa total do mês. \n \n'
+        : '';
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return InfoBottomSheetComponent(info);
+        });
   }
 
   _buildFilterChipsOptions() {
@@ -262,7 +276,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                             InkWell(
                               borderRadius: Styles.circularBorderRadius,
                               onTap: () {
-                                print('info');
+                                this._infoBottomSheet();
                               },
                               child: Icon(
                                 Icons.help_outline,
@@ -293,6 +307,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                 loading
                     ? Container()
                     : Container(
+                        padding: EdgeInsets.only(right: 40),
                         margin: EdgeInsets.symmetric(vertical: 20),
                         child: BarChart(
                           BarChartData(
