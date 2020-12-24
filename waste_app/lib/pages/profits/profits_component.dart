@@ -85,7 +85,9 @@ class ProfitsComponentState extends State<ProfitsComponent> {
         ? 'O grafico indica a relação entre as receitas e despesas dos respectivos meses, a barra roxa indica o total de receitas, a barra rosa indica as despesas. \n \n'
             'Abaixo do grafico é possivel visualizar a porcentagem de crescimento com base nos lucros, o calculo é feito com a relação entre o mês passado com o retrasado. \n \n'
             'Na listagem abaixo, cada bloco exibe o lucro do mês, a receita e despesa total do mês. \n \n'
-        : '';
+        : 'The graph indicates the relationship between income and expenses for the respective months, the purple bar indicates the total income, the pink bar indicates the expenses. \n \n'
+            'Below the graph it is possible to see the percentage of growth based on profits, the calculation is made with the relationship between last month and the delay. \n \n'
+            'In the list below, each block displays the month\'s profit, the month\'s total income and expense. \n \n';
     showModalBottomSheet(
         context: context,
         builder: (builder) {
