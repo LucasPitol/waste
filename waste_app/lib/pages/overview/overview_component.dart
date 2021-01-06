@@ -36,6 +36,10 @@ class OverviewComponentState extends State<OverviewComponent> {
     print('info');
   }
 
+  _openCalendar() {
+    print('calendar');
+  }
+
   updateAppBar() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Styles.mainBackgroundColor,
@@ -127,9 +131,15 @@ class OverviewComponentState extends State<OverviewComponent> {
                             ),
                             Container(
                               margin: EdgeInsets.only(left: 10),
-                              child: Icon(
-                                Icons.calendar_today,
-                                color: Styles.primaryColor,
+                              child: InkWell(
+                                borderRadius: Styles.circularBorderRadius,
+                                onTap: () {
+                                  this._openCalendar();
+                                },
+                                child: Icon(
+                                  Icons.calendar_today,
+                                  color: Styles.primaryColor,
+                                ),
                               ),
                             ),
                           ],
