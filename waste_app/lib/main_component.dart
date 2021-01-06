@@ -2,11 +2,10 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 import 'pages/new_spend/new_spend_component.dart';
+import 'pages/overview/overview_component.dart';
 import 'pages/profits/profits_component.dart';
 import 'pages/home/home_conponent.dart';
 import 'package:flutter/material.dart';
-
-
 
 class MainComponent extends StatefulWidget {
   @override
@@ -16,6 +15,7 @@ class MainComponent extends StatefulWidget {
 GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
 GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
 GlobalKey<ProfitsComponentState> profitsComponentGlobalKey = GlobalKey();
+GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
 
 final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
 
@@ -71,7 +71,7 @@ class _MainComponentState extends State<MainComponent> {
       case 3:
         _updateProfitsPage();
         break;
-      
+
       default:
         break;
     }
@@ -158,7 +158,7 @@ class _MainComponentState extends State<MainComponent> {
     SpendsComponent(key: spendsComponentGlobalKey),
     Container(),
     ProfitsComponent(key: profitsComponentGlobalKey),
-    Container(),
+    OverviewComponent(key: overviewComponentGlobalKey),
   ];
 
   void _onItemTapped(int index) {
