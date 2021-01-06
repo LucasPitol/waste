@@ -103,6 +103,41 @@ class OverviewComponentState extends State<OverviewComponent> {
                     ],
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      alignment: Alignment.topRight,
+                      margin: EdgeInsets.symmetric(vertical: 20),
+                      decoration: Styles.contentBox2,
+                      width: 250,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 15),
+                        // alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '01/01/2020 - ',
+                              style: Styles.poppinsTextLight,
+                            ),
+                            Text(
+                              '21/12/2020',
+                              style: Styles.poppinsTextLight,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Icon(
+                                Icons.calendar_today,
+                                color: Styles.primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

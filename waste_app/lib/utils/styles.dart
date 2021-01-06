@@ -24,8 +24,8 @@ class Styles {
 
   static Color boxColor = Color(0xFFC8BDDB).withOpacity(0.1);
 
-  static TextStyle poppinsText =
-      TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 16);
+  static TextStyle poppinsText = TextStyle(
+      color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 16);
 
   static TextStyle poppinsTextLight =
       TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w500);
@@ -41,6 +41,11 @@ class Styles {
   static BoxDecoration contentBox = BoxDecoration(
     color: boxColor,
     borderRadius: defaultBorderRadius,
+  );
+
+  static BoxDecoration contentBox2 = BoxDecoration(
+    color: boxColor,
+    borderRadius: BorderRadius.all(Radius.circular(12)),
   );
 
   static BoxDecoration loginBox = BoxDecoration(
