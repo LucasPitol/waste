@@ -24,8 +24,16 @@ class OverviewComponentState extends State<OverviewComponent> {
   void initState() {
     super.initState();
     this.updateAppBar();
-    // this.updateData();
+    this.updateData();
     this.authService.userExists(context);
+  }
+
+  updateData() {
+    print('update');
+  }
+
+  _infoBottomSheet() {
+    print('info');
   }
 
   updateAppBar() {
@@ -42,7 +50,62 @@ class OverviewComponentState extends State<OverviewComponent> {
       resizeToAvoidBottomPadding: true,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(),
+          child: Container(
+            width: double.infinity,
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              children: [
+                Container(
+                  child: Stack(
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          isPtLanguage ? 'Visão geral' : 'Overview',
+                          style: TextStyle(
+                            color: Colors.grey.shade100,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 15),
+                              child: InkWell(
+                                borderRadius: Styles.circularBorderRadius,
+                                onTap: () {
+                                  this.updateData();
+                                },
+                                child: Icon(
+                                  Icons.refresh,
+                                  color: Colors.grey.shade100,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              borderRadius: Styles.circularBorderRadius,
+                              onTap: () {
+                                this._infoBottomSheet();
+                              },
+                              child: Icon(
+                                Icons.help_outline,
+                                color: Colors.grey.shade100,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
