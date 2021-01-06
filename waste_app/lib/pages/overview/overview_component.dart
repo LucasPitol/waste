@@ -148,6 +148,60 @@ class OverviewComponentState extends State<OverviewComponent> {
                     ),
                   ],
                 ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isPtLanguage ? 'Saldo' : 'balance',
+                        style: TextStyle(
+                          color: Colors.grey.shade100,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                        ),
+                      ),
+                      Text(
+                        '20,500.00',
+                        style: TextStyle(
+                          color: Styles.primaryColor,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 21,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isPtLanguage ? 'Entradas' : 'Revenue',
+                        style: Styles.poppinsTextGrey,
+                      ),
+                      Text(
+                        '+ 30,500.00',
+                        style: Styles.poppinsTextGrey,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isPtLanguage ? 'Saídas' : 'Spends',
+                        style: Styles.poppinsTextGrey,
+                      ),
+                      Text(
+                        '- 10,000.00',
+                        style: Styles.poppinsTextGrey,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
