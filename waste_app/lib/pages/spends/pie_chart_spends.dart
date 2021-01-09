@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class PieChartSpendsComponent extends StatelessWidget {
   Map<String, double> spendsByCategoryMap;
@@ -38,6 +39,21 @@ class PieChartSpendsComponent extends StatelessWidget {
         animationDuration: Duration(milliseconds: 800),
         chartLegendSpacing: 32.0,
         chartRadius: MediaQuery.of(context).size.width / 2.6,
+        colorList: colorList,
+        chartValuesOptions: ChartValuesOptions(
+          showChartValuesInPercentage: true,
+          showChartValues: true,
+          showChartValuesOutside: false,
+          chartValueBackgroundColor: Colors.deepPurple[50],
+          decimalPlaces: 1,
+          chartValueStyle: defaultChartValueStyle.copyWith(
+            color: Colors.blueGrey[900].withOpacity(0.9),
+          ),
+        ),
+        legendOptions: LegendOptions(
+          legendTextStyle: Styles.poppinsTextLight,
+          showLegends: true,
+        ),
         // showChartValuesInPercentage: true,
         // showChartValues: true,
         // showChartValuesOutside: false,

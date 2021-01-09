@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/pages/spends/pie_chart_spends.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
@@ -201,6 +202,10 @@ class OverviewComponentState extends State<OverviewComponent> {
                       ),
                     ],
                   ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: PieChartSpendsComponent(),
                 ),
               ],
             ),
