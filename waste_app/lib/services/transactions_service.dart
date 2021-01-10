@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:waste_app/db/transactions_dao.dart';
+import 'package:waste_app/models/dtos/overview_page_dto.dart';
 import 'package:waste_app/models/dtos/profits_block_dto.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
 import 'package:waste_app/models/dtos/spend_item_dto.dart';
@@ -141,6 +142,43 @@ class TransactionService {
     return spendsByMonthDtoList;
   }
 
+  Future<OverviewPageDto> getOverviewPageData(
+      DateTime startDate, DateTime endDate) async {
+    OverviewPageDto pageDto = OverviewPageDto();
+
+    UserDto user = AuthService.currentUser;
+    String walletId = user.currentWalletId;
+
+    Timestamp startDateTimestamp = Timestamp.fromDate(startDate);
+    Timestamp endDateTimestamp = Timestamp.fromDate(endDate);
+
+    var transactions = await this.transactionsDao.getTransactionsByDateInterval(
+        walletId, startDateTimestamp, endDateTimestamp);
+
+    double income = 0;
+    double spends = 0;
+    double balance = 0;
+
+    transactions.forEach((element) {
+
+      double amount = element.amount;
+
+      if (amount >= 0) {
+        income = income + amount;
+      } else {
+        spends = spends + amount;
+      }
+    });
+
+    balance = income + spends;
+
+    pageDto.income = income;
+    pageDto.spends = spends;
+    pageDto.balance = balance;
+
+    return pageDto;
+  }
+
   Future<List<SpendItem>> getSpendsByMonth(DateTime completeDate) async {
     List<SpendItem> spendsList = List<SpendItem>();
 
@@ -269,16 +307,18 @@ class TransactionService {
       double revenuesAmount = 0;
 
       if (transactionsMap.containsKey(element)) {
-        
         transactionsOfMonth = transactionsMap[element];
 
-        var spends = transactionsOfMonth.where((transaction) => transaction.amount < 0);
+        var spends =
+            transactionsOfMonth.where((transaction) => transaction.amount < 0);
 
-        var revenues = transactionsOfMonth.where((transaction) => transaction.amount > 0);
+        var revenues =
+            transactionsOfMonth.where((transaction) => transaction.amount > 0);
 
-        spendsAmount = (spends.map((e) => e.amount)).fold(0, (a, b) => a+b);
+        spendsAmount = (spends.map((e) => e.amount)).fold(0, (a, b) => a + b);
 
-        revenuesAmount = (revenues.map((e) => e.amount)).fold(0, (a, b) => a+b);
+        revenuesAmount =
+            (revenues.map((e) => e.amount)).fold(0, (a, b) => a + b);
 
         profitsAmount = (revenuesAmount + spendsAmount);
       }

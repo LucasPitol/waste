@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/overview_page_dto.dart';
-import 'package:waste_app/models/user_dto.dart';
-import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/pages/spends/pie_chart_spends.dart';
+import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class OverviewComponent extends StatefulWidget {
   OverviewComponent({Key key}) : super(key: key);
@@ -20,11 +21,13 @@ class OverviewComponentState extends State<OverviewComponent> {
   bool loading = true;
   bool isPtLanguage;
   OverviewPageDto overviewPageDto;
+  TransactionService transactionService;
 
   OverviewComponentState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.overviewPageDto = OverviewPageDto();
     this.authService = AuthService();
+    this.transactionService = TransactionService();
   }
 
   void initState() {
@@ -37,6 +40,21 @@ class OverviewComponentState extends State<OverviewComponent> {
   updateData() {
     setState(() {
       this.loading = true;
+    });
+
+    //mock
+    DateTime startDate = DateTime(2020, 01, 01);
+    DateTime endDate = DateTime(2020, 12, 31);
+
+    this
+        .transactionService
+        .getOverviewPageData(startDate, endDate)
+        .then((value) {
+      this.overviewPageDto = value;
+
+      setState(() {
+        this.loading = false;
+      });
     });
   }
 
@@ -171,9 +189,12 @@ class OverviewComponentState extends State<OverviewComponent> {
                               ),
                             ),
                             Text(
-                              '20,500.00',
+                              Constants.getAmountFormated(
+                                  overviewPageDto.balance),
                               style: TextStyle(
-                                color: Styles.primaryColor,
+                                color: overviewPageDto.balance >= 0
+                                    ? Styles.primaryColor
+                                    : Colors.red,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 21,
                               ),
@@ -191,7 +212,9 @@ class OverviewComponentState extends State<OverviewComponent> {
                               style: Styles.poppinsTextGrey,
                             ),
                             Text(
-                              '+ 30,500.00',
+                              '+ ' +
+                                  Constants.getAmountFormated(
+                                      overviewPageDto.income),
                               style: Styles.poppinsTextGrey,
                             ),
                           ],
@@ -206,7 +229,8 @@ class OverviewComponentState extends State<OverviewComponent> {
                               style: Styles.poppinsTextGrey,
                             ),
                             Text(
-                              '- 10,000.00',
+                              Constants.getAmountFormated(
+                                  overviewPageDto.spends),
                               style: Styles.poppinsTextGrey,
                             ),
                           ],
