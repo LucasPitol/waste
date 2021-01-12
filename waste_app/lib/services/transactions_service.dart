@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:waste_app/db/transactions_dao.dart';
+import 'package:waste_app/models/dtos/graph_category_dto.dart';
 import 'package:waste_app/models/dtos/overview_page_dto.dart';
 import 'package:waste_app/models/dtos/profits_block_dto.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
@@ -145,9 +145,11 @@ class TransactionService {
   Future<OverviewPageDto> getOverviewPageData(
       DateTime startDate, DateTime endDate) async {
     OverviewPageDto pageDto = OverviewPageDto();
+    Map<String, double> spendsByCategoryMapLocal = Map<String, double>();
 
     UserDto user = AuthService.currentUser;
     String walletId = user.currentWalletId;
+    bool isPt = user.language == Constants.languages[0];
 
     Timestamp startDateTimestamp = Timestamp.fromDate(startDate);
     Timestamp endDateTimestamp = Timestamp.fromDate(endDate);
@@ -155,26 +157,72 @@ class TransactionService {
     var transactions = await this.transactionsDao.getTransactionsByDateInterval(
         walletId, startDateTimestamp, endDateTimestamp);
 
+    var categories =
+        await this.spendingCategoriesService.getSpendingCategories();
+
     double income = 0;
     double spends = 0;
     double balance = 0;
 
     transactions.forEach((element) {
-
       double amount = element.amount;
 
       if (amount >= 0) {
         income = income + amount;
       } else {
         spends = spends + amount;
+
+        var wasteCategoryId = element.categoryId;
+
+        if (wasteCategoryId != null) {
+          var category = categories
+              .where((element) => element.id == wasteCategoryId)
+              .first;
+
+          String key = isPt ? category.displayNamePt : category.displayNameEn;
+
+          if (spendsByCategoryMapLocal.containsKey(key)) {
+            double wasteByCategory = spendsByCategoryMapLocal[key];
+
+            wasteByCategory = wasteByCategory + amount;
+
+            spendsByCategoryMapLocal.remove(key);
+
+            spendsByCategoryMapLocal.putIfAbsent(key, () => wasteByCategory);
+          } else {
+            spendsByCategoryMapLocal.putIfAbsent(key, () => amount);
+          }
+        }
       }
     });
+
+    var sortedKeys = spendsByCategoryMapLocal.keys.toList(growable: false)
+      ..sort((k1, k2) =>
+          spendsByCategoryMapLocal[k1].compareTo(spendsByCategoryMapLocal[k2]));
+    var sortedMap = Map<String, double>.fromIterable(sortedKeys,
+        key: (k) => k, value: (k) => spendsByCategoryMapLocal[k]);
+
+    double totalOthers = 0.0;
+
+    for (int i = 0; i < sortedKeys.length; i++) {
+      if (i >= 3) {
+        totalOthers = totalOthers + (sortedMap[sortedKeys[i]]);
+
+        sortedMap.remove(sortedKeys[i]);
+
+        if (i == (sortedKeys.length - 1)) {
+          String key = isPt ? 'Demais' : 'Others';
+          sortedMap.putIfAbsent(key, () => totalOthers);
+        }
+      }
+    }
 
     balance = income + spends;
 
     pageDto.income = income;
     pageDto.spends = spends;
     pageDto.balance = balance;
+    pageDto.spendsByCategoryMap = sortedMap;
 
     return pageDto;
   }

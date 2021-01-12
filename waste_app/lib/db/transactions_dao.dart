@@ -337,6 +337,7 @@ class TransactionsDao {
         transaction.amount = double.parse(objMap['amount'].toString());
         transaction.transactionDate = transactionDateTimestamp.toDate();
         transaction.transactionId = item.documentID;
+        transaction.categoryId = objMap['categoryId'];
 
         transactions.add(transaction);
       });

@@ -3,4 +3,5 @@ class TransactionDto {
   String reason;
   DateTime transactionDate;
   double amount;
+  String categoryId;
 }

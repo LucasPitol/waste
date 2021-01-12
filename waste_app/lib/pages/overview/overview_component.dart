@@ -27,9 +27,10 @@ class OverviewComponentState extends State<OverviewComponent> {
   bool isPtLanguage;
   OverviewPageDto overviewPageDto;
   TransactionService transactionService;
+  Map<String, double> spendsByCategoryMap;
 
-  DateTime startDate; // = DateTime(2020, 01, 01);
-  DateTime endDate; // = DateTime(2020, 12, 31);
+  DateTime startDate;
+  DateTime endDate;
 
   OverviewComponentState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
@@ -61,6 +62,7 @@ class OverviewComponentState extends State<OverviewComponent> {
         .getOverviewPageData(startDate, endDate)
         .then((value) {
       this.overviewPageDto = value;
+      this.spendsByCategoryMap = value.spendsByCategoryMap;
 
       setState(() {
         this.loading = false;
@@ -254,7 +256,7 @@ class OverviewComponentState extends State<OverviewComponent> {
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 20),
-                        child: PieChartSpendsComponent(),
+                        child: PieChartSpendsComponent(spendsByCategoryMap),
                       ),
                     ],
                   ),
