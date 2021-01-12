@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/overview_page_dto.dart';
 import 'package:waste_app/pages/spends/pie_chart_spends.dart';
@@ -16,12 +17,19 @@ class OverviewComponent extends StatefulWidget {
 }
 
 class OverviewComponentState extends State<OverviewComponent> {
+  String localeLanguage =
+      AuthService.currentUser.language == Constants.languages[0]
+          ? Constants.ptLanguage
+          : Constants.enLanguage;
   AuthService authService;
   UserDto userDto = AuthService.currentUser;
   bool loading = true;
   bool isPtLanguage;
   OverviewPageDto overviewPageDto;
   TransactionService transactionService;
+
+  DateTime startDate; // = DateTime(2020, 01, 01);
+  DateTime endDate; // = DateTime(2020, 12, 31);
 
   OverviewComponentState() {
     this.isPtLanguage = userDto.language == Constants.languages[0];
@@ -33,18 +41,20 @@ class OverviewComponentState extends State<OverviewComponent> {
   void initState() {
     super.initState();
     this.updateAppBar();
+    this._applyStandardFilter();
     this.updateData();
     this.authService.userExists(context);
+  }
+
+  _applyStandardFilter() {
+    this.endDate = DateTime.now();
+    this.startDate = DateTime(endDate.year, 01, 01);
   }
 
   updateData() {
     setState(() {
       this.loading = true;
     });
-
-    //mock
-    DateTime startDate = DateTime(2020, 01, 01);
-    DateTime endDate = DateTime(2020, 12, 31);
 
     this
         .transactionService
@@ -150,11 +160,17 @@ class OverviewComponentState extends State<OverviewComponent> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '01/01/2020 - ',
+                                    DateFormat.yMd(this.localeLanguage)
+                                        .format(this.startDate),
                                     style: Styles.poppinsTextLight,
                                   ),
                                   Text(
-                                    '21/12/2020',
+                                    ' - ',
+                                    style: Styles.poppinsTextLight,
+                                  ),
+                                  Text(
+                                    DateFormat.yMd(this.localeLanguage)
+                                        .format(this.endDate),
                                     style: Styles.poppinsTextLight,
                                   ),
                                   Container(
