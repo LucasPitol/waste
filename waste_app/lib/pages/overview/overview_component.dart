@@ -48,8 +48,9 @@ class OverviewComponentState extends State<OverviewComponent> {
   }
 
   _applyStandardFilter() {
-    this.endDate = DateTime.now();
-    this.startDate = DateTime(endDate.year, 01, 01);
+    DateTime now = DateTime.now();
+    this.endDate = DateTime(now.year, now.month, now.day, 23, 59);
+    this.startDate = DateTime(now.year, 01, 01);
   }
 
   updateData() {
