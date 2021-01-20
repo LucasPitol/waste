@@ -85,8 +85,32 @@ class OverviewComponentState extends State<OverviewComponent> {
         });
   }
 
-  _openCalendar() {
-    print('calendar');
+  _openCalendar() async {
+    DateTime startDateTemp = this.startDate;
+    DateTime endDateTemp = this.endDate;
+
+    // Locale locale = isPtLanguage ? Locale('pt', 'BR') : Locale('en', 'US');
+
+    DateTimeRange picked = await showDateRangePicker(
+        context: context,
+        firstDate: DateTime(2020, 01, 01),
+        lastDate: endDateTemp,
+        initialDateRange: DateTimeRange(start: startDateTemp, end: endDateTemp),
+        // locale: locale,
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: Styles.calendarThemeData,
+            child: child,
+          );
+        });
+
+    if (picked != null) {
+      setState(() {
+        this.startDate = picked.start;
+        this.endDate = picked.end;
+      });
+      this.updateData();
+    }
   }
 
   updateAppBar() {
