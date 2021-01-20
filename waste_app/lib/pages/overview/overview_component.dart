@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:waste_app/pages/shared/info_bottom_sheet_component.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/overview_page_dto.dart';
 import 'package:waste_app/pages/spends/pie_chart_spends.dart';
@@ -72,7 +73,16 @@ class OverviewComponentState extends State<OverviewComponent> {
   }
 
   _infoBottomSheet() {
-    print('info');
+    String info = isPtLanguage
+        ? 'Nessa tela você pode acompanhar as entradas, saídas e o saldo (lucro) em um determinado período. \n \n'
+            'O grafico indica as categorias com maiores gastos dentro do período filtrado. \n \n'
+        : 'On this screen you can track the revenues, spends and the balance (profit) in a given period. \n \n'
+            'The graph indicates the categories with the highest expenses within the filtered period. \n \n';
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return InfoBottomSheetComponent(info);
+        });
   }
 
   _openCalendar() {
