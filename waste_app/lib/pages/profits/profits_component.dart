@@ -440,6 +440,22 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                               .toList(),
                         ),
                       ),
+                loading
+                    ? Container()
+                    : Container(
+                        alignment: Alignment.bottomCenter,
+                        margin: EdgeInsets.only(bottom: 20),
+                        child: Text(
+                          isPtLanguage
+                              ? 'Limitando exibição até 6 meses, em breve o limite será estendido'
+                              : 'Limiting up to 6 months, the limit will soon be extended',
+                          style: TextStyle(
+                            color: Colors.grey.shade100,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
               ],
             ),
           ),

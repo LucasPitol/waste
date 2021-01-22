@@ -320,6 +320,17 @@ class TransactionService {
     return spendsList;
   }
 
+  List<DateTime> getSixMonthsDatesList(DateTime now) {
+    List<DateTime> dates = List<DateTime>();
+
+    for (int i = 0; i < 6; i++) {
+      DateTime dateTemp = DateTime(now.year, now.month - i);
+
+      dates.add(dateTemp);
+    }
+    return dates;
+  }
+
   Future<List<ProfitsBlockDto>> getProfitsByMonth() async {
     List<ProfitsBlockDto> profitsBlockList = List<ProfitsBlockDto>();
 
@@ -340,10 +351,12 @@ class TransactionService {
         .transactionsDao
         .getTransactionsByDateInterval(walletId, startDate, endDate);
 
+    List<DateTime> dates = getSixMonthsDatesList(now);
+
     Map<DateTime, List<TransactionDto>> transactionsMap = groupBy(transactions,
         (kvp) => DateTime(kvp.transactionDate.year, kvp.transactionDate.month));
 
-    var keys = transactionsMap.keys.toList().reversed;
+    var keys = dates;
 
     keys.forEach((element) {
       ProfitsBlockDto blockDto = ProfitsBlockDto();
