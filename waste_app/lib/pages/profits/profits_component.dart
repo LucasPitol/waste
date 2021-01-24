@@ -291,21 +291,25 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                     ],
                   ),
                 ),
+                // Container(
+                //   alignment: Alignment.centerLeft,
+                //   child: SingleChildScrollView(
+                //     scrollDirection: Axis.horizontal,
+                //     physics: const BouncingScrollPhysics(),
+                //     child: Padding(
+                //       padding: EdgeInsets.symmetric(vertical: 20),
+                //       child: Row(
+                //         children: filterOptions
+                //             .map((item) => createFilterOptionsChip(item))
+                //             .toList(),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Container(
-                  alignment: Alignment.centerLeft,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Row(
-                        children: filterOptions
-                            .map((item) => createFilterOptionsChip(item))
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                ),
+                  width: double.infinity,
+                  height: 20,
+                ), // remover quando adicionar o filtro
                 loading
                     ? Container()
                     : Container(
