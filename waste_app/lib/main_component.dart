@@ -1,3 +1,5 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 import 'pages/new_spend/new_spend_component.dart';
@@ -29,7 +31,6 @@ class _MainComponentState extends State<MainComponent> {
   int _selectedIndex = 0;
 
   void _goToNewSpendPage() async {
-
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
 
@@ -41,7 +42,6 @@ class _MainComponentState extends State<MainComponent> {
   }
 
   void _goToNewRevenuePage() async {
-
     var refresh = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => NewRevenueComponent()));
 
@@ -126,8 +126,8 @@ class _MainComponentState extends State<MainComponent> {
         child: FloatingActionButton(
           backgroundColor: Styles.boxColor,
           onPressed: () {},
-          child: Icon(
-            Icons.add,
+          child: FaIcon(
+            FontAwesomeIcons.plus,
             color: Styles.primaryColor,
           ),
           elevation: 2.0,
@@ -169,8 +169,9 @@ class _MainComponentState extends State<MainComponent> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           IconButton(
-            icon: Icon(
-              Icons.home,
+            icon: FaIcon(
+              FontAwesomeIcons.home,
+              size: 22,
               color: _selectedIndex == 0 ? Styles.primaryColor : Colors.grey,
             ),
             onPressed: () {
@@ -178,8 +179,9 @@ class _MainComponentState extends State<MainComponent> {
             },
           ),
           IconButton(
-            icon: Icon(
-              Icons.money_off,
+            icon: FaIcon(
+              FontAwesomeIcons.calendarWeek,
+              size: 22,
               color: _selectedIndex == 1 ? Styles.primaryColor : Colors.grey,
             ),
             onPressed: () {
@@ -191,8 +193,9 @@ class _MainComponentState extends State<MainComponent> {
             height: 24,
           ),
           IconButton(
-            icon: Icon(
-              Icons.attach_money,
+            icon: FaIcon(
+              FontAwesomeIcons.chartBar,
+              size: 22,
               color: _selectedIndex == 2 ? Styles.primaryColor : Colors.grey,
             ),
             onPressed: () {
@@ -200,8 +203,9 @@ class _MainComponentState extends State<MainComponent> {
             },
           ),
           IconButton(
-            icon: Icon(
-              Icons.pie_chart_outline_outlined,
+            icon: FaIcon(
+              FontAwesomeIcons.chartPie,
+              size: 22,
               color: _selectedIndex == 3 ? Styles.primaryColor : Colors.grey,
             ),
             onPressed: () {

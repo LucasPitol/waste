@@ -12,6 +12,11 @@ class Styles {
     ),
     primaryColor: primaryColor,
     accentColor: darkColor,
+    scaffoldBackgroundColor: mainBackgroundColor,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: boxColor,
+      foregroundColor: primaryColor,
+    ),
     textTheme: GoogleFonts.montserratTextTheme(),
     backgroundColor: mainBackgroundColor,
   );

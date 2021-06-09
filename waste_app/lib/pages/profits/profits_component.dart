@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:waste_app/pages/shared/info_bottom_sheet_component.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/profits_block_dto.dart';
@@ -269,8 +270,9 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                                 onTap: () {
                                   this.updateData();
                                 },
-                                child: Icon(
-                                  Icons.refresh,
+                                child: FaIcon(
+                                  FontAwesomeIcons.redo,
+                                  size: 20,
                                   color: Colors.grey.shade100,
                                 ),
                               ),
@@ -280,8 +282,9 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                               onTap: () {
                                 this._infoBottomSheet();
                               },
-                              child: Icon(
-                                Icons.help_outline,
+                              child: FaIcon(
+                                FontAwesomeIcons.questionCircle,
+                                size: 20,
                                 color: Colors.grey.shade100,
                               ),
                             ),

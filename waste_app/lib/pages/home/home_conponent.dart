@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/new_wallet_member/new_wallet_member_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
@@ -443,8 +444,9 @@ class HomeComponentState extends State<HomeComponent> {
                   this._removeMember(item);
                 },
                 child: Container(
-                  child: Icon(
-                    Icons.close,
+                  child: FaIcon(
+                    FontAwesomeIcons.times,
+                    size: 18,
                     color: Colors.grey,
                   ),
                 ),
@@ -488,7 +490,7 @@ class HomeComponentState extends State<HomeComponent> {
 
       _openInfoDialog(title, text);
     } else {
-      List<String> membersMail = List<String>();
+      List<String> membersMail = <String>[];
 
       members.forEach((element) {
         membersMail.add(element.email);
@@ -624,8 +626,9 @@ class HomeComponentState extends State<HomeComponent> {
                                 onTap: () {
                                   this.updatePageContent();
                                 },
-                                child: Icon(
-                                  Icons.refresh,
+                                child: FaIcon(
+                                  FontAwesomeIcons.redo,
+                                  size: 20,
                                   color: Colors.grey.shade100,
                                 ),
                               ),
@@ -635,8 +638,9 @@ class HomeComponentState extends State<HomeComponent> {
                               onTap: () {
                                 _goToSettings();
                               },
-                              child: Icon(
-                                Icons.settings,
+                              child: FaIcon(
+                                FontAwesomeIcons.bars,
+                                size: 20,
                                 color: Colors.grey.shade100,
                               ),
                             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info/package_info.dart';
 import 'package:waste_app/models/dtos/language_and_code_dto.dart';
@@ -33,7 +34,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.authService = AuthService();
     this.walletService = WalletService();
-    this.options = List<LanguageAndCodeDto>();
+    this.options = <LanguageAndCodeDto>[];
     this.setOptions();
     this.getAppVersion();
   }
@@ -224,8 +225,9 @@ class _SettingsComponentState extends State<SettingsComponent> {
                       children: [
                         Container(
                           alignment: Alignment.centerLeft,
-                          child: Icon(
-                            Icons.account_balance_wallet,
+                          child: FaIcon(
+                            FontAwesomeIcons.wallet,
+                            size: 22,
                             color: Colors.deepPurple,
                           ),
                         ),
@@ -256,6 +258,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                           alignment: Alignment.centerLeft,
                           child: Icon(
                             Icons.lock_outline,
+                            size: 26,
                             color: Colors.deepPurple,
                           ),
                         ),
@@ -279,8 +282,9 @@ class _SettingsComponentState extends State<SettingsComponent> {
                       children: [
                         Container(
                           alignment: Alignment.centerLeft,
-                          child: Icon(
-                            Icons.language,
+                          child: FaIcon(
+                            FontAwesomeIcons.language,
+                            size: 22,
                             color: Colors.deepPurple,
                           ),
                         ),
@@ -338,8 +342,9 @@ class _SettingsComponentState extends State<SettingsComponent> {
                       children: [
                         Container(
                           alignment: Alignment.centerLeft,
-                          child: Icon(
-                            Icons.info_outline,
+                          child: FaIcon(
+                            FontAwesomeIcons.infoCircle,
+                            size: 22,
                             color: Colors.deepPurple,
                           ),
                         ),
@@ -366,8 +371,9 @@ class _SettingsComponentState extends State<SettingsComponent> {
                       children: [
                         Container(
                           alignment: Alignment.centerLeft,
-                          child: Icon(
-                            Icons.exit_to_app,
+                          child: FaIcon(
+                            FontAwesomeIcons.signOutAlt,
+                            size: 22,
                             color: Colors.deepPurple,
                           ),
                         ),
