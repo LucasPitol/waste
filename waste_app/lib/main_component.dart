@@ -94,60 +94,19 @@ class _MainComponentState extends State<MainComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: Stack(
-        children: [
-          Container(
-            child: _widgetOptions.elementAt(_selectedIndex),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 32.5,
-              width: 65,
-              color: Colors.transparent,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade900,
-                    borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(40.0),
-                        topRight: const Radius.circular(40.0))),
-              ),
-            ),
-          ),
-        ],
+      backgroundColor: Styles.mainBackgroundColor,
+      body: Container(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FabCircularMenu(
-        key: fabKey,
-        alignment: Alignment.bottomCenter,
-        fabMargin: EdgeInsets.only(bottom: 45, right: 32),
-        animationDuration: Duration(milliseconds: 300),
-        ringDiameter: 200,
-        ringColor: Colors.white10,
-        fabColor: Colors.black,
-        fabCloseIcon: Icon(
-          Icons.close,
-          color: Colors.deepPurple,
-        ),
-        fabOpenIcon: Icon(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Styles.boxColor,
+        child: Icon(
           Icons.add,
-          color: Colors.deepPurple,
+          color: Styles.primaryColor,
         ),
-        children: [
-          IconButton(
-            icon: Icon(
-              Icons.trending_down,
-              color: Colors.red,
-            ),
-            onPressed: _goToNewSpendPage,
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.trending_up,
-              color: Colors.green,
-            ),
-            onPressed: _goToNewRevenuePage,
-          ),
-        ],
+        onPressed: () {
+          print('fab');
+        },
       ),
       floatingActionButtonLocation: this._addFabLocation,
       bottomNavigationBar: this._buildBottomNavAppBar(),
@@ -162,9 +121,9 @@ class _MainComponentState extends State<MainComponent> {
   ];
 
   void _onItemTapped(int index) {
-    if (fabKey.currentState.isOpen) {
-      fabKey.currentState.close();
-    }
+    // if (fabKey.currentState.isOpen) {
+    //   fabKey.currentState.close();
+    // }
 
     // if (_selectedIndex == 2 && _selectedIndex != index) {
     //   if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
@@ -177,34 +136,55 @@ class _MainComponentState extends State<MainComponent> {
     });
   }
 
-  BottomNavigationBar _buildBottomNavAppBar() {
-    return BottomNavigationBar(
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      unselectedItemColor: Colors.grey,
-      selectedItemColor: Styles.primaryColor,
-      backgroundColor: Styles.boxColor,
-      type: BottomNavigationBarType.fixed,
-      currentIndex: _selectedIndex,
-      onTap: _onItemTapped,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.money_off),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.attach_money),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.pie_chart_outlined),
-          label: '',
-        ),
-      ],
+  BottomAppBar _buildBottomNavAppBar() {
+    return BottomAppBar(
+      shape: CircularNotchedRectangle(),
+      color: Styles.boxColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.home,
+              color: _selectedIndex == 0 ? Styles.primaryColor : Colors.grey,
+            ),
+            onPressed: () {
+              this._onItemTapped(0);
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.money_off,
+              color: _selectedIndex == 1 ? Styles.primaryColor : Colors.grey,
+            ),
+            onPressed: () {
+              this._onItemTapped(1);
+            },
+          ),
+          Container(
+            width: 24,
+            height: 24,
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.attach_money,
+              color: _selectedIndex == 2 ? Styles.primaryColor : Colors.grey,
+            ),
+            onPressed: () {
+              this._onItemTapped(2);
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.pie_chart_outline_outlined,
+              color: _selectedIndex == 3 ? Styles.primaryColor : Colors.grey,
+            ),
+            onPressed: () {
+              this._onItemTapped(3);
+            },
+          ),
+        ],
+      ),
     );
   }
 }
