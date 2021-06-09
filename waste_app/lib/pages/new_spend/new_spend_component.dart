@@ -182,7 +182,7 @@ class _NewSpendComponenState extends State<NewSpendComponent> {
     ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
           children: <Widget>[

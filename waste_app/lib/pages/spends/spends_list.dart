@@ -78,7 +78,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: spends.isNotEmpty
           ? Column(
               children: <Widget>[

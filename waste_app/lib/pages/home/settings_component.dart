@@ -174,7 +174,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
 
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

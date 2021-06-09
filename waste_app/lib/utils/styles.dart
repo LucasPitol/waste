@@ -5,11 +5,14 @@ class Styles {
   static Color mainBackgroundColor = Colors.black;
 
   static ThemeData mainTheme = ThemeData(
-    cursorColor: Colors.deepPurple,
-    primaryColor: Colors.deepPurple,
-    accentColor: Colors.deepPurple.shade900,
-    textSelectionHandleColor: Colors.deepPurple,
-    textTheme: GoogleFonts.poppinsTextTheme(),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: primaryColor,
+      selectionHandleColor: primaryColor,
+      selectionColor: primaryColor,
+    ),
+    primaryColor: primaryColor,
+    accentColor: darkColor,
+    textTheme: GoogleFonts.montserratTextTheme(),
     backgroundColor: mainBackgroundColor,
   );
 
@@ -21,8 +24,9 @@ class Styles {
 
   static Color primaryColor = Colors.deepPurple;
   static Color secondaryColor = Colors.deepPurple.shade300;
+  static Color darkColor = Colors.deepPurple.shade700;
 
-  static Color boxColor = Color(0xFFC8BDDB).withOpacity(0.1);
+  static Color boxColor = Color(0xFF171717);
 
   static TextStyle poppinsText = TextStyle(
       color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 16);

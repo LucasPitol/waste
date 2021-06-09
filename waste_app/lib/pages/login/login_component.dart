@@ -11,7 +11,7 @@ import 'new_member_component.dart';
 import 'reset_password_component.dart';
 
 class LoginComponent extends StatefulWidget {
-  Function selectHandler;
+  final Function selectHandler;
 
   LoginComponent(this.selectHandler);
 

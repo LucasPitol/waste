@@ -38,7 +38,6 @@ class _MyAppState extends State<MyApp> {
         AuthService.currentUser.language == 'auto') {
       var languageCode = ui.window.locale.languageCode;
 
-      print(languageCode);
       if (languageCode != 'pt') {
         AuthService.currentUser.language = 'en';
       } else {

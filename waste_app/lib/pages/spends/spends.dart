@@ -294,7 +294,7 @@ class SpendsComponentState extends State<SpendsComponent>
     ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,

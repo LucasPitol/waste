@@ -235,7 +235,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(

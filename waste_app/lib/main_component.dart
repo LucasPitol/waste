@@ -92,7 +92,7 @@ class _MainComponentState extends State<MainComponent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           Container(

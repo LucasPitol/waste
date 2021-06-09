@@ -124,7 +124,7 @@ class OverviewComponentState extends State<OverviewComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           child: loading

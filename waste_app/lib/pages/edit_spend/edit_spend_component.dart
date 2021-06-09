@@ -242,7 +242,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
           children: <Widget>[

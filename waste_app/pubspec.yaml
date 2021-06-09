@@ -23,7 +23,7 @@ dependencies:
   firebase_auth: ^0.16.0
   rxdart: 0.20.0
   google_sign_in: ^4.4.3
-  intl: ^0.16.1
+  intl: ^0.17.0
   pie_chart: ^4.0.1
   flutter_multi_formatter: ^1.1.5
   google_fonts: ^1.0.0

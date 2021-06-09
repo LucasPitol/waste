@@ -102,7 +102,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
     ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
           children: [
