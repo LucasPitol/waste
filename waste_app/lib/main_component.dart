@@ -1,4 +1,5 @@
 import 'package:fab_circular_menu/fab_circular_menu.dart';
+import 'package:waste_app/utils/styles.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 import 'pages/new_spend/new_spend_component.dart';
@@ -68,7 +69,7 @@ class _MainComponentState extends State<MainComponent> {
       case 1:
         _updateSpendsPage();
         break;
-      case 3:
+      case 2:
         _updateProfitsPage();
         break;
 
@@ -156,7 +157,6 @@ class _MainComponentState extends State<MainComponent> {
   final List<Widget> _widgetOptions = <Widget>[
     HomeComponent(key: homeComponentGlobalKey),
     SpendsComponent(key: spendsComponentGlobalKey),
-    Container(),
     ProfitsComponent(key: profitsComponentGlobalKey),
     OverviewComponent(key: overviewComponentGlobalKey),
   ];
@@ -182,31 +182,27 @@ class _MainComponentState extends State<MainComponent> {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       unselectedItemColor: Colors.grey,
-      selectedItemColor: Colors.deepPurple,
-      backgroundColor: Colors.black,
+      selectedItemColor: Styles.primaryColor,
+      backgroundColor: Styles.boxColor,
       type: BottomNavigationBarType.fixed,
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          title: Text(''),
+          label: '',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.money_off),
-          title: Text(''),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.arrow_drop_down),
-          title: Text(''),
+          label: '',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.attach_money),
-          title: Text(''),
+          label: '',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.pie_chart_outlined),
-          title: Text(''),
+          label: '',
         ),
       ],
     );
