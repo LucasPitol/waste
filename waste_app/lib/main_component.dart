@@ -1,4 +1,5 @@
 import 'package:fab_circular_menu/fab_circular_menu.dart';
+import 'package:waste_app/utils/layout.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
@@ -7,6 +8,8 @@ import 'pages/overview/overview_component.dart';
 import 'pages/profits/profits_component.dart';
 import 'pages/home/home_conponent.dart';
 import 'package:flutter/material.dart';
+
+import 'utils/fab_with_icons.dart';
 
 class MainComponent extends StatefulWidget {
   @override
@@ -18,16 +21,15 @@ GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
 GlobalKey<ProfitsComponentState> profitsComponentGlobalKey = GlobalKey();
 GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
 
-final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
-
 class _MainComponentState extends State<MainComponent> {
   FloatingActionButtonLocation _addFabLocation =
       FloatingActionButtonLocation.centerDocked;
 
+  final fabIcons = [Icons.trending_up, Icons.trending_down];
+
   int _selectedIndex = 0;
 
   void _goToNewSpendPage() async {
-    fabKey.currentState.close();
 
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
@@ -40,7 +42,6 @@ class _MainComponentState extends State<MainComponent> {
   }
 
   void _goToNewRevenuePage() async {
-    fabKey.currentState.close();
 
     var refresh = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => NewRevenueComponent()));
@@ -90,6 +91,20 @@ class _MainComponentState extends State<MainComponent> {
     spendsComponentGlobalKey.currentState.refreshData();
   }
 
+  void _selectedFab(int index) {
+    switch (index) {
+      case 0:
+        this._goToNewRevenuePage();
+        break;
+
+      case 1:
+        this._goToNewSpendPage();
+        break;
+
+      default:
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,16 +113,37 @@ class _MainComponentState extends State<MainComponent> {
       body: Container(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Styles.boxColor,
-        child: Icon(
-          Icons.add,
-          color: Styles.primaryColor,
-        ),
-        onPressed: () {
-          print('fab');
+      floatingActionButton: AnchoredOverlay(
+        showOverlay: true,
+        overlayBuilder: (context, offset) {
+          return CenterAbout(
+            position: Offset(offset.dx, offset.dy - fabIcons.length * 35.0),
+            child: FabWithIcons(
+              icons: fabIcons,
+              onIconTapped: _selectedFab,
+            ),
+          );
         },
+        child: FloatingActionButton(
+          backgroundColor: Styles.boxColor,
+          onPressed: () {},
+          child: Icon(
+            Icons.add,
+            color: Styles.primaryColor,
+          ),
+          elevation: 2.0,
+        ),
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Styles.boxColor,
+      //   child: Icon(
+      //     Icons.add,
+      //     color: Styles.primaryColor,
+      //   ),
+      //   onPressed: () {
+      //     print('fab');
+      //   },
+      // ),
       floatingActionButtonLocation: this._addFabLocation,
       bottomNavigationBar: this._buildBottomNavAppBar(),
     );
@@ -121,16 +157,6 @@ class _MainComponentState extends State<MainComponent> {
   ];
 
   void _onItemTapped(int index) {
-    // if (fabKey.currentState.isOpen) {
-    //   fabKey.currentState.close();
-    // }
-
-    // if (_selectedIndex == 2 && _selectedIndex != index) {
-    //   if (profileComponentGlobalKey.currentState.isEndDrawerOpen()) {
-    //     Navigator.pop(profileComponentGlobalKey.currentContext);
-    //   }
-    // }
-
     setState(() {
       _selectedIndex = index;
     });
