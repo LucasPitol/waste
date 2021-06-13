@@ -264,38 +264,38 @@ class _LoginComponentState extends State<LoginComponent> {
                                 ),
                               ),
                             ),
-                            Container(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      this.userDto.language ==
-                                              Constants.languages[0]
-                                          ? 'Esqueceu a senha?'
-                                          : "Can't remember password?",
-                                      style: TextStyle(
-                                          fontSize: 14.0, color: Colors.grey),
-                                    ),
-                                  ),
-                                  Container(
-                                    child: FlatButton(
-                                      onPressed: this.goToResetPasswordPage,
-                                      child: Text(
-                                        this.userDto.language ==
-                                                Constants.languages[0]
-                                            ? 'Recuperar'
-                                            : 'Recover',
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: Colors.deepPurple),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Container(
+                            //   alignment: Alignment.center,
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.center,
+                            //     children: <Widget>[
+                            //       Container(
+                            //         child: Text(
+                            //           this.userDto.language ==
+                            //                   Constants.languages[0]
+                            //               ? 'Esqueceu a senha?'
+                            //               : "Can't remember password?",
+                            //           style: TextStyle(
+                            //               fontSize: 14.0, color: Colors.grey),
+                            //         ),
+                            //       ),
+                            //       Container(
+                            //         child: FlatButton(
+                            //           onPressed: this.goToResetPasswordPage,
+                            //           child: Text(
+                            //             this.userDto.language ==
+                            //                     Constants.languages[0]
+                            //                 ? 'Recuperar'
+                            //                 : 'Recover',
+                            //             style: TextStyle(
+                            //                 fontSize: 14.0,
+                            //                 color: Colors.deepPurple),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

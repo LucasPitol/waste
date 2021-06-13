@@ -30,7 +30,6 @@ dependencies:
   shared_preferences: ^0.5.7+3
   flutter_phoenix: ^0.1.0
   flutter_masked_text: ^0.8.0
-  mailer2: ^1.2.5
   package_info: ^0.4.1
   flutter_native_splash: ^0.1.9
   fl_chart: ^0.12.1

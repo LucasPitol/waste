@@ -8,7 +8,6 @@ import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:mailer2/mailer.dart';
 import 'package:waste_app/utils/infos.dart';
 import 'smart_error_service.dart';
 import 'wallet_service.dart';
@@ -219,8 +218,6 @@ class AuthService {
         AuthService.currentUser.walletList = wallets;
         AuthService.currentUser.currentWalletId = wallets[0].id;
 
-        this.sendNewUserEmail(uid, userMail, name);
-
         return null;
       }).catchError((onError) {
         print(onError);
@@ -322,32 +319,8 @@ class AuthService {
       var userSS = onValue.documents.first;
 
       if (userSS != null) {
-        var gmailOpts = new GmailSmtpOptions();
-        gmailOpts.username = Infos.accountServiceMail;
-        gmailOpts.password = Infos.accountServiceMailPass;
 
-        var emailTransport = new SmtpTransport(gmailOpts);
-
-        var envelope = Envelope();
-        String uid = userSS.documentID;
-        String pathUrl = Infos.accountServiceUrl + '/change-password/' + uid;
-
-        String body = 'Ola ' +
-            '\n' +
-            'Acesse ' +
-            pathUrl +
-            ' para mudar sua senha.' +
-            '\n' +
-            'Caso não tenha solicitado a redefinição de seha ignore este email.';
-
-        String subject = 'Redefinição de senha';
-
-        envelope.from = gmailOpts.username;
-        envelope.recipients.add(userMail);
-        envelope.subject = subject;
-        envelope.text = body;
-
-        emailTransport.send(envelope);
+        
       }
     }).catchError((onError) {
       print(onError);
@@ -359,47 +332,5 @@ class AuthService {
 
       this.smartErrorService.saveError(errorDto);
     });
-  }
-
-  void sendNewUserEmail(String uid, String userMail, String userName) {
-    var gmailOpts = new GmailSmtpOptions();
-    gmailOpts.username = Infos.accountServiceMail;
-    gmailOpts.password = Infos.accountServiceMailPass;
-
-    var emailTransport = new SmtpTransport(gmailOpts);
-
-    var envelope = Envelope();
-
-    String pathUrl = 'https://waste-dev.web.app/verification/' + uid;
-
-    var languageCode = currentUser.language;
-
-    String body = languageCode == Constants.languages[0]
-        ? ('Bem vindo, ' +
-            userName +
-            '\n' +
-            'Caso não tenha se cadastrado no app Meudin, acesse ' +
-            pathUrl +
-            ' para excluir a conta vinculada a este email.')
-        : 'Welcome, ' +
-            userName +
-            '\n' +
-            'If you haven\'t registered at Meudin app, go to ' +
-            pathUrl +
-            ' and delete the account related to this email.';
-
-    String subject = 'Welcome to Meudin';
-
-    envelope.from = gmailOpts.username;
-    envelope.recipients.add(userMail);
-    envelope.subject = subject;
-    envelope.text = body;
-
-    emailTransport.send(envelope);
-    // .then((onValue) {
-    //   print('enviou');
-    // }).catchError((onError) {
-    //   print(onError);
-    // });
   }
 }
