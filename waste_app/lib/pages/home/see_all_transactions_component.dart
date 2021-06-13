@@ -12,7 +12,7 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class SeeAllTransactionsComponent extends StatefulWidget {
-  Wallet currentWallet;
+  final Wallet currentWallet;
   SeeAllTransactionsComponent(this.currentWallet);
   @override
   _SeeAllTransactionsComponentState createState() =>

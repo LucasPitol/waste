@@ -208,7 +208,7 @@ class TransactionsDao {
           transactionByMonthMap.putIfAbsent(key, () => values);
         } else {
           // primeira entrada
-          var list = List<TransactionDto>();
+          var list = <TransactionDto>[];
           list.add(transaction);
           transactionByMonthMap.putIfAbsent(key, () => list);
         }
@@ -284,7 +284,7 @@ class TransactionsDao {
 
   Future<List<Spend>> getSpendsByWalletId(
       String walletId, Timestamp startDate) async {
-    var spends = List<Spend>();
+    var spends = <Spend>[];
 
     await dbReference
         .collection('transactions')
@@ -316,7 +316,7 @@ class TransactionsDao {
       Timestamp startDate,
       Timestamp endDate) async {
 
-        List<TransactionDto> transactions = List<TransactionDto>();
+        List<TransactionDto> transactions = <TransactionDto>[];
 
         await dbReference
         .collection('transactions')
@@ -362,7 +362,7 @@ class TransactionsDao {
       Timestamp fistDayOfCurrentMonthTimestamp,
       Timestamp lastDayOfCurrentMonthTimestamp,
       String categoryId) async {
-    var spends = List<Spend>();
+    var spends = <Spend>[];
     var user = AuthService.currentUser;
 
     await dbReference
@@ -398,7 +398,7 @@ class TransactionsDao {
 
   Future<List<Spend>> getSpendsByDateInterval(
       String walletId, Timestamp startDate, Timestamp endDate) async {
-    var spends = List<Spend>();
+    var spends = <Spend>[];
 
     await dbReference
         .collection('transactions')

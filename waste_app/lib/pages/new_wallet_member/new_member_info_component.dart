@@ -48,8 +48,8 @@ class NewMemebrInfoSheetComponent extends StatelessWidget {
           ),
           Container(
             alignment: Alignment.bottomCenter,
-            child: FlatButton(
-              textColor: Colors.deepPurple,
+            child: TextButton(
+              style: Styles.textButtonStyle,
               onPressed: () {
                 this._closeDialog(context);
               },

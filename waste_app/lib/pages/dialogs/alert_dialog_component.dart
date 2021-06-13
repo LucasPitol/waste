@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class AlertDialogComponent extends StatefulWidget {
   final String title;
@@ -47,8 +48,9 @@ class _AlertDialogComponentState extends State<AlertDialogComponent> {
                   style: TextStyle(color: Colors.grey),
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    textColor: Colors.deepPurple,
+                  TextButton(
+                    // textColor: Colors.deepPurple,
+                    style: Styles.textButtonStyle,
                     onPressed: closeDialog,
                     child: Text('Ok'),
                   ),

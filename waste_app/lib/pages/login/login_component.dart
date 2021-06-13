@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/models/forms/login_form.dart';
 import 'package:waste_app/models/user_dto.dart';
@@ -56,6 +57,8 @@ class _LoginComponentState extends State<LoginComponent> {
     setState(() {
       this.loading = true;
     });
+
+    FocusScope.of(context).unfocus();
 
     if (_loginForm.userMail.text == '' || _loginForm.password.text == '') {
       String title =
@@ -124,7 +127,7 @@ class _LoginComponentState extends State<LoginComponent> {
         this.loading = true;
       });
 
-      var x = await this.authService.loginByUid(uid);
+      await this.authService.loginByUid(uid);
 
       setState(() {
         this.loading = false;
@@ -150,6 +153,7 @@ class _LoginComponentState extends State<LoginComponent> {
     ));
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
@@ -238,19 +242,21 @@ class _LoginComponentState extends State<LoginComponent> {
                                   bottom: 30,
                                   left: 20,
                                   right: 20),
-                              child: ButtonTheme(
-                                minWidth: double.infinity,
-                                height: 60.0,
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: defaultBorderRadius,
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 50,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: defaultBorderRadius,
+                                    ),
+                                    primary: Styles.primaryColor,
                                   ),
                                   onPressed: () {
                                     if (_formKey.currentState.validate()) {
                                       _login();
                                     }
                                   },
-                                  color: Colors.deepPurple,
                                   child: Text(
                                     this.userDto.language ==
                                             Constants.languages[0]
@@ -314,15 +320,16 @@ class _LoginComponentState extends State<LoginComponent> {
                                   TextStyle(fontSize: 14.0, color: Colors.grey),
                             ),
                           ),
-                          Container(
-                            child: FlatButton(
-                              onPressed: _goToNewMemberPage,
-                              child: Text(
-                                this.userDto.language == Constants.languages[0]
-                                    ? 'Cadastrar'
-                                    : 'Register',
-                                style: TextStyle(
-                                    fontSize: 14.0, color: Colors.deepPurple),
+                          TextButton(
+                            onPressed: _goToNewMemberPage,
+                            child: Text(
+                              this.userDto.language == Constants.languages[0]
+                                  ? 'Cadastrar'
+                                  : 'Register',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Styles.primaryColor,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
@@ -333,50 +340,7 @@ class _LoginComponentState extends State<LoginComponent> {
                 ),
               ),
             ),
-            // Container(
-            //   alignment: Alignment.topRight,
-            //   margin: EdgeInsets.only(right: defaultMargin),
-            //   child: DropdownButton<String>(
-            //     value: dropdownValue,
-            //     icon: Icon(Icons.keyboard_arrow_down),
-            //     iconSize: 24,
-            //     elevation: 16,
-            //     style: TextStyle(
-            //       color: Colors.grey,
-            //     ),
-            //     underline: Container(
-            //       height: 1,
-            //       color: Colors.white10,
-            //     ),
-            //     onChanged: (String newValue) {
-            //       changeLanguage(newValue);
-            //     },
-            //     items: Constants.languages
-            //         .map<DropdownMenuItem<String>>((String value) {
-            //       return DropdownMenuItem<String>(
-            //         value: value,
-            //         child: Text(value),
-            //       );
-            //     }).toList(),
-            //   ),
-            // ),
-            this.loading
-                ? Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height,
-                    color: Colors.black.withOpacity(0.5),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      alignment: Alignment.center,
-                      child: Theme(
-                        data: Theme.of(context)
-                            .copyWith(accentColor: Colors.deepPurple),
-                        child: new CircularProgressIndicator(),
-                      ),
-                    ),
-                  )
-                : new Container(),
+            LoadingBlock(loading),
           ],
         ),
       ),

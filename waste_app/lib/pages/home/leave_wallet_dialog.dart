@@ -82,8 +82,8 @@ class _LeaveWalletDialogComponentState
                   ),
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    textColor: Colors.grey,
+                  TextButton(
+                    style: TextButton.styleFrom(primary: Colors.grey),
                     onPressed: () {
                       closeDialog(false);
                     },
@@ -92,8 +92,8 @@ class _LeaveWalletDialogComponentState
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
-                  FlatButton(
-                    textColor: Colors.deepPurple,
+                  TextButton(
+                    style: Styles.textButtonStyle,
                     onPressed: () {
                       closeDialog(true);
                     },

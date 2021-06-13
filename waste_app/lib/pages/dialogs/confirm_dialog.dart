@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class ConfirmDialogComponent extends StatefulWidget {
   final String title;
@@ -51,8 +52,8 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                   style: GoogleFonts.poppins(color: Colors.grey),
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    textColor: Colors.deepPurple,
+                  TextButton(
+                    style: Styles.textButtonStyle,
                     onPressed: () {
                       closeDialog(false);
                     },
@@ -61,8 +62,10 @@ class _ConfirmDialogComponentState extends State<ConfirmDialogComponent> {
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
-                  FlatButton(
-                    textColor: Colors.red,
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      primary: Colors.red,
+                    ),
                     onPressed: () {
                       closeDialog(true);
                     },

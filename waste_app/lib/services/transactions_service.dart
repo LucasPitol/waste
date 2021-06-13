@@ -1,22 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
-import 'package:waste_app/db/transactions_dao.dart';
-import 'package:waste_app/models/dtos/graph_category_dto.dart';
-import 'package:waste_app/models/dtos/overview_page_dto.dart';
-import 'package:waste_app/models/dtos/profits_block_dto.dart';
-import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
-import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/models/dtos/transaction_block_dto.dart';
-import 'package:waste_app/models/dtos/transaction_dto.dart';
-import 'package:waste_app/models/forms/edit_waste_form.dart';
+import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
+import 'package:waste_app/models/dtos/overview_page_dto.dart';
 import 'package:waste_app/models/forms/new_revenue_form.dart';
-import 'package:waste_app/models/forms/new_waste_form.dart';
-import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/models/dtos/profits_block_dto.dart';
 import 'package:waste_app/services/smart_error_service.dart';
+import 'package:waste_app/models/forms/edit_waste_form.dart';
+import 'package:waste_app/models/dtos/transaction_dto.dart';
+import 'package:waste_app/models/forms/new_waste_form.dart';
+import 'package:waste_app/models/dtos/spend_item_dto.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/db/transactions_dao.dart';
+import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:collection/collection.dart';
 
-import 'auth_service.dart';
 import 'spending_categories_service.dart';
+import 'auth_service.dart';
 import 'wallet_service.dart';
 
 class TransactionService {
@@ -228,7 +227,7 @@ class TransactionService {
   }
 
   Future<List<SpendItem>> getSpendsByMonth(DateTime completeDate) async {
-    List<SpendItem> spendsList = List<SpendItem>();
+    List<SpendItem> spendsList = <SpendItem>[];
 
     DateTime fistDayOfCurrentMonth =
         DateTime(completeDate.year, completeDate.month, 1);
@@ -276,7 +275,7 @@ class TransactionService {
 
   Future<List<SpendItem>> getSpendsByMonthFiltered(
       DateTime completeDate, String categoryId) async {
-    List<SpendItem> spendsList = List<SpendItem>();
+    List<SpendItem> spendsList = <SpendItem>[];
 
     DateTime fistDayOfCurrentMonth =
         DateTime(completeDate.year, completeDate.month, 1);
@@ -321,7 +320,7 @@ class TransactionService {
   }
 
   List<DateTime> getSixMonthsDatesList(DateTime now) {
-    List<DateTime> dates = List<DateTime>();
+    List<DateTime> dates = <DateTime>[];
 
     for (int i = 0; i < 6; i++) {
       DateTime dateTemp = DateTime(now.year, now.month - i);
@@ -332,7 +331,7 @@ class TransactionService {
   }
 
   Future<List<ProfitsBlockDto>> getProfitsByMonth() async {
-    List<ProfitsBlockDto> profitsBlockList = List<ProfitsBlockDto>();
+    List<ProfitsBlockDto> profitsBlockList = <ProfitsBlockDto>[];
 
     String walletId = AuthService.currentUser.currentWalletId;
 

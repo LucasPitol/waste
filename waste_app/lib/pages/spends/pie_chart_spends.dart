@@ -3,13 +3,13 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class PieChartSpendsComponent extends StatelessWidget {
-  Map<String, double> spendsByCategoryMap;
+  final Map<String, double> spendsByCategoryMap;
 
   PieChartSpendsComponent(this.spendsByCategoryMap);
 
   ///
 
-  List<Color> colorList = [
+  final List<Color> colorList = [
     Colors.deepPurple[900],
     Colors.deepPurple,
     Colors.deepPurple[300],

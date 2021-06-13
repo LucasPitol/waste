@@ -17,7 +17,7 @@ import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class EditSpendComponent extends StatefulWidget {
-  SpendItem spend;
+  final SpendItem spend;
   EditSpendComponent(this.spend);
   @override
   _EditSpendComponenState createState() => _EditSpendComponenState(spend);
@@ -57,7 +57,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     this.transactionService = TransactionService();
     this.spendingCategoriesService = SpendingCategoriesService();
     this.authService = AuthService();
-    this.spendingCategoryList = List<SpendingCategory>();
+    this.spendingCategoryList = <SpendingCategory>[];
   }
 
   void initState() {
@@ -424,19 +424,16 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 40, left: 20, right: 20),
-                        child: ButtonTheme(
-                          minWidth: double.infinity,
+                        child: SizedBox(
+                          width: double.infinity,
                           height: 50,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: Styles.defaultTextFieldBorderRadius,
-                            ),
+                          child: ElevatedButton(
+                           style: Styles.elevatedButtonStyle,
                             onPressed: () async {
                               if (_editSpendFormKey.currentState.validate()) {
                                 _updateWaste();
                               }
                             },
-                            color: Colors.deepPurple,
                             child: Text(
                               this.languageCode == Constants.languages[0]
                                   ? 'Atualizar'
@@ -450,7 +447,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 40),
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: _deleteWaste,
                           child: Text(
                             this.languageCode == Constants.languages[0]

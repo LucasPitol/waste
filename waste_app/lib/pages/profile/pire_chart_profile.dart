@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:waste_app/utils/constants.dart';
 
 class PieChartProfileComponent extends StatelessWidget {
-  Map<String, double> spendsByCategoryMap;
+  final Map<String, double> spendsByCategoryMap;
 
   PieChartProfileComponent(this.spendsByCategoryMap);
 

@@ -69,6 +69,17 @@ class Styles {
     // ],
   );
 
+  static ButtonStyle elevatedButtonStyle = ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(
+      borderRadius: circularBorderRadius,
+    ),
+    primary: Styles.primaryColor,
+  );
+
+  static ButtonStyle textButtonStyle = TextButton.styleFrom(
+    primary: Styles.primaryColor,
+  );
+
   static BoxDecoration spendCard = BoxDecoration(
       color: mainBackgroundColor,
       borderRadius: defaultBorderRadius,

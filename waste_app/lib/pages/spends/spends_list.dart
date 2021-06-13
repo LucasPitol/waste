@@ -7,8 +7,8 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class SpendsListComponent extends StatefulWidget {
-  List<SpendItem> spends;
-  Function updateData;
+  final List<SpendItem> spends;
+  final Function updateData;
   SpendsListComponent(this.spends, this.updateData);
   @override
   _SpendsListComponentState createState() =>
@@ -21,7 +21,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
           ? Constants.ptLanguage
           : Constants.enLanguage;
   final List<SpendItem> spends;
-  Function updateData;
+  final Function updateData;
 
   _SpendsListComponentState(this.spends, this.updateData);
 

@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:waste_app/pages/login/login_component.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:waste_app/main_component.dart';
-import 'package:waste_app/pages/login/login_component.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/material.dart';
 
-import 'models/user_dto.dart';
 import 'services/auth_service.dart';
+import 'models/user_dto.dart';
 import 'utils/constants.dart';
 import 'utils/styles.dart';
 import 'dart:ui' as ui;

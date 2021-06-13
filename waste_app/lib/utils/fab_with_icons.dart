@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'styles.dart';
 
 class FabWithIcons extends StatefulWidget {
-  FabWithIcons({this.icons, this.onIconTapped});
   final List<IconData> icons;
-  ValueChanged<int> onIconTapped;
+  final ValueChanged<int> onIconTapped;
+  FabWithIcons({this.icons, this.onIconTapped});
   @override
   State createState() => FabWithIconsState();
 }

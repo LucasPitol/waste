@@ -5,8 +5,8 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class CategoryBottomSheetComponent extends StatefulWidget {
-  List<SpendingCategory> spendingCategoryList;
-  String previousCategorySelectedValue;
+  final List<SpendingCategory> spendingCategoryList;
+  final String previousCategorySelectedValue;
 
   CategoryBottomSheetComponent(
       this.spendingCategoryList, this.previousCategorySelectedValue);

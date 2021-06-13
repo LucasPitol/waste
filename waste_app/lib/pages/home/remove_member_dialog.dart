@@ -98,8 +98,8 @@ class _RemoveMemberDialogComponentState
                   ),
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    textColor: Colors.grey,
+                  TextButton(
+                    style: TextButton.styleFrom(primary: Colors.grey),
                     onPressed: () {
                       closeDialog(false);
                     },
@@ -108,8 +108,8 @@ class _RemoveMemberDialogComponentState
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
-                  FlatButton(
-                    textColor: Colors.deepPurple,
+                  TextButton(
+                    style: Styles.textButtonStyle,
                     onPressed: () async {
                       closeDialog(true);
                     },

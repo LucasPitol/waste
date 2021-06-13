@@ -100,8 +100,8 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                   ),
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    textColor: Colors.grey,
+                  TextButton(
+                    style: TextButton.styleFrom(primary: Colors.grey),
                     onPressed: () {
                       closeDialog(false);
                     },
@@ -112,8 +112,8 @@ class _NewWalletDialogComponentState extends State<NewWalletDialogComponent> {
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                     ),
                   ),
-                  FlatButton(
-                    textColor: Colors.deepPurple,
+                  TextButton(
+                    style: Styles.textButtonStyle,
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         closeDialog(true);

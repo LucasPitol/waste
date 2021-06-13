@@ -9,7 +9,7 @@ class SpendingCategoryDao {
   SmartErrorService smartErrorService = SmartErrorService();
 
   Future<List<SpendingCategory>> getSpendingCategories() async {
-    List<SpendingCategory> categories = List<SpendingCategory>();
+    List<SpendingCategory> categories = [];
 
     await this
         .dbReference
@@ -46,7 +46,7 @@ class SpendingCategoryDao {
 
   Future<List<SpendingCategory>> getCategoriesById(
       List<String> categoryIdItems) async {
-    List<SpendingCategory> categories = List<SpendingCategory>();
+    List<SpendingCategory> categories = [];
 
     await this
         .dbReference

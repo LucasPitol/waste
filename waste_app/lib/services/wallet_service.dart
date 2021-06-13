@@ -77,6 +77,12 @@ class WalletService {
     bool success =
         await this.transactionService.deleteTransactionsByWalletId(walletId);
 
+    Wallet wallet = await this.dao.getWalletById(walletId);
+
+    wallet.totalBalance = 0;
+
+    await this.dao.updateWallet(wallet);
+
     return success;
   }
 
@@ -117,7 +123,7 @@ class WalletService {
   }
 
   Future<List<MemberDto>> getMembersByWalletId(List<String> membersId) async {
-    List<MemberDto> members = List<MemberDto>();
+    List<MemberDto> members = [];
 
     String userId = AuthService.currentUser.uid;
 

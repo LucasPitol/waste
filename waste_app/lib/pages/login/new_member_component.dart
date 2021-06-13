@@ -222,14 +222,11 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                           bottom: 20,
                                           left: 20,
                                           right: 20),
-                                      child: ButtonTheme(
-                                        minWidth: double.infinity,
-                                        height: 60.0,
-                                        child: RaisedButton(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: Styles
-                                                .defaultTextFieldBorderRadius,
-                                          ),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 50,
+                                        child: ElevatedButton(
+                                          style: Styles.elevatedButtonStyle,
                                           onPressed: () async {
                                             if (_formKey.currentState
                                                 .validate()) {
@@ -242,7 +239,6 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                               loading = false;
                                             });
                                           },
-                                          color: Colors.deepPurple,
                                           child: Text(
                                             userDto.language ==
                                                     Constants.languages[0]

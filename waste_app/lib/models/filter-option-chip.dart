@@ -4,7 +4,7 @@ class FilterOptionChip {
   String displayTextEn;
   bool enable;
 
-  ScreenOptionChip() {
+  FilterOptionChip() {
     this.enable = false;
   }
 }

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'manage_wallets_app_bar.dart';
 
 class EditWallet extends StatefulWidget {
-  String walletIdToEdit;
+  final String walletIdToEdit;
   EditWallet(this.walletIdToEdit);
   @override
   _EditWalletState createState() => _EditWalletState(walletIdToEdit);
@@ -145,7 +145,7 @@ class _EditWalletState extends State<EditWallet> {
                   children: <Widget>[
                     Container(
                       alignment: Alignment.topRight,
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: _deleteWallet,
                         child: Text(
                           this.userDto.language == Constants.languages[0]
@@ -190,19 +190,16 @@ class _EditWalletState extends State<EditWallet> {
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 40, left: 20, right: 20),
-                      child: ButtonTheme(
-                        minWidth: double.infinity,
+                      child: SizedBox(
+                        width: double.infinity,
                         height: 50,
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: Styles.defaultTextFieldBorderRadius,
-                          ),
+                        child: ElevatedButton(
+                          style: Styles.elevatedButtonStyle,
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               _updateWallet();
                             }
                           },
-                          color: Colors.deepPurple,
                           child: Text(
                             this.languageCode == Constants.languages[0]
                                 ? 'Salvar'

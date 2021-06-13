@@ -255,19 +255,16 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 40, left: 20, right: 20),
-                        child: ButtonTheme(
-                          minWidth: double.infinity,
+                        child: SizedBox(
+                          width: double.infinity,
                           height: 50,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: Styles.defaultTextFieldBorderRadius,
-                            ),
+                          child: ElevatedButton(
+                            style: Styles.elevatedButtonStyle,
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
                                 _saveNewRevenue();
                               }
                             },
-                            color: Colors.deepPurple,
                             child: Text(
                               isPtLanguage ? 'Salvar' : 'Save',
                               style: TextStyle(

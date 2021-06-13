@@ -6,7 +6,8 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
 class ResetPasswordComponent extends StatefulWidget {
-  String userMail;
+  final String userMail;
+
   ResetPasswordComponent(this.userMail);
   @override
   _ResetPasswordComponentState createState() =>
@@ -53,7 +54,9 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
         ? 'Enviamos um link para escolher uma nova senha'
         : 'We sent a link to recover your password';
 
-    String title = this.userDto.language == Constants.languages[0] ? 'Verifique seu email' : 'Check out your email';
+    String title = this.userDto.language == Constants.languages[0]
+        ? 'Verifique seu email'
+        : 'Check out your email';
 
     await _openInfoDialog(title, text);
 
@@ -101,13 +104,11 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                     Container(
                       margin: EdgeInsets.only(
                           top: 15, bottom: 20, left: 20, right: 20),
-                      child: ButtonTheme(
-                        minWidth: double.infinity,
-                        height: 60.0,
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: Styles.defaultTextFieldBorderRadius,
-                          ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          style: Styles.elevatedButtonStyle,
                           onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               setState(() {
@@ -119,7 +120,6 @@ class _ResetPasswordComponentState extends State<ResetPasswordComponent> {
                               loading = false;
                             });
                           },
-                          color: Colors.deepPurple,
                           child: Text(
                             userDto.language == Constants.languages[0]
                                 ? 'Redefinir'

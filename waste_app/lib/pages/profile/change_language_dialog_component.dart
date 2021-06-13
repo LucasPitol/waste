@@ -21,7 +21,7 @@ class _ChangeLanguageDialogComponentState
 
   _ChangeLanguageDialogComponentState() {
     this.authService = AuthService();
-    this.options = List<LanguageAndCodeDto>();
+    this.options = <LanguageAndCodeDto>[];
     this.setOptions();
   }
 

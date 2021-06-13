@@ -20,7 +20,6 @@ class SpendsService {
       DateTime startDate, DateTime endDate) async {
     var profileData = ProfileDto();
     Map<String, double> spendsByCategoryMapLocal = new Map<String, double>();
-    var graphItemList = List<GraphCategoryDto>();
     double totalWaste = 0.0;
 
     if (startDate == null) {
