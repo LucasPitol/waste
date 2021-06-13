@@ -1,0 +1,49 @@
+<div class="backg">
+
+    <div class="container-box">
+
+        <form>
+            <div class="txt-input-div">
+                <mat-form-field appearance="legacy">
+                    <mat-label>Email</mat-label>
+                    <input matInput [formControl]="emailFormControl" placeholder="Digite o email da sua conta">
+                    <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                        Digite um email valido
+                    </mat-error>
+                    <mat-error *ngIf="emailFormControl.hasError('required')">
+                        Email é <strong>obrigatório</strong>
+                    </mat-error>
+                    <mat-icon matSuffix>email</mat-icon>
+                </mat-form-field>
+            </div>
+            <div class="txt-input-div">
+                <mat-form-field appearance="legacy">
+                    <mat-label>Senha</mat-label>
+                    <input matInput [formControl]="passwordFormControl" type="password" placeholder="******">
+                    <mat-error *ngIf="passwordFormControl.hasError('required')">
+                        Campo <strong>obrigatório</strong>
+                    </mat-error>
+                    <mat-error *ngIf="passwordFormControl.hasError('minlength')">
+                        Senha deve ter no mínimo 6 caracteres
+                    </mat-error>
+                    <mat-error *ngIf="passwordFormControl.hasError('maxlength')">
+                        Senha deve ter menos de 100 caracteres
+                    </mat-error>
+                    <mat-icon matSuffix>lock</mat-icon>
+                </mat-form-field>
+            </div>
+
+            <div class="btn-area">
+                <div>
+                    <button class="primary-button" mat-raised-button color="primary" (click)="login()"><div class="btn-text">Login</div></button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+    
+</div>
+
+<div *ngIf="loading" class="loader">
+    <mat-spinner class="loader-spiner"></mat-spinner>
+</div>

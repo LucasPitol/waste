@@ -26,6 +26,10 @@ time, mark, audio, video
     /* color: rgb(250, 250, 250); */
 }
 
+body {
+    background-color: #171717;
+}
+
 ol, ul
 {
     list-style: none;
@@ -44,6 +48,14 @@ html
 
 span, p {
     font-family: 'Poppins';
+}
+
+span {
+    color: #fafafa;
+}
+
+p {
+    color: #9e9e9e;
 }
 
 html, body { height: 100%; }
