@@ -2,6 +2,7 @@ import { AlertDialogComponent } from "../subpages/alert-dialog/alert-dialog.comp
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'login-component',
@@ -23,6 +24,7 @@ export class LoginComponent implements OnInit {
 
     constructor(
         // private encarregadoService: EncarregadoService,
+		private router: Router,
         public dialog: MatDialog,
     ) { }
 
@@ -83,6 +85,8 @@ export class LoginComponent implements OnInit {
 
             //     this.toggleLoading(false)
             // })
+
+            this.router.navigate(['payment'])
         }
 
     }
