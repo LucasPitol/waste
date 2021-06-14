@@ -1,7 +1,7 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/new_wallet_member/new_wallet_member_component.dart';
+import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:waste_app/pages/home/settings_component.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';

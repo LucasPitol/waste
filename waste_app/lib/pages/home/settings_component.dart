@@ -8,6 +8,7 @@ import 'package:waste_app/models/dtos/language_and_code_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/profile/new_wallet_dialog_component.dart';
+import 'package:waste_app/pages/shared/menu_item.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
@@ -76,11 +77,6 @@ class _SettingsComponentState extends State<SettingsComponent> {
     });
   }
 
-  TextStyle settingsItemStyle = TextStyle(
-    color: Colors.grey.shade100,
-    fontWeight: FontWeight.w500,
-  );
-
   _getOut() {
     Navigator.pop(context, hasChanges);
   }
@@ -144,7 +140,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
         });
   }
 
-  _sendChangePasswordEmail() async {
+  _goToChangePasswordPage() async {
     String userMail = AuthService.currentUser.email;
 
     this.authService.sendResetPasswordEmail(userMail);
@@ -166,6 +162,43 @@ class _SettingsComponentState extends State<SettingsComponent> {
         });
   }
 
+  _getAppBar() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            child: Text(
+              isPtLanguage ? 'Ajustes' : 'Settings',
+              style: TextStyle(
+                color: Colors.grey.shade100,
+                fontWeight: FontWeight.w600,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          Container(
+            child: InkWell(
+              borderRadius: Styles.circularBorderRadius,
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: EdgeInsets.all(5),
+                child: FaIcon(
+                  FontAwesomeIcons.times,
+                  size: 22,
+                  color: Colors.grey.shade100,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -180,103 +213,41 @@ class _SettingsComponentState extends State<SettingsComponent> {
         child: SingleChildScrollView(
           child: Container(
             width: double.infinity,
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            margin: EdgeInsets.symmetric(vertical: 10),
             child: Column(
               children: [
+                _getAppBar(),
                 Container(
-                  child: Stack(
-                    children: [
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          isPtLanguage ? 'Ajustes' : 'Settings',
-                          style: TextStyle(
-                            color: Colors.grey.shade100,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        alignment: Alignment.topRight,
-                        child: InkWell(
-                          borderRadius: Styles.circularBorderRadius,
-                          onTap: () {
-                            _getOut();
-                          },
-                          child: Icon(
-                            Icons.close,
-                            color: Colors.grey.shade100,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 50,
-                  margin: EdgeInsets.only(top: 40),
+                  margin: EdgeInsets.only(top: 20),
                   child: InkWell(
+                    borderRadius: Styles.defaultBorderRadius,
+                    // splashColor: Styles.brightColor,
+                    child: MenuItem(
+                        FontAwesomeIcons.wallet,
+                        isPtLanguage
+                            ? 'Adicionar nova carteira'
+                            : 'Add new wallet'),
                     onTap: () {
                       _createNewWallet();
                     },
-                    child: Stack(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: FaIcon(
-                            FontAwesomeIcons.wallet,
-                            size: 22,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 40),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            isPtLanguage
-                                ? 'Adicionar nova carteira'
-                                : 'Add new wallet',
-                            style: settingsItemStyle,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
+                Divider(),
                 Container(
-                  height: 50,
-                  margin: EdgeInsets.only(top: 10),
                   child: InkWell(
-                    onTap: () {
-                      _sendChangePasswordEmail();
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Icon(
-                            Icons.lock_outline,
-                            size: 26,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 40),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            isPtLanguage ? 'Alterar senha' : 'Change password',
-                            style: settingsItemStyle,
-                          ),
-                        ),
-                      ],
+                    borderRadius: Styles.defaultBorderRadius,
+                    child: MenuItem(
+                      FontAwesomeIcons.lock,
+                      isPtLanguage ? 'Alterar senha' : 'Change password',
                     ),
+                    onTap: () {
+                      _goToChangePasswordPage();
+                    },
                   ),
                 ),
                 Container(
-                  height: 50,
-                  margin: EdgeInsets.only(top: 10),
+                  height: 40,
+                  margin: EdgeInsets.only(top: 10, left: 20, right: 20),
                   child: Container(
                     child: Stack(
                       children: [
@@ -293,7 +264,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             isPtLanguage ? 'Idioma' : 'Language',
-                            style: settingsItemStyle,
+                            style: Styles.poppinsText,
                           ),
                         ),
                         Container(
@@ -331,62 +302,30 @@ class _SettingsComponentState extends State<SettingsComponent> {
                     ),
                   ),
                 ),
+                Divider(),
                 Container(
-                  height: 50,
-                  margin: EdgeInsets.only(top: 10),
                   child: InkWell(
+                    borderRadius: Styles.defaultBorderRadius,
+                    child: MenuItem(
+                      FontAwesomeIcons.infoCircle,
+                      isPtLanguage ? 'Sobre' : 'About',
+                    ),
                     onTap: () {
                       _openAboutDialog();
                     },
-                    child: Stack(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: FaIcon(
-                            FontAwesomeIcons.infoCircle,
-                            size: 22,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 40),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            isPtLanguage ? 'Sobre' : 'About',
-                            style: settingsItemStyle,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
+                Divider(),
                 Container(
-                  height: 50,
-                  margin: EdgeInsets.only(top: 10),
                   child: InkWell(
+                    borderRadius: Styles.defaultBorderRadius,
+                    child: MenuItem(
+                      FontAwesomeIcons.signOutAlt,
+                      isPtLanguage ? 'Sair' : 'Logout',
+                    ),
                     onTap: () {
                       _logout();
                     },
-                    child: Stack(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: FaIcon(
-                            FontAwesomeIcons.signOutAlt,
-                            size: 22,
-                            color: Colors.deepPurple,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 40),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            isPtLanguage ? 'Sair' : 'Logout',
-                            style: settingsItemStyle,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ],

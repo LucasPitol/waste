@@ -29,7 +29,9 @@ class Styles {
 
   static Color primaryColor = Colors.deepPurple;
   static Color secondaryColor = Colors.deepPurple.shade300;
-  static Color darkColor = Colors.deepPurple.shade700;
+  static Color darkColor = Colors.deepPurple.shade900;
+
+  static Color mainTextColor = Colors.grey.shade100;
 
   static Color boxColor = Color(0xFF171717);
 
