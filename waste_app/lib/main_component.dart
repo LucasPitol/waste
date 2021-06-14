@@ -1,5 +1,4 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'package:waste_app/pages/spends/spends.dart';
 import 'pages/new_spend/new_spend_component.dart';
@@ -21,6 +20,7 @@ GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
 GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
 GlobalKey<ProfitsComponentState> profitsComponentGlobalKey = GlobalKey();
 GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
+GlobalKey<OverlayBuilderState> overlayBuilderStatelKey = GlobalKey();
 
 class _MainComponentState extends State<MainComponent> {
   FloatingActionButtonLocation _addFabLocation =
@@ -28,11 +28,17 @@ class _MainComponentState extends State<MainComponent> {
 
   final fabIcons = [Icons.trending_up, Icons.trending_down];
 
+  AnchoredOverlay customFab;
+
   int _selectedIndex = 0;
 
   void _goToNewSpendPage() async {
+    overlayBuilderStatelKey.currentState.hideOverlay();
+
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
+
+    overlayBuilderStatelKey.currentState.showOverlay();
 
     _updateLayout();
 
@@ -42,8 +48,12 @@ class _MainComponentState extends State<MainComponent> {
   }
 
   void _goToNewRevenuePage() async {
+    overlayBuilderStatelKey.currentState.hideOverlay();
+
     var refresh = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => NewRevenueComponent()));
+
+    overlayBuilderStatelKey.currentState.showOverlay();
 
     _updateLayout();
 
@@ -106,33 +116,36 @@ class _MainComponentState extends State<MainComponent> {
 
   @override
   Widget build(BuildContext context) {
+    this.customFab = AnchoredOverlay(
+      childKey: overlayBuilderStatelKey,
+      showOverlay: true,
+      overlayBuilder: (context, offset) {
+        return CenterAbout(
+          position: Offset(offset.dx, offset.dy - fabIcons.length * 35.0),
+          child: FabWithIcons(
+            icons: fabIcons,
+            onIconTapped: _selectedFab,
+          ),
+        );
+      },
+      child: FloatingActionButton(
+        backgroundColor: Styles.boxColor,
+        onPressed: () {},
+        child: Icon(
+          Icons.add,
+          color: Styles.primaryColor,
+        ),
+        elevation: 2.0,
+      ),
+    );
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Styles.mainBackgroundColor,
       body: Container(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: AnchoredOverlay(
-        showOverlay: true,
-        overlayBuilder: (context, offset) {
-          return CenterAbout(
-            position: Offset(offset.dx, offset.dy - fabIcons.length * 35.0),
-            child: FabWithIcons(
-              icons: fabIcons,
-              onIconTapped: _selectedFab,
-            ),
-          );
-        },
-        child: FloatingActionButton(
-          backgroundColor: Styles.boxColor,
-          onPressed: () {},
-          child: FaIcon(
-            FontAwesomeIcons.plus,
-            color: Styles.primaryColor,
-          ),
-          elevation: 2.0,
-        ),
-      ),
+      floatingActionButton: customFab,
       // floatingActionButton: FloatingActionButton(
       //   backgroundColor: Styles.boxColor,
       //   child: Icon(

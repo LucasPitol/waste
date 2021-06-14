@@ -4,8 +4,10 @@ class AnchoredOverlay extends StatelessWidget {
   final bool showOverlay;
   final Widget Function(BuildContext, Offset anchor) overlayBuilder;
   final Widget child;
+  final Key childKey;
 
   AnchoredOverlay({
+    this.childKey,
     this.showOverlay,
     this.overlayBuilder,
     this.child,
@@ -14,12 +16,15 @@ class AnchoredOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
         return OverlayBuilder(
+          key: childKey,
           showOverlay: showOverlay,
           overlayBuilder: (BuildContext overlayContext) {
             RenderBox box = context.findRenderObject() as RenderBox;
-            final center = box.size.center(box.localToGlobal(const Offset(0.0, 0.0)));
+            final center =
+                box.size.center(box.localToGlobal(const Offset(0.0, 0.0)));
 
             return overlayBuilder(overlayContext, center);
           },
@@ -36,16 +41,17 @@ class OverlayBuilder extends StatefulWidget {
   final Widget child;
 
   OverlayBuilder({
+    Key key,
     this.showOverlay = false,
     this.overlayBuilder,
     this.child,
-  });
+  }) : super(key: key);
 
   @override
-  _OverlayBuilderState createState() => _OverlayBuilderState();
+  OverlayBuilderState createState() => OverlayBuilderState();
 }
 
-class _OverlayBuilderState extends State<OverlayBuilder> {
+class OverlayBuilderState extends State<OverlayBuilder> {
   OverlayEntry overlayEntry;
 
   @override
