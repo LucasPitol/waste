@@ -37,6 +37,19 @@ class AuthService {
     }, merge: true);
   }
 
+  Future<bool> changePassword(String newPassword, String userId) async {
+    DocumentReference docRef = dbReference.collection('user').document(userId);
+
+    var passwordEncr = await this.encryptString(newPassword);
+
+    await docRef.setData({
+      'password': passwordEncr,
+      'lastUpdate': Timestamp.fromDate(DateTime.now())
+    }, merge: true);
+
+    return true;
+  }
+
   static isAuthenticated() {
     return currentUser != null &&
         currentUser.name != null &&
@@ -317,10 +330,7 @@ class AuthService {
         .then((onValue) {
       var userSS = onValue.documents.first;
 
-      if (userSS != null) {
-
-        
-      }
+      if (userSS != null) {}
     }).catchError((onError) {
       print(onError);
 

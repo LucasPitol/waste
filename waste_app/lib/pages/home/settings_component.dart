@@ -14,6 +14,8 @@ import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/utils/styles.dart';
 
+import 'change_password_component.dart';
+
 class SettingsComponent extends StatefulWidget {
   @override
   _SettingsComponentState createState() => _SettingsComponentState();
@@ -141,17 +143,8 @@ class _SettingsComponentState extends State<SettingsComponent> {
   }
 
   _goToChangePasswordPage() async {
-    String userMail = AuthService.currentUser.email;
-
-    this.authService.sendResetPasswordEmail(userMail);
-
-    String text = isPtLanguage
-        ? 'Enviamos um link para escolher uma nova senha'
-        : 'We sent a link to recover your password';
-
-    String title = isPtLanguage ? 'Verifique seu email' : 'Check your email';
-
-    await _openInfoDialog(title, text);
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ChangePasswordComponent()));
   }
 
   Future<void> _openInfoDialog(String title, String content) async {
@@ -182,7 +175,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
             child: InkWell(
               borderRadius: Styles.circularBorderRadius,
               onTap: () {
-                Navigator.pop(context);
+                _getOut();
               },
               child: Container(
                 padding: EdgeInsets.all(5),

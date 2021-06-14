@@ -35,6 +35,9 @@ class Styles {
 
   static Color boxColor = Color(0xFF171717);
 
+  static TextStyle pageTitleStyle = TextStyle(
+      color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 24);
+
   static TextStyle poppinsText = TextStyle(
       color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 16);
 
