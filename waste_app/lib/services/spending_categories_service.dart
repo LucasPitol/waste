@@ -8,7 +8,7 @@ import 'auth_service.dart';
 import 'smart_error_service.dart';
 
 class SpendingCategoriesService {
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   SpendingCategoryDao dao = SpendingCategoryDao();
   SmartErrorService smartErrorService = SmartErrorService();
 
@@ -29,19 +29,19 @@ class SpendingCategoriesService {
 
   void decrementSpendsWithThisCategory(String categoryId) {
     DocumentReference docRef =
-        this.dbReference.collection('spendingCategories').document(categoryId);
+        this.dbReference.collection('spendingCategories').doc(categoryId);
 
     docRef.get().then((value) {
-      var category = value.data;
+      Map<String, dynamic> category = value.data();
 
       int previousSpendsCount = category['spendsWithThisCategoryCount'];
 
       if (previousSpendsCount != null && previousSpendsCount > 0) {
         int newSpendCount = (previousSpendsCount - 1);
 
-        docRef.setData({
+        docRef.set({
           'spendsWithThisCategoryCount': newSpendCount,
-        }, merge: true).catchError((onError) {
+        }, SetOptions(merge: true)).catchError((onError) {
           print(onError);
           SmartError errorDto = SmartError();
           errorDto.errorLog = onError.toString();
@@ -56,10 +56,10 @@ class SpendingCategoriesService {
 
   void incrementSpendsWithThisCategory(String categoryId) {
     DocumentReference docRef =
-        this.dbReference.collection('spendingCategories').document(categoryId);
+        this.dbReference.collection('spendingCategories').doc(categoryId);
 
     docRef.get().then((value) {
-      var category = value.data;
+      Map<String, dynamic> category = value.data();
 
       int previousSpendsCount = category['spendsWithThisCategoryCount'];
 
@@ -69,9 +69,9 @@ class SpendingCategoriesService {
 
       int newSpendCount = (previousSpendsCount + 1);
 
-      docRef.setData({
+      docRef.set({
         'spendsWithThisCategoryCount': newSpendCount,
-      }, merge: true).catchError((onError) {
+      }, SetOptions(merge: true)).catchError((onError) {
         print(onError);
         SmartError errorDto = SmartError();
         errorDto.errorLog = onError.toString();

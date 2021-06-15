@@ -11,12 +11,12 @@ class Spend {
   double waste;
 
   Spend(DocumentSnapshot doc) {
-    var objMapp = doc.data;
+    Map<String, dynamic> objMapp = doc.data();
 
     Timestamp spendDateTimestamp = objMapp['transactionDate'];
     Timestamp creationDateTimestamp = objMapp['creationDate'];
 
-    this.spendId = doc.documentID;
+    this.spendId = doc.id;
     this.creationDate = creationDateTimestamp.toDate();
     this.reason = objMapp['reason'];
     this.spendDate = spendDateTimestamp.toDate();

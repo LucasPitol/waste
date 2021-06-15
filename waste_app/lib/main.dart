@@ -1,17 +1,19 @@
 import 'package:waste_app/pages/login/login_component.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:waste_app/main_component.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
-
 import 'services/auth_service.dart';
 import 'models/user_dto.dart';
 import 'utils/constants.dart';
 import 'utils/styles.dart';
 import 'dart:ui' as ui;
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   initializeDateFormatting(Constants.ptLanguage).then((_) => runApp(Phoenix(
       child: MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()))));
   // runApp(MaterialApp(home: MyApp()));

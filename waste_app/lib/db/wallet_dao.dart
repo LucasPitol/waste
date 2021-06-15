@@ -1,11 +1,11 @@
+import 'package:waste_app/services/smart_error_service.dart';
+import 'package:waste_app/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/models/wallet.dart';
-import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/smart_error_service.dart';
 
 class WalletDao {
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
 
   Future<bool> createNewWallet(
@@ -41,7 +41,7 @@ class WalletDao {
 
     await dbReference
         .collection('wallets')
-        .document(walletId)
+        .doc(walletId)
         .delete()
         .then((onValue) async {
       success = true;
@@ -67,10 +67,10 @@ class WalletDao {
     await this
         .dbReference
         .collection('wallets')
-        .document(walletId)
+        .doc(walletId)
         .get()
         .then((value) {
-      var objMap = value.data;
+      Map<String, dynamic> objMap = value.data();
       List<String> members = [];
 
       var totalBalanceStr = objMap['totalBalance'];
@@ -87,8 +87,8 @@ class WalletDao {
         members.add(item);
       });
 
-      wallet = Wallet(value.documentID, creationDateFormated, members,
-          objMap['name'], objMap['ownerId'], totalBalance);
+      wallet = Wallet(value.id, creationDateFormated, members, objMap['name'],
+          objMap['ownerId'], totalBalance);
 
       return wallet;
     }).catchError((onError) {
@@ -113,12 +113,12 @@ class WalletDao {
 
     Timestamp lastUpdate = Timestamp.fromDate(DateTime.now());
 
-    await dbReference.collection('wallets').document(walletId).setData({
+    await dbReference.collection('wallets').doc(walletId).set({
       'name': newWallet.name,
       'lastUpdate': lastUpdate,
       'totalBalance': newWallet.totalBalance,
       'membersId': newWallet.membersId
-    }, merge: true).then((onValue) {
+    }, SetOptions(merge: true)).then((onValue) {
       success = true;
       return success;
     }).catchError((onError) {

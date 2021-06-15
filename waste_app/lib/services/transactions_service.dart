@@ -19,7 +19,7 @@ import 'auth_service.dart';
 import 'wallet_service.dart';
 
 class TransactionService {
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   TransactionsDao transactionsDao = TransactionsDao();
   SmartErrorService smartErrorService = SmartErrorService();
   SpendingCategoriesService spendingCategoriesService =

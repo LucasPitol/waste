@@ -3,7 +3,7 @@ import 'package:waste_app/models/smart_error.dart';
 
 class SmartErrorService {
 
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
 
   Future<void> saveError(SmartError errorDto) async {
 

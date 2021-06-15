@@ -13,7 +13,7 @@ import 'wallet_service.dart';
 import 'dart:convert';
 
 class AuthService {
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
 
   static UserDto currentUser = new UserDto();
@@ -29,23 +29,23 @@ class AuthService {
 
     String uid = currentUser.uid;
 
-    DocumentReference docRef = dbReference.collection('user').document(uid);
+    DocumentReference docRef = dbReference.collection('user').doc(uid);
 
-    docRef.setData({
+    docRef.set({
       'language': newLanguage,
       'lastUpdate': Timestamp.fromDate(DateTime.now())
-    }, merge: true);
+    }, SetOptions(merge: true));
   }
 
   Future<bool> changePassword(String newPassword, String userId) async {
-    DocumentReference docRef = dbReference.collection('user').document(userId);
+    DocumentReference docRef = dbReference.collection('user').doc(userId);
 
     var passwordEncr = await this.encryptString(newPassword);
 
-    await docRef.setData({
+    await docRef.set({
       'password': passwordEncr,
       'lastUpdate': Timestamp.fromDate(DateTime.now())
-    }, merge: true);
+    }, SetOptions(merge: true));
 
     return true;
   }
@@ -79,11 +79,11 @@ class AuthService {
     await dbReference
         .collection('user')
         .where('email', isEqualTo: userMail)
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapShot) async {
-      var userRef = snapShot.documents.first;
+      var userRef = snapShot.docs.first;
 
-      var user = userRef.data;
+      Map<String, dynamic> user = userRef.data();
 
       String passwordEncrypt = user['password'];
 
@@ -93,7 +93,7 @@ class AuthService {
         return userDtoTemp;
       }
 
-      var uid = userRef.documentID;
+      var uid = userRef.id;
 
       List<Wallet> wallets = await this.walletService.getWalletsByUserId(uid);
 
@@ -127,29 +127,28 @@ class AuthService {
   }
 
   void updateUserData(String uid) {
-    DocumentReference docRef = dbReference.collection('user').document(uid);
+    DocumentReference docRef = dbReference.collection('user').doc(uid);
 
-    docRef.setData(
-        {'lastAccess': Timestamp.fromDate(DateTime.now()), 'uid': uid},
-        merge: true);
+    docRef.set({'lastAccess': Timestamp.fromDate(DateTime.now()), 'uid': uid},
+        SetOptions(merge: true));
   }
 
   Future<bool> loginByUid(String uid) async {
-    DocumentReference docRef = dbReference.collection('user').document(uid);
+    DocumentReference docRef = dbReference.collection('user').doc(uid);
 
     await docRef.get().then((onValue) async {
       print(onValue.exists);
       if (onValue.exists) {
-        await docRef.setData({
+        await docRef.set({
           'uid': uid,
           'lastAccess': Timestamp.fromDate(DateTime.now()),
-        }, merge: true);
+        }, SetOptions(merge: true));
 
         await this._setUserIdToLocalStorage(uid);
 
         List<Wallet> wallets = await this.walletService.getWalletsByUserId(uid);
 
-        var user = onValue.data;
+        Map<String, dynamic> user = onValue.data();
 
         AuthService.currentUser.email = user['email'];
         AuthService.currentUser.name = user['displayName'];
@@ -198,10 +197,10 @@ class AuthService {
     await dbReference
         .collection('user')
         .where('email', isEqualTo: userMail)
-        .getDocuments()
+        .get()
         .then((snapShot) async {
       var userRef =
-          snapShot.documents.isEmpty ? null : snapShot.documents.first;
+          snapShot.docs.isEmpty ? null : snapShot.docs.first;
 
       if (userRef != null) {
         errorMsg = Constants.getUserAlreadyExistsMsg(currentUser.language);
@@ -215,7 +214,7 @@ class AuthService {
         'language': 'auto',
         'creationDate': Timestamp.fromDate(DateTime.now())
       }).then((onValue) async {
-        String uid = onValue.documentID;
+        String uid = onValue.id;
 
         this.updateUserData(uid);
 
@@ -261,7 +260,7 @@ class AuthService {
       Phoenix.rebirth(context);
     }
 
-    DocumentReference docRef = dbReference.collection('user').document(uid);
+    DocumentReference docRef = dbReference.collection('user').doc(uid);
 
     await docRef.get().then((onValue) async {
       if (!onValue.exists) {
@@ -290,13 +289,13 @@ class AuthService {
         .dbReference
         .collection('user')
         .where('email', isEqualTo: email)
-        .getDocuments()
+        .get()
         .then((value) {
-      var user = value.documents.first;
+      var user = value.docs.first;
 
       if (user != null) {
-        String userId = user.documentID;
-        var obj = user.data;
+        String userId = user.id;
+        Map<String, dynamic> obj = user.data();
 
         member = MemberDto();
 
@@ -326,9 +325,9 @@ class AuthService {
         .dbReference
         .collection('user')
         .where('email', isEqualTo: userMail)
-        .getDocuments()
+        .get()
         .then((onValue) {
-      var userSS = onValue.documents.first;
+      var userSS = onValue.docs.first;
 
       if (userSS != null) {}
     }).catchError((onError) {

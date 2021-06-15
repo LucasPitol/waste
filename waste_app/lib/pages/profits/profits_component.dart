@@ -305,128 +305,72 @@ class ProfitsComponentState extends State<ProfitsComponent> {
                     ],
                   ),
                 ),
-                // Container(
-                //   alignment: Alignment.centerLeft,
-                //   child: SingleChildScrollView(
-                //     scrollDirection: Axis.horizontal,
-                //     physics: const BouncingScrollPhysics(),
-                //     child: Padding(
-                //       padding: EdgeInsets.symmetric(vertical: 20),
-                //       child: Row(
-                //         children: filterOptions
-                //             .map((item) => createFilterOptionsChip(item))
-                //             .toList(),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 Container(
                   width: double.infinity,
                   height: 20,
                 ), // remover quando adicionar o filtro
                 loading
                     ? Container()
-                    : Container(
-                        padding: EdgeInsets.only(right: 40),
-                        margin: EdgeInsets.symmetric(vertical: 20),
-                        child: BarChart(
-                          BarChartData(
-                            maxY: this.maxValueGraph,
-                            barTouchData: BarTouchData(
-                              touchTooltipData: BarTouchTooltipData(
-                                tooltipBgColor: Colors.grey,
-                                getTooltipItem: (_a, _b, _c, _d) => null,
-                              ),
-                              // touchCallback: (response) {
-                              //   if (response.spot == null) {
-                              //     setState(() {
-                              //       touchedGroupIndex = -1;
-                              //       showingBarGroups = List.of(rawBarGroups);
-                              //     });
-                              //     return;
-                              //   }
+                    : AspectRatio(
+                        aspectRatio: 1,
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Expanded(
+                              child: BarChart(
+                                BarChartData(
+                                  maxY: this.maxValueGraph,
+                                  barTouchData: BarTouchData(
+                                    touchTooltipData: BarTouchTooltipData(
+                                      tooltipBgColor: Colors.grey,
+                                      getTooltipItem: (_a, _b, _c, _d) => null,
+                                    ),
+                                  ),
+                                  titlesData: FlTitlesData(
+                                    show: true,
+                                    bottomTitles: SideTitles(
+                                      showTitles: true,
+                                      getTextStyles: (value) => const TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                      margin: 20,
+                                      getTitles: (double value) {
+                                        var index = value.toInt();
 
-                              //   touchedGroupIndex =
-                              //       response.spot.touchedBarGroupIndex;
-
-                              //   setState(
-                              //     () {
-                              //       if (response.touchInput is FlLongPressEnd ||
-                              //           response.touchInput is FlPanEnd) {
-                              //         touchedGroupIndex = -1;
-                              //         showingBarGroups = List.of(rawBarGroups);
-                              //       } else {
-                              //         showingBarGroups = List.of(rawBarGroups);
-                              //         if (touchedGroupIndex != -1) {
-                              //           double sum = 0;
-                              //           for (BarChartRodData rod
-                              //               in showingBarGroups[touchedGroupIndex]
-                              //                   .barRods) {
-                              //             sum += rod.y;
-                              //           }
-                              //           final avg = sum /
-                              //               showingBarGroups[touchedGroupIndex]
-                              //                   .barRods
-                              //                   .length;
-
-                              //           showingBarGroups[touchedGroupIndex] =
-                              //               showingBarGroups[touchedGroupIndex]
-                              //                   .copyWith(
-                              //             barRods: showingBarGroups[touchedGroupIndex]
-                              //                 .barRods
-                              //                 .map((rod) {
-                              //               return rod.copyWith(y: avg);
-                              //             }).toList(),
-                              //           );
-                              //         }
-                              //       }
-                              //     },
-                              //   );
-                              // },
-                            ),
-                            titlesData: FlTitlesData(
-                              show: true,
-                              bottomTitles: SideTitles(
-                                showTitles: true,
-                                getTextStyles: (value) => const TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
-                                margin: 20,
-                                getTitles: (double value) {
-                                  var index = value.toInt();
-
-                                  return this.graphSubtitleMap[index];
-                                },
-                              ),
-                              leftTitles: SideTitles(
-                                showTitles: true,
-                                getTextStyles: (value) => const TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14),
-                                margin: 32,
-                                reservedSize: this.reservedSizeGraph,
-                                getTitles: (value) {
-                                  if (value == 0) {
-                                    return '';
-                                  } else if (value == midValueGraph) {
-                                    return formatAmount(midValueGraph);
-                                  } else if (value == maxValueGraph) {
-                                    return formatAmount(maxValueGraph);
-                                  } else {
-                                    return '';
-                                  }
-                                },
+                                        return this.graphSubtitleMap[index];
+                                      },
+                                    ),
+                                    leftTitles: SideTitles(
+                                      showTitles: true,
+                                      getTextStyles: (value) => const TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14),
+                                      margin: 32,
+                                      reservedSize: this.reservedSizeGraph,
+                                      getTitles: (value) {
+                                        if (value == 0) {
+                                          return '';
+                                        } else if (value == midValueGraph) {
+                                          return formatAmount(midValueGraph);
+                                        } else if (value == maxValueGraph) {
+                                          return formatAmount(maxValueGraph);
+                                        } else {
+                                          return '';
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  barGroups: this.showingBarGroups,
+                                ),
                               ),
                             ),
-                            borderData: FlBorderData(
-                              show: false,
-                            ),
-                            barGroups: showingBarGroups,
                           ),
                         ),
                       ),
+
                 loading
                     ? Container()
                     : Container(

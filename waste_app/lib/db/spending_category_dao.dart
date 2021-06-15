@@ -5,7 +5,7 @@ import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/smart_error_service.dart';
 
 class SpendingCategoryDao {
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
 
   Future<List<SpendingCategory>> getSpendingCategories() async {
@@ -14,12 +14,12 @@ class SpendingCategoryDao {
     await this
         .dbReference
         .collection('spendingCategories')
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((item) {
-        String categoryId = item.documentID;
+      snapshot.docs.forEach((item) {
+        String categoryId = item.id;
 
-        var obj = item.data;
+        Map<String, dynamic> obj = item.data();
 
         String ptName = obj['displayNamePt'];
         String enName = obj['displayNameEn'];
@@ -52,11 +52,11 @@ class SpendingCategoryDao {
         .dbReference
         .collection('spendingCategories')
         .where('categoryId', whereIn: categoryIdItems)
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((element) {
-        String categoryId = element.documentID;
-        var obj = element.data;
+      snapshot.docs.forEach((element) {
+        String categoryId = element.id;
+        Map<String, dynamic> obj = element.data();
 
         SpendingCategory category = SpendingCategory(categoryId,
             obj['displayNamePt'], obj['displayNameEn'], obj['value']);

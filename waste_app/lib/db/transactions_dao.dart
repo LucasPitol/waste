@@ -1,19 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:waste_app/models/dtos/transaction_block_dto.dart';
-import 'package:waste_app/models/dtos/transaction_dto.dart';
-import 'package:waste_app/models/forms/edit_waste_form.dart';
-import 'package:waste_app/models/forms/new_revenue_form.dart';
-import 'package:waste_app/models/forms/new_waste_form.dart';
-import 'package:waste_app/models/smart_error.dart';
-import 'package:waste_app/models/spend.dart';
-import 'package:waste_app/services/auth_service.dart';
-import 'package:waste_app/services/smart_error_service.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
+import 'package:waste_app/models/dtos/transaction_block_dto.dart';
+import 'package:waste_app/models/forms/new_revenue_form.dart';
+import 'package:waste_app/models/forms/edit_waste_form.dart';
+import 'package:waste_app/services/smart_error_service.dart';
+import 'package:waste_app/models/forms/new_waste_form.dart';
+import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/services/wallet_service.dart';
+import 'package:waste_app/services/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:waste_app/models/smart_error.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/models/spend.dart';
 
 class TransactionsDao {
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   SmartErrorService smartErrorService = SmartErrorService();
   SpendingCategoriesService spendingCategoriesService =
       SpendingCategoriesService();
@@ -80,11 +80,7 @@ class TransactionsDao {
       waste = waste * (-1);
     }
 
-    await this
-        .dbReference
-        .collection('transactions')
-        .document(transactionId)
-        .setData({
+    await this.dbReference.collection('transactions').doc(transactionId).set({
       'reason': reason,
       'transactionDate': spendDate,
       'userId': uid,
@@ -93,7 +89,7 @@ class TransactionsDao {
       'lastUpdate': lastUpdateDate,
       'categoryId': categoryId,
       'type': 'WASTE'
-    }, merge: true).then((value) {
+    }, SetOptions(merge: true)).then((value) {
       success = true;
       return success;
     }).catchError((onError) {
@@ -116,7 +112,7 @@ class TransactionsDao {
     await this
         .dbReference
         .collection('transactions')
-        .document(transactionId)
+        .doc(transactionId)
         .delete()
         .then((value) async {
       success = true;
@@ -144,9 +140,9 @@ class TransactionsDao {
     await dbReference
         .collection('transactions')
         .where('walletId', isEqualTo: walletId)
-        .getDocuments()
+        .get()
         .then((onValue) {
-      for (DocumentSnapshot ds in onValue.documents) {
+      for (DocumentSnapshot ds in onValue.docs) {
         ds.reference.delete();
       }
       success = true;
@@ -180,12 +176,12 @@ class TransactionsDao {
         .where('walletId', isEqualTo: walletId)
         .orderBy('transactionDate', descending: true)
         .limit(limit)
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapShot) {
-      transactionBlockDto.reachedTheLimit = snapShot.documents.length >= limit;
+      transactionBlockDto.reachedTheLimit = snapShot.docs.length >= limit;
 
-      snapShot.documents.forEach((element) {
-        var objMap = element.data;
+      snapShot.docs.forEach((element) {
+        Map<String, dynamic> objMap = element.data();
         var transaction = TransactionDto();
 
         Timestamp transactionDateTimestamp = objMap['transactionDate'];
@@ -193,7 +189,7 @@ class TransactionsDao {
 
         transaction.amount = double.parse(objMap['amount'].toString());
         transaction.reason = objMap['reason'];
-        transaction.transactionId = element.documentID;
+        transaction.transactionId = element.id;
         transaction.transactionDate = transactionDate;
 
         DateTime key = DateTime(transactionDate.year, transactionDate.month, 1);
@@ -254,17 +250,17 @@ class TransactionsDao {
         .where('walletId', isEqualTo: walletId)
         .orderBy('transactionDate', descending: true)
         .limit(2)
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapShot) {
-      snapShot.documents.forEach((element) {
-        var objMap = element.data;
+      snapShot.docs.forEach((element) {
+        Map<String, dynamic> objMap = element.data();
         var transaction = TransactionDto();
 
         Timestamp transactionDateTimestamp = objMap['transactionDate'];
 
         transaction.amount = double.parse(objMap['amount'].toString());
         transaction.reason = objMap['reason'];
-        transaction.transactionId = element.documentID;
+        transaction.transactionId = element.id;
         transaction.transactionDate = transactionDateTimestamp.toDate();
 
         transactions.add(transaction);
@@ -291,9 +287,9 @@ class TransactionsDao {
         .where('walletId', isEqualTo: walletId)
         .where('type', isEqualTo: 'WASTE')
         .where('transactionDate', isGreaterThanOrEqualTo: startDate)
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapShot) {
-      snapShot.documents.forEach((item) {
+      snapShot.docs.forEach((item) {
         var spend = Spend(item);
 
         spends.add(spend);
@@ -312,23 +308,18 @@ class TransactionsDao {
   }
 
   Future<List<TransactionDto>> getTransactionsByDateInterval(
-      String walletId,
-      Timestamp startDate,
-      Timestamp endDate) async {
+      String walletId, Timestamp startDate, Timestamp endDate) async {
+    List<TransactionDto> transactions = <TransactionDto>[];
 
-        List<TransactionDto> transactions = <TransactionDto>[];
-
-        await dbReference
+    await dbReference
         .collection('transactions')
         .where('walletId', isEqualTo: walletId)
-        .where('transactionDate',
-            isGreaterThanOrEqualTo: startDate)
-        .where('transactionDate',
-            isLessThanOrEqualTo: endDate)
-        .getDocuments()
+        .where('transactionDate', isGreaterThanOrEqualTo: startDate)
+        .where('transactionDate', isLessThanOrEqualTo: endDate)
+        .get()
         .then((QuerySnapshot snapShot) {
-      snapShot.documents.forEach((item) {
-        var objMap = item.data;
+      snapShot.docs.forEach((item) {
+        Map<String, dynamic> objMap = item.data();
 
         var transaction = TransactionDto();
 
@@ -336,7 +327,7 @@ class TransactionsDao {
 
         transaction.amount = double.parse(objMap['amount'].toString());
         transaction.transactionDate = transactionDateTimestamp.toDate();
-        transaction.transactionId = item.documentID;
+        transaction.transactionId = item.id;
         transaction.categoryId = objMap['categoryId'];
 
         transactions.add(transaction);
@@ -355,7 +346,7 @@ class TransactionsDao {
       return transactions;
     });
     return transactions;
-      }
+  }
 
   Future<List<Spend>> getSpendsByDateIntervalAndCategoryId(
       String walletId,
@@ -373,9 +364,9 @@ class TransactionsDao {
         .where('transactionDate',
             isLessThanOrEqualTo: lastDayOfCurrentMonthTimestamp)
         .where('categoryId', isEqualTo: categoryId)
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapShot) {
-      snapShot.documents.forEach((item) {
+      snapShot.docs.forEach((item) {
         var spend = Spend(item);
 
         spends.add(spend);
@@ -406,9 +397,9 @@ class TransactionsDao {
         .where('transactionDate', isGreaterThanOrEqualTo: startDate)
         .where('transactionDate', isLessThanOrEqualTo: endDate)
         .where('type', isEqualTo: 'WASTE')
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapShot) {
-      snapShot.documents.forEach((item) {
+      snapShot.docs.forEach((item) {
         var spend = Spend(item);
 
         spends.add(spend);

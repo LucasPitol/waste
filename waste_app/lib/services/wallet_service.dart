@@ -9,7 +9,7 @@ import 'smart_error_service.dart';
 import 'transactions_service.dart';
 
 class WalletService {
-  final dbReference = Firestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   WalletDao dao = WalletDao();
   SmartErrorService smartErrorService = SmartErrorService();
   TransactionService transactionService = TransactionService();
@@ -133,13 +133,13 @@ class WalletService {
       await dbReference
           .collection('user')
           .where('uid', whereIn: membersId)
-          .getDocuments()
+          .get()
           .then((QuerySnapshot snapshot) async {
-        var docs = snapshot.documents;
+        var docs = snapshot.docs;
 
         docs.forEach((item) {
-          var obj = item.data;
-          var uid = item.documentID;
+          Map<String, dynamic> obj = item.data();
+          var uid = item.id;
 
           MemberDto member = MemberDto();
           member.email = obj['email'];
@@ -172,9 +172,9 @@ class WalletService {
     await dbReference
         .collection('wallets')
         .where('membersId', arrayContains: userId)
-        .getDocuments()
+        .get()
         .then((QuerySnapshot snapshot) async {
-      var docs = snapshot.documents;
+      var docs = snapshot.docs;
 
       if (docs.isEmpty) {
         var ok = await this.createNewWallet('Carteira Pessoal');
@@ -182,14 +182,14 @@ class WalletService {
         await dbReference
             .collection('wallets')
             .where('membersId', arrayContains: userId)
-            .getDocuments()
+            .get()
             .then((QuerySnapshot snapshot) async {
-          docs = snapshot.documents;
+          docs = snapshot.docs;
         });
       }
       docs.forEach((doc) {
-        String walletId = doc.documentID;
-        var walletRef = doc.data;
+        String walletId = doc.id;
+        Map<String, dynamic> walletRef = doc.data();
         List<String> members = [];
 
         Timestamp creationDate = walletRef['creationDate'];
