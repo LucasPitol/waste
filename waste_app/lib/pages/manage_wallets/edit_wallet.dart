@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:waste_app/pages/dialogs/confirm_dialog.dart';
 import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/wallet_service.dart';
@@ -45,7 +46,15 @@ class _EditWalletState extends State<EditWallet> {
 
   void initState() {
     super.initState();
+    this.updateAppBar();
     this.authService.userExists(context);
+  }
+
+  updateAppBar() {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Styles.mainBackgroundColor,
+      statusBarIconBrightness: Brightness.light,
+    ));
   }
 
   Future<void> _updateWallet() async {

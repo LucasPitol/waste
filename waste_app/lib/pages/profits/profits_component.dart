@@ -7,18 +7,24 @@ import 'package:waste_app/models/filter-option-chip.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/utils/layout.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ProfitsComponent extends StatefulWidget {
-  ProfitsComponent({Key key}) : super(key: key);
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
+  ProfitsComponent({Key key, this.overlayBuilderStatelKey}) : super(key: key);
   @override
-  ProfitsComponentState createState() => ProfitsComponentState();
+  ProfitsComponentState createState() =>
+      ProfitsComponentState(overlayBuilderStatelKey);
 }
 
 class ProfitsComponentState extends State<ProfitsComponent> {
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
   String localeLanguage =
       AuthService.currentUser.language == Constants.languages[0]
           ? Constants.ptLanguage
@@ -41,7 +47,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
   TransactionService transactionService;
   AuthService authService;
 
-  ProfitsComponentState() {
+  ProfitsComponentState(this.overlayBuilderStatelKey) {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.transactionService = TransactionService();
     this.authService = AuthService();
@@ -81,7 +87,7 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     }
   }
 
-  void _infoBottomSheet() {
+  Future<void> _infoBottomSheet() async {
     String info = isPtLanguage
         ? 'O grafico indica a relação entre as receitas e despesas dos respectivos meses, a barra roxa indica o total de receitas, a barra rosa indica as despesas. \n \n'
             'Abaixo do grafico é possivel visualizar a porcentagem de crescimento com base nos lucros, o calculo é feito com a relação entre o mês passado com o retrasado. \n \n'
@@ -89,11 +95,16 @@ class ProfitsComponentState extends State<ProfitsComponent> {
         : 'The graph indicates the relationship between income and expenses for the respective months, the purple bar indicates the total income, the pink bar indicates the expenses. \n \n'
             'Below the graph it is possible to see the percentage of growth based on profits, the calculation is made with the relationship between last month and the delay. \n \n'
             'In the list below, each block displays the month\'s profit, the month\'s total income and expense. \n \n';
-    showModalBottomSheet(
+
+    this.overlayBuilderStatelKey.currentState.hideOverlay();
+
+    await showModalBottomSheet(
         context: context,
         builder: (builder) {
           return InfoBottomSheetComponent(info);
         });
+
+    this.overlayBuilderStatelKey.currentState.showOverlay();
   }
 
   _buildFilterChipsOptions() {

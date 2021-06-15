@@ -7,17 +7,23 @@ import 'package:waste_app/pages/shared/loading_block.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:waste_app/models/user_dto.dart';
+import 'package:waste_app/utils/layout.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OverviewComponent extends StatefulWidget {
-  OverviewComponent({Key key}) : super(key: key);
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
+  OverviewComponent({Key key, this.overlayBuilderStatelKey}) : super(key: key);
   @override
-  OverviewComponentState createState() => OverviewComponentState();
+  OverviewComponentState createState() =>
+      OverviewComponentState(overlayBuilderStatelKey);
 }
 
 class OverviewComponentState extends State<OverviewComponent> {
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
   String localeLanguage =
       AuthService.currentUser.language == Constants.languages[0]
           ? Constants.ptLanguage
@@ -33,7 +39,7 @@ class OverviewComponentState extends State<OverviewComponent> {
   DateTime startDate;
   DateTime endDate;
 
-  OverviewComponentState() {
+  OverviewComponentState(this.overlayBuilderStatelKey) {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.overviewPageDto = OverviewPageDto();
     this.authService = AuthService();
@@ -72,17 +78,22 @@ class OverviewComponentState extends State<OverviewComponent> {
     });
   }
 
-  _infoBottomSheet() {
+  _infoBottomSheet() async {
     String info = isPtLanguage
         ? 'Nessa tela você pode acompanhar as entradas, saídas e o saldo (lucro) em um determinado período. \n \n'
             'O grafico indica as categorias com maiores gastos dentro do período filtrado. \n \n'
         : 'On this screen you can track the revenues, spends and the balance (profit) in a given period. \n \n'
             'The graph indicates the categories with the highest expenses within the filtered period. \n \n';
-    showModalBottomSheet(
+
+    this.overlayBuilderStatelKey.currentState.hideOverlay();
+
+    await showModalBottomSheet(
         context: context,
         builder: (builder) {
           return InfoBottomSheetComponent(info);
         });
+
+    this.overlayBuilderStatelKey.currentState.showOverlay();
   }
 
   _openCalendar() async {

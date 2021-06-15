@@ -15,7 +15,7 @@ class LoadingBlock extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
               child: Container(
                 width: double.infinity,
-                height:MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
                 child: Theme(
                   data: Theme.of(context)

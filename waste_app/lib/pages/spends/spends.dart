@@ -6,6 +6,7 @@ import 'package:waste_app/models/spending_category.dart';
 import 'package:waste_app/pages/spends/spends_list.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/utils/layout.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,19 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class SpendsComponent extends StatefulWidget {
-  SpendsComponent({Key key}) : super(key: key);
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
+  SpendsComponent({Key key, this.overlayBuilderStatelKey}) : super(key: key);
+
   @override
-  SpendsComponentState createState() => SpendsComponentState();
+  SpendsComponentState createState() =>
+      SpendsComponentState(overlayBuilderStatelKey);
 }
 
 class SpendsComponentState extends State<SpendsComponent>
     with TickerProviderStateMixin {
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
   List<SpendByMonthDto> spendsByMonthDtoList = [];
   List<SpendingCategory> categoriesAvailable = [];
 
@@ -53,6 +60,8 @@ class SpendsComponentState extends State<SpendsComponent>
 
   Animation<double> openAnimation, closeAnimation;
   AnimationController openController, closeController;
+
+  SpendsComponentState(this.overlayBuilderStatelKey);
 
   void initState() {
     super.initState();
@@ -441,7 +450,7 @@ class SpendsComponentState extends State<SpendsComponent>
                                         child: new CircularProgressIndicator(),
                                       ),
                                     )
-                                  : SpendsListComponent(spendList, refreshData),
+                                  : SpendsListComponent(spendList, refreshData, this.overlayBuilderStatelKey),
                             ),
                           ),
                         ],

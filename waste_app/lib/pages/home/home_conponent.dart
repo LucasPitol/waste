@@ -13,6 +13,7 @@ import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/utils/layout.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'see_all_transactions_component.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +23,16 @@ import 'leave_wallet_dialog.dart';
 import 'package:intl/intl.dart';
 
 class HomeComponent extends StatefulWidget {
-  HomeComponent({Key key}) : super(key: key);
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
+  HomeComponent({Key key, this.overlayBuilderStatelKey}) : super(key: key);
   @override
-  HomeComponentState createState() => HomeComponentState();
+  HomeComponentState createState() =>
+      HomeComponentState(overlayBuilderStatelKey);
 }
 
 class HomeComponentState extends State<HomeComponent> {
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
   String localeLanguage =
       AuthService.currentUser.language == Constants.languages[0]
           ? Constants.ptLanguage
@@ -50,7 +55,7 @@ class HomeComponentState extends State<HomeComponent> {
   String dropdownWalletValue;
   Wallet currentWallet;
 
-  HomeComponentState() {
+  HomeComponentState(this.overlayBuilderStatelKey) {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.transactionService = TransactionService();
     this.walletService = WalletService();
@@ -71,6 +76,8 @@ class HomeComponentState extends State<HomeComponent> {
     setState(() {
       this.loading = true;
     });
+
+    this.updateAppBar();
 
     await this._getUserWallets();
     await this._getScreenContentData();
@@ -162,8 +169,12 @@ class HomeComponentState extends State<HomeComponent> {
   void _goToEditWalletPage() async {
     String walletId = this.userDto.currentWalletId;
 
+    this.overlayBuilderStatelKey.currentState.hideOverlay();
+
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => EditWallet(walletId)));
+
+    this.overlayBuilderStatelKey.currentState.showOverlay();
 
     if (refresh != null && refresh) {
       updatePageContent();
@@ -496,11 +507,15 @@ class HomeComponentState extends State<HomeComponent> {
         membersMail.add(element.email);
       });
 
+      this.overlayBuilderStatelKey.currentState.hideOverlay();
+
       var refresh = await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
                   NewWalletMemberComponent(this.currentWallet, membersMail)));
+
+      this.overlayBuilderStatelKey.currentState.showOverlay();
 
       if (refresh != null && refresh) {
         this.updatePageContent();
@@ -509,8 +524,12 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   _goToSettings() async {
+    this.overlayBuilderStatelKey.currentState.hideOverlay();
+
     var refresh = await Navigator.push(
         context, MaterialPageRoute(builder: (context) => SettingsComponent()));
+
+    this.overlayBuilderStatelKey.currentState.showOverlay();
 
     this.userDto = AuthService.currentUser;
 
@@ -520,12 +539,16 @@ class HomeComponentState extends State<HomeComponent> {
     }
   }
 
-  _openSeeAllTransactionsPage() {
-    Navigator.push(
+  _openSeeAllTransactionsPage() async {
+    this.overlayBuilderStatelKey.currentState.hideOverlay();
+
+    await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
                 SeeAllTransactionsComponent(this.currentWallet)));
+
+    this.overlayBuilderStatelKey.currentState.showOverlay();
   }
 
   Widget createTileForTransactions(TransactionDto item) {

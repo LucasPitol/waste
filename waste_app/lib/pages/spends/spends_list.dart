@@ -1,18 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/pages/edit_spend/edit_spend_component.dart';
+import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/utils/layout.dart';
 import 'package:waste_app/utils/styles.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SpendsListComponent extends StatefulWidget {
   final List<SpendItem> spends;
   final Function updateData;
-  SpendsListComponent(this.spends, this.updateData);
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
+  SpendsListComponent(
+      this.spends, this.updateData, this.overlayBuilderStatelKey);
   @override
   _SpendsListComponentState createState() =>
-      _SpendsListComponentState(spends, updateData);
+      _SpendsListComponentState(spends, updateData, overlayBuilderStatelKey);
 }
 
 class _SpendsListComponentState extends State<SpendsListComponent> {
@@ -22,12 +26,20 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
           : Constants.enLanguage;
   final List<SpendItem> spends;
   final Function updateData;
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
 
-  _SpendsListComponentState(this.spends, this.updateData);
+  _SpendsListComponentState(
+      this.spends, this.updateData, this.overlayBuilderStatelKey);
 
   void _goToEditWaste(SpendItem transactionId) async {
-    var refresh = await Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditSpendComponent(transactionId)));
+    this.overlayBuilderStatelKey.currentState.hideOverlay();
+
+    var refresh = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditSpendComponent(transactionId)));
+
+    this.overlayBuilderStatelKey.currentState.showOverlay();
 
     if (refresh != null && refresh) {
       this.updateData();

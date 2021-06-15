@@ -130,7 +130,9 @@ class _MainComponentState extends State<MainComponent> {
       },
       child: FloatingActionButton(
         backgroundColor: Styles.boxColor,
-        onPressed: () {},
+        onPressed: () {
+          overlayBuilderStatelKey.currentState.showOverlay();
+        },
         child: Icon(
           Icons.add,
           color: Styles.primaryColor,
@@ -162,10 +164,18 @@ class _MainComponentState extends State<MainComponent> {
   }
 
   final List<Widget> _widgetOptions = <Widget>[
-    HomeComponent(key: homeComponentGlobalKey),
-    SpendsComponent(key: spendsComponentGlobalKey),
-    ProfitsComponent(key: profitsComponentGlobalKey),
-    OverviewComponent(key: overviewComponentGlobalKey),
+    HomeComponent(
+        key: homeComponentGlobalKey,
+        overlayBuilderStatelKey: overlayBuilderStatelKey),
+    SpendsComponent(
+        key: spendsComponentGlobalKey,
+        overlayBuilderStatelKey: overlayBuilderStatelKey),
+    ProfitsComponent(
+        key: profitsComponentGlobalKey,
+        overlayBuilderStatelKey: overlayBuilderStatelKey),
+    OverviewComponent(
+        key: overviewComponentGlobalKey,
+        overlayBuilderStatelKey: overlayBuilderStatelKey),
   ];
 
   void _onItemTapped(int index) {
