@@ -129,7 +129,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
       if (res != null && res.isNotEmpty && res[0]) {
         var refresh = await this.walletService.createNewWallet(res[1]);
 
-        this.hasChanges = true;
+        this.hasChanges = refresh;
       }
     }
   }
