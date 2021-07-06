@@ -3,6 +3,7 @@ import 'package:waste_app/pages/dialogs/alert_dialog_component.dart';
 import 'package:waste_app/pages/manage_wallets/edit_wallet.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:waste_app/pages/home/settings_component.dart';
+import 'package:waste_app/pages/shared/loading_widget.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/screen-option-chip.dart';
@@ -14,8 +15,9 @@ import 'package:waste_app/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/layout.dart';
-import 'package:waste_app/utils/styles.dart';
 import 'see_all_transactions_component.dart';
+import 'package:waste_app/utils/styles.dart';
+import 'plans_carousel_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'remove_member_dialog.dart';
@@ -248,6 +250,7 @@ class HomeComponentState extends State<HomeComponent> {
         return Container(
           width: double.infinity,
           decoration: Styles.contentBox,
+          margin: EdgeInsets.symmetric(horizontal: 15),
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 10),
             child: Column(
@@ -336,6 +339,7 @@ class HomeComponentState extends State<HomeComponent> {
         return Container(
           width: double.infinity,
           decoration: Styles.contentBox,
+          margin: EdgeInsets.symmetric(horizontal: 15),
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 10),
             child: Column(
@@ -605,10 +609,10 @@ class HomeComponentState extends State<HomeComponent> {
         child: SingleChildScrollView(
           child: Container(
             width: double.infinity,
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               children: [
                 Container(
+                  margin: EdgeInsets.only(left: 20, right: 20, top: 10),
                   child: Stack(
                     children: [
                       Column(
@@ -675,7 +679,7 @@ class HomeComponentState extends State<HomeComponent> {
                 ),
                 Container(
                   alignment: Alignment.topLeft,
-                  margin: EdgeInsets.only(top: 20),
+                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
@@ -746,7 +750,8 @@ class HomeComponentState extends State<HomeComponent> {
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                       child: Row(
                         children: screenOptions
                             .map((item) => createScreenOptionsChip(item))
@@ -755,18 +760,8 @@ class HomeComponentState extends State<HomeComponent> {
                     ),
                   ),
                 ),
-                loading
-                    ? Container(
-                        margin: EdgeInsets.symmetric(vertical: 60),
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(accentColor: Colors.deepPurple),
-                          child: new CircularProgressIndicator(),
-                        ),
-                      )
-                    : _getScreenLayoutContent(),
+                loading ? LoadingWidget() : _getScreenLayoutContent(),
+                PlansCarouselComponent(),
               ],
             ),
           ),
