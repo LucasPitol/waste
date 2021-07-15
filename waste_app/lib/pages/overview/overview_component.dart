@@ -101,7 +101,7 @@ class OverviewComponentState extends State<OverviewComponent> {
     DateTime endDateTemp = this.endDate;
 
     // Locale locale = isPtLanguage ? Locale('pt', 'BR') : Locale('en', 'US');
-
+    
     DateTimeRange picked = await showDateRangePicker(
         context: context,
         firstDate: DateTime(2020, 01, 01),
