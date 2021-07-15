@@ -761,7 +761,7 @@ class HomeComponentState extends State<HomeComponent> {
                   ),
                 ),
                 loading ? LoadingWidget() : _getScreenLayoutContent(),
-                PlansCarouselComponent(),
+                // PlansCarouselComponent(),
               ],
             ),
           ),
