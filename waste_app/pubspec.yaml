@@ -33,6 +33,7 @@ dependencies:
   flutter_native_splash: ^0.1.9
   fl_chart: ^0.36.1
   collection: ^1.15.0
+  smooth_page_indicator: ^0.2.3
   font_awesome_flutter: ^9.1.0
   flutter_localizations:
     sdk: flutter

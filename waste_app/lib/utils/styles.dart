@@ -27,6 +27,12 @@ class Styles {
     fontSize: 18.0,
   );
 
+  static TextStyle montTextTitle = TextStyle(
+    color: mainTextColor,
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+
   static Color primaryColor = Colors.deepPurple;
   static Color secondaryColor = Colors.deepPurple.shade300;
   static Color darkColor = Colors.deepPurple.shade900;
