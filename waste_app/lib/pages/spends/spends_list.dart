@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:waste_app/pages/edit_spend/edit_spend_component.dart';
 import 'package:waste_app/models/dtos/spend_item_dto.dart';
 import 'package:waste_app/services/auth_service.dart';
@@ -37,7 +38,8 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
     var refresh = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EditSpendComponent(transactionId)));
+            builder: (context) => EditSpendComponent(
+                transactionId, this.overlayBuilderStatelKey)));
 
     this.overlayBuilderStatelKey.currentState.showOverlay();
 
@@ -50,40 +52,88 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
     String amount = Constants.getAmountFormated(item.spent);
 
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-      decoration: Styles.spendCard,
-      child: Material(
-        color: Styles.mainBackgroundColor,
-        borderRadius: Styles.defaultBorderRadius,
-        child: InkWell(
-          borderRadius: Styles.defaultBorderRadius,
-          splashColor: Colors.deepPurple.shade100,
-          onLongPress: () {
-            _goToEditWaste(item);
-          },
-          child: ListTile(
-            title: Text(
-              item.reason,
-              style: TextStyle(
-                  fontWeight: FontWeight.w500, color: Colors.grey.shade100),
+      child: OpenContainer(
+        closedElevation: 2,
+        closedColor: Styles.mainBackgroundColor,
+        openColor: Styles.mainBackgroundColor,
+        closedShape:
+            RoundedRectangleBorder(borderRadius: Styles.defaultBorderRadius),
+        onClosed: (val) {
+          this.overlayBuilderStatelKey.currentState.showOverlay();
+          // if (refresh) {
+          //   this.updatePageContent();
+          //   this.refresh = false;
+          // }
+        },
+        closedBuilder: (context, action) {
+          return Container(
+            margin: EdgeInsets.only(left: 20, right: 20, bottom: 15),
+            decoration: Styles.spendCard,
+            child: ListTile(
+              title: Text(
+                item.reason,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500, color: Colors.grey.shade100),
+              ),
+              subtitle: Text(
+                (DateFormat.E(localeLanguage).format(item.spendDate) +
+                    ', ' +
+                    DateFormat.d().format(item.spendDate) +
+                    '  ' +
+                    DateFormat.Hm().format(item.spendDate)),
+                style:
+                    TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
+              ),
+              trailing: Text(
+                amount,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500, color: Colors.grey.shade100),
+              ),
             ),
-            subtitle: Text(
-              (DateFormat.E(localeLanguage).format(item.spendDate) +
-                  ', ' +
-                  DateFormat.d().format(item.spendDate) +
-                  '  ' +
-                  DateFormat.Hm().format(item.spendDate)),
-              style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
-            ),
-            trailing: Text(
-              amount,
-              style: TextStyle(
-                  fontWeight: FontWeight.w500, color: Colors.grey.shade100),
-            ),
-          ),
-        ),
+          );
+        },
+        openBuilder: (contex, action) {
+          // this.overlayBuilderStatelKey.currentState.hideOverlay();
+          return EditSpendComponent(item, this.overlayBuilderStatelKey);
+        },
       ),
     );
+
+    // return Container(
+    //   margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+    //   decoration: Styles.spendCard,
+    //   child: Material(
+    //     color: Styles.mainBackgroundColor,
+    //     borderRadius: Styles.defaultBorderRadius,
+    //     child: InkWell(
+    //       borderRadius: Styles.defaultBorderRadius,
+    //       splashColor: Colors.deepPurple.shade100,
+    //       onLongPress: () {
+    //         _goToEditWaste(item);
+    //       },
+    //       child: ListTile(
+    //         title: Text(
+    //           item.reason,
+    //           style: TextStyle(
+    //               fontWeight: FontWeight.w500, color: Colors.grey.shade100),
+    //         ),
+    //         subtitle: Text(
+    //           (DateFormat.E(localeLanguage).format(item.spendDate) +
+    //               ', ' +
+    //               DateFormat.d().format(item.spendDate) +
+    //               '  ' +
+    //               DateFormat.Hm().format(item.spendDate)),
+    //           style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
+    //         ),
+    //         trailing: Text(
+    //           amount,
+    //           style: TextStyle(
+    //               fontWeight: FontWeight.w500, color: Colors.grey.shade100),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   @override

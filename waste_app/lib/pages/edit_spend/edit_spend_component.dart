@@ -13,17 +13,23 @@ import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
 import 'package:waste_app/utils/constants.dart';
+import 'package:waste_app/utils/layout.dart';
 import 'package:waste_app/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class EditSpendComponent extends StatefulWidget {
   final SpendItem spend;
-  EditSpendComponent(this.spend);
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+
+  EditSpendComponent(this.spend, this.overlayBuilderStatelKey);
+
   @override
-  _EditSpendComponenState createState() => _EditSpendComponenState(spend);
+  _EditSpendComponenState createState() =>
+      _EditSpendComponenState(spend, overlayBuilderStatelKey);
 }
 
 class _EditSpendComponenState extends State<EditSpendComponent> {
+  final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
   String localeLanguage =
       AuthService.currentUser.language == Constants.languages[0]
           ? Constants.ptLanguage
@@ -47,7 +53,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   SpendingCategoriesService spendingCategoriesService;
   AuthService authService;
 
-  _EditSpendComponenState(SpendItem spend) {
+  _EditSpendComponenState(SpendItem spend, this.overlayBuilderStatelKey) {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.languageCode = this.userDto.language;
     this.spend = spend;
@@ -62,6 +68,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
 
   void initState() {
     super.initState();
+    this.overlayBuilderStatelKey.currentState.hideOverlay();
     this._getUserWallets();
     this._buildForm();
     this._getSpendingCategories();
@@ -184,7 +191,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
     });
 
     if (success) {
-      Navigator.pop(context, true);
+      Navigator.pop(context);
     }
   }
 
@@ -211,7 +218,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
           .deleteWaste(spend.spendId, spend.categoryId, currentWalletId, spent);
 
       if (success) {
-        Navigator.pop(context, true);
+        Navigator.pop(context);
       }
     }
   }
@@ -257,7 +264,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                     margin: EdgeInsets.only(right: 20, top: 10),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(context, false);
+                        Navigator.pop(context);
                       },
                       child: Icon(
                         Icons.close,
@@ -428,7 +435,7 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
                           width: double.infinity,
                           height: 50,
                           child: ElevatedButton(
-                           style: Styles.elevatedButtonStyle,
+                            style: Styles.elevatedButtonStyle,
                             onPressed: () async {
                               if (_editSpendFormKey.currentState.validate()) {
                                 _updateWaste();
