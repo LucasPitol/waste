@@ -1,3 +1,4 @@
+import 'package:waste_app/pages/shared/loading_widget.dart';
 import 'package:waste_app/services/spending_categories_service.dart';
 import 'package:waste_app/models/dtos/spend_by_month_dto.dart';
 import 'package:waste_app/services/transactions_service.dart';
@@ -65,6 +66,7 @@ class SpendsComponentState extends State<SpendsComponent>
 
   void initState() {
     super.initState();
+    this._updateAppBar();
     this.authService.userExists(context);
     openController = AnimationController(
       duration: const Duration(
@@ -295,12 +297,15 @@ class SpendsComponentState extends State<SpendsComponent>
         ));
   }
 
-  @override
-  Widget build(BuildContext context) {
+  _updateAppBar() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.deepPurple,
+      statusBarColor: Styles.primaryColor,
       statusBarIconBrightness: Brightness.dark,
     ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomInset: true,
@@ -311,7 +316,7 @@ class SpendsComponentState extends State<SpendsComponent>
             GestureDetector(
               onTap: _handleHeaderPress,
               child: Container(
-                color: Colors.deepPurple,
+                color: Styles.primaryColor,
                 height: menuHeight,
                 child: Column(
                   children: <Widget>[
@@ -319,7 +324,9 @@ class SpendsComponentState extends State<SpendsComponent>
                       width: double.infinity,
                       height: 10.0,
                     ),
-                    Stack(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           alignment: Alignment.centerLeft,
@@ -340,9 +347,9 @@ class SpendsComponentState extends State<SpendsComponent>
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
+                    // SizedBox(
+                    //   height: 20.0,
+                    // ),
                     Expanded(
                       child: Container(
                         child: spendsByMonthLoading
@@ -358,7 +365,7 @@ class SpendsComponentState extends State<SpendsComponent>
                             : SingleChildScrollView(
                                 child: Padding(
                                   padding:
-                                      EdgeInsets.only(left: 20.0, right: 20.0),
+                                      EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -416,7 +423,7 @@ class SpendsComponentState extends State<SpendsComponent>
                         children: <Widget>[
                           categoriesLoading
                               ? Container(
-                                  height: 50,
+                                  height: 60,
                                 )
                               : Container(
                                   alignment: Alignment.centerLeft,
@@ -425,7 +432,7 @@ class SpendsComponentState extends State<SpendsComponent>
                                     physics: const BouncingScrollPhysics(),
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10),
+                                          horizontal: 20, vertical: 20),
                                       child: Row(
                                         children: categoriesAvailable
                                             .map((item) =>
@@ -438,19 +445,10 @@ class SpendsComponentState extends State<SpendsComponent>
                           Flexible(
                             child: Container(
                               alignment: Alignment.topCenter,
-                              margin: EdgeInsets.only(
-                                  left: 20, right: 20, bottom: 10),
                               child: listLoading
-                                  ? Container(
-                                      width: double.infinity,
-                                      alignment: Alignment.center,
-                                      child: Theme(
-                                        data: Theme.of(context).copyWith(
-                                            accentColor: Colors.deepPurple),
-                                        child: new CircularProgressIndicator(),
-                                      ),
-                                    )
-                                  : SpendsListComponent(spendList, refreshData, this.overlayBuilderStatelKey),
+                                  ? LoadingWidget()
+                                  : SpendsListComponent(spendList, refreshData,
+                                      this.overlayBuilderStatelKey),
                             ),
                           ),
                         ],

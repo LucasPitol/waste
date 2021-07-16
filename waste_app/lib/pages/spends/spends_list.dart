@@ -50,7 +50,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
     String amount = Constants.getAmountFormated(item.spent);
 
     return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 5),
+      margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
       decoration: Styles.spendCard,
       child: Material(
         color: Styles.mainBackgroundColor,
@@ -88,33 +88,29 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      resizeToAvoidBottomInset: true,
-      body: spends.isNotEmpty
-          ? Column(
-              children: <Widget>[
-                Flexible(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    physics: const BouncingScrollPhysics(),
-                    child: Container(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: spends.map((item) => createTile(item)).toList(),
-                    )),
-                  ),
-                ),
-              ],
-            )
-          : Center(
-              child: Text(
-                'Nenhum gasto',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
+    return spends.isNotEmpty
+        ? Column(
+            children: <Widget>[
+              Flexible(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  physics: const BouncingScrollPhysics(),
+                  child: Container(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: spends.map((item) => createTile(item)).toList(),
+                  )),
                 ),
               ),
+            ],
+          )
+        : Center(
+            child: Text(
+              'Nenhum gasto',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
             ),
-    );
+          );
   }
 }
