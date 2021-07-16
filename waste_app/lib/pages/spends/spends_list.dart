@@ -28,24 +28,13 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
   final List<SpendItem> spends;
   final Function updateData;
   final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+  bool refresh = false;
 
   _SpendsListComponentState(
       this.spends, this.updateData, this.overlayBuilderStatelKey);
 
-  void _goToEditWaste(SpendItem transactionId) async {
-    this.overlayBuilderStatelKey.currentState.hideOverlay();
-
-    var refresh = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => EditSpendComponent(
-                transactionId, this.overlayBuilderStatelKey)));
-
-    this.overlayBuilderStatelKey.currentState.showOverlay();
-
-    if (refresh != null && refresh) {
-      this.updateData();
-    }
+  switchRefresh() {
+    this.refresh = true;
   }
 
   Widget createTile(SpendItem item) {
@@ -60,10 +49,10 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
             RoundedRectangleBorder(borderRadius: Styles.defaultBorderRadius),
         onClosed: (val) {
           this.overlayBuilderStatelKey.currentState.showOverlay();
-          // if (refresh) {
-          //   this.updatePageContent();
-          //   this.refresh = false;
-          // }
+          if (refresh) {
+            this.refresh = false;
+            this.updateData();
+          }
         },
         closedBuilder: (context, action) {
           return Container(
@@ -94,7 +83,7 @@ class _SpendsListComponentState extends State<SpendsListComponent> {
         },
         openBuilder: (contex, action) {
           // this.overlayBuilderStatelKey.currentState.hideOverlay();
-          return EditSpendComponent(item, this.overlayBuilderStatelKey);
+          return EditSpendComponent(item, this.overlayBuilderStatelKey, switchRefresh);
         },
       ),
     );

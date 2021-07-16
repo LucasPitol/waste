@@ -20,16 +20,20 @@ import 'package:flutter/material.dart';
 class EditSpendComponent extends StatefulWidget {
   final SpendItem spend;
   final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+  final Function switchRefresh;
 
-  EditSpendComponent(this.spend, this.overlayBuilderStatelKey);
+  EditSpendComponent(
+      this.spend, this.overlayBuilderStatelKey, this.switchRefresh);
 
   @override
   _EditSpendComponenState createState() =>
-      _EditSpendComponenState(spend, overlayBuilderStatelKey);
+      _EditSpendComponenState(spend, overlayBuilderStatelKey, switchRefresh);
 }
 
 class _EditSpendComponenState extends State<EditSpendComponent> {
   final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
+  final Function switchRefresh;
+
   String localeLanguage =
       AuthService.currentUser.language == Constants.languages[0]
           ? Constants.ptLanguage
@@ -53,7 +57,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
   SpendingCategoriesService spendingCategoriesService;
   AuthService authService;
 
-  _EditSpendComponenState(SpendItem spend, this.overlayBuilderStatelKey) {
+  _EditSpendComponenState(
+      SpendItem spend, this.overlayBuilderStatelKey, this.switchRefresh) {
     this.isPtLanguage = userDto.language == Constants.languages[0];
     this.languageCode = this.userDto.language;
     this.spend = spend;
@@ -176,6 +181,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
       this.loading = true;
     });
 
+    this.switchRefresh();
+
     FocusScope.of(context).unfocus();
 
     this.editWasteForm.walletId = this.currentWalletId;
@@ -210,6 +217,8 @@ class _EditSpendComponenState extends State<EditSpendComponent> {
       setState(() {
         this.loading = true;
       });
+
+      this.switchRefresh();
 
       double spent = spend.spent * -1;
 
