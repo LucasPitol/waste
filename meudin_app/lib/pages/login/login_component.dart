@@ -90,7 +90,7 @@ class _LoginComponentState extends State<LoginComponent> {
     String email = _loginForm.userMail.text;
 
     bool? reset = true; //await Navigator.push(context,
-        //MaterialPageRoute(builder: (context) => ResetPasswordComponent(email)));
+    //MaterialPageRoute(builder: (context) => ResetPasswordComponent(email)));
 
     if (reset != null && reset) {
       String title = 'Sucesso!';
