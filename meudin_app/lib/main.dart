@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import 'models/user.dart';
 import 'pages/login/login_component.dart';
-import 'pages/shared/loading_widget.dart';
 import 'services/user_service.dart';
 import 'utils/constants.dart';
 import 'utils/styles.dart';

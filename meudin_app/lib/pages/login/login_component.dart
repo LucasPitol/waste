@@ -1,11 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:meudin_app/models/forms/login_form.dart';
+import 'package:meudin_app/pages/new_user/new_user_component.dart';
 import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
 import 'package:meudin_app/pages/shared/loading_block.dart';
 import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
+
+import '../new_user/new_user_component.dart';
 
 class LoginComponent extends StatefulWidget {
   final Function selectHandler;
@@ -13,8 +16,7 @@ class LoginComponent extends StatefulWidget {
   LoginComponent(this.selectHandler);
 
   @override
-  _LoginComponentState createState() =>
-      _LoginComponentState(this.selectHandler);
+  _LoginComponentState createState() => _LoginComponentState(selectHandler);
 }
 
 class _LoginComponentState extends State<LoginComponent> {
@@ -78,25 +80,13 @@ class _LoginComponentState extends State<LoginComponent> {
   }
 
   void _goToNewMemberPage() async {
-    print('new member');
-    // bool? refresh = await Navigator.push(context, NewMemberComponent());
+    bool? refresh = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return RegisterUserComponent();
+    }));
 
-    // if (refresh != null && refresh) {
-    //   selectHandler();
-    // }
-  }
-
-  goToResetPasswordPage() async {
-    String email = _loginForm.userMail.text;
-
-    bool? reset = true; //await Navigator.push(context,
-    //MaterialPageRoute(builder: (context) => ResetPasswordComponent(email)));
-
-    if (reset != null && reset) {
-      String title = 'Sucesso!';
-      String message = 'Verifique seu email';
-
-      _openInfoBottomSheet(title, message);
+    if (refresh != null && refresh) {
+      selectHandler();
     }
   }
 

@@ -3,16 +3,21 @@ import 'dart:convert';
 import 'package:meudin_app/db/user_dao.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/models/forms/login_form.dart';
+import 'package:meudin_app/models/forms/new_user_form.dart';
 import 'package:meudin_app/models/user.dart';
 import 'package:meudin_app/models/wallet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'wallet_service.dart';
+
 class UserService {
   static User? currentUser;
 
+  late WalletService _walletService;
   late UserDao _userDao;
 
   UserService() {
+    _walletService = WalletService();
     _userDao = UserDao();
   }
 
@@ -62,6 +67,44 @@ class UserService {
     return res;
   }
 
+  Future<ResponseDto> createNewUser(NewUserForm form) async {
+    ResponseDto res = ResponseDto();
+
+    String name = form.name.text;
+    String userMail = form.email.text;
+    String password = form.password.text;
+
+    String passwordEncrypt = await _encryptString(password);
+
+    User? user = await _userDao.getUserByEmail(userMail);
+
+    if (user != null) {
+      res.success = false;
+      res.errorMsg = 'Email já cadastrado';
+
+      return res;
+    }
+
+    String uid = await _userDao.createNewUser(name, userMail, passwordEncrypt);
+
+    user = await _userDao.getUserByEmail(userMail);
+
+    currentUser = user;
+
+    ResponseDto walletRes = await _walletService.getWalletsByUserId(uid);
+
+    if (walletRes.success) {
+      currentUser!.walletList = walletRes.data;
+
+      currentUser!.currentWalletId = currentUser!.walletList.first.id;
+    }
+
+    res.success = true;
+    res.data = true;
+
+    return res;
+  }
+
   Future<String> _encryptString(String input) async {
     final encrypted = base64Encode(utf8.encode(input));
 
@@ -75,13 +118,12 @@ class UserService {
 
     if (uid != null && uid.isNotEmpty) {
       User? user = await _userDao.loginByUid(uid);
-      
-      if (user != null && user.id.isNotEmpty) {
-      _setUserIdToLocalStorage(uid);
-      //TODO: Ver logica no waste
-      // buscar carteiras
-      currentUser = user;
 
+      if (user != null && user.id.isNotEmpty) {
+        _setUserIdToLocalStorage(uid);
+        //TODO: Ver logica no waste
+        // buscar carteiras
+        currentUser = user;
       } else {
         _clearLocalStorage();
       }
