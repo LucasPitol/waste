@@ -17,7 +17,6 @@ import 'package:waste_app/models/wallet.dart';
 import 'package:waste_app/utils/layout.dart';
 import 'see_all_transactions_component.dart';
 import 'package:waste_app/utils/styles.dart';
-import 'plans_carousel_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'remove_member_dialog.dart';

@@ -1,5 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:waste_app/pages/shared/info_bottom_sheet_component.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/models/dtos/profits_block_dto.dart';
@@ -34,7 +32,6 @@ class ProfitsComponentState extends State<ProfitsComponent> {
 
   List<FilterOptionChip> filterOptions = [];
   List<ProfitsBlockDto> profitList = [];
-  List<BarChartGroupData> showingBarGroups = [];
   Map<int, String> graphSubtitleMap;
   int filterSelected;
   bool loading;
@@ -73,18 +70,6 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     setState(() {
       this.loading = true;
     });
-
-    if (filterSelected == 1) {
-      this.transactionService.getProfitsByMonth().then((value) {
-        this.profitList = value;
-
-        this.getProfitsGraphData();
-
-        setState(() {
-          this.loading = false;
-        });
-      });
-    }
   }
 
   Future<void> _infoBottomSheet() async {
@@ -148,11 +133,11 @@ class ProfitsComponentState extends State<ProfitsComponent> {
               children: [
                 Text(
                   DateFormat.yMMM(this.localeLanguage).format(item.blockDate),
-                  style: Styles.poppinsText,
+                  style: Styles.montText,
                 ),
                 Text(
                   profit,
-                  style: Styles.poppinsText,
+                  style: Styles.montText,
                 ),
               ],
             ),
@@ -248,278 +233,8 @@ class ProfitsComponentState extends State<ProfitsComponent> {
     return Scaffold(
       backgroundColor: Styles.mainBackgroundColor,
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              children: [
-                Container(
-                  child: Stack(
-                    children: [
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          isPtLanguage ? 'Lucro\$' : 'Profit\$',
-                          style: TextStyle(
-                            color: Colors.grey.shade100,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(right: 15),
-                              child: InkWell(
-                                borderRadius: Styles.circularBorderRadius,
-                                onTap: () {
-                                  this.updateData();
-                                },
-                                child: FaIcon(
-                                  FontAwesomeIcons.redo,
-                                  size: 20,
-                                  color: Colors.grey.shade100,
-                                ),
-                              ),
-                            ),
-                            InkWell(
-                              borderRadius: Styles.circularBorderRadius,
-                              onTap: () {
-                                this._infoBottomSheet();
-                              },
-                              child: FaIcon(
-                                FontAwesomeIcons.questionCircle,
-                                size: 20,
-                                color: Colors.grey.shade100,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 20,
-                ), // remover quando adicionar o filtro
-                loading
-                    ? Container()
-                    : AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Expanded(
-                              child: BarChart(
-                                BarChartData(
-                                  maxY: this.maxValueGraph,
-                                  barTouchData: BarTouchData(
-                                    touchTooltipData: BarTouchTooltipData(
-                                      tooltipBgColor: Colors.grey,
-                                      getTooltipItem: (_a, _b, _c, _d) => null,
-                                    ),
-                                  ),
-                                  titlesData: FlTitlesData(
-                                    show: true,
-                                    bottomTitles: SideTitles(
-                                      showTitles: true,
-                                      getTextStyles: (value) => const TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                      ),
-                                      margin: 20,
-                                      getTitles: (double value) {
-                                        var index = value.toInt();
-
-                                        return this.graphSubtitleMap[index];
-                                      },
-                                    ),
-                                    leftTitles: SideTitles(
-                                      showTitles: true,
-                                      getTextStyles: (value) => const TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14),
-                                      margin: 32,
-                                      reservedSize: this.reservedSizeGraph,
-                                      getTitles: (value) {
-                                        if (value == 0) {
-                                          return '';
-                                        } else if (value == midValueGraph) {
-                                          return formatAmount(midValueGraph);
-                                        } else if (value == maxValueGraph) {
-                                          return formatAmount(maxValueGraph);
-                                        } else {
-                                          return '';
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                  barGroups: this.showingBarGroups,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                loading
-                    ? Container()
-                    : Container(
-                        alignment: Alignment.topRight,
-                        child: Text(
-                          growth.toStringAsFixed(1) + '% a.m',
-                          style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16),
-                        ),
-                      ),
-                loading
-                    ? Container(
-                        margin: EdgeInsets.symmetric(vertical: 60),
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(accentColor: Colors.deepPurple),
-                          child: new CircularProgressIndicator(),
-                        ),
-                      )
-                    : Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        child: Column(
-                          children: profitList
-                              .map((item) => createTileForProfits(item))
-                              .toList(),
-                        ),
-                      ),
-                loading
-                    ? Container()
-                    : Container(
-                        alignment: Alignment.bottomCenter,
-                        margin: EdgeInsets.only(bottom: 20),
-                        child: Text(
-                          isPtLanguage
-                              ? 'Limitando exibição até 6 meses, em breve o limite será estendido'
-                              : 'Limiting up to 6 months, the limit will soon be extended',
-                          style: TextStyle(
-                            color: Colors.grey.shade100,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      body: Container(),
     );
-  }
-
-  BarChartGroupData makeGroupData(int x, double y1, double y2) {
-    return BarChartGroupData(barsSpace: 4, x: x, barRods: [
-      BarChartRodData(
-        y: y1,
-        colors: [Colors.pink.shade700],
-        width: 7,
-      ),
-      BarChartRodData(
-        y: y2,
-        colors: [Styles.primaryColor],
-        width: 7,
-      ),
-    ]);
-  }
-
-  getProfitsGraphData() {
-    this.showingBarGroups = [];
-    this.graphSubtitleMap.clear();
-
-    double maxValue = 0;
-    double midValue = 0;
-    double minValue = 0;
-
-    int index = 0;
-    int itensLength = this.profitList.length;
-
-    var profitsraw = this.profitList;
-
-    var profitsReverse = profitsraw.reversed;
-
-    double profitOfLastMonth = 0;
-    double profitOfCurrentMonth = 0;
-
-    profitsReverse.forEach((element) {
-      double spendsPositive = (element.spends * -1);
-      double revenue = element.revenue;
-
-      // if (index == 0) {
-      //   minValue = revenue >= spendsPositive ? spendsPositive : revenue;
-      // }
-
-      if (spendsPositive > maxValue) {
-        maxValue = spendsPositive;
-      }
-
-      if (revenue > maxValue) {
-        maxValue = revenue;
-      }
-
-      // if (spendsPositive < minValue) {
-      //   minValue = spendsPositive;
-      // }
-
-      // if (revenue < minValue) {
-      //   minValue = revenue;
-      // }
-
-      var barGroup = makeGroupData(index, spendsPositive, revenue);
-
-      showingBarGroups.add(barGroup);
-
-      String month =
-          DateFormat.MMM(this.localeLanguage).format(element.blockDate);
-
-      this.graphSubtitleMap.putIfAbsent(index, () => month);
-
-      if (index == (itensLength - 3)) {
-        profitOfLastMonth = element.profit;
-      }
-
-      if (index == itensLength - 2) {
-        profitOfCurrentMonth = element.profit;
-      }
-
-      index++;
-    });
-
-    this.maxValueGraph = roundNumber(maxValue);
-
-    midValue = (maxValue / 2);
-
-    this.midValueGraph = roundNumber(midValue);
-
-    this.reservedSizeGraph = (maxValue * 0.01);
-
-    this.growth = _calculateGrowth(profitOfLastMonth, profitOfCurrentMonth);
-  }
-
-  double _calculateGrowth(double lastProfit, currentProfit) {
-    double step1 = (currentProfit - lastProfit);
-
-    double growthRaw = (step1 / lastProfit);
-
-    return (growthRaw * 100);
   }
 
   double roundNumber(double number) {

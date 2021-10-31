@@ -95,7 +95,7 @@ class _PlansCarouselComponentState extends State<PlansCarouselComponent> {
               children: [
                 Text(
                   item.displayPrice,
-                  style: Styles.poppinsText,
+                  style: Styles.montText,
                 ),
                 TextButton(
                   onPressed: () {

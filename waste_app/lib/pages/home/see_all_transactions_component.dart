@@ -5,6 +5,7 @@ import 'package:waste_app/models/dtos/transaction_block_dto.dart';
 import 'package:waste_app/models/dtos/transaction_dto.dart';
 import 'package:waste_app/models/user_dto.dart';
 import 'package:waste_app/models/wallet.dart';
+import 'package:waste_app/pages/shared/loading_widget.dart';
 import 'package:waste_app/services/auth_service.dart';
 import 'package:waste_app/services/transactions_service.dart';
 import 'package:waste_app/services/wallet_service.dart';
@@ -217,7 +218,7 @@ class _SeeAllTransactionsComponentState
                 ),
                 Container(
                   child: balanceLoading
-                      ? Constants.getDefaultLoadingWidget(context)
+                      ? LoadingWidget()
                       : Column(
                           children: [
                             Container(
@@ -250,7 +251,7 @@ class _SeeAllTransactionsComponentState
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 20),
                   child: transactionsLoading
-                      ? Constants.getDefaultLoadingWidget(context)
+                      ? LoadingWidget()
                       : Column(
                           children: transactionByMonthBlockList
                               .map((item) =>

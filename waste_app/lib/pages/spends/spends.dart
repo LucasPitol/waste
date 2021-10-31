@@ -356,16 +356,12 @@ class SpendsComponentState extends State<SpendsComponent>
                             ? Container(
                                 width: double.infinity,
                                 alignment: Alignment.center,
-                                child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                      accentColor: Styles.mainBackgroundColor),
-                                  child: new CircularProgressIndicator(),
-                                ),
+                                child: LoadingWidget(),
                               )
                             : SingleChildScrollView(
                                 child: Padding(
-                                  padding:
-                                      EdgeInsets.only(left: 20.0, right: 20.0, top: 20),
+                                  padding: EdgeInsets.only(
+                                      left: 20.0, right: 20.0, top: 20),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,

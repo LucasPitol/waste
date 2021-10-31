@@ -181,7 +181,7 @@ class _ChangePasswordComponentState extends State<ChangePasswordComponent> {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
-                style: Styles.poppinsText,
+                style: Styles.montText,
                 keyboardType: TextInputType.visiblePassword,
                 controller: previousPasswordController,
                 obscureText: true,
@@ -212,7 +212,7 @@ class _ChangePasswordComponentState extends State<ChangePasswordComponent> {
                         margin:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         child: TextFormField(
-                          style: Styles.poppinsText,
+                          style: Styles.montText,
                           keyboardType: TextInputType.visiblePassword,
                           controller: newPasswordController,
                           obscureText: true,
@@ -239,7 +239,7 @@ class _ChangePasswordComponentState extends State<ChangePasswordComponent> {
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 20),
                         child: TextFormField(
-                          style: Styles.poppinsText,
+                          style: Styles.montText,
                           keyboardType: TextInputType.visiblePassword,
                           controller: confirmNewPasswordController,
                           obscureText: true,

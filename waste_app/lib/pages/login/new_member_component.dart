@@ -282,8 +282,10 @@ class NewMemberComponent extends MaterialPageRoute<bool> {
                                 height: 100,
                                 alignment: Alignment.center,
                                 child: Theme(
-                                  data: Theme.of(context)
-                                      .copyWith(accentColor: Colors.deepPurple),
+                                  data: Theme.of(context).copyWith(
+                                      colorScheme: ColorScheme.fromSwatch()
+                                          .copyWith(
+                                              secondary: Styles.primaryColor)),
                                   child: new CircularProgressIndicator(),
                                 ),
                               ),

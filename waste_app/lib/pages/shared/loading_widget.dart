@@ -13,11 +13,8 @@ class _LoadingWidgetState extends State<LoadingWidget> {
       margin: EdgeInsets.symmetric(vertical: 60),
       width: double.infinity,
       alignment: Alignment.center,
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          accentColor: Styles.primaryColor,
-        ),
-        child: new CircularProgressIndicator(),
+      child: new CircularProgressIndicator(
+        color: Styles.primaryColor,
       ),
     );
   }

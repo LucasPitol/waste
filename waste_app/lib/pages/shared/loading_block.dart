@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:waste_app/utils/styles.dart';
 
 class LoadingBlock extends StatelessWidget {
   final bool loading;
@@ -17,10 +18,8 @@ class LoadingBlock extends StatelessWidget {
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
-                child: Theme(
-                  data: Theme.of(context)
-                      .copyWith(accentColor: Colors.deepPurple),
-                  child: new CircularProgressIndicator(),
+                child: new CircularProgressIndicator(
+                  color: Styles.primaryColor,
                 ),
               ),
             ),

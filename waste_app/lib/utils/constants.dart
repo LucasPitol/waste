@@ -39,18 +39,6 @@ class Constants {
 
   static int numberOfWalletsLimit = 3;
 
-  static getDefaultLoadingWidget(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 60),
-      width: double.infinity,
-      alignment: Alignment.center,
-      child: Theme(
-        data: Theme.of(context).copyWith(accentColor: Colors.deepPurple),
-        child: new CircularProgressIndicator(),
-      ),
-    );
-  }
-
   static IconData getCategoryIcon(String value) {
     return categoryIconDict.containsKey(value)
         ? categoryIconDict[value]

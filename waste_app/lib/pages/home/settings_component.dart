@@ -257,7 +257,7 @@ class _SettingsComponentState extends State<SettingsComponent> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             isPtLanguage ? 'Idioma' : 'Language',
-                            style: Styles.poppinsText,
+                            style: Styles.montText,
                           ),
                         ),
                         Container(

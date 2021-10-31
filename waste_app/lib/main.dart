@@ -56,21 +56,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    //   statusBarColor: Colors.deepPurple,
-    // ));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Styles.mainTheme,
-      // localizationsDelegates: [
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      //   GlobalCupertinoLocalizations.delegate,
-      // ],
-      // supportedLocales: [
-      //   const Locale('pt', 'BR'),
-      //   const Locale('en', 'US'),
-      // ],
       home: this.isAuthenticated
           ? MainComponent()
           : LoginComponent(_updateMainState),

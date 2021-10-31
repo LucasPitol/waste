@@ -1,5 +1,5 @@
 name: waste_app
-description: A new Flutter.
+description: Financial control app
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,19 +11,19 @@ description: A new Flutter.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.2.0+11
+version: 2.2.0+12
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore: ^2.2.2
-  firebase_core: ^1.3.0
+  cloud_firestore: ^2.5.4
+  firebase_core: ^1.8.0
   rxdart: 0.20.0
   intl: ^0.17.0
-  pie_chart: ^4.0.1
+  pie_chart: ^5.0.1
   flutter_multi_formatter: ^1.1.5
   google_fonts: ^1.0.0
   shared_preferences: ^2.0.6
@@ -32,10 +32,9 @@ dependencies:
   package_info: ^2.0.2
   flutter_native_splash: ^0.1.9
   animations: ^2.0.1
-  fl_chart: ^0.36.1
   collection: ^1.15.0
   smooth_page_indicator: ^0.2.3
-  font_awesome_flutter: ^9.1.0
+  font_awesome_flutter: ^9.2.0
   flutter_localizations:
     sdk: flutter
 

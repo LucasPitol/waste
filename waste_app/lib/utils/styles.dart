@@ -10,8 +10,11 @@ class Styles {
       selectionHandleColor: primaryColor,
       selectionColor: primaryColor,
     ),
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: primaryColor,
+      accentColor: secondaryColor,
+    ),
     primaryColor: primaryColor,
-    accentColor: darkColor,
     scaffoldBackgroundColor: mainBackgroundColor,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: boxColor,
@@ -44,8 +47,11 @@ class Styles {
   static TextStyle pageTitleStyle = TextStyle(
       color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 24);
 
-  static TextStyle poppinsText = TextStyle(
-      color: Colors.grey.shade100, fontWeight: FontWeight.w500, fontSize: 16);
+  static TextStyle montText = TextStyle(
+    color: mainTextColor,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
 
   static TextStyle poppinsTextLight =
       TextStyle(color: Colors.grey.shade100, fontWeight: FontWeight.w500);
@@ -54,7 +60,7 @@ class Styles {
       TextStyle(color: Colors.grey, fontWeight: FontWeight.w500);
 
   static BorderRadius defaultBorderRadius =
-      BorderRadius.all(Radius.circular(20));
+      BorderRadius.all(Radius.circular(8));
   static BorderRadius circularBorderRadius =
       BorderRadius.all(Radius.circular(200));
 
@@ -65,7 +71,7 @@ class Styles {
 
   static BoxDecoration contentBox2 = BoxDecoration(
     color: boxColor,
-    borderRadius: BorderRadius.all(Radius.circular(12)),
+    borderRadius: BorderRadius.all(Radius.circular(10)),
   );
 
   static BoxDecoration loginBox = BoxDecoration(
@@ -125,15 +131,14 @@ class Styles {
   );
 
   static ThemeData calendarThemeData = ThemeData.dark().copyWith(
-    primaryColor: Colors.deepPurple,
-    accentColor: Colors.deepPurple.shade900,
-    colorScheme: ColorScheme.dark(
-      primary: Colors.deepPurple,
-      background: mainBackgroundColor,
-    ),
+    primaryColor: Styles.primaryColor,
     buttonTheme: ButtonThemeData(
       textTheme: ButtonTextTheme.primary,
     ),
+    colorScheme: ColorScheme.dark(
+      primary: Styles.primaryColor,
+      background: mainBackgroundColor,
+    ).copyWith(secondary: Styles.secondaryColor),
   );
 
   static getTextFieldDecoration(String value) {

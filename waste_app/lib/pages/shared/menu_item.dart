@@ -26,7 +26,7 @@ class MenuItem extends StatelessWidget {
             margin: EdgeInsets.only(left: 20),
             child: Text(
               this.name,
-              style: Styles.poppinsText,
+              style: Styles.montText,
             ),
           ),
         ],
