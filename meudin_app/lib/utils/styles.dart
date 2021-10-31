@@ -64,6 +64,9 @@ class Styles {
       enabledBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.grey.shade600),
       ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: primaryColor),
+      ),
       labelText: value,
       labelStyle: const TextStyle(color: Colors.grey),
     );

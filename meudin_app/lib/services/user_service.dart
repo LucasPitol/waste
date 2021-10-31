@@ -4,6 +4,7 @@ import 'package:meudin_app/db/user_dao.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/models/forms/login_form.dart';
 import 'package:meudin_app/models/user.dart';
+import 'package:meudin_app/models/wallet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
@@ -39,7 +40,7 @@ class UserService {
       ResponseDto walletRes =
           ResponseDto(); //await _walletService.getWalletsByUserId(userId);
       walletRes.success = true;
-      walletRes.data = [];
+      walletRes.data = <Wallet>[];
 
       if (walletRes.success) {
         currentUser!.walletList = walletRes.data;

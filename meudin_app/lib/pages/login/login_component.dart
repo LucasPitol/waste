@@ -183,7 +183,7 @@ class _LoginComponentState extends State<LoginComponent> {
                               },
                               decoration:
                                   Styles.getTextFieldDecorationUnderline(
-                                      'email'),
+                                      'senha'),
                               obscureText: true,
                             ),
                           ),

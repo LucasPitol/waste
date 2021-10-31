@@ -1,30 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meudin_app/models/user.dart';
 
 class UserDao {
-  // final dbReference = FirebaseFirestore.instance;
+  final dbReference = FirebaseFirestore.instance;
   final String _usersCollectionName = 'user';
 
   Future<User?> auth(String userMail, String password) async {
     User? user;
 
-    // await dbReference
-    //     .collection(_usersCollectionName)
-    //     .where('email', isEqualTo: userMail)
-    //     .where('password', isEqualTo: password)
-    //     .get()
-    //     .then((snapShot) {
-    //   snapShot.docs.forEach((item) {
-    //     user = User(item);
-    //   });
-    // });
-    user = User();
-    user.id = 'asdw';
-    user.currentWalletId = 'asdw';
-    user.email = 'judas@gmail.com';
-    user.name = 'Judas';
-    user.walletList = [];
-    user.creationDate = DateTime.now();
-    /////////
+    await dbReference
+        .collection(_usersCollectionName)
+        .where('email', isEqualTo: userMail)
+        .where('password', isEqualTo: password)
+        .get()
+        .then((snapShot) {
+      for (var item in snapShot.docs) {
+        user = User(item);
+      }
+    });
 
     return user;
   }
@@ -84,9 +77,8 @@ class UserDao {
     // await docRef.get().then((onValue) async {
 
     //   if (onValue.exists) {
-        
 
-    //   } 
+    //   }
     // }).catchError((onError) {
     //   print(onError);
 

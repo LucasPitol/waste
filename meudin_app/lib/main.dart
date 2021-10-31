@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,10 +10,10 @@ import 'services/user_service.dart';
 import 'utils/constants.dart';
 import 'utils/styles.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   initializeDateFormatting(Constants.ptLanguage)
       .then((_) => runApp(Phoenix(child: MyApp())));
 }
