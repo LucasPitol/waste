@@ -5,11 +5,13 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
 
+import 'main_component.dart';
 import 'models/user.dart';
 import 'pages/login/login_component.dart';
 import 'services/user_service.dart';
 import 'utils/constants.dart';
 import 'utils/styles.dart';
+import 'utils/utils.dart';
 
 const bool USE_EMULATOR = true;
 
@@ -22,7 +24,7 @@ Future<void> main() async {
 
   if (USE_EMULATOR) {
     await _connectToFirebaseEmulator();
-    // Utils.mockData();
+    Utils.mockData();
   }
 
   runApp(Phoenix(child: MyApp()));
@@ -54,8 +56,6 @@ class _MyAppState extends State<MyApp> {
     SchedulerBinding.instance!.addPostFrameCallback((_) => _updateMainState());
   }
 
-  // final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
   void _updateMainState() {
     setState(() {
       currentUser = UserService.currentUser;
@@ -69,7 +69,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Meudin',
       theme: Styles.mainTheme,
-      home: isAuthenticated ? Container() : LoginComponent(_updateMainState),
+      home:
+          isAuthenticated ? MainComponent() : LoginComponent(_updateMainState),
     );
   }
 

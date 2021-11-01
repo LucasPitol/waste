@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'pages/home/home_component.dart';
+import 'utils/styles.dart';
+
+class MainComponent extends StatefulWidget {
+  @override
+  _MainComponentState createState() => _MainComponentState();
+}
+
+// GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
+// GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
+// GlobalKey<ProfitsComponentState> profitsComponentGlobalKey = GlobalKey();
+// GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
+// GlobalKey<OverlayBuilderState> overlayBuilderStatelKey = GlobalKey();
+
+class _MainComponentState extends State<MainComponent> {
+  final FloatingActionButtonLocation _addFabLocation =
+      FloatingActionButtonLocation.centerDocked;
+
+  final fabIcons = [Icons.trending_up, Icons.trending_down];
+
+  final List<Widget> _widgetOptions = <Widget>[
+    HomeComponent(), Container(),
+    // HomeComponent(
+    //     key: homeComponentGlobalKey,
+    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
+    // SpendsComponent(
+    //     key: spendsComponentGlobalKey,
+    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
+    // ProfitsComponent(
+    //     key: profitsComponentGlobalKey,
+    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
+    // OverviewComponent(
+    //     key: overviewComponentGlobalKey,
+    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
+  ];
+
+  // AnchoredOverlay customFab;
+
+  int _selectedIndex = 0;
+
+  // _updateLayout() {
+  //   switch (_selectedIndex) {
+  //     case 0:
+  //       homeComponentGlobalKey.currentState.updateAppBar();
+  //       break;
+  //     default:
+  //   }
+  // }
+
+  // void _refreshData() {
+  //   switch (_selectedIndex) {
+  //     case 0:
+  //       _updateHomePage();
+  //       break;
+  //     case 1:
+  //       _updateOverviewPage();
+  //       break;
+
+  //     default:
+  //       break;
+  //   }
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Styles.mainBackgroundColor,
+      body: SafeArea(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Styles.cardColor,
+        child: FaIcon(
+          FontAwesomeIcons.plus,
+          color: Styles.primaryColor,
+        ),
+        onPressed: () {
+          print('fab');
+        },
+      ),
+      floatingActionButtonLocation: _addFabLocation,
+      bottomNavigationBar: _buildBottomNavAppBar(),
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  BottomAppBar _buildBottomNavAppBar() {
+    return BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      color: Styles.cardColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(
+            icon: FaIcon(
+              FontAwesomeIcons.home,
+              size: 20,
+              color: _selectedIndex == 0 ? Styles.primaryColor : Colors.grey,
+            ),
+            onPressed: () {
+              _onItemTapped(0);
+            },
+          ),
+          const SizedBox(
+            width: 24,
+            height: 24,
+          ),
+          IconButton(
+            icon: FaIcon(
+              FontAwesomeIcons.chartPie,
+              size: 20,
+              color: _selectedIndex == 1 ? Styles.primaryColor : Colors.grey,
+            ),
+            onPressed: () {
+              _onItemTapped(1);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

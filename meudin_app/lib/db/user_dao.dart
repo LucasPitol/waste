@@ -93,24 +93,24 @@ class UserDao {
   Future<User?> loginByUid(String uid) async {
     User? user;
 
+    DocumentReference docRef = dbReference.collection('user').doc(uid);
+
+    await docRef.get().then((onValue) async {
+      if (onValue.exists) {
+        user = User(onValue);
+      }
+    }).catchError((onError) {
+      print(onError);
+
+      SmartError errorDto = SmartError();
+      errorDto.errorData = onError;
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Auto login';
+      errorDto.userId = uid;
+
+      _smartErrorService.saveError(errorDto);
+    });
+
     return user;
-    // DocumentReference docRef = dbReference.collection('user').doc(uid);
-
-    // await docRef.get().then((onValue) async {
-
-    //   if (onValue.exists) {
-
-    //   }
-    // }).catchError((onError) {
-    //   print(onError);
-
-    //   SmartError errorDto = SmartError();
-    //   errorDto.errorData = onError;
-    //   errorDto.errorLog = onError.toString();
-    //   errorDto.feature = 'Auto login';
-    //   errorDto.userId = uid;
-
-    //   this.smartErrorService.saveError(errorDto);
-    // });
   }
 }

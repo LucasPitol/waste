@@ -1,4 +1,6 @@
 class Constants {
+  static const String EMPTY_STRING = '---';
+
   static String ptLanguage = 'pt_BR';
 
   static String getDefaultEmptyFieldMsg() {
