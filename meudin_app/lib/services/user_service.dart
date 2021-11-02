@@ -27,6 +27,26 @@ class UserService {
         currentUser!.id.isNotEmpty;
   }
 
+  Future<ResponseDto> updateUserWallets() async {
+    ResponseDto res = ResponseDto();
+
+    String uid = currentUser!.id;
+
+    ResponseDto walletRes = await _walletService.getWalletsByUserId(uid);
+
+    if (walletRes.success) {
+      currentUser!.walletList = walletRes.data;
+
+      res.success = true;
+      res.data = true;
+    } else {
+      res.success = false;
+      res.errorMsg = 'Erro ao buscar carteiras do usuario';
+    }
+
+    return res;
+  }
+
   Future<ResponseDto> logIn(LoginForm form) async {
     ResponseDto res = ResponseDto();
 
@@ -42,14 +62,12 @@ class UserService {
 
       String userId = user.id;
 
-      ResponseDto walletRes =
-          ResponseDto(); //await _walletService.getWalletsByUserId(userId);
-      walletRes.success = true;
-      walletRes.data = <Wallet>[];
+      ResponseDto walletRes = await _walletService.getWalletsByUserId(userId);
 
       if (walletRes.success) {
         currentUser!.walletList = walletRes.data;
-        //currentUser!.currentWalletId = currentUser!.walletList.first.id;
+
+        currentUser!.currentWalletId = currentUser!.walletList.first.id;
 
         await _setUserIdToLocalStorage(userId);
 
@@ -122,8 +140,16 @@ class UserService {
       if (user != null && user.id.isNotEmpty) {
         _setUserIdToLocalStorage(uid);
         //TODO: Ver logica no waste
-        // buscar carteiras
+
+        ResponseDto walletRes = await _walletService.getWalletsByUserId(uid);
+
         currentUser = user;
+
+        if (walletRes.success) {
+          currentUser!.walletList = walletRes.data;
+
+          currentUser!.currentWalletId = currentUser!.walletList.first.id;
+        }
       } else {
         _clearLocalStorage();
       }

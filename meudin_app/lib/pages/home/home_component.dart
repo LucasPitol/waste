@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
+import 'package:meudin_app/models/wallet.dart';
 import 'package:meudin_app/pages/shared/loading_widget.dart';
 import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/styles.dart';
@@ -8,6 +9,8 @@ import 'package:meudin_app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meudin_app/utils/utils.dart';
+
+import 'wallets_bottom_sheet.dart';
 
 class HomeComponent extends StatefulWidget {
   // final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
@@ -21,6 +24,8 @@ class HomeComponent extends StatefulWidget {
 class HomeComponentState extends State<HomeComponent> {
   // final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
   User? _user;
+  late Wallet _currentWallet;
+  late UserService _userService;
 
   late bool _loading;
   late List<TabSelector> _tabs;
@@ -30,6 +35,9 @@ class HomeComponentState extends State<HomeComponent> {
 
   HomeComponentState() {
     _user = UserService.currentUser;
+    _currentWallet = _user!.walletList
+        .singleWhere((element) => element.id == _user!.currentWalletId);
+    _userService = UserService();
     _tabs = <TabSelector>[];
     _tabSelected = 0;
     _loading = false;
@@ -46,9 +54,22 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   updatePageData() async {
-    // await _updateUserWallets();
+    await _updateUserWallets();
 
     await _updateTransactionList();
+  }
+
+  _updateUserWallets() async {
+    await _userService.updateUserWallets();
+
+    _user = UserService.currentUser;
+
+    Wallet _currentWalletTemp = _user!.walletList
+        .singleWhere((element) => element.id == _user!.currentWalletId);
+
+    setState(() {
+      _currentWallet = _currentWalletTemp;
+    });
   }
 
   _updateTransactionList() {
@@ -130,6 +151,32 @@ class HomeComponentState extends State<HomeComponent> {
     );
   }
 
+  _openWalletsBottomSheet() async {
+    List<Wallet> userWallets = _user!.walletList;
+
+    String? newWalletId = await showModalBottomSheet(
+        context: context,
+        backgroundColor: Styles.cardColor,
+        builder: (builder) {
+          return WalletsBottomSheetWidget(walletList: userWallets);
+        });
+
+    if (newWalletId != null && newWalletId.isNotEmpty) {
+      _switchCurrentWallet(newWalletId);
+    }
+  }
+
+  _switchCurrentWallet(String newWalletId) {
+    Wallet walletTemp =
+        _user!.walletList.singleWhere((element) => element.id == newWalletId);
+
+    setState(() {
+      _currentWallet = walletTemp;
+    });
+
+    _updateTransactionList();
+  }
+
   Widget _buildWalletSection() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -144,7 +191,7 @@ class HomeComponentState extends State<HomeComponent> {
             Row(
               children: [
                 Text(
-                  'Carteira pessoal',
+                  _currentWallet.name,
                   style: Styles.montTextTitle,
                 ),
                 IconButton(
@@ -154,7 +201,7 @@ class HomeComponentState extends State<HomeComponent> {
                     size: 20,
                   ),
                   onPressed: () {
-                    print('Switch wallet');
+                    _openWalletsBottomSheet();
                   },
                 ),
               ],
