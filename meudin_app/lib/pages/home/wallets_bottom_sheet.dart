@@ -5,18 +5,21 @@ import 'package:meudin_app/utils/styles.dart';
 
 class WalletsBottomSheetWidget extends StatefulWidget {
   final List<Wallet> walletList;
+  final Function handleNewWalletPage;
 
-  WalletsBottomSheetWidget({required this.walletList});
+  WalletsBottomSheetWidget(
+      {required this.walletList, required this.handleNewWalletPage});
 
   @override
   _WalletsBottomSheetWidgetState createState() =>
-      _WalletsBottomSheetWidgetState(walletList);
+      _WalletsBottomSheetWidgetState(walletList, handleNewWalletPage);
 }
 
 class _WalletsBottomSheetWidgetState extends State<WalletsBottomSheetWidget> {
   final List<Wallet> walletList;
+  final Function handleNewWalletPage;
 
-  _WalletsBottomSheetWidgetState(this.walletList);
+  _WalletsBottomSheetWidgetState(this.walletList, this.handleNewWalletPage);
 
   Widget _buildWalletItem(Wallet wallet) {
     int membersLength = wallet.membersId.length;
@@ -73,7 +76,7 @@ class _WalletsBottomSheetWidgetState extends State<WalletsBottomSheetWidget> {
           ),
           InkWell(
             onTap: () {
-              print('new wallet');
+              handleNewWalletPage();
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

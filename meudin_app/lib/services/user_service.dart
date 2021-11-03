@@ -161,6 +161,15 @@ class UserService {
     return res;
   }
 
+  int getNumberOfWalletsOwned() {
+    var user = currentUser;
+    List<Wallet> wallets = user!.walletList;
+
+    int walletsOwned = wallets.where((element) => element.ownerId == user.id).length;
+    
+    return walletsOwned;
+  }
+
   Future<void> _setUserIdToLocalStorage(String uid) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();

@@ -2,14 +2,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
 import 'package:meudin_app/models/wallet.dart';
+import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
 import 'package:meudin_app/pages/shared/loading_widget.dart';
 import 'package:meudin_app/services/user_service.dart';
+import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
 import 'package:meudin_app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:meudin_app/utils/utils.dart';
 
+import 'new_wallet_component.dart';
 import 'wallets_bottom_sheet.dart';
 
 class HomeComponent extends StatefulWidget {
@@ -133,7 +136,7 @@ class HomeComponentState extends State<HomeComponent> {
               size: 20,
             ),
             onPressed: () {
-              print('Update data');
+              updatePageData();
             },
           ),
           IconButton(
@@ -151,6 +154,42 @@ class HomeComponentState extends State<HomeComponent> {
     );
   }
 
+  _goToNewWalletPage() async {
+    Navigator.pop(context);
+
+    int walletCountLimit = Constants.numberOfWalletsLimitOnFreePlan;
+    int userWalletOwnedCount = _userService.getNumberOfWalletsOwned();
+
+    if (userWalletOwnedCount >= walletCountLimit) {
+      String title = 'Ops...';
+      String message =
+          'Limite de carteiras excedido, em breve o limite será estendido';
+
+      _openInfoBottomSheet(title, message);
+    } else {
+      bool? refresh = await Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return NewWalletComponent();
+      }));
+
+      if (refresh != null && refresh) {
+        await _updateUserWallets();
+        _user = UserService.currentUser;
+        String newWalletId = _user!.currentWalletId;
+        _switchCurrentWallet(newWalletId);
+      }
+    }
+  }
+
+  void _openInfoBottomSheet(String title, String message) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Styles.cardColor,
+        builder: (builder) {
+          return InfoBottomSheetWidget(title: title, message: message);
+        });
+  }
+
   _openWalletsBottomSheet() async {
     List<Wallet> userWallets = _user!.walletList;
 
@@ -158,7 +197,10 @@ class HomeComponentState extends State<HomeComponent> {
         context: context,
         backgroundColor: Styles.cardColor,
         builder: (builder) {
-          return WalletsBottomSheetWidget(walletList: userWallets);
+          return WalletsBottomSheetWidget(
+            walletList: userWallets,
+            handleNewWalletPage: _goToNewWalletPage,
+          );
         });
 
     if (newWalletId != null && newWalletId.isNotEmpty) {

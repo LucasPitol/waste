@@ -26,6 +26,23 @@ class WalletService {
     return res;
   }
 
+  Future<ResponseDto> createNewWallet(String walletName, String userId) async {
+    ResponseDto res = ResponseDto();
+
+    String walletId = await _walletDao.createNewWallet(walletName, userId);
+
+    if (walletId != null && walletId.isNotEmpty) {
+      res.success = true;
+      res.data = walletId;
+    } else {
+      res.success = false;
+      res.errorMsg =
+          'Não foi possível criar a carteira, revise o formulário e tente novamente';
+    }
+
+    return res;
+  }
+
   Future<String> createPersonalWallet(String uid) async {
     return await _walletDao.createNewWallet('Carteira pessoal', uid);
   }
