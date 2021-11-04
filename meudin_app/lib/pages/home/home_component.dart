@@ -18,7 +18,7 @@ import 'wallets_bottom_sheet.dart';
 class HomeComponent extends StatefulWidget {
   // final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
 
-  // HomeComponent({Key key, this.overlayBuilderStatelKey}) : super(key: key);
+  HomeComponent({required Key key}) : super(key: key);
 
   @override
   HomeComponentState createState() => HomeComponentState();
@@ -211,6 +211,8 @@ class HomeComponentState extends State<HomeComponent> {
   _switchCurrentWallet(String newWalletId) {
     Wallet walletTemp =
         _user!.walletList.singleWhere((element) => element.id == newWalletId);
+
+    UserService.currentUser!.currentWalletId = newWalletId;
 
     setState(() {
       _currentWallet = walletTemp;

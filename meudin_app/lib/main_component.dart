@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'new_revenue/new_revenue_component.dart';
 import 'pages/home/home_component.dart';
 import 'utils/styles.dart';
 
@@ -9,20 +11,17 @@ class MainComponent extends StatefulWidget {
   _MainComponentState createState() => _MainComponentState();
 }
 
-// GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
+GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
 // GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
 // GlobalKey<ProfitsComponentState> profitsComponentGlobalKey = GlobalKey();
 // GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
-// GlobalKey<OverlayBuilderState> overlayBuilderStatelKey = GlobalKey();
 
 class _MainComponentState extends State<MainComponent> {
   final FloatingActionButtonLocation _addFabLocation =
       FloatingActionButtonLocation.centerDocked;
 
-  final fabIcons = [Icons.trending_up, Icons.trending_down];
-
   final List<Widget> _widgetOptions = <Widget>[
-    HomeComponent(), Container(),
+    HomeComponent(key: homeComponentGlobalKey), Container(),
     // HomeComponent(
     //     key: homeComponentGlobalKey,
     //     overlayBuilderStatelKey: overlayBuilderStatelKey),
@@ -41,28 +40,33 @@ class _MainComponentState extends State<MainComponent> {
 
   int _selectedIndex = 0;
 
-  // _updateLayout() {
-  //   switch (_selectedIndex) {
-  //     case 0:
-  //       homeComponentGlobalKey.currentState.updateAppBar();
-  //       break;
-  //     default:
-  //   }
-  // }
+  void _refreshData() {
+    switch (_selectedIndex) {
+      case 0:
+        _updateHomePage();
+        break;
+      case 1:
+        print('update overview');
+        // _updateOverviewPage();
+        break;
 
-  // void _refreshData() {
-  //   switch (_selectedIndex) {
-  //     case 0:
-  //       _updateHomePage();
-  //       break;
-  //     case 1:
-  //       _updateOverviewPage();
-  //       break;
+      default:
+        break;
+    }
+  }
 
-  //     default:
-  //       break;
-  //   }
-  // }
+  _updateHomePage() {
+    homeComponentGlobalKey.currentState!.updatePageData();
+  }
+
+  _goToNewRevenuePage() async {
+    bool? refresh = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => NewRevenueComponent()));
+
+    if (refresh != null && refresh) {
+      _refreshData();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,15 +76,42 @@ class _MainComponentState extends State<MainComponent> {
       body: SafeArea(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FloatingActionButton(
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Styles.cardColor,
+      //   child: FaIcon(
+      //     FontAwesomeIcons.plus,
+      //     color: Styles.primaryColor,
+      //   ),
+      //   onPressed: () {
+      //     print('fab');
+      //   },
+      // ),
+      floatingActionButton: SpeedDial(
+        // activeBackgroundColor: Styles.cardColor,
         backgroundColor: Styles.cardColor,
-        child: FaIcon(
-          FontAwesomeIcons.plus,
-          color: Styles.primaryColor,
-        ),
-        onPressed: () {
-          print('fab');
-        },
+        // animatedIcon: AnimatedIcons.,
+        icon: FontAwesomeIcons.plus,
+        activeIcon: FontAwesomeIcons.times,
+        foregroundColor: Styles.primaryColor,
+        overlayColor: Styles.mainBackgroundColor,
+        children: [
+          SpeedDialChild(
+              backgroundColor: Styles.cardColor,
+              child: const Icon(
+                Icons.trending_up,
+                color: Colors.green,
+              ),
+              onTap: () {
+                _goToNewRevenuePage();
+              }),
+          SpeedDialChild(
+            backgroundColor: Styles.cardColor,
+            child: const Icon(
+              Icons.trending_down,
+              color: Colors.red,
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: _addFabLocation,
       bottomNavigationBar: _buildBottomNavAppBar(),

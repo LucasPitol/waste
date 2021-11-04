@@ -30,6 +30,13 @@ class Utils {
     }
   }
 
+  static double convertStringFormToDouble(String valueStr) {
+    String valueString = valueStr.replaceAll(',', '');
+    double value = double.parse(valueString);
+
+    return value;
+  }
+
   static mockData() async {
     UserService _userService = UserService();
 
