@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter/material.dart';
 
-import 'new_revenue/new_revenue_component.dart';
+import 'pages/new_revenue/new_revenue_component.dart';
 import 'pages/home/home_component.dart';
+import 'pages/new_spend/new_spend_component.dart';
 import 'utils/styles.dart';
 
 class MainComponent extends StatefulWidget {
@@ -59,6 +60,15 @@ class _MainComponentState extends State<MainComponent> {
     homeComponentGlobalKey.currentState!.updatePageData();
   }
 
+  _goToNewSpendPage() async {
+    bool? refresh = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => NewSpendComponent()));
+
+    if (refresh != null && refresh) {
+      _refreshData();
+    }
+  }
+
   _goToNewRevenuePage() async {
     bool? refresh = await Navigator.push(context,
         MaterialPageRoute(builder: (context) => NewRevenueComponent()));
@@ -76,40 +86,33 @@ class _MainComponentState extends State<MainComponent> {
       body: SafeArea(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Styles.cardColor,
-      //   child: FaIcon(
-      //     FontAwesomeIcons.plus,
-      //     color: Styles.primaryColor,
-      //   ),
-      //   onPressed: () {
-      //     print('fab');
-      //   },
-      // ),
       floatingActionButton: SpeedDial(
         // activeBackgroundColor: Styles.cardColor,
         backgroundColor: Styles.cardColor,
-        // animatedIcon: AnimatedIcons.,
         icon: FontAwesomeIcons.plus,
         activeIcon: FontAwesomeIcons.times,
         foregroundColor: Styles.primaryColor,
         overlayColor: Styles.mainBackgroundColor,
         children: [
           SpeedDialChild(
-              backgroundColor: Styles.cardColor,
-              child: const Icon(
-                Icons.trending_up,
-                color: Colors.green,
-              ),
-              onTap: () {
-                _goToNewRevenuePage();
-              }),
+            backgroundColor: Styles.cardColor,
+            child: const Icon(
+              Icons.trending_up,
+              color: Colors.green,
+            ),
+            onTap: () {
+              _goToNewRevenuePage();
+            },
+          ),
           SpeedDialChild(
             backgroundColor: Styles.cardColor,
             child: const Icon(
               Icons.trending_down,
               color: Colors.red,
             ),
+            onTap: () {
+              _goToNewSpendPage();
+            },
           ),
         ],
       ),

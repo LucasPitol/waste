@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meudin_app/models/forms/new_revenue_form.dart';
+import 'package:meudin_app/models/forms/new_waste_form.dart';
 import 'package:meudin_app/models/smart_error.dart';
 import 'package:meudin_app/services/smart_error_service.dart';
 import 'package:meudin_app/utils/utils.dart';
@@ -13,6 +14,55 @@ class TransactionDao {
   TransactionDao() {
     _smartErrorService = SmartErrorService();
   }
+
+  Future<String> saveNewWaste(NewWasteForm form) async {
+    Timestamp spendDate = Timestamp.fromDate(form.spendDate);
+    Timestamp creationDate = Timestamp.fromDate(DateTime.now());
+
+    String? uid = form.uid;
+    String reason = form.reason.text;
+    String walletId = form.walletId;
+    String categoryId = form.categoryId;
+
+    double waste = Utils.convertStringFormToDouble(form.waste.text);
+
+    double amount = (waste >= 0) ? waste * (-1) : waste;
+
+    var batch = dbReference.batch();
+
+    var docRef = dbReference.collection(_transactionCollectionName).doc();
+
+    String id = docRef.id;
+
+    batch.set(docRef, {
+      'id': id,
+      'userId': uid,
+      'reason': reason,
+      'transactionDate': spendDate,
+      'walletId': walletId,
+      'amount': amount,
+      'categoryId': categoryId,
+      'type': 'WASTE',
+      'creationDate': creationDate,
+    });
+
+    await batch.commit().then((value) {
+      return id;
+    }).catchError((onError) {
+      SmartError errorDto = SmartError();
+      errorDto.errorData = onError;
+      errorDto.errorLog = onError.toString();
+      errorDto.feature = 'Save waste';
+      errorDto.userId = id;
+      errorDto.userMail = '';
+
+      _smartErrorService.saveError(errorDto);
+      return '';
+    });
+
+    return id;
+  }
+
   Future<String> saveNewRevenue(NewRevenueForm form) async {
     Timestamp payDay = Timestamp.fromDate(form.payDay);
     Timestamp creationDate = Timestamp.fromDate(DateTime.now());
