@@ -16,6 +16,23 @@ class Constants {
     return 'email inválido';
   }
 
+  static Map<int, String> monthDict = {
+    1: 'Janeiro',
+    2: 'Fevereiro',
+    3: 'Março',
+    4: 'Abril',
+    5: 'Maio',
+    6: 'Junho',
+    7: 'Julho',
+    8: 'Agosto',
+    9: 'Setembro',
+    10: 'Outubro',
+    11: 'Novembro',
+    12: 'Dezembro',
+  };
+
+  static List<int> years = [2018, 2019, 2020, 2021, 2022];
+
   static Map<String, IconData> categoryIconDict = {
     'bankRate': FontAwesomeIcons.university,
     'education': FontAwesomeIcons.school,

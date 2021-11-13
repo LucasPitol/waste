@@ -87,7 +87,7 @@ class Utils {
       'value': 'others',
     });
 
-    await batch.commit();
+    // await batch.commit();
   }
 
   static String getAmountFormated(double amount) {

@@ -1,4 +1,5 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:meudin_app/utils/utils.dart';
 
 import 'new_wallet_component.dart';
+import 'switch_date_bottom_sheet_widget.dart';
 import 'wallets_bottom_sheet.dart';
 
 class HomeComponent extends StatefulWidget {
@@ -349,6 +351,24 @@ class HomeComponentState extends State<HomeComponent> {
     }
   }
 
+  _openSwitchDateBottomSheet() async {
+    DateTime? newDate = await showModalBottomSheet(
+        context: context,
+        backgroundColor: Styles.cardColor,
+        builder: (builder) {
+          return SwitchDateBottomSheetWidget(
+            startDate: startDate,
+          );
+        });
+
+    if (newDate != null) {
+      startDate = DateTime(newDate.year, newDate.month, 1);
+      int endDateDay = endDate.day;
+      endDate = DateTime(newDate.year, newDate.month, endDateDay);
+      updatePageData();
+    }
+  }
+
   Widget _buildHomeBox() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -379,10 +399,10 @@ class HomeComponentState extends State<HomeComponent> {
                 ),
                 TextButton(
                   onPressed: () {
-                    print('switch month');
+                    _openSwitchDateBottomSheet();
                   },
                   child: Text(
-                    'Julho',
+                    DateFormat.yMMMM(Constants.ptLanguage).format(startDate),
                     style: TextStyle(
                       fontSize: 14.0,
                       color: Styles.primaryColor,
