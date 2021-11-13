@@ -1,9 +1,11 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
 import 'package:meudin_app/models/wallet.dart';
 import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
 import 'package:meudin_app/pages/shared/loading_widget.dart';
+import 'package:meudin_app/services/transaction_service.dart';
 import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
@@ -29,15 +31,23 @@ class HomeComponentState extends State<HomeComponent> {
   User? _user;
   late Wallet _currentWallet;
   late UserService _userService;
+  late TransactionService _transactionService;
+
+  double _monthRevenue = 0.0;
+  double _monthSpends = 0.0;
+  double _monthBalance = 0.0;
 
   late bool _loading;
   late List<TabSelector> _tabs;
   late int _tabSelected;
   late List<TransactionDto> transactionDtoList;
   late List<TransactionDto> _twoFirstTransactionDtoList;
+  late DateTime startDate;
+  late DateTime endDate;
 
   HomeComponentState() {
     _user = UserService.currentUser;
+    _transactionService = TransactionService();
     _currentWallet = _user!.walletList
         .singleWhere((element) => element.id == _user!.currentWalletId);
     _userService = UserService();
@@ -52,14 +62,30 @@ class HomeComponentState extends State<HomeComponent> {
   void initState() {
     super.initState();
     updateAppBar();
+    _fillStandardDate();
     _fillTabOptions();
     updatePageData();
   }
 
+  _fillStandardDate() {
+    DateTime now = DateTime.now();
+    startDate = DateTime(now.year, now.month, 1);
+    endDate = now.add(const Duration(days: 2));
+  }
+
   updatePageData() async {
+    setState(() {
+      _loading = true;
+    });
+
     await _updateUserWallets();
 
     await _updateTransactionList();
+    // await _updateMembersList();
+
+    setState(() {
+      _loading = false;
+    });
   }
 
   _updateUserWallets() async {
@@ -75,31 +101,39 @@ class HomeComponentState extends State<HomeComponent> {
     });
   }
 
-  _updateTransactionList() {
-    transactionDtoList = [
-      TransactionDto(
-        amount: -100,
-        reason: 'Gasolina',
-        transactionDate: DateTime(2021, 07, 25),
-      ),
-      TransactionDto(
-        amount: 1000,
-        reason: 'Dividendos',
-        transactionDate: DateTime(2021, 07, 10),
-      ),
-      TransactionDto(
-        amount: 4000,
-        reason: 'Salário',
-        transactionDate: DateTime(2021, 07, 5),
-      ),
-      TransactionDto(
-        amount: -2900,
-        reason: 'Aluguel',
-        transactionDate: DateTime(2021, 07, 2),
-      ),
-    ];
+  _updateTransactionList() async {
+    String walletId = _currentWallet.id;
 
-    _twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
+    ResponseDto res = await _transactionService.getTransactionDtoList(
+        walletId, startDate, endDate);
+
+    if (res.success) {
+      transactionDtoList = res.data;
+
+      double totalAmount = 0;
+      double totalRevenue = 0;
+      double totalSpend = 0;
+
+      for (var element in transactionDtoList) {
+        double amount = element.amount!;
+
+        if (amount > 0) {
+          totalRevenue = totalRevenue + amount;
+        } else {
+          totalSpend = totalSpend + amount;
+        }
+      }
+
+      totalAmount = (totalRevenue + totalSpend);
+
+      _monthRevenue = totalRevenue;
+      _monthSpends = totalSpend;
+      _monthBalance = totalAmount;
+
+      _twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
+    } else {
+      // exibir aviso
+    }
   }
 
   _fillTabOptions() {
@@ -333,7 +367,7 @@ class HomeComponentState extends State<HomeComponent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '5.000,00',
+                        Utils.getAmountFormated(_monthBalance),
                         style: Styles.montTextTitle,
                       ),
                       Text(
@@ -369,7 +403,7 @@ class HomeComponentState extends State<HomeComponent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '+ 8.000,00',
+                        '+' + Utils.getAmountFormated(_monthRevenue),
                         style: Styles.montText,
                       ),
                       Text(
@@ -388,7 +422,7 @@ class HomeComponentState extends State<HomeComponent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '- 3.000,00',
+                        Utils.getAmountFormated(_monthSpends),
                         style: Styles.montText,
                       ),
                       Text(

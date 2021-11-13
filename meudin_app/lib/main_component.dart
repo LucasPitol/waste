@@ -13,8 +13,6 @@ class MainComponent extends StatefulWidget {
 }
 
 GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
-// GlobalKey<SpendsComponentState> spendsComponentGlobalKey = GlobalKey();
-// GlobalKey<ProfitsComponentState> profitsComponentGlobalKey = GlobalKey();
 // GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
 
 class _MainComponentState extends State<MainComponent> {

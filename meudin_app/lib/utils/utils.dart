@@ -54,7 +54,8 @@ class Utils {
 
     var batch = dbReference.batch();
 
-    var docRef1 = dbReference.collection(spendingCategoriesCollectionName).doc();
+    var docRef1 =
+        dbReference.collection(spendingCategoriesCollectionName).doc();
 
     String id1 = docRef1.id;
 
@@ -64,7 +65,8 @@ class Utils {
       'value': 'internet',
     });
 
-    var docRef2 = dbReference.collection(spendingCategoriesCollectionName).doc();
+    var docRef2 =
+        dbReference.collection(spendingCategoriesCollectionName).doc();
 
     String id2 = docRef2.id;
 
@@ -74,7 +76,8 @@ class Utils {
       'value': 'vehicle',
     });
 
-    var docRef3 = dbReference.collection(spendingCategoriesCollectionName).doc();
+    var docRef3 =
+        dbReference.collection(spendingCategoriesCollectionName).doc();
 
     String id3 = docRef3.id;
 
@@ -85,5 +88,9 @@ class Utils {
     });
 
     await batch.commit();
+  }
+
+  static String getAmountFormated(double amount) {
+    return toCurrencyString(amount.toString());
   }
 }

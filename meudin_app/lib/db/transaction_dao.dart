@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meudin_app/models/forms/new_revenue_form.dart';
 import 'package:meudin_app/models/forms/new_waste_form.dart';
 import 'package:meudin_app/models/smart_error.dart';
+import 'package:meudin_app/models/transaction.dart';
 import 'package:meudin_app/services/smart_error_service.dart';
 import 'package:meudin_app/utils/utils.dart';
 
@@ -13,6 +14,28 @@ class TransactionDao {
 
   TransactionDao() {
     _smartErrorService = SmartErrorService();
+  }
+
+  Future<List<TransactionModel>> getTransactionsByWalletIdAndDateInterval(
+      String walletId, DateTime startDate, DateTime endDate) async {
+    List<TransactionModel> transactions = [];
+
+    var snapShot = await dbReference
+        .collection(_transactionCollectionName)
+        .where('walletId', isEqualTo: walletId)
+        .where('transactionDate', isGreaterThanOrEqualTo: startDate)
+        .where('transactionDate', isLessThanOrEqualTo: endDate)
+        .get();
+
+    for (var item in snapShot.docs) {
+      TransactionModel transaction = TransactionModel(item);
+
+      transactions.add(transaction);
+    }
+
+    transactions.sort((a, b) => b.transactionDate.compareTo(a.transactionDate));
+
+    return transactions;
   }
 
   Future<String> saveNewWaste(NewWasteForm form) async {
