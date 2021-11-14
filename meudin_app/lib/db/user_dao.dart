@@ -54,6 +54,7 @@ class UserDao {
       'displayName': displayName,
       'email': userEmail,
       'password': password,
+      'privacyPolicyCheckedAt': creationDate,
       'creationDate': creationDate,
     });
 

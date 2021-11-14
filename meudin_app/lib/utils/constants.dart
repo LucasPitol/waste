@@ -4,6 +4,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class Constants {
   static const String EMPTY_STRING = '---';
 
+  static const String privacyPolicyUrl =
+      'https://docs.google.com/document/d/13ZYtEePL_mwjZRxZYyNcEhse7U05utQDpqHX9yVqLwM/edit?usp=sharing';
+
+  static const String instagramUrl = 'https://www.instagram.com/meudin.app/';
+
   static String ptLanguage = 'pt_BR';
 
   static int numberOfWalletsLimitOnFreePlan = 2;

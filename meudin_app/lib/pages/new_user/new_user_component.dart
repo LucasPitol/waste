@@ -6,6 +6,7 @@ import 'package:meudin_app/pages/shared/loading_block.dart';
 import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterUserComponent extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
   late NewUserForm newUserForm;
 
   bool loading = false;
+  bool privacyChecked = false;
 
   _RegisterUserComponentState() {
     _userService = UserService();
@@ -57,9 +59,19 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
     );
   }
 
+  _getPrivacyPolicy() async {
+    var url = Constants.privacyPolicyUrl;
+
+    await launch(
+      url,
+      forceSafariVC: false,
+      universalLinksOnly: true,
+    );
+  }
+
   Widget _buildForm() {
     return SizedBox(
-      height: 340,
+      height: 500,
       child: Form(
         key: _formKey,
         child: Column(
@@ -128,6 +140,43 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+              child: CheckboxListTile(
+                value: privacyChecked,
+                activeColor: Styles.primaryColor,
+                checkColor: Styles.mainBackgroundColor,
+                tileColor: Styles.cardColor,
+                onChanged: (onChanged) {
+                  setState(() {
+                    privacyChecked = onChanged!;
+                  });
+                },
+                title: Wrap(
+                  direction: Axis.horizontal,
+                  children: [
+                    Text(
+                      'Aceito a ',
+                      style: Styles.montText,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        _getPrivacyPolicy();
+                      },
+                      child: Text(
+                        'política de privacidade',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Styles.primaryColor,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            ),
+            Container(
               margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
               child: SizedBox(
                 width: double.infinity,
@@ -136,7 +185,12 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       if (!loading) {
-                        _createNewUser();
+                        if (privacyChecked) {
+                          _createNewUser();
+                        } else {
+                          _openLoginBottomSheet('Alerta',
+                              'Aceite a Política de Privacidade para prosseguir');
+                        }
                       }
                     }
                   },

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
 import 'package:meudin_app/utils/styles.dart';
 import 'package:meudin_app/utils/utils.dart';
+import 'package:flutter/material.dart';
 
 class ListTransactionsComponent extends StatefulWidget {
   final DateTime startDate;

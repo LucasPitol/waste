@@ -188,4 +188,9 @@ class UserService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  Future<void> signOut() async {
+    await _clearLocalStorage();
+    currentUser = null;
+  }
 }
