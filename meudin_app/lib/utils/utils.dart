@@ -23,6 +23,14 @@ class Utils {
     }
   }
 
+  static String formatDateMMMdeYYYY(DateTime? value) {
+    if (value == null) {
+      return Constants.EMPTY_STRING;
+    } else {
+      return DateFormat.yMMMM(Constants.ptLanguage).format(value);
+    }
+  }
+
   static String formatAmount(double? value) {
     if (value == null) {
       return Constants.EMPTY_STRING;

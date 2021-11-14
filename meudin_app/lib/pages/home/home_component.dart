@@ -4,6 +4,7 @@ import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
 import 'package:meudin_app/models/wallet.dart';
+import 'package:meudin_app/pages/list_transactions/list_transactions_component.dart';
 import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
 import 'package:meudin_app/pages/shared/loading_widget.dart';
 import 'package:meudin_app/services/transaction_service.dart';
@@ -467,7 +468,7 @@ class HomeComponentState extends State<HomeComponent> {
                 ),
                 TextButton(
                   onPressed: () {
-                    print('See all transactions');
+                    _goToSeeAllTransactionsPage();
                   },
                   child: Text(
                     'Ver todas',
@@ -526,6 +527,21 @@ class HomeComponentState extends State<HomeComponent> {
         ),
       ),
     );
+  }
+
+  _goToSeeAllTransactionsPage() async {
+    bool? refresh = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return ListTransactionsComponent(
+        startDate: startDate,
+        endDate: endDate,
+        transactionDtoList: transactionDtoList,
+      );
+    }));
+
+    if (refresh != null && refresh) {
+      updatePageData();
+    }
   }
 
   @override
