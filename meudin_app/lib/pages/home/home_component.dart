@@ -1,5 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:meudin_app/models/dtos/member-dto.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
@@ -40,6 +41,7 @@ class HomeComponentState extends State<HomeComponent> {
   double _monthRevenue = 0.0;
   double _monthSpends = 0.0;
   double _monthBalance = 0.0;
+  bool _isWalletOwner = false;
 
   late bool _loading;
   late List<TabSelector> _tabs;
@@ -48,18 +50,21 @@ class HomeComponentState extends State<HomeComponent> {
   late List<TransactionDto> _twoFirstTransactionDtoList;
   late DateTime startDate;
   late DateTime endDate;
+  late List<MemberDto> _walletMembers;
 
   HomeComponentState() {
     _user = UserService.currentUser;
     _transactionService = TransactionService();
     _currentWallet = _user!.walletList
         .singleWhere((element) => element.id == _user!.currentWalletId);
+    _isWalletOwner = (_currentWallet.ownerId == _user!.id);
     _userService = UserService();
     _tabs = <TabSelector>[];
     _tabSelected = 0;
     _loading = false;
     transactionDtoList = <TransactionDto>[];
     _twoFirstTransactionDtoList = <TransactionDto>[];
+    _walletMembers = <MemberDto>[];
   }
 
   @override
@@ -85,7 +90,7 @@ class HomeComponentState extends State<HomeComponent> {
     await _updateUserWallets();
 
     await _updateTransactionList();
-    // await _updateMembersList();
+    await _updateMembersList();
 
     setState(() {
       _loading = false;
@@ -100,9 +105,22 @@ class HomeComponentState extends State<HomeComponent> {
     Wallet _currentWalletTemp = _user!.walletList
         .singleWhere((element) => element.id == _user!.currentWalletId);
 
+    bool isWalletOwnerTemp = (_currentWalletTemp.ownerId == _user!.id);
+
     setState(() {
       _currentWallet = _currentWalletTemp;
+      _isWalletOwner = isWalletOwnerTemp;
     });
+  }
+
+  _updateMembersList() async {
+    List<String> memberIdList = _currentWallet.membersId;
+
+    ResponseDto res = await _userService.getMembersByMemberIds(memberIdList);
+
+    if (res.success) {
+      _walletMembers = res.data;
+    }
   }
 
   _updateTransactionList() async {
@@ -263,8 +281,11 @@ class HomeComponentState extends State<HomeComponent> {
 
     UserService.currentUser!.currentWalletId = newWalletId;
 
+    bool isWalletOwnerTemp = (walletTemp.ownerId == _user!.id);
+
     setState(() {
       _currentWallet = walletTemp;
+      _isWalletOwner = isWalletOwnerTemp;
     });
 
     _updateTransactionList();
@@ -356,7 +377,7 @@ class HomeComponentState extends State<HomeComponent> {
           return _buildHomeBox();
 
         case 1:
-          return Container();
+          return _buildMemberBox();
 
         default:
           return Container();
@@ -380,6 +401,119 @@ class HomeComponentState extends State<HomeComponent> {
       endDate = DateTime(newDate.year, newDate.month, endDateDay);
       updatePageData();
     }
+  }
+
+  _goToNewMemberPage() {
+    print('new member');
+  }
+
+  _leavetWallet() {
+    print('leave wallet');
+  }
+
+  Widget _buildMemberBox() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      width: double.infinity,
+      decoration: Styles.cardDecoration,
+      child: SizedBox(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  'Membros',
+                  style: Styles.montTextTitle,
+                ),
+                _isWalletOwner
+                    ? TextButton(
+                        onPressed: () {
+                          _goToNewMemberPage();
+                        },
+                        child: Text(
+                          'Adicionar membro',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Styles.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : TextButton(
+                        onPressed: () {
+                          _leavetWallet();
+                        },
+                        child: Text(
+                          'Deixar carteira',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Styles.primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+              ],
+            ),
+            //
+            _walletMembers.isNotEmpty
+                ? Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Column(
+                      children: _walletMembers
+                          .map((item) => createTileForMembers(item))
+                          .toList(),
+                    ),
+                  )
+                : Container(
+                    margin: const EdgeInsets.only(top: 20, bottom: 10),
+                    child: Text(
+                      'Nenhum membro nesta carteira',
+                      style: Styles.montTextGrey,
+                    ),
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _removeMember(MemberDto member) {
+    print('remove');
+  }
+
+  Widget createTileForMembers(MemberDto member) {
+    return ListTile(
+      trailing: _isWalletOwner
+          ? IconButton(
+              icon: const FaIcon(
+                FontAwesomeIcons.times,
+                color: Colors.grey,
+                size: 20, // 18
+              ),
+              onPressed: () {
+                _removeMember(member);
+              },
+            )
+          : const SizedBox(
+              width: 1,
+              height: 1,
+            ),
+      title: Text(
+        member.name,
+        style: TextStyle(
+            color: Colors.grey.shade100,
+            fontSize: 18,
+            fontWeight: FontWeight.w600),
+      ),
+      subtitle: Text(
+        member.email,
+        style: Styles.montSubText,
+      ),
+    );
   }
 
   Widget _buildHomeBox() {

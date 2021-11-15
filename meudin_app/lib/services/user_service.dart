@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:meudin_app/db/user_dao.dart';
+import 'package:meudin_app/models/dtos/member-dto.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/models/forms/login_form.dart';
 import 'package:meudin_app/models/forms/new_user_form.dart';
@@ -25,6 +26,31 @@ class UserService {
     return currentUser != null &&
         currentUser!.id != null &&
         currentUser!.id.isNotEmpty;
+  }
+
+  Future<ResponseDto> getMembersByMemberIds(List<String> memberIdList) async {
+    ResponseDto res = ResponseDto();
+
+    List<User> usersFromWallet = await _userDao.getUsersByIds(memberIdList);
+
+    List<MemberDto> _walletMembers = [];
+
+    if (usersFromWallet.isNotEmpty) {
+      for (var element in usersFromWallet) {
+        MemberDto member = MemberDto();
+
+        member.id = element.id;
+        member.name = element.name;
+        member.email = element.email;
+
+        _walletMembers.add(member);
+      }
+    }
+
+    res.success = true;
+    res.data = _walletMembers;
+
+    return res;
   }
 
   Future<ResponseDto> updateUserWallets() async {

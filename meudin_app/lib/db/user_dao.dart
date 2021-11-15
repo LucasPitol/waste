@@ -40,7 +40,6 @@ class UserDao {
   }
 
   Future<String?> changePassword(String password, String uid) async {
-
     DateTime lastUpdate = DateTime.now();
 
     DocumentReference docRef =
@@ -87,6 +86,25 @@ class UserDao {
     });
 
     return id;
+  }
+
+  Future<List<User>> getUsersByIds(List<String> memberIdList) async {
+    List<User> users = [];
+
+    var snapShot = await dbReference
+        .collection(_usersCollectionName)
+        .where('id', whereIn: memberIdList)
+        .get();
+
+    for (var item in snapShot.docs) {
+      User user = User(item);
+
+      users.add(user);
+    }
+
+    users.sort((a, b) => b.name.compareTo(a.name));
+
+    return users;
   }
 
   Future<User?> getUserByEmail(String userMail) async {
