@@ -75,6 +75,13 @@ class Styles {
     borderRadius: const BorderRadius.all(Radius.circular(10)),
   );
 
+  static ButtonStyle elevatedButtonStyle = ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(
+      borderRadius: defaultBorderRadius,
+    ),
+    primary: Styles.primaryColor,
+  );
+
   static getAppLogo() {
     return Text(
       'Meudin',

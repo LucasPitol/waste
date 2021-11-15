@@ -7,6 +7,7 @@ import 'package:meudin_app/utils/styles.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'change_password_component.dart';
 import 'settings_menu_item_widget.dart';
 
 class SettingsComponent extends StatefulWidget {
@@ -75,7 +76,8 @@ class _SettingsComponentState extends State<SettingsComponent> {
   }
 
   _goToChangePasswordPage() {
-    print('change password');
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ChangePasswordComponent()));
   }
 
   Future<void> _logout() async {

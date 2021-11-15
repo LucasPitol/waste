@@ -39,6 +39,20 @@ class UserDao {
     return user;
   }
 
+  Future<String?> changePassword(String password, String uid) async {
+
+    DateTime lastUpdate = DateTime.now();
+
+    DocumentReference docRef =
+        dbReference.collection(_usersCollectionName).doc(uid);
+
+    await docRef.set(
+        {'password': password, 'lastUpdate': Timestamp.fromDate(lastUpdate)},
+        SetOptions(merge: true));
+
+    return uid;
+  }
+
   Future<String> createNewUser(
       String displayName, String userEmail, String password) async {
     Timestamp creationDate = Timestamp.fromDate(DateTime.now());

@@ -47,6 +47,25 @@ class UserService {
     return res;
   }
 
+  Future<ResponseDto> changePassword(String newPassword, String uid) async {
+    ResponseDto res = ResponseDto();
+
+    String passwordEncrypt = await _encryptString(newPassword);
+
+    String? uidN = await _userDao.changePassword(passwordEncrypt, uid);
+
+    if (uidN == null) {
+      res.success = false;
+      res.errorMsg =
+          'Não foi possível alterar a senha, tente novamente mais tarde';
+    } else {
+      res.success = true;
+      res.data = true;
+    }
+
+    return res;
+  }
+
   Future<ResponseDto> logIn(LoginForm form) async {
     ResponseDto res = ResponseDto();
 
@@ -165,8 +184,9 @@ class UserService {
     var user = currentUser;
     List<Wallet> wallets = user!.walletList;
 
-    int walletsOwned = wallets.where((element) => element.ownerId == user.id).length;
-    
+    int walletsOwned =
+        wallets.where((element) => element.ownerId == user.id).length;
+
     return walletsOwned;
   }
 

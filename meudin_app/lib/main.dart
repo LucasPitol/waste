@@ -73,29 +73,4 @@ class _MyAppState extends State<MyApp> {
           isAuthenticated ? MainComponent() : LoginComponent(_updateMainState),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return FutureBuilder(
-  //     future: _initialization,
-  //     builder: (context, snapshot) {
-  //       if (snapshot.hasError) {
-  //         return Text(snapshot.error.toString());
-  //       }
-
-  //       if (snapshot.connectionState == ConnectionState.done) {
-  //         return MaterialApp(
-  //           debugShowCheckedModeBanner: false,
-  //           title: 'Meudin',
-  //           theme: Styles.mainTheme,
-  //           home: isAuthenticated
-  //               ? Container()
-  //               : LoginComponent(_updateMainState),
-  //         );
-  //       }
-
-  //       return LoadingWidget();
-  //     },
-  //   );
-  // }
 }
