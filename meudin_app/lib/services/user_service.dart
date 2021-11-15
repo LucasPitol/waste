@@ -7,6 +7,7 @@ import 'package:meudin_app/models/forms/login_form.dart';
 import 'package:meudin_app/models/forms/new_user_form.dart';
 import 'package:meudin_app/models/user.dart';
 import 'package:meudin_app/models/wallet.dart';
+import 'package:meudin_app/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'wallet_service.dart';
@@ -49,6 +50,46 @@ class UserService {
 
     res.success = true;
     res.data = _walletMembers;
+
+    return res;
+  }
+
+  Future<ResponseDto> addMemberToWallet(
+      String memberMail, Wallet wallet, List<MemberDto> members) async {
+    ResponseDto res = ResponseDto();
+
+    int currentMembersCount = members.length;
+
+    if (currentMembersCount >= Constants.walletMembersLimitOnFreePlan) {
+      String walletName = wallet.name;
+
+      res.success = false;
+      res.errorMsg =
+          'Limite de membros atingido em $walletName, em breve o limite será estendido';
+
+      return res;
+    }
+
+    User? member = await _userDao.getUserByEmail(memberMail);
+
+    if (member == null) {
+      res.success = false;
+      res.errorMsg = 'Membro não encontrado, verifique o email digitado';
+
+      return res;
+    }
+
+    ResponseDto walletServiceRes =
+        await _walletService.addMemberToWallet(member.id, wallet);
+
+    if (walletServiceRes.success) {
+      res.success = true;
+      res.data = member.name;
+
+    } else {
+      res.success = false;
+      res.errorMsg = walletServiceRes.errorMsg;
+    }
 
     return res;
   }

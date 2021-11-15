@@ -13,6 +13,27 @@ class WalletDao {
     _smartErrorService = SmartErrorService();
   }
 
+  Future<String> addMemberToWallet(
+      List<String> members, String walletId) async {
+    var batch = dbReference.batch();
+
+    var docRef = dbReference.collection(_walletsCollectionName).doc(walletId);
+
+    DateTime lastUpdate = DateTime.now();
+
+    await docRef.set(
+      {
+        'membersId': members,
+        'lastUpdate': Timestamp.fromDate(lastUpdate),
+      },
+      SetOptions(merge: true),
+    );
+
+    await batch.commit();
+
+    return '';
+  }
+
   Future<List<Wallet>> getWalletsByUserId(String userId) async {
     List<Wallet> wallets = [];
 

@@ -26,6 +26,23 @@ class WalletService {
     return res;
   }
 
+  Future<ResponseDto> addMemberToWallet(String memberId, Wallet wallet) async {
+    ResponseDto res = ResponseDto();
+
+    String walletId = wallet.id;
+
+    List<String> members = wallet.membersId;
+
+    members.add(memberId);
+
+    await _walletDao.addMemberToWallet(members, walletId);
+
+    res.success = true;
+    res.data = true;
+
+    return res;
+  }
+
   Future<ResponseDto> createNewWallet(String walletName, String userId) async {
     ResponseDto res = ResponseDto();
 

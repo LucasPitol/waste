@@ -13,6 +13,8 @@ class Constants {
 
   static int numberOfWalletsLimitOnFreePlan = 2;
 
+  static int walletMembersLimitOnFreePlan = 2;
+
   static String getDefaultEmptyFieldMsg() {
     return 'Campo obrigatório';
   }

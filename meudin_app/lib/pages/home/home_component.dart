@@ -6,6 +6,7 @@ import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
 import 'package:meudin_app/models/wallet.dart';
 import 'package:meudin_app/pages/list_transactions/list_transactions_component.dart';
+import 'package:meudin_app/pages/new_wallet_member/new_wallet_member_component.dart';
 import 'package:meudin_app/pages/settings/settings_component.dart';
 import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
 import 'package:meudin_app/pages/shared/loading_widget.dart';
@@ -288,7 +289,7 @@ class HomeComponentState extends State<HomeComponent> {
       _isWalletOwner = isWalletOwnerTemp;
     });
 
-    _updateTransactionList();
+    updatePageData();
   }
 
   Widget _buildWalletSection() {
@@ -403,8 +404,18 @@ class HomeComponentState extends State<HomeComponent> {
     }
   }
 
-  _goToNewMemberPage() {
-    print('new member');
+  _goToNewMemberPage() async {
+    bool? refresh = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return NewWalletMemberComponent(
+        currentWallet: _currentWallet,
+        walletMembers: _walletMembers,
+      );
+    }));
+
+    if (refresh != null && refresh) {
+      updatePageData();
+    }
   }
 
   _leavetWallet() {
@@ -486,22 +497,31 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   Widget createTileForMembers(MemberDto member) {
+    bool self = (member.id == _user!.id);
+
+    Widget trailing = _isWalletOwner
+        ? self
+            ? const SizedBox(
+                width: 1,
+                height: 1,
+              )
+            : IconButton(
+                icon: const FaIcon(
+                  FontAwesomeIcons.times,
+                  color: Colors.grey,
+                  size: 20, // 18
+                ),
+                onPressed: () {
+                  _removeMember(member);
+                },
+              )
+        : const SizedBox(
+            width: 1,
+            height: 1,
+          );
+
     return ListTile(
-      trailing: _isWalletOwner
-          ? IconButton(
-              icon: const FaIcon(
-                FontAwesomeIcons.times,
-                color: Colors.grey,
-                size: 20, // 18
-              ),
-              onPressed: () {
-                _removeMember(member);
-              },
-            )
-          : const SizedBox(
-              width: 1,
-              height: 1,
-            ),
+      trailing: trailing,
       title: Text(
         member.name,
         style: TextStyle(
