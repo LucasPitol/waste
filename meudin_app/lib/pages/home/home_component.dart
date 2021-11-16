@@ -10,8 +10,10 @@ import 'package:meudin_app/pages/new_wallet_member/new_wallet_member_component.d
 import 'package:meudin_app/pages/settings/settings_component.dart';
 import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
 import 'package:meudin_app/pages/shared/loading_widget.dart';
+import 'package:meudin_app/pages/shared/option_bottom_sheet_widget.dart';
 import 'package:meudin_app/services/transaction_service.dart';
 import 'package:meudin_app/services/user_service.dart';
+import 'package:meudin_app/services/wallet_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
 import 'package:meudin_app/models/user.dart';
@@ -37,6 +39,7 @@ class HomeComponentState extends State<HomeComponent> {
   User? _user;
   late Wallet _currentWallet;
   late UserService _userService;
+  late WalletService _walletService;
   late TransactionService _transactionService;
 
   double _monthRevenue = 0.0;
@@ -56,6 +59,7 @@ class HomeComponentState extends State<HomeComponent> {
   HomeComponentState() {
     _user = UserService.currentUser;
     _transactionService = TransactionService();
+    _walletService = WalletService();
     _currentWallet = _user!.walletList
         .singleWhere((element) => element.id == _user!.currentWalletId);
     _isWalletOwner = (_currentWallet.ownerId == _user!.id);
@@ -418,8 +422,62 @@ class HomeComponentState extends State<HomeComponent> {
     }
   }
 
-  _leavetWallet() {
-    print('leave wallet');
+  _leaveWallet() async {
+    String title;
+    String message;
+
+    List<Wallet> userWallets = _user!.walletList;
+
+    if (userWallets.length <= 1) {
+      title = 'Atenção!';
+      message = 'Você não pode deixar sua única carteira';
+
+      _openInfoBottomSheet(title, message);
+    } else {
+      title = 'Deixar de acompanhar a carteira?';
+      String walletName = _currentWallet.name;
+      message =
+          'Você poderá volta para \'$walletName\' se for convidado novamente';
+
+      String actionTitle = 'Deixar carteira';
+      String cancelTitle = 'Cancelar';
+
+      bool? leave = await _openOptionBottomSheet(
+          title, message, actionTitle, cancelTitle);
+
+      if (leave != null && leave) {
+        setState(() {
+          _loading = true;
+        });
+
+        Wallet wallet = _currentWallet;
+        String uid = _user!.id;
+
+        _walletService.removeMember(uid, wallet).then((value) {
+          userWallets.remove(wallet);
+
+          String walletIdToSwitch = userWallets.first.id;
+
+          _switchCurrentWallet(walletIdToSwitch);
+        });
+      }
+    }
+  }
+
+  _openOptionBottomSheet(String title, String message, String actionTitle,
+      String cancelTitle) async {
+    return await showModalBottomSheet(
+      context: context,
+      backgroundColor: Styles.cardColor,
+      builder: (builder) {
+        return OptionBottomSheetWidget(
+          title: title,
+          message: message,
+          actionTitle: actionTitle,
+          cancelTitle: cancelTitle,
+        );
+      },
+    );
   }
 
   Widget _buildMemberBox() {
@@ -456,7 +514,7 @@ class HomeComponentState extends State<HomeComponent> {
                       )
                     : TextButton(
                         onPressed: () {
-                          _leavetWallet();
+                          _leaveWallet();
                         },
                         child: Text(
                           'Deixar carteira',
@@ -492,8 +550,31 @@ class HomeComponentState extends State<HomeComponent> {
     );
   }
 
-  _removeMember(MemberDto member) {
-    print('remove');
+  _removeMember(MemberDto member) async {
+    String title = 'Remover membro?';
+    String walletName = _currentWallet.name;
+    String memberName = member.name;
+    String message =
+        'Remover $memberName de \'$walletName\'? \nVocê poderá convida-lo novamente';
+
+    String actionTitle = 'Remover membro';
+    String cancelTitle = 'Cancelar';
+
+    bool? remove =
+        await _openOptionBottomSheet(title, message, actionTitle, cancelTitle);
+
+    if (remove != null && remove) {
+      setState(() {
+        _loading = true;
+      });
+
+      Wallet wallet = _currentWallet;
+      String memberId = member.id;
+
+      _walletService.removeMember(memberId, wallet).then((value) {
+        updatePageData();
+      });
+    }
   }
 
   Widget createTileForMembers(MemberDto member) {

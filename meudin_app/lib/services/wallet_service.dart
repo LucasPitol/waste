@@ -26,6 +26,22 @@ class WalletService {
     return res;
   }
 
+  Future<ResponseDto> removeMember(String memberId, Wallet wallet) async {
+    ResponseDto res = ResponseDto();
+
+    List<String> membersIds = wallet.membersId;
+
+    membersIds.remove(memberId);
+
+    wallet.membersId = membersIds;
+
+    String walletId = wallet.id;
+
+    await _walletDao.updateMemberList(membersIds, walletId);
+
+    return res;
+  }
+
   Future<ResponseDto> addMemberToWallet(String memberId, Wallet wallet) async {
     ResponseDto res = ResponseDto();
 
@@ -35,7 +51,7 @@ class WalletService {
 
     members.add(memberId);
 
-    await _walletDao.addMemberToWallet(members, walletId);
+    await _walletDao.updateMemberList(members, walletId);
 
     res.success = true;
     res.data = true;

@@ -78,7 +78,7 @@ class _NewSpendComponentState extends State<NewSpendComponent> {
     _newWasteForm.uid = _user!.id;
     _newWasteForm.categoryId = _categorySelected!.id;
 
-    _transactionService.savaNewWaste(_newWasteForm).then((res) {
+    _transactionService.saveNewWaste(_newWasteForm).then((res) {
       if (res.success) {
         _goBack(true);
       } else {

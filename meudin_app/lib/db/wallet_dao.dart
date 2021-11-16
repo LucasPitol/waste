@@ -13,15 +13,15 @@ class WalletDao {
     _smartErrorService = SmartErrorService();
   }
 
-  Future<String> addMemberToWallet(
-      List<String> members, String walletId) async {
+  Future<String> updateMemberList(List<String> members, String walletId) async {
     var batch = dbReference.batch();
 
     var docRef = dbReference.collection(_walletsCollectionName).doc(walletId);
 
     DateTime lastUpdate = DateTime.now();
 
-    await docRef.set(
+    batch.set(
+      docRef,
       {
         'membersId': members,
         'lastUpdate': Timestamp.fromDate(lastUpdate),

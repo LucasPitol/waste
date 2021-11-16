@@ -49,7 +49,7 @@ class TransactionService {
     return res;
   }
 
-  Future<ResponseDto> savaNewWaste(NewWasteForm form) async {
+  Future<ResponseDto> saveNewWaste(NewWasteForm form) async {
     ResponseDto res = ResponseDto();
 
     String id = await _transactionDao.saveNewWaste(form);
