@@ -26,8 +26,6 @@ import 'switch_date_bottom_sheet_widget.dart';
 import 'wallets_bottom_sheet.dart';
 
 class HomeComponent extends StatefulWidget {
-  // final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
-
   HomeComponent({required Key key}) : super(key: key);
 
   @override
@@ -142,7 +140,7 @@ class HomeComponentState extends State<HomeComponent> {
       double totalSpend = 0;
 
       for (var element in transactionDtoList) {
-        double amount = element.amount!;
+        double amount = element.amount;
 
         if (amount > 0) {
           totalRevenue = totalRevenue + amount;
@@ -733,10 +731,10 @@ class HomeComponentState extends State<HomeComponent> {
               child: Column(
                 children: _twoFirstTransactionDtoList.map((e) {
                   String title = e.reason ?? '';
-                  String date = Utils.formatDateDDMM(e.transactionDate);
+                  String date = Utils.formatDateDDMMYY(e.transactionDate);
                   String amountStr = Utils.formatAmount(e.amount);
 
-                  if (e.amount! > 0) {
+                  if (e.amount > 0) {
                     amountStr = '+' + amountStr;
                   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'pages/new_revenue/new_revenue_component.dart';
 import 'pages/home/home_component.dart';
 import 'pages/new_spend/new_spend_component.dart';
+import 'pages/overview/overview_component.dart';
 import 'utils/styles.dart';
 
 class MainComponent extends StatefulWidget {
@@ -13,29 +14,16 @@ class MainComponent extends StatefulWidget {
 }
 
 GlobalKey<HomeComponentState> homeComponentGlobalKey = GlobalKey();
-// GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
+GlobalKey<OverviewComponentState> overviewComponentGlobalKey = GlobalKey();
 
 class _MainComponentState extends State<MainComponent> {
   final FloatingActionButtonLocation _addFabLocation =
       FloatingActionButtonLocation.centerDocked;
 
   final List<Widget> _widgetOptions = <Widget>[
-    HomeComponent(key: homeComponentGlobalKey), Container(),
-    // HomeComponent(
-    //     key: homeComponentGlobalKey,
-    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
-    // SpendsComponent(
-    //     key: spendsComponentGlobalKey,
-    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
-    // ProfitsComponent(
-    //     key: profitsComponentGlobalKey,
-    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
-    // OverviewComponent(
-    //     key: overviewComponentGlobalKey,
-    //     overlayBuilderStatelKey: overlayBuilderStatelKey),
+    HomeComponent(key: homeComponentGlobalKey),
+    OverviewComponent(key: overviewComponentGlobalKey),
   ];
-
-  // AnchoredOverlay customFab;
 
   int _selectedIndex = 0;
 
@@ -45,13 +33,16 @@ class _MainComponentState extends State<MainComponent> {
         _updateHomePage();
         break;
       case 1:
-        print('update overview');
-        // _updateOverviewPage();
+        _updateOverviewPage();
         break;
 
       default:
         break;
     }
+  }
+
+  _updateOverviewPage() {
+    overviewComponentGlobalKey.currentState!.updatePageData();
   }
 
   _updateHomePage() {
@@ -143,8 +134,8 @@ class _MainComponentState extends State<MainComponent> {
             },
           ),
           const SizedBox(
-            width: 24,
-            height: 24,
+            width: 20,
+            height: 20,
           ),
           IconButton(
             icon: FaIcon(

@@ -93,10 +93,10 @@ class _ListTransactionsComponentState extends State<ListTransactionsComponent> {
 
   Widget _buildTransactionTile(TransactionDto item) {
     String title = item.reason ?? '';
-    String date = Utils.formatDateDDMM(item.transactionDate);
+    String date = Utils.formatDateDDMMYY(item.transactionDate);
     String amountStr = Utils.formatAmount(item.amount);
 
-    if (item.amount! > 0) {
+    if (item.amount > 0) {
       amountStr = '+' + amountStr;
     }
 

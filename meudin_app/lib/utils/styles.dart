@@ -30,6 +30,13 @@ class Styles {
 
   static Color mainTextColor = Colors.grey.shade100;
 
+  static List<Color> pieChartColorList = [
+    Colors.deepPurple.shade900,
+    Colors.deepPurple,
+    Colors.deepPurple.shade300,
+    Colors.deepPurple.shade100,
+  ];
+
   static TextStyle montText = TextStyle(
     color: mainTextColor,
     fontSize: 16,
@@ -72,6 +79,11 @@ class Styles {
 
   static BoxDecoration cardDecoration = BoxDecoration(
     color: cardColor,
+    borderRadius: const BorderRadius.all(Radius.circular(10)),
+  );
+
+  static BoxDecoration cardDecoration2 = BoxDecoration(
+    color: primaryColor.withOpacity(.10),
     borderRadius: const BorderRadius.all(Radius.circular(10)),
   );
 

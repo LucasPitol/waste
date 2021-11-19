@@ -27,6 +27,21 @@ class Utils {
     }
   }
 
+  static String getPercentageStr(double value, double totalValue) {
+    double percentage = (value / totalValue) * 100;
+    String percentageStr = percentage.toStringAsFixed(2);
+
+    return '$percentageStr%';
+  }
+
+  static String formatDateDDMMYY(DateTime? value) {
+    if (value == null) {
+      return Constants.EMPTY_STRING;
+    } else {
+      return DateFormat.yMd(Constants.ptLanguage).format(value);
+    }
+  }
+
   static String formatDateMMMdeYYYY(DateTime? value) {
     if (value == null) {
       return Constants.EMPTY_STRING;
