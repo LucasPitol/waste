@@ -77,13 +77,23 @@ class _SpendingCategoryListSheetWidgetState
               size: 50,
             ),
           ),
-          SingleChildScrollView(
-            child: Column(
-              children: spendsByCategoryMap.entries
-                  .map((e) => _buildTile(e))
-                  .toList(),
-            ),
-          ),
+          spendsByCategoryMap.isNotEmpty
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: spendsByCategoryMap.entries
+                        .map((e) => _buildTile(e))
+                        .toList(),
+                  ),
+                )
+              : Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    'Sem informações de gastos',
+                    style: Styles.montTextGrey,
+                  ),
+                ),
         ],
       ),
     );

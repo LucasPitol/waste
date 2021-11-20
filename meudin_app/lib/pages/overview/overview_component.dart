@@ -9,6 +9,7 @@ import 'package:meudin_app/utils/styles.dart';
 import 'package:meudin_app/utils/utils.dart';
 import 'package:pie_chart/pie_chart.dart';
 
+import 'calendar_range_component.dart';
 import 'spending_category_list_bottom_sheet_widget.dart';
 
 class OverviewComponent extends StatefulWidget {
@@ -20,6 +21,7 @@ class OverviewComponent extends StatefulWidget {
 
 class OverviewComponentState extends State<OverviewComponent> {
   bool _loading = false;
+  bool _isShowingCalendar = false;
   late OverviewPageDto _overviewPageDto;
   late TransactionService _transactionService;
   late DateTime startDate;
@@ -117,7 +119,7 @@ class OverviewComponentState extends State<OverviewComponent> {
                     child: Container(
                       // alignment: Alignment.topRight,
                       decoration: Styles.cardDecoration,
-                      width: 250,
+                      width: 270,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -143,7 +145,7 @@ class OverviewComponentState extends State<OverviewComponent> {
                               size: 18,
                             ),
                             onPressed: () {
-                              updatePageData();
+                              showCalendar();
                             },
                           ),
                         ],
@@ -211,6 +213,23 @@ class OverviewComponentState extends State<OverviewComponent> {
           );
   }
 
+  showCalendar() {
+    setState(() {
+      _isShowingCalendar = !_isShowingCalendar;
+    });
+  }
+
+  selectDateRange(List<DateTime>? dates) async {
+    showCalendar();
+
+    if (dates != null && dates.isNotEmpty) {
+      startDate = dates[0];
+      endDate = dates[1];
+
+      updatePageData();
+    }
+  }
+
   _showSpendingCategoryListBottomSheet() {
     showModalBottomSheet(
         context: context,
@@ -251,36 +270,46 @@ class OverviewComponentState extends State<OverviewComponent> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: PieChart(
-                    dataMap: _overviewPageDto.pieChartDataMap,
-                    animationDuration: const Duration(milliseconds: 800),
-                    chartLegendSpacing: 32,
-                    chartRadius: MediaQuery.of(context).size.width / 3.2,
-                    colorList: Styles.pieChartColorList,
-                    initialAngleInDegree: 0,
-                    chartType: ChartType.disc,
-                    ringStrokeWidth: 32,
-                    // centerText: "Categorias",
-                    legendOptions: LegendOptions(
-                      showLegendsInRow: false,
-                      legendPosition: LegendPosition.right,
-                      showLegends: true,
-                      legendShape: BoxShape.circle,
-                      legendTextStyle: Styles.montSubText,
-                    ),
-                    chartValuesOptions: const ChartValuesOptions(
-                      showChartValueBackground: true,
-                      showChartValues: true,
-                      showChartValuesInPercentage: true,
-                      showChartValuesOutside: false,
-                      decimalPlaces: 1,
-                    ),
-                    // gradientList: ---To add gradient colors---
-                    // emptyColorGradient: ---Empty Color gradient---
-                  ),
-                ),
+                _overviewPageDto.pieChartDataMap.isNotEmpty
+                    ? Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        child: PieChart(
+                          dataMap: _overviewPageDto.pieChartDataMap,
+                          animationDuration: const Duration(milliseconds: 800),
+                          chartLegendSpacing: 32,
+                          chartRadius: MediaQuery.of(context).size.width / 3.2,
+                          colorList: Styles.pieChartColorList,
+                          initialAngleInDegree: 0,
+                          chartType: ChartType.disc,
+                          ringStrokeWidth: 32,
+                          // centerText: "Categorias",
+                          legendOptions: LegendOptions(
+                            showLegendsInRow: false,
+                            legendPosition: LegendPosition.right,
+                            showLegends: true,
+                            legendShape: BoxShape.circle,
+                            legendTextStyle: Styles.montSubText,
+                          ),
+                          chartValuesOptions: const ChartValuesOptions(
+                            showChartValueBackground: true,
+                            showChartValues: true,
+                            showChartValuesInPercentage: true,
+                            showChartValuesOutside: false,
+                            decimalPlaces: 1,
+                          ),
+                          // gradientList: ---To add gradient colors---
+                          // emptyColorGradient: ---Empty Color gradient---
+                        ),
+                      )
+                    : Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        alignment: Alignment.topCenter,
+                        child: Text(
+                          'Sem informações de gastos',
+                          style: Styles.montTextGrey,
+                        ),
+                      ),
               ],
             ),
           );
@@ -299,6 +328,14 @@ class OverviewComponentState extends State<OverviewComponent> {
             ],
           ),
         ),
+        _isShowingCalendar
+            ? CalendarRangeComponent(
+                previousStartDate: startDate,
+                previousEndDate: endDate,
+                functionHandler: selectDateRange,
+                demissCalendar: showCalendar,
+              )
+            : Container(),
         _loading ? Center(child: LoadingWidget()) : Container(),
       ],
     );
