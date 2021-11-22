@@ -66,7 +66,7 @@ class _SpendingCategoryListSheetWidgetState
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 240,
+      // height: 240,
       child: Column(
         children: [
           Container(
@@ -78,11 +78,13 @@ class _SpendingCategoryListSheetWidgetState
             ),
           ),
           spendsByCategoryMap.isNotEmpty
-              ? SingleChildScrollView(
-                  child: Column(
-                    children: spendsByCategoryMap.entries
-                        .map((e) => _buildTile(e))
-                        .toList(),
+              ? Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: spendsByCategoryMap.entries
+                          .map((e) => _buildTile(e))
+                          .toList(),
+                    ),
                   ),
                 )
               : Container(

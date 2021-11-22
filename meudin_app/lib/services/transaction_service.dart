@@ -122,12 +122,16 @@ class TransactionService {
         for (var k in sortedKeys) k: spendsByCategoryMap[k]!
       };
 
+     Map<String, double> x = {
+        for (var k in sortedKeys) k: spendsByCategoryMap[k]!
+      };
+
       Map<String, double> sortedMapReduced = sortedMap;
 
       double totalOthers = 0.0;
       for (int i = 0; i < sortedKeys.length; i++) {
         if (i >= 3) {
-          totalOthers = totalOthers + (sortedMapReduced[sortedKeys[i]]!);
+          totalOthers = totalOthers + (sortedMap[sortedKeys[i]]!);
 
           sortedMapReduced.remove(sortedKeys[i]);
 
@@ -140,8 +144,8 @@ class TransactionService {
 
       overViewPageDto.income = income;
       overViewPageDto.spends = spends;
-      overViewPageDto.balance = (income - spends);
-      overViewPageDto.spendsByCategoryMap = sortedMap;
+      overViewPageDto.balance = (income + spends);
+      overViewPageDto.spendsByCategoryMap = x;
       overViewPageDto.pieChartDataMap = sortedMapReduced;
 
       res.success = true;

@@ -100,7 +100,7 @@ class _WalletsBottomSheetWidgetState extends State<WalletsBottomSheetWidget> {
             width: double.infinity,
             height: 20,
           ),
-          SizedBox(
+          Expanded(
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

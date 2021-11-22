@@ -13,7 +13,7 @@ import 'utils/constants.dart';
 import 'utils/styles.dart';
 import 'utils/utils.dart';
 
-const bool USE_EMULATOR = true;
+const bool USE_EMULATOR = false;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
