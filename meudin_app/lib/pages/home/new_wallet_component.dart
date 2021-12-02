@@ -62,7 +62,7 @@ class _NewWalletComponentState extends State<NewWalletComponent> {
           textCapitalization: TextCapitalization.sentences,
           validator: (value) {
             if (value!.isEmpty) {
-              return Constants.getDefaultEmptyFieldMsg();
+              return Constants.getDefaultEmptyFieldMsg(context);
             }
 
             return null;

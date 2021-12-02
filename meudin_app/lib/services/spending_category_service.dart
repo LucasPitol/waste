@@ -14,6 +14,8 @@ class SpendingCategoryService {
 
     List<SpendingCategory> spendingCategories = await _spendingCategoryDao.getSpendingCategories();
 
+    spendingCategories.sort((a, b) => a.name.compareTo(b.name));
+
     res.success = true;
     res.data = spendingCategories;
 

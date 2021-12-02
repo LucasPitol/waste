@@ -181,7 +181,7 @@ class _ChangePasswordComponentState extends State<ChangePasswordComponent> {
                 obscureText: true,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg();
+                    return Constants.getDefaultEmptyFieldMsg(context);
                   }
 
                   return null;
@@ -209,7 +209,7 @@ class _ChangePasswordComponentState extends State<ChangePasswordComponent> {
                         obscureText: true,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return Constants.getDefaultEmptyFieldMsg();
+                            return Constants.getDefaultEmptyFieldMsg(context);
                           }
 
                           if (value.length <= 6) {
@@ -235,7 +235,7 @@ class _ChangePasswordComponentState extends State<ChangePasswordComponent> {
                         obscureText: true,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return Constants.getDefaultEmptyFieldMsg();
+                            return Constants.getDefaultEmptyFieldMsg(context);
                           }
 
                           if (value.length <= 6) {

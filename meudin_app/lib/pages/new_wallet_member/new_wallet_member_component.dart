@@ -89,11 +89,11 @@ class _NewWalletMemberComponentState extends State<NewWalletMemberComponent> {
           controller: _newMemberMailController,
           validator: (value) {
             if (value!.isEmpty) {
-              return Constants.getDefaultEmptyFieldMsg();
+              return Constants.getDefaultEmptyFieldMsg(context);
             }
 
             if ((!value.contains('.com') || !value.contains('@'))) {
-              return Constants.getDefaultInvalidEmailMsg();
+              return Constants.getDefaultInvalidEmailMsg(context);
             }
 
             if (_isUserMail(value)) {

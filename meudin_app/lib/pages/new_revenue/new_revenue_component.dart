@@ -170,7 +170,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                 controller: _newRevenueForm.reason,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg();
+                    return Constants.getDefaultEmptyFieldMsg(context);
                   }
 
                   return null;
@@ -192,7 +192,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                 inputFormatters: [CurrencyTextInputFormatter(symbol: '')],
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg();
+                    return Constants.getDefaultEmptyFieldMsg(context);
                   }
 
                   if (Utils.convertStringFormToDouble(value) <= 0.0) {

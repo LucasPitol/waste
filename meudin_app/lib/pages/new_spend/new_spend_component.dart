@@ -198,7 +198,7 @@ class _NewSpendComponentState extends State<NewSpendComponent> {
                 controller: _newWasteForm.reason,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg();
+                    return Constants.getDefaultEmptyFieldMsg(context);
                   }
 
                   return null;
@@ -220,7 +220,7 @@ class _NewSpendComponentState extends State<NewSpendComponent> {
                 inputFormatters: [CurrencyTextInputFormatter(symbol: '')],
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg();
+                    return Constants.getDefaultEmptyFieldMsg(context);
                   }
 
                   if (Utils.convertStringFormToDouble(value) <= 0.0) {

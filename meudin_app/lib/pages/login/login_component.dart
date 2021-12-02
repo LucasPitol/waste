@@ -7,6 +7,7 @@ import 'package:meudin_app/pages/shared/loading_block.dart';
 import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../new_user/new_user_component.dart';
 
@@ -59,7 +60,7 @@ class _LoginComponentState extends State<LoginComponent> {
         } else {
           String title = 'Ops...';
           String message =
-              'Não foi possível comunicar-se com o servidor, tente novamente mais tarde';
+              AppLocalizations.of(context)!.unableToConnectTheServer;
 
           _openInfoBottomSheet(title, message);
         }
@@ -148,7 +149,7 @@ class _LoginComponentState extends State<LoginComponent> {
                               controller: _loginForm.userMail,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return Constants.getDefaultEmptyFieldMsg();
+                                  return Constants.getDefaultEmptyFieldMsg(context);
                                 }
 
                                 return null;
@@ -166,14 +167,14 @@ class _LoginComponentState extends State<LoginComponent> {
                               controller: _loginForm.password,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return Constants.getDefaultEmptyFieldMsg();
+                                  return Constants.getDefaultEmptyFieldMsg(context);
                                 }
 
                                 return null;
                               },
                               decoration:
                                   Styles.getTextFieldDecorationUnderline(
-                                      'senha'),
+                                      AppLocalizations.of(context)!.password),
                               obscureText: true,
                             ),
                           ),
@@ -196,7 +197,7 @@ class _LoginComponentState extends State<LoginComponent> {
                                   ),
                                 ),
                                 child: Text(
-                                  'Entrar',
+                                  AppLocalizations.of(context)!.signIn,
                                   style: Styles.buttonTextStyle,
                                 ),
                               ),
@@ -211,14 +212,14 @@ class _LoginComponentState extends State<LoginComponent> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        const Text(
-                          'Novo por aqui?',
+                        Text(
+                          AppLocalizations.of(context)!.newArroundHere,
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         ),
                         TextButton(
                           onPressed: _goToNewMemberPage,
                           child: Text(
-                            'Cadastrar',
+                            AppLocalizations.of(context)!.signUp,
                             style: TextStyle(
                               fontSize: 14.0,
                               color: Styles.primaryColor,

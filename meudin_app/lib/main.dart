@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'l10n/l10n.dart';
 import 'main_component.dart';
 import 'models/user.dart';
 import 'pages/login/login_component.dart';
 import 'services/user_service.dart';
-import 'utils/constants.dart';
 import 'utils/styles.dart';
 import 'utils/utils.dart';
 
@@ -18,7 +19,7 @@ const bool USE_EMULATOR = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  initializeDateFormatting(Constants.ptLanguage);
+  // initializeDateFormatting(Constants.ptLanguage);
 
   await Firebase.initializeApp();
 
@@ -71,6 +72,13 @@ class _MyAppState extends State<MyApp> {
       theme: Styles.mainTheme,
       home:
           isAuthenticated ? MainComponent() : LoginComponent(_updateMainState),
+      supportedLocales: L10n.all,
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
     );
   }
 }
