@@ -145,22 +145,18 @@ class UserService {
     ResponseDto res = ResponseDto(responseData);
 
     if (res.success) {
-      currentUser!.walletList = res.data;
+      List<dynamic> walletListMap = res.data;
+
+      List<Wallet> walletList = [];
+
+      walletListMap.forEach((element) {
+        Wallet wallet = _walletService.handleWallet(element);
+
+        walletList.add(wallet);
+      });
+
+      currentUser!.walletList = walletList;
     }
-
-    //TODO: implementar logica na API
-
-    // ResponseDto walletRes = await _walletService.getWalletsByUserId(uid);
-
-    // if (walletRes.success) {
-    //   currentUser!.walletList = walletRes.data;
-
-    //   res.success = true;
-    //   res.data = true;
-    // } else {
-    //   res.success = false;
-    //   res.errorMsg = 'Erro ao buscar carteiras do usuario';
-    // }
 
     return res;
   }
@@ -343,12 +339,8 @@ class UserService {
       ResponseDto res = ResponseDto(responseData);
 
       if (res.success) {
-        User? user = res.data['user'];
+        User user = _handleUser(res.data);
         currentUser = user;
-
-        currentUser!.walletList = res.data['walletList'];
-
-        currentUser!.currentWalletId = currentUser!.walletList.first.id;
       }
 
       return res;

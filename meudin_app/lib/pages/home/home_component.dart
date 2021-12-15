@@ -1,28 +1,28 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:meudin_app/models/dtos/member-dto.dart';
-import 'package:meudin_app/models/dtos/response_dto.dart';
-import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
-import 'package:meudin_app/models/dtos/transaction_dto.dart';
-import 'package:meudin_app/models/wallet.dart';
 import 'package:meudin_app/pages/list_transactions/list_transactions_component.dart';
 import 'package:meudin_app/pages/new_wallet_member/new_wallet_member_component.dart';
-import 'package:meudin_app/pages/settings/settings_component.dart';
-import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
-import 'package:meudin_app/pages/shared/loading_widget.dart';
 import 'package:meudin_app/pages/shared/option_bottom_sheet_widget.dart';
+import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
+import 'package:meudin_app/pages/settings/settings_component.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_app/models/dtos/tab_selector_dto.dart';
 import 'package:meudin_app/services/transaction_service.dart';
-import 'package:meudin_app/services/user_service.dart';
+import 'package:meudin_app/pages/shared/loading_widget.dart';
+import 'package:meudin_app/models/dtos/transaction_dto.dart';
+import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/services/wallet_service.dart';
+import 'package:meudin_app/models/dtos/member-dto.dart';
+import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
+import 'package:meudin_app/models/wallet.dart';
 import 'package:meudin_app/utils/styles.dart';
 import 'package:meudin_app/models/user.dart';
+import 'package:meudin_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meudin_app/utils/utils.dart';
+import 'package:intl/intl.dart';
 
-import 'new_wallet_component.dart';
 import 'switch_date_bottom_sheet_widget.dart';
+import 'new_wallet_component.dart';
 import 'wallets_bottom_sheet.dart';
 
 class HomeComponent extends StatefulWidget {
@@ -33,7 +33,6 @@ class HomeComponent extends StatefulWidget {
 }
 
 class HomeComponentState extends State<HomeComponent> {
-  // final GlobalKey<OverlayBuilderState> overlayBuilderStatelKey;
   User? _user;
   late Wallet _currentWallet;
   late UserService _userService;

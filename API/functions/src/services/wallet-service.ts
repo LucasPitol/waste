@@ -1,4 +1,5 @@
 import { WalletDao } from "../db/wallet-dao"
+import { ResponseDto } from "../models/dtos/response-dto"
 import { Wallet } from "../models/wallet"
 
 export class WalletService {
@@ -18,6 +19,17 @@ export class WalletService {
 
     async createNewWallet(userId: string, walletName: string) {
         await this.walletDao.createNewWallet(userId, walletName)
+    }
+
+    async getWalletsByUserIdRes(userId: string): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        let wallets = await this.getWalletsByUserId(userId)
+
+        ret.success = true
+        ret.data = wallets
+    
+        return ret
     }
 
     async getWalletsByUserId(userId: string): Promise<Wallet[]> {
