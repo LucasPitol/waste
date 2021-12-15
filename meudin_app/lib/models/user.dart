@@ -4,22 +4,27 @@ import 'abstract_model.dart';
 import 'wallet.dart';
 
 class User extends AbstractModel {
-  late String name;
+  late String displayName;
   late String email;
 
   late String currentWalletId;
   late List<Wallet> walletList;
 
-  User(DocumentSnapshot doc) {
-    Map<String, dynamic> objMapp = doc.data() as Map<String, dynamic>;
-
-    Timestamp creationDateTimestamp = objMapp['creationDate'];
-
-    id = doc.id;
-    name = objMapp['displayName'];
-    email = objMapp['email'];
-    creationDate = creationDateTimestamp.toDate();
-
-    walletList = <Wallet>[];
+  User() {
+    walletList = [];
   }
+
+  // User(DocumentSnapshot doc) {
+  //   Map<String, dynamic> objMapp = doc.data() as Map<String, dynamic>;
+
+  //   Timestamp creationDateTimestamp = objMapp['creationDate'];
+
+  //   id = doc.id;
+  //   displayName = objMapp['displayName'];
+  //   email = objMapp['email'];
+  //   creationDate = creationDateTimestamp.toDate();
+
+  //   walletList = objMapp['walletList'];
+  //   currentWalletId = objMapp['currentWalletId'];
+  // }
 }

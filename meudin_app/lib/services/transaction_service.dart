@@ -1,3 +1,4 @@
+import 'package:meudin_app/environment/environment.dart';
 import 'package:meudin_app/models/dtos/overview_page_dto.dart';
 import 'package:meudin_app/models/forms/new_revenue_form.dart';
 import 'package:meudin_app/models/forms/new_waste_form.dart';
@@ -6,12 +7,16 @@ import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/db/transaction_dao.dart';
 import 'package:meudin_app/models/spending_category.dart';
 import 'package:meudin_app/models/transaction.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'spending_category_service.dart';
 
 class TransactionService {
   late TransactionDao _transactionDao;
   late SpendingCategoryService _spendingCategoryService;
+  String apiUrl = Environment.apiUrl;
+  Map<String, String> headersRequest = Environment.headersRequest;
 
   TransactionService() {
     _transactionDao = TransactionDao();
@@ -20,159 +25,218 @@ class TransactionService {
 
   Future<ResponseDto> getTransactionDtoList(
       String walletId, DateTime startDate, DateTime endDate) async {
-    ResponseDto res = ResponseDto();
-    List<TransactionDto> transactionDtoList = <TransactionDto>[];
+    Uri url =
+        Uri.parse(this.apiUrl + 'getTransactionsByWalletIdAndDateInterval');
 
-    List<TransactionModel> transactions = await _transactionDao
-        .getTransactionsByWalletIdAndDateInterval(walletId, startDate, endDate);
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'walletId': walletId,
+          'startDate': startDate,
+          'endDate': endDate,
+        },
+      ),
+    );
 
-    for (var element in transactions) {
-      TransactionDto transactionDto = TransactionDto(amount: 0);
+    ResponseDto res = ResponseDto(responseData);
 
-      transactionDto.amount = element.amount;
-      transactionDto.categoryId = element.categoryId;
-      transactionDto.reason = element.reason;
-      transactionDto.transactionDate = element.transactionDate;
-      transactionDto.transactionId = element.id;
+    // TODO: implementar logica na API
+    // List<TransactionDto> transactionDtoList = <TransactionDto>[];
 
-      transactionDtoList.add(transactionDto);
-    }
+    // List<TransactionModel> transactions = await _transactionDao
+    //     .getTransactionsByWalletIdAndDateInterval(walletId, startDate, endDate);
 
-    res.data = transactionDtoList;
-    res.success = true;
+    // for (var element in transactions) {
+    //   TransactionDto transactionDto = TransactionDto(amount: 0);
+
+    //   transactionDto.amount = element.amount;
+    //   transactionDto.categoryId = element.categoryId;
+    //   transactionDto.reason = element.reason;
+    //   transactionDto.transactionDate = element.transactionDate;
+    //   transactionDto.transactionId = element.id;
+
+    //   transactionDtoList.add(transactionDto);
+    // }
+
+    // res.data = transactionDtoList;
+    // res.success = true;
 
     return res;
   }
 
   Future<ResponseDto> getOverviewPageDto(
       String walletId, DateTime startDate, DateTime endDate) async {
-    ResponseDto res = ResponseDto();
+    Uri url = Uri.parse(this.apiUrl + 'getOverviewPageData');
 
-    List<TransactionModel> transactions = await _transactionDao
-        .getTransactionsByWalletIdAndDateInterval(walletId, startDate, endDate);
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'walletId': walletId,
+          'startDate': startDate,
+          'endDate': endDate,
+        },
+      ),
+    );
 
-    ResponseDto spendingCategoriesRes =
-        await _spendingCategoryService.getSpendingCategories();
+    ResponseDto res = ResponseDto(responseData);
 
-    if (spendingCategoriesRes.success) {
-      OverviewPageDto overViewPageDto = OverviewPageDto();
+    // TODO: implementar logica na API
+    // List<TransactionModel> transactions = await _transactionDao
+    //     .getTransactionsByWalletIdAndDateInterval(walletId, startDate, endDate);
 
-      List<SpendingCategory> categories = spendingCategoriesRes.data;
+    // ResponseDto spendingCategoriesRes =
+    //     await _spendingCategoryService.getSpendingCategories();
 
-      double income = 0;
-      double spends = 0;
+    // if (spendingCategoriesRes.success) {
+    //   OverviewPageDto overViewPageDto = OverviewPageDto();
 
-      List<TransactionDto> transactionDtoList = [];
+    //   List<SpendingCategory> categories = spendingCategoriesRes.data;
 
-      Map<String, double> spendsByCategoryIdMap = <String, double>{};
+    //   double income = 0;
+    //   double spends = 0;
 
-      for (var element in transactions) {
-        TransactionDto transactionDto = TransactionDto(amount: 0);
+    //   List<TransactionDto> transactionDtoList = [];
 
-        double amount = element.amount;
+    //   Map<String, double> spendsByCategoryIdMap = <String, double>{};
 
-        transactionDto.amount = amount;
-        transactionDto.categoryId = element.categoryId;
-        transactionDto.reason = element.reason;
-        transactionDto.transactionDate = element.transactionDate;
-        transactionDto.transactionId = element.id;
+    //   for (var element in transactions) {
+    //     TransactionDto transactionDto = TransactionDto(amount: 0);
 
-        transactionDtoList.add(transactionDto);
+    //     double amount = element.amount;
 
-        if (amount >= 0) {
-          income = income + amount;
-        } else {
-          spends = spends + amount;
-        }
+    //     transactionDto.amount = amount;
+    //     transactionDto.categoryId = element.categoryId;
+    //     transactionDto.reason = element.reason;
+    //     transactionDto.transactionDate = element.transactionDate;
+    //     transactionDto.transactionId = element.id;
 
-        String? categoryId = element.categoryId;
+    //     transactionDtoList.add(transactionDto);
 
-        // var category = categories
-        //     .singleWhere((element) => categoryId == transactionDto.categoryId);
+    //     if (amount >= 0) {
+    //       income = income + amount;
+    //     } else {
+    //       spends = spends + amount;
+    //     }
 
-        if (categoryId != null && amount < 0) {
-          if (spendsByCategoryIdMap.containsKey(categoryId)) {
-            double? mapValue = spendsByCategoryIdMap[categoryId];
+    //     String? categoryId = element.categoryId;
 
-            mapValue = mapValue! + amount;
+    //     // var category = categories
+    //     //     .singleWhere((element) => categoryId == transactionDto.categoryId);
 
-            spendsByCategoryIdMap.remove(categoryId);
+    //     if (categoryId != null && amount < 0) {
+    //       if (spendsByCategoryIdMap.containsKey(categoryId)) {
+    //         double? mapValue = spendsByCategoryIdMap[categoryId];
 
-            spendsByCategoryIdMap.putIfAbsent(categoryId, () => mapValue!);
-          } else {
-            spendsByCategoryIdMap.putIfAbsent(categoryId, () => amount);
-          }
-        }
-      }
+    //         mapValue = mapValue! + amount;
 
-      Map<String, double> spendsByCategoryMap = <String, double>{};
+    //         spendsByCategoryIdMap.remove(categoryId);
 
-      spendsByCategoryIdMap.forEach((key, value) {
-        String categoryName =
-            categories.singleWhere((element) => key == element.id).name;
+    //         spendsByCategoryIdMap.putIfAbsent(categoryId, () => mapValue!);
+    //       } else {
+    //         spendsByCategoryIdMap.putIfAbsent(categoryId, () => amount);
+    //       }
+    //     }
+    //   }
 
-        spendsByCategoryMap.putIfAbsent(categoryName, () => value);
-      });
+    //   Map<String, double> spendsByCategoryMap = <String, double>{};
 
-      var sortedKeys = spendsByCategoryMap.keys.toList(growable: true)
-        ..sort((k1, k2) =>
-            spendsByCategoryMap[k1]!.compareTo(spendsByCategoryMap[k2]!));
+    //   spendsByCategoryIdMap.forEach((key, value) {
+    //     String categoryName =
+    //         categories.singleWhere((element) => key == element.id).name;
 
-      Map<String, double> sortedMap = {
-        for (var k in sortedKeys) k: spendsByCategoryMap[k]!
-      };
+    //     spendsByCategoryMap.putIfAbsent(categoryName, () => value);
+    //   });
 
-     Map<String, double> x = {
-        for (var k in sortedKeys) k: spendsByCategoryMap[k]!
-      };
+    //   var sortedKeys = spendsByCategoryMap.keys.toList(growable: true)
+    //     ..sort((k1, k2) =>
+    //         spendsByCategoryMap[k1]!.compareTo(spendsByCategoryMap[k2]!));
 
-      Map<String, double> sortedMapReduced = sortedMap;
+    //   Map<String, double> sortedMap = {
+    //     for (var k in sortedKeys) k: spendsByCategoryMap[k]!
+    //   };
 
-      double totalOthers = 0.0;
-      for (int i = 0; i < sortedKeys.length; i++) {
-        if (i >= 3) {
-          totalOthers = totalOthers + (sortedMap[sortedKeys[i]]!);
+    //  Map<String, double> x = {
+    //     for (var k in sortedKeys) k: spendsByCategoryMap[k]!
+    //   };
 
-          sortedMapReduced.remove(sortedKeys[i]);
+    //   Map<String, double> sortedMapReduced = sortedMap;
 
-          if (i == (sortedKeys.length - 1)) {
-            String key = 'Demais';
-            sortedMapReduced.putIfAbsent(key, () => totalOthers);
-          }
-        }
-      }
+    //   double totalOthers = 0.0;
+    //   for (int i = 0; i < sortedKeys.length; i++) {
+    //     if (i >= 3) {
+    //       totalOthers = totalOthers + (sortedMap[sortedKeys[i]]!);
 
-      overViewPageDto.income = income;
-      overViewPageDto.spends = spends;
-      overViewPageDto.balance = (income + spends);
-      overViewPageDto.spendsByCategoryMap = x;
-      overViewPageDto.pieChartDataMap = sortedMapReduced;
+    //       sortedMapReduced.remove(sortedKeys[i]);
 
-      res.success = true;
-      res.data = overViewPageDto;
-    }
+    //       if (i == (sortedKeys.length - 1)) {
+    //         String key = 'Demais';
+    //         sortedMapReduced.putIfAbsent(key, () => totalOthers);
+    //       }
+    //     }
+    //   }
+
+    //   overViewPageDto.income = income;
+    //   overViewPageDto.spends = spends;
+    //   overViewPageDto.balance = (income + spends);
+    //   overViewPageDto.spendsByCategoryMap = x;
+    //   overViewPageDto.pieChartDataMap = sortedMapReduced;
+
+    //   res.success = true;
+    //   res.data = overViewPageDto;
+    // }
 
     return res;
   }
 
   Future<ResponseDto> saveNewRevenue(NewRevenueForm form) async {
-    ResponseDto res = ResponseDto();
+    Uri url = Uri.parse(this.apiUrl + 'saveNewRevenue');
 
-    String id = await _transactionDao.saveNewRevenue(form);
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'form': form,
+        },
+      ),
+    );
 
-    res.success = true;
-    res.data = id;
+    ResponseDto res = ResponseDto(responseData);
+
+    // TODO: implementar logica na API
+    // String id = await _transactionDao.saveNewRevenue(form);
+
+    // res.success = true;
+    // res.data = id;
 
     return res;
   }
 
   Future<ResponseDto> saveNewWaste(NewWasteForm form) async {
-    ResponseDto res = ResponseDto();
+    Uri url = Uri.parse(this.apiUrl + 'saveNewWaste');
 
-    String id = await _transactionDao.saveNewWaste(form);
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'form': form,
+        },
+      ),
+    );
 
-    res.success = true;
-    res.data = id;
+    ResponseDto res = ResponseDto(responseData);
+
+    // TODO: implementar logica na API
+
+    // String id = await _transactionDao.saveNewWaste(form);
+
+    // res.success = true;
+    // res.data = id;
 
     return res;
   }

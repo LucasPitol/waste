@@ -38,7 +38,7 @@ class _LoginComponentState extends State<LoginComponent> {
   @override
   void initState() {
     super.initState();
-    tryPreviousLogin();
+    // tryPreviousLogin();
   }
 
   Future<void> _login() async {

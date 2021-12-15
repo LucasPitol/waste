@@ -7,22 +7,26 @@ class Wallet extends AbstractModel {
   late String name;
   late String ownerId;
 
-  Wallet(DocumentSnapshot doc) {
-    Map<String, dynamic> objMapp = doc.data() as Map<String, dynamic>;
-
-    Timestamp creationDateTimestamp = objMapp['creationDate'];
-
-    List<dynamic> membersIdDynamic = objMapp['membersId'];
-
+  Wallet() {
     membersId = [];
-    for (var element in membersIdDynamic) {
-      String id = element.toString();
-      membersId.add(id);
-    }
-
-    id = doc.id;
-    name = objMapp['name'];
-    ownerId = objMapp['ownerId'];
-    creationDate = creationDateTimestamp.toDate();
   }
+
+  // Wallet(DocumentSnapshot doc) {
+  //   Map<String, dynamic> objMapp = doc.data() as Map<String, dynamic>;
+
+  //   Timestamp creationDateTimestamp = objMapp['creationDate'];
+
+  //   List<dynamic> membersIdDynamic = objMapp['membersId'];
+
+  //   membersId = [];
+  //   for (var element in membersIdDynamic) {
+  //     String id = element.toString();
+  //     membersId.add(id);
+  //   }
+
+  //   id = doc.id;
+  //   name = objMapp['name'];
+  //   ownerId = objMapp['ownerId'];
+  //   creationDate = creationDateTimestamp.toDate();
+  // }
 }

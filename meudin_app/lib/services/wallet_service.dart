@@ -1,82 +1,162 @@
-import 'package:meudin_app/db/wallet_dao.dart';
+import 'dart:convert';
+
+import 'package:meudin_app/environment/environment.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
+import 'package:meudin_app/db/wallet_dao.dart';
 import 'package:meudin_app/models/wallet.dart';
+import 'package:http/http.dart' as http;
 
 class WalletService {
   late WalletDao _walletDao;
+  String apiUrl = Environment.apiUrl;
+  Map<String, String> headersRequest = Environment.headersRequest;
 
   WalletService() {
     _walletDao = WalletDao();
   }
 
   Future<ResponseDto> getWalletsByUserId(String uid) async {
-    ResponseDto res = ResponseDto();
+    Uri url = Uri.parse(this.apiUrl + 'getWalletsByUserId');
 
-    List<Wallet> wallets = await _walletDao.getWalletsByUserId(uid);
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'uid': uid,
+        },
+      ),
+    );
 
-    if (wallets.isEmpty) {
-      await createPersonalWallet(uid);
+    ResponseDto res = ResponseDto(responseData);
 
-      wallets = await _walletDao.getWalletsByUserId(uid);
-    }
+    // TODO: implementar logica na API
+    // List<Wallet> wallets = await _walletDao.getWalletsByUserId(uid);
 
-    res.success = true;
-    res.data = wallets;
+    // if (wallets.isEmpty) {
+    //   await createPersonalWallet(uid);
+
+    //   wallets = await _walletDao.getWalletsByUserId(uid);
+    // }
+
+    // res.success = true;
+    // res.data = wallets;
 
     return res;
   }
 
+  Wallet handleWallet(Map<String, dynamic> walletMap) {
+    Wallet wallet = Wallet();
+
+    wallet.id = walletMap['id'];
+    wallet.name = walletMap['name'];
+    wallet.ownerId = walletMap['ownerId'];
+    wallet.lastUpdate = DateTime.parse(walletMap['lastUpdate']);
+    wallet.creationDate = DateTime.parse(walletMap['creationDate']);
+
+    List<String> membersId = [];
+    var membersIdMap = walletMap['membersId'];
+    for (var element in membersIdMap) {
+      String id = element.toString();
+      membersId.add(id);
+    }
+
+    wallet.membersId = membersId;
+
+    return wallet;
+  }
+
   Future<ResponseDto> removeMember(String memberId, Wallet wallet) async {
-    ResponseDto res = ResponseDto();
+    Uri url = Uri.parse(this.apiUrl + 'removeMemberFromWallet');
 
-    List<String> membersIds = wallet.membersId;
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'memberId': memberId,
+          'wallet': wallet,
+        },
+      ),
+    );
 
-    membersIds.remove(memberId);
+    ResponseDto res = ResponseDto(responseData);
 
-    wallet.membersId = membersIds;
+    // TODO: implementar logica na API
+    // List<String> membersIds = wallet.membersId;
 
-    String walletId = wallet.id;
+    // membersIds.remove(memberId);
 
-    await _walletDao.updateMemberList(membersIds, walletId);
+    // wallet.membersId = membersIds;
+
+    // String walletId = wallet.id;
+
+    // await _walletDao.updateMemberList(membersIds, walletId);
 
     return res;
   }
 
   Future<ResponseDto> addMemberToWallet(String memberId, Wallet wallet) async {
-    ResponseDto res = ResponseDto();
+    Uri url = Uri.parse(this.apiUrl + 'addMemberToWallet');
 
-    String walletId = wallet.id;
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'wallet': wallet,
+          'memberMail': memberId,
+        },
+      ),
+    );
 
-    List<String> members = wallet.membersId;
+    ResponseDto res = ResponseDto(responseData);
 
-    members.add(memberId);
+    // TODO: implementar logica na API
+    // TODO: rever corpo da requisição
 
-    await _walletDao.updateMemberList(members, walletId);
+    // String walletId = wallet.id;
 
-    res.success = true;
-    res.data = true;
+    // List<String> members = wallet.membersId;
+
+    // members.add(memberId);
+
+    // await _walletDao.updateMemberList(members, walletId);
+
+    // res.success = true;
+    // res.data = true;
 
     return res;
   }
 
   Future<ResponseDto> createNewWallet(String walletName, String userId) async {
-    ResponseDto res = ResponseDto();
+    Uri url = Uri.parse(this.apiUrl + 'createNewWallet');
 
-    String walletId = await _walletDao.createNewWallet(walletName, userId);
+    var responseData = await http.post(
+      url,
+      headers: headersRequest,
+      body: jsonEncode(
+        {
+          'walletName': walletName,
+          'userId': userId,
+        },
+      ),
+    );
 
-    if (walletId != null && walletId.isNotEmpty) {
-      res.success = true;
-      res.data = walletId;
-    } else {
-      res.success = false;
-      res.errorMsg =
-          'Não foi possível criar a carteira, revise o formulário e tente novamente';
-    }
+    ResponseDto res = ResponseDto(responseData);
+
+    // TODO: implementar logica na API
+    // String walletId = await _walletDao.createNewWallet(walletName, userId);
+
+    // if (walletId != null && walletId.isNotEmpty) {
+    //   res.success = true;
+    //   res.data = walletId;
+    // } else {
+    //   res.success = false;
+    //   res.errorMsg =
+    //       'Não foi possível criar a carteira, revise o formulário e tente novamente';
+    // }
 
     return res;
-  }
-
-  Future<String> createPersonalWallet(String uid) async {
-    return await _walletDao.createNewWallet('Carteira pessoal', uid);
   }
 }
