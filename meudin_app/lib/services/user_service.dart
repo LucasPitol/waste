@@ -1,9 +1,10 @@
+import 'package:meudin_app/models/dtos/new_user_dto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:meudin_app/models/forms/new_user_form.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/environment/environment.dart';
 import 'package:meudin_app/models/forms/login_form.dart';
-import 'package:meudin_app/models/dtos/member-dto.dart';
+import 'package:meudin_app/models/dtos/member_dto.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/models/wallet.dart';
 import 'package:meudin_app/db/user_dao.dart';
@@ -259,14 +260,20 @@ class UserService {
 
     String passwordEncrypt = await _encryptString(password);
 
+    NewUserDto newUserDto = NewUserDto();
+
+    newUserDto.name = name;
+    newUserDto.email = userMail;
+    newUserDto.password = passwordEncrypt;
+
+    var jsonNewUserDto = newUserDto.toJson();
+
     var responseData = await http.post(
       url,
       headers: headersRequest,
       body: jsonEncode(
         {
-          'name': name,
-          'email': userMail,
-          'password': passwordEncrypt,
+          'newUserDto': jsonNewUserDto,
         },
       ),
     );
@@ -274,42 +281,11 @@ class UserService {
     ResponseDto res = ResponseDto(responseData);
 
     if (res.success) {
-      User? user = res.data['user'];
+      User user = _handleUser(res.data);
       currentUser = user;
 
-      currentUser!.walletList = res.data['walletList'];
-
-      currentUser!.currentWalletId = currentUser!.walletList.first.id;
-
-      await _setUserIdToLocalStorage(user!.id);
+      await _setUserIdToLocalStorage(user.id);
     }
-
-    // TODO: implementar logica na API
-    // User? user = await _userDao.getUserByEmail(userMail);
-
-    // if (user != null) {
-    //   res.success = false;
-    //   res.errorMsg = 'Email já cadastrado';
-
-    //   return res;
-    // }
-
-    // String uid = await _userDao.createNewUser(name, userMail, passwordEncrypt);
-
-    // user = await _userDao.getUserByEmail(userMail);
-
-    // currentUser = user;
-
-    // ResponseDto walletRes = await _walletService.getWalletsByUserId(uid);
-
-    // if (walletRes.success) {
-    //   currentUser!.walletList = walletRes.data;
-
-    //   currentUser!.currentWalletId = currentUser!.walletList.first.id;
-    // }
-
-    // res.success = true;
-    // res.data = true;
 
     return res;
   }

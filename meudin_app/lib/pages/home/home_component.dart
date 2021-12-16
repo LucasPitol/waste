@@ -10,7 +10,7 @@ import 'package:meudin_app/pages/shared/loading_widget.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/services/wallet_service.dart';
-import 'package:meudin_app/models/dtos/member-dto.dart';
+import 'package:meudin_app/models/dtos/member_dto.dart';
 import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/models/wallet.dart';

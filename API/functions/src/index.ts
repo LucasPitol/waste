@@ -42,6 +42,19 @@ export const logIn = functions.https.onRequest(async (req, res) => {
 
 });
 
+export const createNewUser = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+  var newUserDto = body.newUserDto
+
+  var ret = await userService.createNewUserRes(newUserDto)
+
+  console.log(ret)
+  res.send(ret)
+
+});
+
+
 export const loginByUid = functions.https.onRequest(async (req, res) => {
 
   var body = req.body

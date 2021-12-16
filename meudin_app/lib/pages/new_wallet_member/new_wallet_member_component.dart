@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:meudin_app/models/dtos/member-dto.dart';
+import 'package:meudin_app/models/dtos/member_dto.dart';
 import 'package:meudin_app/models/wallet.dart';
 import 'package:meudin_app/pages/shared/info_bottom_sheet_widget.dart';
 import 'package:meudin_app/pages/shared/loading_block.dart';

@@ -133,7 +133,8 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
                   }
 
                   if (value.length <= 6) {
-                    return AppLocalizations.of(context)!.password;
+                    return AppLocalizations.of(context)!
+                        .passwordMustBeLongerThan6Characters;
                   }
 
                   return null;
