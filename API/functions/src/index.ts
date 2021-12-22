@@ -54,6 +54,18 @@ export const createNewUser = functions.https.onRequest(async (req, res) => {
 
 });
 
+export const changePassword = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+  var uid = body.uid
+  var password = body.password
+
+  var ret = await userService.changePasswordRes(uid, password)
+
+  console.log(ret)
+  res.send(ret)
+
+});
 
 export const loginByUid = functions.https.onRequest(async (req, res) => {
 

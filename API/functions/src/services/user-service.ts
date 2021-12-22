@@ -17,6 +17,23 @@ export class UserService {
         this.walletService = new WalletService()
     }
 
+    async changePasswordRes(uid: string, password: string): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        let uidN: string = await this.userDao.changePassword(uid, password)
+
+        if (uidN == null) {
+            ret.success = false
+            ret.errorMsg =
+                'Não foi possível alterar a senha, tente novamente mais tarde'
+        } else {
+            ret.success = true
+            ret.data = true
+        }
+
+        return ret
+    }
+
     async createNewUserRes(newUserDto: NewUserDto): Promise<ResponseDto> {
         let ret = new ResponseDto()
 

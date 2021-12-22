@@ -180,19 +180,6 @@ class UserService {
 
     ResponseDto res = ResponseDto(responseData);
 
-    //TODO: implementar logica na API
-
-    // String? uidN = await _userDao.changePassword(passwordEncrypt, uid);
-
-    // if (uidN == null) {
-    //   res.success = false;
-    //   res.errorMsg =
-    //       'Não foi possível alterar a senha, tente novamente mais tarde';
-    // } else {
-    //   res.success = true;
-    //   res.data = true;
-    // }
-
     return res;
   }
 

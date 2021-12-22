@@ -29,6 +29,23 @@ export class UserDao {
         return uid
     }
 
+    async changePassword(uid: string, password: string) {
+        let now = new Date()
+
+        const batch = db.batch()
+
+        const userDocRef = db.collection(this.usersCollectionName).doc(uid)
+
+        batch.set(userDocRef, {
+            password: password,
+            lastUpdate: now,
+        }, { merge: true })
+
+        await batch.commit()
+
+        return uid
+    }
+
     async getUserById(id: string) {
 
         var snapshot = await db
