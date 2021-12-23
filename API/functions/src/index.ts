@@ -3,6 +3,7 @@ import { UserService } from "./services/user-service";
 import { MockService } from "./services/mock-service";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { TransactionService } from "./services/transaction-service";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -18,6 +19,7 @@ mockService.mockData()
 
 const userService = new UserService()
 const walletService = new WalletService()
+const transactionService = new TransactionService()
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -88,6 +90,23 @@ export const getUserWallets = functions.https.onRequest(async (req, res) => {
   var uid = body.uid
 
   var ret = await walletService.getWalletsByUserIdRes(uid)
+
+  console.log(ret)
+  res.send(ret)
+
+});
+
+// transactions
+export const getTransactionsByWalletIdAndDateInterval = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var walletId = body.walletId
+  var startDate = new Date(body.startDate)
+  var endDate = new Date(body.endDate)
+  console.log(startDate)
+
+  var ret = await transactionService.getTransactionsByWalletIdAndDateIntervalRes(walletId, startDate, endDate)
 
   console.log(ret)
   res.send(ret)

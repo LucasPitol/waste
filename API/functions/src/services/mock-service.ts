@@ -1,14 +1,17 @@
 import { WalletService } from "./wallet-service"
 import { UserService } from "./user-service"
 import { NewUserDto } from "../models/dtos/new-user-dto"
+import { SpendingCategoryService } from "./spending-category-service"
 
 export class MockService {
     userService: UserService
     walletService: WalletService
+    spendingCategoryService: SpendingCategoryService
 
     constructor() {
         this.userService = new UserService()
         this.walletService = new WalletService()
+        this.spendingCategoryService = new SpendingCategoryService()
     }
 
     async mockData(): Promise<void> {
@@ -21,7 +24,12 @@ export class MockService {
         let userRes = await this.userService.createNewUserRes(newUserDto)
 
         if (userRes.success) {
-            // save transactions
+
+            await this.spendingCategoryService.createNewSpendingCategory('Internet', 'internet')
+            await this.spendingCategoryService.createNewSpendingCategory('Veículo', 'vehicle')
+            await this.spendingCategoryService.createNewSpendingCategory('Outros', 'others')
+
+            
         }
     }
 }

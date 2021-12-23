@@ -28,40 +28,22 @@ class TransactionService {
     Uri url =
         Uri.parse(this.apiUrl + 'getTransactionsByWalletIdAndDateInterval');
 
+    var startDateStr = startDate.toString();
+    var endDateStr = endDate.toString();
+
     var responseData = await http.post(
       url,
       headers: headersRequest,
       body: jsonEncode(
         {
           'walletId': walletId,
-          'startDate': startDate,
-          'endDate': endDate,
+          'startDate': startDateStr,
+          'endDate': endDateStr,
         },
       ),
     );
 
     ResponseDto res = ResponseDto(responseData);
-
-    // TODO: implementar logica na API
-    // List<TransactionDto> transactionDtoList = <TransactionDto>[];
-
-    // List<TransactionModel> transactions = await _transactionDao
-    //     .getTransactionsByWalletIdAndDateInterval(walletId, startDate, endDate);
-
-    // for (var element in transactions) {
-    //   TransactionDto transactionDto = TransactionDto(amount: 0);
-
-    //   transactionDto.amount = element.amount;
-    //   transactionDto.categoryId = element.categoryId;
-    //   transactionDto.reason = element.reason;
-    //   transactionDto.transactionDate = element.transactionDate;
-    //   transactionDto.transactionId = element.id;
-
-    //   transactionDtoList.add(transactionDto);
-    // }
-
-    // res.data = transactionDtoList;
-    // res.success = true;
 
     return res;
   }
