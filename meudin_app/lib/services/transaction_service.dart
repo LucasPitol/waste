@@ -47,7 +47,27 @@ class TransactionService {
 
     ResponseDto res = ResponseDto(responseData);
 
+    List<TransactionDto> transactionDtoList = [];
+
+    if (res.success) {
+      transactionDtoList = await _handleTransactionDto(res.data);
+    }
+    
+    res.data = transactionDtoList;
+
     return res;
+  }
+
+  _handleTransactionDto(List<dynamic> transactionMapList) {
+    List<TransactionDto> transactionDtoList = [];
+
+    transactionMapList.forEach((element) {
+      var transactionDto = TransactionDto.fromJson(element);
+
+      transactionDtoList.add(transactionDto);
+    });
+
+    return transactionDtoList;
   }
 
   Future<ResponseDto> getOverviewPageDto(

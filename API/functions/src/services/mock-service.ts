@@ -29,7 +29,14 @@ export class MockService {
             await this.spendingCategoryService.createNewSpendingCategory('Veículo', 'vehicle')
             await this.spendingCategoryService.createNewSpendingCategory('Outros', 'others')
 
-            
+            // var newWasteDto1 = new NewWasteDto()
+            // newWasteDto1.categoryId = internetCategoryId
+            // newWasteDto1.reason = 'Internet'
+            // newWasteDto1.spendDate = new Date()
+            // newWasteDto1.uid = ''
+            // newWasteDto1.walletId = ''
+
+            // await this.transactionService.saveNewWasteRes(newWasteDto1)
         }
     }
 }

@@ -11,11 +11,15 @@ export class SpendingCategoryService {
     }
 
     async createNewSpendingCategory(name: string, value: string) {
+        var id = ''
+
         var spendingCategory = await this.getSpendingCategoryByValue(value)
 
         if (spendingCategory == null) {
-            await this.spendingCategoryDao.createNewSpendingCategory(name, value)
+            id = await this.spendingCategoryDao.createNewSpendingCategory(name, value)
         }
+
+        return id
     }
 
     async getSpendingCategoryByValue(value: string) {

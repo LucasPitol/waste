@@ -1,4 +1,5 @@
 import { UserDao } from "../db/user-dao";
+import { MemberDto } from "../models/dtos/member-dto";
 import { NewUserDto } from "../models/dtos/new-user-dto";
 import { ResponseDto } from "../models/dtos/response-dto";
 import { UserDto } from "../models/dtos/user-dto";
@@ -30,6 +31,48 @@ export class UserService {
             ret.success = true
             ret.data = true
         }
+
+        return ret
+    }
+
+    async getWalletMembersRes(memberIdList: string[]): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        var walletMembers: MemberDto[] = []
+
+        var usersFromWallet = await this.userDao.getUsersByIds(memberIdList)
+
+        if (usersFromWallet.length > 0) {
+            var walletMembersTemp: MemberDto[] = []
+
+            for (const user of usersFromWallet) {
+
+                var memberDto = new MemberDto()
+
+                memberDto.email = user.email
+                memberDto.id = user.id
+                memberDto.name = user.name
+
+                walletMembersTemp.push()
+            }
+
+            let sortered = walletMembersTemp.sort((n1, n2) => {
+                if (n1.name! > n2.name!) {
+                    return 1
+                }
+
+                if (n1.name! < n2.name!) {
+                    return -1
+                }
+
+                return 0
+            })
+
+            walletMembersTemp = sortered
+        }
+
+        ret.success = true
+        ret.data = walletMembers
 
         return ret
     }

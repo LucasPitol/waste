@@ -48,28 +48,27 @@ class UserService {
 
     ResponseDto res = ResponseDto(responseData);
 
-    //TODO: implementar logica na API
+    List<MemberDto> memberDtoList = [];
 
-    // List<User> usersFromWallet = await _userDao.getUsersByIds(memberIdList);
+    if (res.success) {
+      memberDtoList = await _handleMemberDto(res.data);
+    }
 
-    // List<MemberDto> _walletMembers = [];
-
-    // if (usersFromWallet.isNotEmpty) {
-    //   for (var element in usersFromWallet) {
-    //     MemberDto member = MemberDto();
-
-    //     member.id = element.id;
-    //     member.name = element.name;
-    //     member.email = element.email;
-
-    //     _walletMembers.add(member);
-    //   }
-    // }
-
-    // res.success = true;
-    // res.data = _walletMembers;
+    res.data = memberDtoList;
 
     return res;
+  }
+
+  _handleMemberDto(List<dynamic> memberMapList) {
+    List<MemberDto> memberDtoList = [];
+
+    memberMapList.forEach((element) {
+      var transactionDto = MemberDto.fromJson(element);
+
+      memberDtoList.add(transactionDto);
+    });
+
+    return memberDtoList;
   }
 
   Future<ResponseDto> addMemberToWallet(

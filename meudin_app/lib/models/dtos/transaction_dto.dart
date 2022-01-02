@@ -5,11 +5,15 @@ class TransactionDto {
   late double amount;
   late String? categoryId;
 
-  TransactionDto({
-    this.transactionId,
-    this.reason,
-    this.transactionDate,
-    required this.amount,
-    this.categoryId,
-  });
+  TransactionDto() {}
+
+  TransactionDto.fromJson(Map<String, dynamic> transactionMap) {
+    
+    this.transactionId = transactionMap['id'];
+    this.amount = (transactionMap['amount']).toDouble();
+    this.categoryId = transactionMap['categoryId'];
+    this.reason = transactionMap['reason'];
+    this.transactionDate = DateTime.parse(transactionMap['transactionDate']);
+
+  }
 }

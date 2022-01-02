@@ -1,11 +1,10 @@
+import { SpendingCategoryService } from "./services/spending-category-service";
+import { TransactionService } from "./services/transaction-service";
 import { WalletService } from "./services/wallet-service";
 import { UserService } from "./services/user-service";
 import { MockService } from "./services/mock-service";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { TransactionService } from "./services/transaction-service";
-import { ResponseDto } from "./models/dtos/response-dto";
-import { SpendingCategoryService } from "./services/spending-category-service";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -143,9 +142,7 @@ export const getMembersByMemberIds = functions.https.onRequest(async (req, res) 
 
   var memberIdList = body.memberIdList
 
-  var ret = new ResponseDto()
-  ret.success = false
-  ret.errorMsg = memberIdList
+  var ret = await userService.getWalletMembersRes(memberIdList)
 
   console.log(ret)
   res.send(ret)

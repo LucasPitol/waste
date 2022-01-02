@@ -14,5 +14,5 @@ class SpendingCategory extends AbstractModel {
     this.value = spendingCategoryMap['value'];
     this.creationDate = DateTime.parse(spendingCategoryMap['creationDate']);
     this.lastUpdate = DateTime.parse(spendingCategoryMap['lastUpdate']);
-  }  
+  }
 }

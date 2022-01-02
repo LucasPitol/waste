@@ -46,6 +46,28 @@ export class UserDao {
         return uid
     }
 
+    async getUsersByIds(ids: string[]) {
+
+        var users: User[] = []
+
+        var snapShot = await db
+            .collection(this.usersCollectionName)
+            .where('id', 'in', ids)
+            .get()
+
+        if (snapShot.empty) {
+            return users
+        } else {
+            for (const doc of snapShot.docs) {
+                var user = new User(doc)
+
+                users.push(user)
+            }
+        }
+
+        return users
+    }
+
     async getUserById(id: string) {
 
         var snapshot = await db
