@@ -1,8 +1,36 @@
 import { Transaction } from "../models/transaction";
 import { db } from "../index";
+import { NewWasteDto } from "../models/dtos/new-waste-dto";
 
 export class TransactionDao {
     transactionCollectionName = Transaction.collectionName
+
+    async saveNewWaste(newWasteDto: NewWasteDto) {
+
+        const batch = db.batch()
+
+        const transactionDocRef = db.collection(this.transactionCollectionName).doc()
+
+        var id = transactionDocRef.id
+
+        let now = new Date()
+
+        batch.set(transactionDocRef, {
+            'id': id,
+            'userId': newWasteDto.uid,
+            'reason': newWasteDto.reason,
+            'transactionDate': newWasteDto.spendDate,
+            'walletId': newWasteDto.walletId,
+            'amount': newWasteDto.waste,
+            'categoryId': newWasteDto.categoryId,
+            'type': 'WASTE',
+            'creationDate': now,
+        })
+
+        await batch.commit()
+
+        return id
+    }
 
     async getTransactionsByWalletIdAndDateIntervalRes(walletId: string, startDate: Date, endDate: Date): Promise<Transaction[]> {
         var transactionList: Transaction[] = []

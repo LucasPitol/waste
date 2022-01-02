@@ -1,4 +1,5 @@
 import { TransactionDao } from "../db/transaction-dao"
+import { NewWasteDto } from "../models/dtos/new-waste-dto"
 import { ResponseDto } from "../models/dtos/response-dto"
 import { TransactionDto } from "../models/dtos/transaction-dto"
 import { Transaction } from "../models/transaction"
@@ -9,6 +10,26 @@ export class TransactionService {
 
     constructor() {
         this.transactionDao = new TransactionDao()
+    }
+
+    async saveNewWasteRes(newWasteDtoMap: any): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        var newWasteDto = new NewWasteDto()
+
+        newWasteDto.categoryId = newWasteDtoMap.categoryId
+        newWasteDto.reason = newWasteDtoMap.reason
+        newWasteDto.spendDate = new Date(newWasteDtoMap.spendDate)
+        newWasteDto.uid = newWasteDtoMap.uid
+        newWasteDto.walletId = newWasteDtoMap.walletId
+        newWasteDto.waste = newWasteDtoMap.waste
+
+        var id = await this.transactionDao.saveNewWaste(newWasteDto)
+
+        ret.success = true
+        ret.data = id
+
+        return ret
     }
 
     async getTransactionsByWalletIdAndDateIntervalRes(walletId: string, startDate: Date, endDate: Date): Promise<ResponseDto> {

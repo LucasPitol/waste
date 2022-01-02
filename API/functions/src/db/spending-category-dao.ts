@@ -44,4 +44,26 @@ export class SpendingCategoryDao {
 
         return spendingCategory
     }
+
+    async getSpendingCategories(): Promise<SpendingCategory[]> {
+        var spendingCategories: SpendingCategory[] = []
+
+        var snapshot = await db
+            .collection(this.spendingCategoryCollectionName)
+            .get()
+
+        if (snapshot.empty) {
+            return spendingCategories
+        } else {
+            var spendingCategory
+
+            for (const doc of snapshot.docs) {
+                spendingCategory = new SpendingCategory(doc)
+
+                spendingCategories.push(spendingCategory)
+            }
+        }
+
+        return spendingCategories
+    }
 }

@@ -1,4 +1,6 @@
 import { SpendingCategoryDao } from "../db/spending-category-dao"
+import { ResponseDto } from "../models/dtos/response-dto"
+import { SpendingCategory } from "../models/spending-category"
 
 export class SpendingCategoryService {
 
@@ -19,4 +21,32 @@ export class SpendingCategoryService {
     async getSpendingCategoryByValue(value: string) {
         return await this.spendingCategoryDao.getByValue(value)
     }
- }
+
+    async getSpendingCategoriesRes() {
+        let ret = new ResponseDto()
+
+        var spendingCategories: SpendingCategory[] = await this.spendingCategoryDao.getSpendingCategories()
+
+        // sort
+        if (spendingCategories.length > 0) {
+            let sortered = spendingCategories.sort((n1, n2) => {
+                if (n1.name! > n2.name!) {
+                    return 1
+                }
+
+                if (n1.name! < n2.name!) {
+                    return -1
+                }
+
+                return 0
+            })
+
+            spendingCategories = sortered
+        }
+
+        ret.success = true
+        ret.data = spendingCategories
+
+        return ret
+    }
+}

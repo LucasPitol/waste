@@ -4,6 +4,8 @@ import { MockService } from "./services/mock-service";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { TransactionService } from "./services/transaction-service";
+import { ResponseDto } from "./models/dtos/response-dto";
+import { SpendingCategoryService } from "./services/spending-category-service";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -20,6 +22,7 @@ mockService.mockData()
 const userService = new UserService()
 const walletService = new WalletService()
 const transactionService = new TransactionService()
+const spendingCategoryService = new SpendingCategoryService()
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -104,9 +107,45 @@ export const getTransactionsByWalletIdAndDateInterval = functions.https.onReques
   var walletId = body.walletId
   var startDate = new Date(body.startDate)
   var endDate = new Date(body.endDate)
-  console.log(startDate)
 
   var ret = await transactionService.getTransactionsByWalletIdAndDateIntervalRes(walletId, startDate, endDate)
+
+  console.log(ret)
+  res.send(ret)
+
+});
+
+export const saveNewWaste = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var newWasteDto = body.newWasteDto
+
+  var ret = await transactionService.saveNewWasteRes(newWasteDto)
+
+  res.send(ret)
+
+});
+
+export const getSpendingCategories = functions.https.onRequest(async (req, res) => {
+
+  var ret = await spendingCategoryService.getSpendingCategoriesRes()
+
+  console.log(ret)
+  res.send(ret)
+
+});
+
+// members
+export const getMembersByMemberIds = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var memberIdList = body.memberIdList
+
+  var ret = new ResponseDto()
+  ret.success = false
+  ret.errorMsg = memberIdList
 
   console.log(ret)
   res.send(ret)

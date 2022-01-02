@@ -1,4 +1,5 @@
 import 'package:meudin_app/environment/environment.dart';
+import 'package:meudin_app/models/dtos/new_waste_dto.dart';
 import 'package:meudin_app/models/dtos/overview_page_dto.dart';
 import 'package:meudin_app/models/forms/new_revenue_form.dart';
 import 'package:meudin_app/models/forms/new_waste_form.dart';
@@ -8,6 +9,7 @@ import 'package:meudin_app/db/transaction_dao.dart';
 import 'package:meudin_app/models/spending_category.dart';
 import 'package:meudin_app/models/transaction.dart';
 import 'package:http/http.dart' as http;
+import 'package:meudin_app/utils/utils.dart';
 import 'dart:convert';
 
 import 'spending_category_service.dart';
@@ -201,24 +203,32 @@ class TransactionService {
   Future<ResponseDto> saveNewWaste(NewWasteForm form) async {
     Uri url = Uri.parse(this.apiUrl + 'saveNewWaste');
 
+    var newWasteDto = NewWasteDto();
+
+    newWasteDto.categoryId = form.categoryId;
+    newWasteDto.reason = form.reason.text;
+    newWasteDto.spendDate = form.spendDate.toString();
+    newWasteDto.uid = form.uid;
+    newWasteDto.walletId = form.walletId;
+
+    double waste = Utils.convertStringFormToDouble(form.waste.text);
+    double amount = (waste >= 0) ? waste * (-1) : waste;
+
+    newWasteDto.waste = amount;
+
+    var newWasteDtoJson = newWasteDto.toJson();
+
     var responseData = await http.post(
       url,
       headers: headersRequest,
       body: jsonEncode(
         {
-          'form': form,
+          'newWasteDto': newWasteDtoJson,
         },
       ),
     );
 
     ResponseDto res = ResponseDto(responseData);
-
-    // TODO: implementar logica na API
-
-    // String id = await _transactionDao.saveNewWaste(form);
-
-    // res.success = true;
-    // res.data = id;
 
     return res;
   }

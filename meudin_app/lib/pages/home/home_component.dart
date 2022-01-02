@@ -132,7 +132,7 @@ class HomeComponentState extends State<HomeComponent> {
         walletId, startDate, endDate);
 
     if (res.success) {
-      transactionDtoList = res.data;
+      transactionDtoList = res.data.isNotEmpty ? res.data : [];
 
       double totalAmount = 0;
       double totalRevenue = 0;
