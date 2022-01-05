@@ -4,7 +4,7 @@ class NewRevenueForm {
   late TextEditingController reason;
   late TextEditingController revenueValue;
   late DateTime payDay;
-  late String? walletId;
+  late String walletId;
   late String? uid;
 
   NewRevenueForm() {

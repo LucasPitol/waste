@@ -1,4 +1,5 @@
 import 'package:meudin_app/environment/environment.dart';
+import 'package:meudin_app/models/dtos/new_revenue_dto.dart';
 import 'package:meudin_app/models/dtos/new_waste_dto.dart';
 import 'package:meudin_app/models/dtos/overview_page_dto.dart';
 import 'package:meudin_app/models/forms/new_revenue_form.dart';
@@ -199,23 +200,27 @@ class TransactionService {
   Future<ResponseDto> saveNewRevenue(NewRevenueForm form) async {
     Uri url = Uri.parse(this.apiUrl + 'saveNewRevenue');
 
+    var newRevenueDto = NewRevenueDto();
+
+    newRevenueDto.reason = form.reason.text;
+    newRevenueDto.payDay = form.payDay.toString();
+    newRevenueDto.uid = form.uid;
+    newRevenueDto.walletId = form.walletId;
+    newRevenueDto.amount = Utils.convertStringFormToDouble(form.revenueValue.text);
+
+    var newRevenueDtoJson = newRevenueDto.toJson();
+
     var responseData = await http.post(
       url,
       headers: headersRequest,
       body: jsonEncode(
         {
-          'form': form,
+          'newRevenueDto': newRevenueDtoJson,
         },
       ),
     );
 
     ResponseDto res = ResponseDto(responseData);
-
-    // TODO: implementar logica na API
-    // String id = await _transactionDao.saveNewRevenue(form);
-
-    // res.success = true;
-    // res.data = id;
 
     return res;
   }

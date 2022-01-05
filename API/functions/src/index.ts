@@ -126,6 +126,18 @@ export const saveNewWaste = functions.https.onRequest(async (req, res) => {
 
 });
 
+export const saveNewRevenue = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var newRevenueDto = body.newRevenueDto
+
+  var ret = await transactionService.saveNewRevenueRes(newRevenueDto)
+
+  res.send(ret)
+
+});
+
 export const getSpendingCategories = functions.https.onRequest(async (req, res) => {
 
   var ret = await spendingCategoryService.getSpendingCategoriesRes()

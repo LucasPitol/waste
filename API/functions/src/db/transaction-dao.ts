@@ -1,6 +1,7 @@
 import { Transaction } from "../models/transaction";
 import { db } from "../index";
 import { NewWasteDto } from "../models/dtos/new-waste-dto";
+import { NewRevenueDto } from "../models/dtos/new-revenue-dto";
 
 export class TransactionDao {
     transactionCollectionName = Transaction.collectionName
@@ -24,6 +25,32 @@ export class TransactionDao {
             'amount': newWasteDto.waste,
             'categoryId': newWasteDto.categoryId,
             'type': 'WASTE',
+            'creationDate': now,
+        })
+
+        await batch.commit()
+
+        return id
+    }
+
+    async saveNewRevenue(newRevenueDto: NewRevenueDto) {
+
+        const batch = db.batch()
+
+        const transactionDocRef = db.collection(this.transactionCollectionName).doc()
+
+        var id = transactionDocRef.id
+
+        let now = new Date()
+
+        batch.set(transactionDocRef, {
+            'id': id,
+            'userId': newRevenueDto.uid,
+            'reason': newRevenueDto.reason,
+            'transactionDate': newRevenueDto.payDay,
+            'walletId': newRevenueDto.walletId,
+            'amount': newRevenueDto.amount,
+            'type': 'REVENUE',
             'creationDate': now,
         })
 

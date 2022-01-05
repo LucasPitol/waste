@@ -1,4 +1,5 @@
 import { TransactionDao } from "../db/transaction-dao"
+import { NewRevenueDto } from "../models/dtos/new-revenue-dto"
 import { NewWasteDto } from "../models/dtos/new-waste-dto"
 import { ResponseDto } from "../models/dtos/response-dto"
 import { TransactionDto } from "../models/dtos/transaction-dto"
@@ -25,6 +26,25 @@ export class TransactionService {
         newWasteDto.waste = newWasteDtoMap.waste
 
         var id = await this.transactionDao.saveNewWaste(newWasteDto)
+
+        ret.success = true
+        ret.data = id
+
+        return ret
+    }
+
+    async saveNewRevenueRes(newRevenueDtoMap: any): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        var newRevenueDto = new NewRevenueDto()
+
+        newRevenueDto.reason = newRevenueDtoMap.reason
+        newRevenueDto.payDay = new Date(newRevenueDtoMap.payDay)
+        newRevenueDto.uid = newRevenueDtoMap.uid
+        newRevenueDto.walletId = newRevenueDtoMap.walletId
+        newRevenueDto.amount = newRevenueDtoMap.amount
+
+        var id = await this.transactionDao.saveNewRevenue(newRevenueDto)
 
         ret.success = true
         ret.data = id
