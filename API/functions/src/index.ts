@@ -98,6 +98,20 @@ export const getUserWallets = functions.https.onRequest(async (req, res) => {
 
 });
 
+export const createNewWallet = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var walletName = body.walletName
+  var ownerId = body.userId
+
+  var ret = await walletService.createNewWalletRes(ownerId, walletName)
+
+  console.log(ret)
+  res.send(ret)
+
+});
+
 // transactions
 export const getTransactionsByWalletIdAndDateInterval = functions.https.onRequest(async (req, res) => {
 
