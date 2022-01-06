@@ -81,7 +81,7 @@ export class UserService {
         let ret = new ResponseDto()
 
         var wallet: Wallet | null = await this.walletService.getWalletById(walletId)
-        console.log(wallet)
+
         if (wallet == null) {
             ret.success = false
             ret.errorMsg = 'Erro inesperado, tente novamente mais tarde'
@@ -105,22 +105,25 @@ export class UserService {
         var member: User | null = await this.userDao.getUserByEmail(memberMail);
 
         if (member == null) {
-          ret.success = false
-          ret.errorMsg = 'Membro não encontrado, verifique o email digitado'
+            ret.success = false
+            ret.errorMsg = 'Membro não encontrado, verifique o email digitado'
 
-          return ret
+            return ret
         }
 
-        // ResponseDto walletServiceRes =
-        //     await _walletService.addMemberToWallet(member.id, wallet);
+        var memberId = member.id
 
-        // if (walletServiceRes.success) {
-        //   res.success = true;
-        //   res.data = member.name;
-        // } else {
-        //   res.success = false;
-        //   res.errorMsg = walletServiceRes.errorMsg;
-        // }
+        if (walletMembersIds.includes(memberId)) {
+            ret.success = false
+            ret.errorMsg = 'Membro jà adicionado'
+
+            return ret
+        }
+
+        await this.walletService.addMemberToWallet(memberId, wallet)
+
+        ret.success = true
+        ret.data = member.name
 
         return ret
     }

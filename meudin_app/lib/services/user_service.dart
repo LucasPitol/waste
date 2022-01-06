@@ -89,41 +89,6 @@ class UserService {
     ResponseDto res = ResponseDto(responseData);
 
     return res;
-
-    //TODO: remover metodo deste service
-    //TODO: implementar logica na API
-
-    // int currentMembersCount = members.length;
-
-    // if (currentMembersCount >= Constants.walletMembersLimitOnFreePlan) {
-    //   String walletName = wallet.name;
-
-    //   res.success = false;
-    //   res.errorMsg =
-    //       'Limite de membros atingido em $walletName, em breve o limite será estendido';
-
-    //   return res;
-    // }
-
-    // User? member = await _userDao.getUserByEmail(memberMail);
-
-    // if (member == null) {
-    //   res.success = false;
-    //   res.errorMsg = 'Membro não encontrado, verifique o email digitado';
-
-    //   return res;
-    // }
-
-    // ResponseDto walletServiceRes =
-    //     await _walletService.addMemberToWallet(member.id, wallet);
-
-    // if (walletServiceRes.success) {
-    //   res.success = true;
-    //   res.data = member.name;
-    // } else {
-    //   res.success = false;
-    //   res.errorMsg = walletServiceRes.errorMsg;
-    // }
   }
 
   Future<ResponseDto> updateUserWallets() async {

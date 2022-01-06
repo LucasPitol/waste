@@ -12,7 +12,7 @@ export class WalletService {
 
     async createNewWalletRes(userId: string, walletName: string) {
         let ret = new ResponseDto()
-        
+
         var wallet = await this.walletDao.getWalletByNameAndOwnerId(walletName, userId)
 
         if (wallet != null) {
@@ -30,6 +30,14 @@ export class WalletService {
         return ret
     }
 
+    async addMemberToWallet(memberId: string, wallet: Wallet) {
+
+        var members = wallet.membersId
+        members.push(memberId)
+
+        await this.walletDao.updateMemberIdList(members, wallet)
+    }
+
     async createNewWallet(userId: string, walletName: string) {
         return await this.walletDao.createNewWallet(userId, walletName)
     }
@@ -45,7 +53,7 @@ export class WalletService {
 
         ret.success = true
         ret.data = wallets
-    
+
         return ret
     }
 

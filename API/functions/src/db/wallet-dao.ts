@@ -53,6 +53,25 @@ export class WalletDao {
         return wallet
     }
 
+    async updateMemberIdList(members: string[], wallet: Wallet) {
+        const batch = db.batch()
+
+        var walletId = wallet.id
+
+        const walletDocRef = db.collection(this.walletsCollectionName).doc(walletId)
+
+        let now = new Date()
+
+        batch.set(walletDocRef, {
+            membersId: members,
+            lastUpdate: now,
+        }, { merge: true })
+
+        await batch.commit()
+
+        return walletId
+    }
+
     async createNewWallet(userId: string, walletName: string) {
         let now = new Date()
 
