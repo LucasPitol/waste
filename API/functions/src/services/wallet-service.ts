@@ -34,6 +34,10 @@ export class WalletService {
         return await this.walletDao.createNewWallet(userId, walletName)
     }
 
+    async getWalletById(walletId: string): Promise<Wallet | null> {
+        return await this.walletDao.getById(walletId)
+    }
+
     async getWalletsByUserIdRes(userId: string): Promise<ResponseDto> {
         let ret = new ResponseDto()
 

@@ -145,18 +145,6 @@ class WalletService {
 
     ResponseDto res = ResponseDto(responseData);
 
-    // TODO: implementar logica na API
-    // String walletId = await _walletDao.createNewWallet(walletName, userId);
-
-    // if (walletId != null && walletId.isNotEmpty) {
-    //   res.success = true;
-    //   res.data = walletId;
-    // } else {
-    //   res.success = false;
-    //   res.errorMsg =
-    //       'Não foi possível criar a carteira, revise o formulário e tente novamente';
-    // }
-
     return res;
   }
 }

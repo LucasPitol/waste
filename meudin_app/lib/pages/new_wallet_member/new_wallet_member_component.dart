@@ -145,9 +145,10 @@ class _NewWalletMemberComponentState extends State<NewWalletMemberComponent> {
     });
 
     String memberMail = _newMemberMailController.text;
+    String walletId = currentWallet.id;
 
     _userService
-        .addMemberToWallet(memberMail, currentWallet, membersMail)
+        .addMemberToWallet(memberMail, walletId)
         .then((res) async {
       if (res.success) {
         String memberName = res.data;

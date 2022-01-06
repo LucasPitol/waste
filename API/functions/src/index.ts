@@ -174,3 +174,17 @@ export const getMembersByMemberIds = functions.https.onRequest(async (req, res) 
   res.send(ret)
 
 });
+
+export const addMemberToWallet = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var memberMail = body.memberMail
+  var walletId = body.walletId
+
+  var ret = await userService.addMemberToWalletRes(memberMail, walletId)
+
+  console.log(ret)
+  res.send(ret)
+
+});

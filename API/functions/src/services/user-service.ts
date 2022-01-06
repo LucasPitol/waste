@@ -77,6 +77,54 @@ export class UserService {
         return ret
     }
 
+    async addMemberToWalletRes(memberMail: string, walletId: string): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        var wallet: Wallet | null = await this.walletService.getWalletById(walletId)
+        console.log(wallet)
+        if (wallet == null) {
+            ret.success = false
+            ret.errorMsg = 'Erro inesperado, tente novamente mais tarde'
+
+            return ret
+        }
+
+        var walletMembersIds = wallet.membersId
+
+        var currentMembersCount: number = walletMembersIds.length
+
+        if (currentMembersCount >= Constants.walletMembersLimitOnFreePlan) {
+            var walletName: string = wallet.name
+
+            ret.success = false
+            ret.errorMsg = `Limite de membros atingido em ${walletName}, em breve o limite será estendido`
+
+            return ret
+        }
+
+        var member: User | null = await this.userDao.getUserByEmail(memberMail);
+
+        if (member == null) {
+          ret.success = false
+          ret.errorMsg = 'Membro não encontrado, verifique o email digitado'
+
+          return ret
+        }
+
+        // ResponseDto walletServiceRes =
+        //     await _walletService.addMemberToWallet(member.id, wallet);
+
+        // if (walletServiceRes.success) {
+        //   res.success = true;
+        //   res.data = member.name;
+        // } else {
+        //   res.success = false;
+        //   res.errorMsg = walletServiceRes.errorMsg;
+        // }
+
+        return ret
+    }
+
     async createNewUserRes(newUserDto: NewUserDto): Promise<ResponseDto> {
         let ret = new ResponseDto()
 
@@ -102,7 +150,7 @@ export class UserService {
         await this.walletService.createNewWallet(uid, standardWalletName)
 
         // auth
-        user = await this.userDao.getUserById(uid);
+        user = await this.userDao.getUserById(uid)
         let walletList: Wallet[] = await this.walletService.getWalletsByUserId(uid)
 
         if (user != null) {

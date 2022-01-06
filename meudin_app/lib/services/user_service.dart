@@ -72,7 +72,7 @@ class UserService {
   }
 
   Future<ResponseDto> addMemberToWallet(
-      String memberMail, Wallet wallet, List<MemberDto> members) async {
+      String memberMail, String walletId) async {
     Uri url = Uri.parse(this.apiUrl + 'addMemberToWallet');
 
     var responseData = await http.post(
@@ -81,8 +81,7 @@ class UserService {
       body: jsonEncode(
         {
           'memberMail': memberMail,
-          'wallet': wallet,
-          'members': members,
+          'walletId': walletId,
         },
       ),
     );

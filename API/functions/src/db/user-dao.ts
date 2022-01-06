@@ -68,7 +68,8 @@ export class UserDao {
         return users
     }
 
-    async getUserById(id: string) {
+    async getUserById(id: string): Promise<User | null> {
+        var user: User | null = null
 
         var snapshot = await db
             .collection(this.usersCollectionName)
@@ -78,7 +79,6 @@ export class UserDao {
         if (snapshot.empty) {
             return null
         } else {
-            var user
 
             for (const doc of snapshot.docs) {
                 user = new User(doc)
@@ -88,7 +88,8 @@ export class UserDao {
         return user
     }
 
-    async getUserByEmail(email?: string) {
+    async getUserByEmail(email?: string): Promise<User | null> {
+        var user: User | null = null
 
         var snapshot = await db
             .collection(this.usersCollectionName)
@@ -98,8 +99,6 @@ export class UserDao {
         if (snapshot.empty) {
             return null
         } else {
-            var user
-
             for (const doc of snapshot.docs) {
                 user = new User(doc)
             }

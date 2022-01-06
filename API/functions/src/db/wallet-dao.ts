@@ -20,6 +20,21 @@ export class WalletDao {
         return walletList
     }
 
+    async getById(walletId: string): Promise<Wallet | null> {
+        let wallet: Wallet | null = null
+
+        var snapshot = await db
+            .collection(this.walletsCollectionName)
+            .doc(walletId)
+            .get()
+
+        if (snapshot.exists) {
+            wallet = new Wallet(snapshot)
+        }
+
+        return wallet
+    }
+
     async getWalletByNameAndOwnerId(walletName: string, userId: string): Promise<Wallet | null> {
         let wallet: Wallet | null = null
 
