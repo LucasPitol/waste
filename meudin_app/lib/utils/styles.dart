@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Styles {
+  static bool isDarkMode = false;
+
   static ThemeData mainTheme = ThemeData(
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: primaryColor,

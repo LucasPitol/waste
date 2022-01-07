@@ -112,6 +112,20 @@ export const createNewWallet = functions.https.onRequest(async (req, res) => {
 
 });
 
+export const removeMemberFromWallet = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var memberId = body.memberId
+  var walletId = body.walletId
+
+  var ret = await walletService.removeMemberFromWalletRes(memberId, walletId)
+
+  console.log(ret)
+  res.send(ret)
+
+});
+
 // transactions
 export const getTransactionsByWalletIdAndDateInterval = functions.https.onRequest(async (req, res) => {
 

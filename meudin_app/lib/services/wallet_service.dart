@@ -66,7 +66,7 @@ class WalletService {
     return wallet;
   }
 
-  Future<ResponseDto> removeMember(String memberId, Wallet wallet) async {
+  Future<ResponseDto> removeMember(String memberId, String walletId) async {
     Uri url = Uri.parse(this.apiUrl + 'removeMemberFromWallet');
 
     var responseData = await http.post(
@@ -75,23 +75,12 @@ class WalletService {
       body: jsonEncode(
         {
           'memberId': memberId,
-          'wallet': wallet,
+          'walletId': walletId,
         },
       ),
     );
 
     ResponseDto res = ResponseDto(responseData);
-
-    // TODO: implementar logica na API
-    // List<String> membersIds = wallet.membersId;
-
-    // membersIds.remove(memberId);
-
-    // wallet.membersId = membersIds;
-
-    // String walletId = wallet.id;
-
-    // await _walletDao.updateMemberList(membersIds, walletId);
 
     return res;
   }

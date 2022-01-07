@@ -448,9 +448,10 @@ class HomeComponentState extends State<HomeComponent> {
         });
 
         Wallet wallet = _currentWallet;
+        String walletId = _currentWallet.id;
         String uid = _user!.id;
 
-        _walletService.removeMember(uid, wallet).then((value) {
+        _walletService.removeMember(uid, walletId).then((value) {
           userWallets.remove(wallet);
 
           String walletIdToSwitch = userWallets.first.id;
@@ -565,10 +566,10 @@ class HomeComponentState extends State<HomeComponent> {
         _loading = true;
       });
 
-      Wallet wallet = _currentWallet;
+      String walletId = _currentWallet.id;
       String memberId = member.id;
 
-      _walletService.removeMember(memberId, wallet).then((value) {
+      _walletService.removeMember(memberId, walletId).then((value) {
         updatePageData();
       });
     }

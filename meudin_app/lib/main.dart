@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:meudin_app/utils/styles.dart';
 
 import 'l10n/l10n.dart';
 import 'main_component.dart';
@@ -54,6 +55,8 @@ class _MyAppState extends State<MyApp> {
   bool isAuthenticated = false;
 
   _MyAppState() {
+    // var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    // Styles.isDarkMode = brightness == Brightness.dark;
     SchedulerBinding.instance!.addPostFrameCallback((_) => _updateMainState());
   }
 

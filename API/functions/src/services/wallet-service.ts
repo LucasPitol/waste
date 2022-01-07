@@ -46,6 +46,25 @@ export class WalletService {
         return await this.walletDao.getById(walletId)
     }
 
+    async removeMemberFromWalletRes(memberId: string, walletId: string): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        var wallet = await this.getWalletById(walletId)
+
+        var oldMembers = wallet?.membersId!
+        var newMembers: string[] = []
+
+        for (const member of oldMembers) {
+            if (member != memberId) {
+                newMembers.push(member)
+            }
+        }
+
+        await this.walletDao.updateMemberIdList(newMembers, wallet!)
+
+        return ret
+    }
+
     async getWalletsByUserIdRes(userId: string): Promise<ResponseDto> {
         let ret = new ResponseDto()
 
