@@ -53,9 +53,8 @@ export class UserService {
                 memberDto.id = user.id
                 memberDto.name = user.name
 
-                walletMembersTemp.push()
+                walletMembersTemp.push(memberDto)
             }
-
             let sortered = walletMembersTemp.sort((n1, n2) => {
                 if (n1.name! > n2.name!) {
                     return 1
@@ -68,7 +67,7 @@ export class UserService {
                 return 0
             })
 
-            walletMembersTemp = sortered
+            walletMembers = sortered
         }
 
         ret.success = true
