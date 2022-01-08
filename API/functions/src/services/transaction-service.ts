@@ -78,99 +78,91 @@ export class TransactionService {
         if (spendingCategoriesRes.success) {
             var overViewPageDto = new OverviewPageDto()
 
-              var categories: SpendingCategory[] = spendingCategoriesRes.data
+            var categories: SpendingCategory[] = spendingCategoriesRes.data
 
-              var income = 0.0
-              var spends = 0.0
+            var income = 0.0
+            var spends = 0.0
 
-            //   List<TransactionDto> transactionDtoList = [];
+            var transactionDtoList: TransactionDto[] = []
 
-            //   Map<String, double> spendsByCategoryIdMap = <String, double>{};
+            var spendsByCategoryIdMap = new Map<string, number>()
 
-            //   for (var element in transactions) {
-            //     TransactionDto transactionDto = TransactionDto(amount: 0);
+            for (var element of transactions) {
+                var transactionDto = new TransactionDto()
 
-            //     double amount = element.amount;
+                var amount = element.amount
 
-            //     transactionDto.amount = amount;
-            //     transactionDto.categoryId = element.categoryId;
-            //     transactionDto.reason = element.reason;
-            //     transactionDto.transactionDate = element.transactionDate;
-            //     transactionDto.transactionId = element.id;
+                transactionDto.amount = amount
+                transactionDto.categoryId = element.categoryId
+                transactionDto.reason = element.reason
+                transactionDto.transactionDate = element.transactionDate
+                transactionDto.transactionId = element.id
 
-            //     transactionDtoList.add(transactionDto);
+                transactionDtoList.push(transactionDto)
 
-            //     if (amount >= 0) {
-            //       income = income + amount;
-            //     } else {
-            //       spends = spends + amount;
-            //     }
+                if (amount >= 0) {
+                    income = income + amount
+                } else {
+                    spends = spends + amount
+                }
 
-            //     String? categoryId = element.categoryId;
+                var categoryId = element.categoryId
 
-            //     // var category = categories
-            //     //     .singleWhere((element) => categoryId == transactionDto.categoryId);
+                //     // var category = categories
+                //     //     .singleWhere((element) => categoryId == transactionDto.categoryId);
 
-            //     if (categoryId != null && amount < 0) {
-            //       if (spendsByCategoryIdMap.containsKey(categoryId)) {
-            //         double? mapValue = spendsByCategoryIdMap[categoryId];
+                if (categoryId != null && amount < 0) {
+                    if (spendsByCategoryIdMap.has(categoryId)) {
+                        var mapValue = spendsByCategoryIdMap.get(categoryId)
 
-            //         mapValue = mapValue! + amount;
+                        mapValue = mapValue! + amount
 
-            //         spendsByCategoryIdMap.remove(categoryId);
+                        spendsByCategoryIdMap.delete(categoryId)
 
-            //         spendsByCategoryIdMap.putIfAbsent(categoryId, () => mapValue!);
-            //       } else {
-            //         spendsByCategoryIdMap.putIfAbsent(categoryId, () => amount);
-            //       }
-            //     }
-            //   }
+                        spendsByCategoryIdMap.set(categoryId, mapValue!)
+                    } else {
+                        spendsByCategoryIdMap.set(categoryId, amount)
+                    }
+                }
+            }
 
-            //   Map<String, double> spendsByCategoryMap = <String, double>{};
+            var spendsByCategoryMap = new Map<string, number>()
 
-            //   spendsByCategoryIdMap.forEach((key, value) {
-            //     String categoryName =
-            //         categories.singleWhere((element) => key == element.id).name;
+            spendsByCategoryIdMap.forEach((value: number, key: string) => {
+                var categoryName = categories.find(element => element.id == key)?.name
 
-            //     spendsByCategoryMap.putIfAbsent(categoryName, () => value);
-            //   });
+                spendsByCategoryMap.set(categoryName!, value)
+            })
 
-            //   var sortedKeys = spendsByCategoryMap.keys.toList(growable: true)
-            //     ..sort((k1, k2) =>
-            //         spendsByCategoryMap[k1]!.compareTo(spendsByCategoryMap[k2]!));
+            var mapAsc = new Map([...spendsByCategoryMap.entries()].sort())
+            var sortedMapReduced = mapAsc
 
-            //   Map<String, double> sortedMap = {
-            //     for (var k in sortedKeys) k: spendsByCategoryMap[k]!
-            //   };
+            var totalOthers = 0.0
+            var i = 0
+            mapAsc.forEach((value: number, key: string) => {
 
-            //  Map<String, double> x = {
-            //     for (var k in sortedKeys) k: spendsByCategoryMap[k]!
-            //   };
+                if (i >= 3) {
 
-            //   Map<String, double> sortedMapReduced = sortedMap;
+                    totalOthers = totalOthers + value
 
-            //   double totalOthers = 0.0;
-            //   for (int i = 0; i < sortedKeys.length; i++) {
-            //     if (i >= 3) {
-            //       totalOthers = totalOthers + (sortedMap[sortedKeys[i]]!);
+                    sortedMapReduced.delete(key)
 
-            //       sortedMapReduced.remove(sortedKeys[i]);
+                    if (i == (mapAsc.size - 1)) {
+                        var key = 'Demais';
+                        sortedMapReduced.set(key, totalOthers)
+                    }
+                }
+                i++
+            })
 
-            //       if (i == (sortedKeys.length - 1)) {
-            //         String key = 'Demais';
-            //         sortedMapReduced.putIfAbsent(key, () => totalOthers);
-            //       }
-            //     }
-            //   }
+            overViewPageDto.income = income
+            overViewPageDto.spends = spends
+            overViewPageDto.balance = (income + spends)
+            overViewPageDto.spendsByCategoryMap = mapAsc
+            overViewPageDto.pieChartDataMap = sortedMapReduced
 
-            //   overViewPageDto.income = income;
-            //   overViewPageDto.spends = spends;
-            //   overViewPageDto.balance = (income + spends);
-            //   overViewPageDto.spendsByCategoryMap = x;
-            //   overViewPageDto.pieChartDataMap = sortedMapReduced;
-
-            //   res.success = true;
-            //   res.data = overViewPageDto;
+            ret.success = true
+            ret.data = overViewPageDto
         }
 
         return ret

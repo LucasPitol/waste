@@ -12,4 +12,18 @@ class OverviewPageDto {
     spendsByCategoryMap = <String, double>{};
     pieChartDataMap = <String, double>{};
   }
+
+  OverviewPageDto.fromJson(Map<String, dynamic> transactionMap) {
+    print(transactionMap);
+    this.balance = (transactionMap['balance']).toDouble();
+    this.income = (transactionMap['income']).toDouble();
+    this.spends = (transactionMap['spends']).toDouble();
+    print(transactionMap['spendsByCategoryMap']);
+    this.spendsByCategoryMap =
+        Map<String, double>.from(transactionMap['spendsByCategoryMap']);
+    this.pieChartDataMap =
+        Map<String, double>.from(transactionMap['pieChartDataMap']);
+    print(this.spendsByCategoryMap);
+
+  }
 }

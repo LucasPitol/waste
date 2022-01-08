@@ -53,7 +53,7 @@ class TransactionService {
     if (res.success) {
       transactionDtoList = await _handleTransactionDto(res.data);
     }
-    
+
     res.data = transactionDtoList;
 
     return res;
@@ -75,19 +75,27 @@ class TransactionService {
       String walletId, DateTime startDate, DateTime endDate) async {
     Uri url = Uri.parse(this.apiUrl + 'getOverviewPageData');
 
+    var startDateStr = startDate.toString();
+    var endDateStr = endDate.toString();
+
     var responseData = await http.post(
       url,
       headers: headersRequest,
       body: jsonEncode(
         {
           'walletId': walletId,
-          'startDate': startDate,
-          'endDate': endDate,
+          'startDate': startDateStr,
+          'endDate': endDateStr,
         },
       ),
     );
 
     ResponseDto res = ResponseDto(responseData);
+
+    if (res.success) {
+      OverviewPageDto overviewPageDto = await OverviewPageDto.fromJson(res.data);
+      res.data = overviewPageDto;
+    }
 
     return res;
   }
@@ -101,7 +109,8 @@ class TransactionService {
     newRevenueDto.payDay = form.payDay.toString();
     newRevenueDto.uid = form.uid;
     newRevenueDto.walletId = form.walletId;
-    newRevenueDto.amount = Utils.convertStringFormToDouble(form.revenueValue.text);
+    newRevenueDto.amount =
+        Utils.convertStringFormToDouble(form.revenueValue.text);
 
     var newRevenueDtoJson = newRevenueDto.toJson();
 
