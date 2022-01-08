@@ -166,6 +166,21 @@ export const saveNewRevenue = functions.https.onRequest(async (req, res) => {
 
 });
 
+export const getOverviewPageData = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+
+  var walletId = body.walletId
+  var startDate = new Date(body.startDate)
+  var endDate = new Date(body.endDate)
+
+  var ret = await transactionService.getOverviewPageDataRes(walletId, startDate, endDate)
+
+  console.log(ret)
+  res.send(ret)
+
+});
+
 export const getSpendingCategories = functions.https.onRequest(async (req, res) => {
 
   var ret = await spendingCategoryService.getSpendingCategoriesRes()

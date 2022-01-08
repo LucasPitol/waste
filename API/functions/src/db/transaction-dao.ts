@@ -59,7 +59,7 @@ export class TransactionDao {
         return id
     }
 
-    async getTransactionsByWalletIdAndDateIntervalRes(walletId: string, startDate: Date, endDate: Date): Promise<Transaction[]> {
+    async getTransactionsByWalletIdAndDateInterval(walletId: string, startDate: Date, endDate: Date): Promise<Transaction[]> {
         var transactionList: Transaction[] = []
 
         var snapshot = await db

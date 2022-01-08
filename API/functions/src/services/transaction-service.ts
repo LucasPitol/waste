@@ -1,15 +1,20 @@
 import { TransactionDao } from "../db/transaction-dao"
 import { NewRevenueDto } from "../models/dtos/new-revenue-dto"
 import { NewWasteDto } from "../models/dtos/new-waste-dto"
+import { OverviewPageDto } from "../models/dtos/overview-page-dto"
 import { ResponseDto } from "../models/dtos/response-dto"
 import { TransactionDto } from "../models/dtos/transaction-dto"
+import { SpendingCategory } from "../models/spending-category"
 import { Transaction } from "../models/transaction"
+import { SpendingCategoryService } from "./spending-category-service"
 
 export class TransactionService {
 
+    spendingCategoryService: SpendingCategoryService
     transactionDao: TransactionDao
 
     constructor() {
+        this.spendingCategoryService = new SpendingCategoryService()
         this.transactionDao = new TransactionDao()
     }
 
@@ -52,6 +57,125 @@ export class TransactionService {
         return ret
     }
 
+    async getOverviewPageDataRes(walletId: string, startDate: Date, endDate: Date): Promise<ResponseDto> {
+        let ret = new ResponseDto()
+
+        if (startDate > endDate) {
+            ret.success = false
+            ret.errorMsg = 'Data inicial posterior a data final, verifique a data selecionada e tente novamente'
+
+            return ret
+        }
+
+        var transactions: Transaction[] = await this.transactionDao.getTransactionsByWalletIdAndDateInterval(walletId, startDate, endDate)
+
+        // for (var element of transactions) {!!!!!!!!!!!!!
+
+
+        var spendingCategoriesRes =
+            await this.spendingCategoryService.getSpendingCategoriesRes()
+
+        if (spendingCategoriesRes.success) {
+            var overViewPageDto = new OverviewPageDto()
+
+              var categories: SpendingCategory[] = spendingCategoriesRes.data
+
+              var income = 0.0
+              var spends = 0.0
+
+            //   List<TransactionDto> transactionDtoList = [];
+
+            //   Map<String, double> spendsByCategoryIdMap = <String, double>{};
+
+            //   for (var element in transactions) {
+            //     TransactionDto transactionDto = TransactionDto(amount: 0);
+
+            //     double amount = element.amount;
+
+            //     transactionDto.amount = amount;
+            //     transactionDto.categoryId = element.categoryId;
+            //     transactionDto.reason = element.reason;
+            //     transactionDto.transactionDate = element.transactionDate;
+            //     transactionDto.transactionId = element.id;
+
+            //     transactionDtoList.add(transactionDto);
+
+            //     if (amount >= 0) {
+            //       income = income + amount;
+            //     } else {
+            //       spends = spends + amount;
+            //     }
+
+            //     String? categoryId = element.categoryId;
+
+            //     // var category = categories
+            //     //     .singleWhere((element) => categoryId == transactionDto.categoryId);
+
+            //     if (categoryId != null && amount < 0) {
+            //       if (spendsByCategoryIdMap.containsKey(categoryId)) {
+            //         double? mapValue = spendsByCategoryIdMap[categoryId];
+
+            //         mapValue = mapValue! + amount;
+
+            //         spendsByCategoryIdMap.remove(categoryId);
+
+            //         spendsByCategoryIdMap.putIfAbsent(categoryId, () => mapValue!);
+            //       } else {
+            //         spendsByCategoryIdMap.putIfAbsent(categoryId, () => amount);
+            //       }
+            //     }
+            //   }
+
+            //   Map<String, double> spendsByCategoryMap = <String, double>{};
+
+            //   spendsByCategoryIdMap.forEach((key, value) {
+            //     String categoryName =
+            //         categories.singleWhere((element) => key == element.id).name;
+
+            //     spendsByCategoryMap.putIfAbsent(categoryName, () => value);
+            //   });
+
+            //   var sortedKeys = spendsByCategoryMap.keys.toList(growable: true)
+            //     ..sort((k1, k2) =>
+            //         spendsByCategoryMap[k1]!.compareTo(spendsByCategoryMap[k2]!));
+
+            //   Map<String, double> sortedMap = {
+            //     for (var k in sortedKeys) k: spendsByCategoryMap[k]!
+            //   };
+
+            //  Map<String, double> x = {
+            //     for (var k in sortedKeys) k: spendsByCategoryMap[k]!
+            //   };
+
+            //   Map<String, double> sortedMapReduced = sortedMap;
+
+            //   double totalOthers = 0.0;
+            //   for (int i = 0; i < sortedKeys.length; i++) {
+            //     if (i >= 3) {
+            //       totalOthers = totalOthers + (sortedMap[sortedKeys[i]]!);
+
+            //       sortedMapReduced.remove(sortedKeys[i]);
+
+            //       if (i == (sortedKeys.length - 1)) {
+            //         String key = 'Demais';
+            //         sortedMapReduced.putIfAbsent(key, () => totalOthers);
+            //       }
+            //     }
+            //   }
+
+            //   overViewPageDto.income = income;
+            //   overViewPageDto.spends = spends;
+            //   overViewPageDto.balance = (income + spends);
+            //   overViewPageDto.spendsByCategoryMap = x;
+            //   overViewPageDto.pieChartDataMap = sortedMapReduced;
+
+            //   res.success = true;
+            //   res.data = overViewPageDto;
+        }
+
+        return ret
+    }
+
     async getTransactionsByWalletIdAndDateIntervalRes(walletId: string, startDate: Date, endDate: Date): Promise<ResponseDto> {
         let ret = new ResponseDto()
 
@@ -64,7 +188,7 @@ export class TransactionService {
 
         var transactionDtoList: TransactionDto[] = []
 
-        var transactions: Transaction[] = await this.transactionDao.getTransactionsByWalletIdAndDateIntervalRes(walletId, startDate, endDate)
+        var transactions: Transaction[] = await this.transactionDao.getTransactionsByWalletIdAndDateInterval(walletId, startDate, endDate)
 
         for (var element of transactions) {
             var transactionDto = new TransactionDto
