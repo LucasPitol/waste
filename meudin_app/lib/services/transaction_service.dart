@@ -6,25 +6,14 @@ import 'package:meudin_app/models/forms/new_revenue_form.dart';
 import 'package:meudin_app/models/forms/new_waste_form.dart';
 import 'package:meudin_app/models/dtos/transaction_dto.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
-import 'package:meudin_app/db/transaction_dao.dart';
-import 'package:meudin_app/models/spending_category.dart';
-import 'package:meudin_app/models/transaction.dart';
-import 'package:http/http.dart' as http;
 import 'package:meudin_app/utils/utils.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'spending_category_service.dart';
-
 class TransactionService {
-  late TransactionDao _transactionDao;
-  late SpendingCategoryService _spendingCategoryService;
+
   String apiUrl = Environment.apiUrl;
   Map<String, String> headersRequest = Environment.headersRequest;
-
-  TransactionService() {
-    _transactionDao = TransactionDao();
-    _spendingCategoryService = SpendingCategoryService();
-  }
 
   Future<ResponseDto> getTransactionDtoList(
       String walletId, DateTime startDate, DateTime endDate) async {

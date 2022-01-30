@@ -13,17 +13,29 @@ class OverviewPageDto {
     pieChartDataMap = <String, double>{};
   }
 
-  OverviewPageDto.fromJson(Map<String, dynamic> transactionMap) {
-    print(transactionMap);
-    this.balance = (transactionMap['balance']).toDouble();
-    this.income = (transactionMap['income']).toDouble();
-    this.spends = (transactionMap['spends']).toDouble();
-    print(transactionMap['spendsByCategoryMap']);
-    this.spendsByCategoryMap =
-        Map<String, double>.from(transactionMap['spendsByCategoryMap']);
-    this.pieChartDataMap =
-        Map<String, double>.from(transactionMap['pieChartDataMap']);
-    print(this.spendsByCategoryMap);
+  OverviewPageDto.fromJson(Map<String, dynamic> overviewPageDtoMap) {
+    print(overviewPageDtoMap);
+    this.balance = (overviewPageDtoMap['balance']).toDouble();
+    this.income = (overviewPageDtoMap['income']).toDouble();
+    this.spends = (overviewPageDtoMap['spends']).toDouble();
 
+    this.spendsByCategoryMap = Map<String, double>();
+    this.pieChartDataMap = Map<String, double>();
+
+    List<dynamic> spendByCategoryDynamicList =
+        (overviewPageDtoMap['spendsByCategory']);
+
+    spendByCategoryDynamicList.forEach((element) {
+      spendsByCategoryMap.putIfAbsent(
+          element['a'], () => double.parse(element['b'].toString()));
+    });
+
+    List<dynamic> pieChartDataDynamicList =
+        (overviewPageDtoMap['pieChartData']);
+
+    pieChartDataDynamicList.forEach((element) {
+      pieChartDataMap.putIfAbsent(
+          element['a'], () => double.parse(element['b'].toString()));
+    });
   }
 }

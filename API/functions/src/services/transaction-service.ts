@@ -6,6 +6,8 @@ import { ResponseDto } from "../models/dtos/response-dto"
 import { TransactionDto } from "../models/dtos/transaction-dto"
 import { SpendingCategory } from "../models/spending-category"
 import { Transaction } from "../models/transaction"
+import { Tuple } from "../models/tuple"
+import { Utils } from "../utils/utils"
 import { SpendingCategoryService } from "./spending-category-service"
 
 export class TransactionService {
@@ -155,11 +157,35 @@ export class TransactionService {
                 i++
             })
 
+            //map to list<tuple>
+            var mapAscList: Tuple[] = []
+            var sortedMapReducedList: Tuple[] = []
+
+            mapAsc.forEach((value: number, key: string) => {
+                var tuple = new Tuple()
+                tuple.a = key
+                tuple.b = value
+
+                mapAscList.push(tuple)
+            })
+
+            mapAscList = Utils.sortTupleByB(mapAscList)
+
+            sortedMapReduced.forEach((value: number, key: string) => {
+                var tuple = new Tuple()
+                tuple.a = key
+                tuple.b = value
+
+                sortedMapReducedList.push(tuple)
+            })
+
+            sortedMapReducedList = Utils.sortTupleByB(sortedMapReducedList)
+
             overViewPageDto.income = income
             overViewPageDto.spends = spends
             overViewPageDto.balance = (income + spends)
-            overViewPageDto.spendsByCategoryMap = mapAsc
-            overViewPageDto.pieChartDataMap = sortedMapReduced
+            overViewPageDto.spendsByCategory = mapAscList
+            overViewPageDto.pieChartData = sortedMapReducedList
 
             ret.success = true
             ret.data = overViewPageDto
