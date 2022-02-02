@@ -13,7 +13,7 @@
 
         <div class="list">
             <div *ngFor="let option of options">
-                <div class="list-item">
+                <div class="list-item" (click)="option.action()">
                     <span>{{option.title}}</span>
                     <p>{{option.value}}</p>
                 </div>
