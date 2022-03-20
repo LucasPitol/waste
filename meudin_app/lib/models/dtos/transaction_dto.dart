@@ -5,7 +5,9 @@ class TransactionDto {
   late double amount;
   late String? categoryId;
 
-  TransactionDto() {}
+  TransactionDto() {
+    this.amount = 0;
+  }
 
   TransactionDto.fromJson(Map<String, dynamic> transactionMap) {
     
