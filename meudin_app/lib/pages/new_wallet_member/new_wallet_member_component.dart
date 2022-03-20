@@ -82,7 +82,7 @@ class _NewWalletMemberComponentState extends State<NewWalletMemberComponent> {
       child: Form(
         key: _formKey,
         child: TextFormField(
-          style: TextStyle(color: Colors.grey.shade100),
+          style: TextStyle(color: Styles.mainTextColor),
           keyboardType: TextInputType.emailAddress,
           textCapitalization: TextCapitalization.none,
           maxLength: 50,

@@ -144,7 +144,7 @@ class _LoginComponentState extends State<LoginComponent> {
                               right: 20,
                             ),
                             child: TextFormField(
-                              style: TextStyle(color: Colors.grey.shade100),
+                              style: TextStyle(color: Styles.darkModeEnabled() ? Colors.grey.shade100 : Styles.mainTextColor),
                               keyboardType: TextInputType.emailAddress,
                               controller: _loginForm.userMail,
                               validator: (value) {
@@ -163,7 +163,7 @@ class _LoginComponentState extends State<LoginComponent> {
                             margin: const EdgeInsets.only(
                                 top: 10, bottom: 20, left: 20, right: 20),
                             child: TextFormField(
-                              style: TextStyle(color: Colors.grey.shade100),
+                              style: TextStyle(color: Styles.darkModeEnabled() ? Colors.grey.shade100 : Styles.mainTextColor),
                               controller: _loginForm.password,
                               validator: (value) {
                                 if (value!.isEmpty) {

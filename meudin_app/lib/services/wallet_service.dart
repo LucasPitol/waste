@@ -2,18 +2,12 @@ import 'dart:convert';
 
 import 'package:meudin_app/environment/environment.dart';
 import 'package:meudin_app/models/dtos/response_dto.dart';
-import 'package:meudin_app/db/wallet_dao.dart';
 import 'package:meudin_app/models/wallet.dart';
 import 'package:http/http.dart' as http;
 
 class WalletService {
-  late WalletDao _walletDao;
   String apiUrl = Environment.apiUrl;
   Map<String, String> headersRequest = Environment.headersRequest;
-
-  WalletService() {
-    _walletDao = WalletDao();
-  }
 
   Future<ResponseDto> getWalletsByUserId(String uid) async {
     Uri url = Uri.parse(this.apiUrl + 'getWalletsByUserId');
@@ -29,18 +23,6 @@ class WalletService {
     );
 
     ResponseDto res = ResponseDto(responseData);
-
-    // TODO: implementar logica na API
-    // List<Wallet> wallets = await _walletDao.getWalletsByUserId(uid);
-
-    // if (wallets.isEmpty) {
-    //   await createPersonalWallet(uid);
-
-    //   wallets = await _walletDao.getWalletsByUserId(uid);
-    // }
-
-    // res.success = true;
-    // res.data = wallets;
 
     return res;
   }

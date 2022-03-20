@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Styles {
-  static bool isDarkMode = false;
+  static bool darkModeEnabled() {
+    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
+    return isDarkMode;
+  }
 
   static ThemeData mainTheme = ThemeData(
     textSelectionTheme: TextSelectionThemeData(
@@ -27,10 +33,15 @@ class Styles {
 
   static Color primaryColor = Colors.deepPurple;
   static Color darkColor = Colors.deepPurple.shade800;
-  static Color mainBackgroundColor = Colors.black;
-  static Color cardColor = const Color(0xff171717);
+  static Color mainBackgroundColor =
+      darkModeEnabled() ? Colors.black : Colors.white;
+  static Color cardColor =
+      darkModeEnabled() ? const Color(0xff171717) : Colors.white;
 
-  static Color mainTextColor = Colors.grey.shade100;
+  static Color mainTextColor =
+      darkModeEnabled() ? Colors.grey.shade100 : Colors.grey.shade800;
+  static Color greyTextColor =
+      darkModeEnabled() ? Colors.grey.shade600 : Colors.grey;
 
   static List<Color> pieChartColorList = [
     Colors.deepPurple.shade900,
@@ -52,13 +63,13 @@ class Styles {
   );
 
   static TextStyle montTextGrey = TextStyle(
-    color: Colors.grey.shade600,
+    color: greyTextColor,
     fontWeight: FontWeight.w500,
     fontSize: 16,
   );
 
   static TextStyle montSubText = TextStyle(
-    color: Colors.grey.shade600,
+    color: greyTextColor,
     fontWeight: FontWeight.w500,
     fontSize: 14,
   );
@@ -81,11 +92,25 @@ class Styles {
 
   static BoxDecoration cardDecoration = BoxDecoration(
     color: cardColor,
+    boxShadow: [
+      BoxShadow(
+        color: darkModeEnabled() ? Colors.black : Colors.grey.shade400,
+        offset: Offset(0, 2),
+        blurRadius: 2,
+      ),
+    ],
     borderRadius: const BorderRadius.all(Radius.circular(10)),
   );
 
   static BoxDecoration cardDecoration2 = BoxDecoration(
     color: primaryColor.withOpacity(.10),
+    boxShadow: [
+      BoxShadow(
+        color: darkModeEnabled() ? Colors.black : Colors.grey.shade400,
+        offset: Offset(0, 2),
+        blurRadius: 2,
+      ),
+    ],
     borderRadius: const BorderRadius.all(Radius.circular(10)),
   );
 
@@ -108,15 +133,17 @@ class Styles {
 
   static getTextFieldDecorationUnderline(String value) {
     return InputDecoration(
-      border: const UnderlineInputBorder(),
+      border: UnderlineInputBorder(),
       enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey.shade600),
+        borderSide: BorderSide(
+          color: greyTextColor,
+        ),
       ),
       focusedBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: primaryColor),
       ),
       labelText: value,
-      labelStyle: const TextStyle(color: Colors.grey),
+      labelStyle: TextStyle(color: Colors.grey),
     );
   }
 }

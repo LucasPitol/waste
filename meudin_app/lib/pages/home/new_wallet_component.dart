@@ -57,7 +57,7 @@ class _NewWalletComponentState extends State<NewWalletComponent> {
       child: Form(
         key: _formKey,
         child: TextFormField(
-          style: TextStyle(color: Colors.grey.shade100),
+          style: TextStyle(color: Styles.darkModeEnabled() ? Colors.grey.shade100 : Styles.mainTextColor),
           controller: walletNameController,
           textCapitalization: TextCapitalization.sentences,
           validator: (value) {

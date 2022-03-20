@@ -163,7 +163,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                 vertical: 10,
               ),
               child: TextFormField(
-                style: TextStyle(color: Colors.grey.shade100),
+                style: TextStyle(color: Styles.darkModeEnabled() ? Colors.grey.shade100 : Styles.mainTextColor),
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.sentences,
                 maxLength: 50,
@@ -184,7 +184,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                 vertical: 10,
               ),
               child: TextFormField(
-                style: TextStyle(color: Colors.grey.shade100),
+                style: TextStyle(color: Styles.darkModeEnabled() ? Colors.grey.shade100 : Styles.mainTextColor),
                 textCapitalization: TextCapitalization.sentences,
                 maxLength: 50,
                 controller: _newRevenueForm.revenueValue,

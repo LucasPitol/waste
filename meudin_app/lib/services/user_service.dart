@@ -5,9 +5,7 @@ import 'package:meudin_app/models/dtos/response_dto.dart';
 import 'package:meudin_app/environment/environment.dart';
 import 'package:meudin_app/models/forms/login_form.dart';
 import 'package:meudin_app/models/dtos/member_dto.dart';
-import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/models/wallet.dart';
-import 'package:meudin_app/db/user_dao.dart';
 import 'package:meudin_app/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -20,11 +18,9 @@ class UserService {
   Map<String, String> headersRequest = Environment.headersRequest;
 
   late WalletService _walletService;
-  late UserDao _userDao;
 
   UserService() {
     _walletService = WalletService();
-    _userDao = UserDao();
   }
 
   static isAuthenticated() {
@@ -275,30 +271,6 @@ class UserService {
       return null;
     }
 
-    // TODO: implementar logica na API
-    // if (uid != null && uid.isNotEmpty) {
-    //   User? user = await _userDao.loginByUid(uid);
-
-    //   if (user != null && user.id.isNotEmpty) {
-    //     _setUserIdToLocalStorage(uid);
-    //     //TODO: Ver logica no waste
-
-    //     ResponseDto walletRes = await _walletService.getWalletsByUserId(uid);
-
-    //     currentUser = user;
-
-    //     if (walletRes.success) {
-    //       currentUser!.walletList = walletRes.data;
-
-    //       currentUser!.currentWalletId = currentUser!.walletList.first.id;
-    //     }
-    //   } else {
-    //     _clearLocalStorage();
-    //   }
-    // }
-
-    // res.success = true;
-    // res.data = true;
   }
 
   int getNumberOfWalletsOwned() {
