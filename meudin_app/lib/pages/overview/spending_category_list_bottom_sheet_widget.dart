@@ -73,7 +73,9 @@ class _SpendingCategoryListSheetWidgetState
             margin: const EdgeInsets.only(top: 10),
             child: Icon(
               Icons.maximize,
-              color: Colors.grey.shade800,
+              color: Styles.darkModeEnabled()
+                  ? Colors.grey.shade800
+                  : Colors.grey.shade300,
               size: 50,
             ),
           ),

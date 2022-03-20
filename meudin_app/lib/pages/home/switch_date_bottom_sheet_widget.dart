@@ -60,7 +60,9 @@ class _SwitchDateBottomSheetWidgetState
             margin: const EdgeInsets.only(top: 10),
             child: Icon(
               Icons.maximize,
-              color: Colors.grey.shade800,
+              color: Styles.darkModeEnabled()
+                  ? Colors.grey.shade800
+                  : Colors.grey.shade300,
               size: 50,
             ),
           ),
@@ -79,7 +81,7 @@ class _SwitchDateBottomSheetWidgetState
                 style: GoogleFonts.montserrat(
                   textStyle: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade100,
+                    color: Styles.mainTextColor,
                     fontSize: 14,
                   ),
                 ),
@@ -111,7 +113,7 @@ class _SwitchDateBottomSheetWidgetState
                 style: GoogleFonts.montserrat(
                   textStyle: TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade100,
+                    color: Styles.mainTextColor,
                     fontSize: 14,
                   ),
                 ),

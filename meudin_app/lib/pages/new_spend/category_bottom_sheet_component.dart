@@ -43,9 +43,7 @@ class _CategoryBottomSheetWidgetState extends State<CategoryBottomSheetWidget> {
         padding: const EdgeInsets.only(top: 10, bottom: 10),
         decoration: BoxDecoration(
           // borderRadius: Styles.defaultBorderRadius,
-          color: isCategorySelected
-              ? Styles.primaryColor
-              : Styles.cardColor,
+          color: isCategorySelected ? Styles.primaryColor : Styles.cardColor,
         ),
         child: Stack(
           children: [
@@ -66,7 +64,7 @@ class _CategoryBottomSheetWidgetState extends State<CategoryBottomSheetWidget> {
                   fontSize: 16,
                   color: isCategorySelected
                       ? Styles.cardColor
-                      : Colors.grey.shade100,
+                      : Styles.mainTextColor,
                 ),
               ),
             ),
@@ -86,7 +84,9 @@ class _CategoryBottomSheetWidgetState extends State<CategoryBottomSheetWidget> {
             margin: const EdgeInsets.only(top: 10),
             child: Icon(
               Icons.maximize,
-              color: Colors.grey.shade900,
+              color: Styles.darkModeEnabled()
+                  ? Colors.grey.shade800
+                  : Colors.grey.shade300,
               size: 50,
             ),
           ),
