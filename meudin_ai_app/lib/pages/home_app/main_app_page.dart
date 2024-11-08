@@ -1,7 +1,7 @@
 import 'package:meudin_ai_app/pages/home_app/main_app_page_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:meudin_ai_app/ui/styles.dart';
+import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
