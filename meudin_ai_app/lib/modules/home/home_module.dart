@@ -1,7 +1,11 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision.dart';
 import 'package:meudin_ai_app/modules/home/widgets/app_bar/home_app_bar.dart';
 import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../ui/joy_ui.dart';
 
 class HomeModule extends StatelessWidget {
   const HomeModule({super.key});
@@ -14,7 +18,45 @@ class HomeModule extends StatelessWidget {
         return SingleChildScrollView(
           child: Column(
             children: [
-              HomeAppBar(),
+              const HomeAppBar(),
+              // plan
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: SizedBox(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            child: JoyText.h1(
+                              'Carteira pessoal',
+                            ),
+                          ),
+                          IconButton(
+                            icon: const FaIcon(
+                              FontAwesomeIcons.sortDown,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              print('Open wallet selector');
+                            },
+                          ),
+                        ],
+                      ),
+                      JoyText.secundaryText('Plano iniciante'),
+                      const SizedBox(
+                        width: double.infinity,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const WalletVisionWidget(),
             ],
           ),
         );
