@@ -56,7 +56,15 @@ class HomeModule extends StatelessWidget {
                   ),
                 ),
               ),
-              const WalletVisionWidget(),
+              WalletVisionWidget(
+                startDate: controller.startDate,
+                balance: controller.monthBalance,
+                monthRevenue: controller.monthRevenue,
+                monthSpends: controller.monthSpends,
+                transactionDtoList: controller.transactionDtoList,
+                twoFirstTransactionDtoList:
+                    controller.twoFirstTransactionDtoList,
+              ),
             ],
           ),
         );

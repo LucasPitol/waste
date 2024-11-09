@@ -1,11 +1,13 @@
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/utils/constants.dart';
 
 Future<void> main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await initializeDateFormatting(Constants.ptLanguage, null);
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting(Constants.ptLanguageCode, null);
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );

@@ -27,7 +27,7 @@ class Styles {
     color: whiteColor,
     boxShadow: [
       BoxShadow(
-        color:  grey,
+        color:  greyLighter,
         offset: Offset(0, 2),
         blurRadius: 2,
       ),
