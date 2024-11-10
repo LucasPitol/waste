@@ -39,7 +39,7 @@ class HomeModuleController extends GetxController {
   _fillStandardDate() {
     DateTime now = DateTime.now();
     startDate = DateTime(now.year, now.month, 1);
-    endDate = now.add(const Duration(days: 1));
+    endDate = DateTime(now.year, now.month, now.day, 59, 59, 59, 59);
   }
 
   updatePageData() async {

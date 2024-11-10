@@ -7,6 +7,14 @@ class Utils {
     return MoneyFormatter(amount: amount).output.nonSymbol;
   }
 
+  static String formatDateMMMdeYYYY(DateTime? value) {
+    if (value == null) {
+      return Constants.EMPTY_STRING;
+    } else {
+      return DateFormat.yMMMM(Constants.ptLanguageCode).format(value);
+    }
+  }
+
   static String formatDateDDMMYY(DateTime? value) {
     if (value == null) {
       return Constants.EMPTY_STRING;

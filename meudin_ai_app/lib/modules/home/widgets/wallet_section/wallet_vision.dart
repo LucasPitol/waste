@@ -121,7 +121,10 @@ class WalletVisionWidget extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    print('_goToSeeAllTransactionsPage');
+                    controller.goToSeeAllTransactionsPage(
+                      transactions: transactionDtoList,
+                      startDate: startDate,
+                    );
                   },
                   child: Text(
                     'Ver todas',
@@ -189,9 +192,7 @@ class WalletVisionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<WalletVisionWidgetController>(
-      init: WalletVisionWidgetController(
-
-      ),
+      init: WalletVisionWidgetController(),
       builder: (controller) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),

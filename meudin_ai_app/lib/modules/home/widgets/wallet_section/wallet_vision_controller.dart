@@ -1,5 +1,7 @@
+import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/tuple.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/routes/app_routes.dart';
 
 class WalletVisionWidgetController extends GetxController {
   late List<Tuple> tabs;
@@ -18,5 +20,19 @@ class WalletVisionWidgetController extends GetxController {
   selectTab(int newValue) {
     selectedTab = newValue;
     update();
+  }
+
+  goToSeeAllTransactionsPage({
+    required List<Transaction> transactions,
+    required DateTime startDate,
+  }) async {
+    final refresh = await Get.toNamed(
+      AppRoutes.transactionsListRoute,
+      arguments: [transactions, startDate],
+    );
+
+    if (refresh != null && refresh) {
+      print('Refresh');
+    }
   }
 }
