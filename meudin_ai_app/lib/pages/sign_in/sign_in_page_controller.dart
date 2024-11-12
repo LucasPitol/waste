@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/models/dtos/sign_in_dto.dart';
+import 'package:meudin_ai_app/routes/app_routes.dart';
 
 class SignInPageController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -16,8 +17,12 @@ class SignInPageController extends GetxController {
     print('sign in');
   }
 
-  goToSignUpPage() {
-    print('sign up');
+  goToSignUpPage() async {
+    final signInDtoTemp = await Get.toNamed(AppRoutes.signUpRoute);
+
+    if (signInDtoTemp != null) {
+      print('signIn');
+    }
   }
 
   recoverPassword() {
