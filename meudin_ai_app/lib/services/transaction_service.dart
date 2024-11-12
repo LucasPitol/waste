@@ -1,5 +1,5 @@
 import 'package:meudin_ai_app/environment/environment.dart';
-import 'package:meudin_ai_app/models/response_dto.dart';
+import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 // import 'package:http/http.dart' as http;
 

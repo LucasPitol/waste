@@ -7,6 +7,7 @@ class AppRoutes {
   static String homeAppRoute = '/home-app';
   static String transactionsListRoute = '/transactions';
   static String signInRoute = '/sign-in';
+  static String profileRoute = '/profile';
 
   static final List<GetPage<dynamic>> pages = <GetPage<dynamic>>[
     GetPage(
@@ -21,5 +22,9 @@ class AppRoutes {
       name: signInRoute,
       page: () => const SignInPage(),
     ),
+    // GetPage(
+    //   name: profileRoute,
+    //   page: () => const ProfilePage(),
+    // ),
   ];
 }

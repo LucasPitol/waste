@@ -60,7 +60,7 @@ class SignInPage extends StatelessWidget {
                               ),
                               Container(
                                 margin:
-                                    const EdgeInsets.symmetric(vertical: 20),
+                                    const EdgeInsets.only(top: 20),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -68,6 +68,18 @@ class SignInPage extends StatelessWidget {
                                     JoyTextButton(
                                       text: 'Cadastre-se',
                                       function: controller.goToSignUpPage,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    JoyText.secundaryText('Esqueceu sua senha?'),
+                                    JoyTextButton(
+                                      text: 'Recuperar senha',
+                                      function: controller.recoverPassword,
                                     ),
                                   ],
                                 ),

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:meudin_ai_app/models/response_dto.dart';
+import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/wallet.dart';

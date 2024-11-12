@@ -19,4 +19,8 @@ class SignInPageController extends GetxController {
   goToSignUpPage() {
     print('sign up');
   }
+
+  recoverPassword() {
+    print('recover password');
+  }
 }
