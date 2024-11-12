@@ -31,8 +31,32 @@ class SignInPage extends StatelessWidget {
                           key: controller.formKey,
                           child: Column(
                             children: [
-                              JoyLogo(),
-                              
+                              const JoyLogo(),
+                              const SizedBox(height: 40),
+                              JoyTextFormField(
+                                controller: controller.signInDto.email,
+                                labelText: 'Email',
+                                keyboardType: TextInputType.emailAddress,
+                                textCapitalization: TextCapitalization.none,
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: JoyTextFormField(
+                                  controller: controller.signInDto.password,
+                                  labelText: 'Senha',
+                                  obscureText: true,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  textCapitalization: TextCapitalization.none,
+                                  onFieldSubmitted: controller.signIn,
+                                ),
+                              ),
+                              Container(
+                                  alignment: Alignment.center,
+                                  child: JoyElevatedButton(
+                                    text: 'Entrar',
+                                    function: controller.signIn,
+                                  )),
                             ],
                           ),
                         ),

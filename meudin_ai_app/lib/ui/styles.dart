@@ -27,11 +27,14 @@ class Styles {
     color: whiteColor,
     boxShadow: [
       BoxShadow(
-        color:  greyLighter,
+        color: greyLighter,
         offset: Offset(0, 2),
         blurRadius: 2,
       ),
     ],
     borderRadius: const BorderRadius.all(Radius.circular(10)),
   );
+
+  static BorderRadius rectangularBorderRadius =
+      const BorderRadius.all(Radius.circular(5.0));
 }
