@@ -52,11 +52,26 @@ class SignInPage extends StatelessWidget {
                                 ),
                               ),
                               Container(
-                                  alignment: Alignment.center,
-                                  child: JoyElevatedButton(
-                                    text: 'Entrar',
-                                    function: controller.signIn,
-                                  )),
+                                alignment: Alignment.center,
+                                child: JoyElevatedButton(
+                                  text: 'Entrar',
+                                  function: controller.signIn,
+                                ),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    JoyText.secundaryText('Novo por aqui?'),
+                                    JoyTextButton(
+                                      text: 'Cadastre-se',
+                                      function: controller.goToSignUpPage,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),

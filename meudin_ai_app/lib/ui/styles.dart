@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Styles {
   static const Color primaryColor = Color(0xffAC6CFF);
+  static const Color primaryColorLight = Color.fromARGB(255, 214, 183, 255);
   static const Color primaryTextColor = Color(0xff212121);
   static const Color selectionTextColor = Color(0xFFE1F5FE);
   static const Color whiteColor = Colors.white;

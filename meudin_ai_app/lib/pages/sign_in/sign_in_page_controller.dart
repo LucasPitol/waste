@@ -15,4 +15,8 @@ class SignInPageController extends GetxController {
   signIn() {
     print('sign in');
   }
+
+  goToSignUpPage() {
+    print('sign up');
+  }
 }
