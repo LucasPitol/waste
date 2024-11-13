@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
-class MailStepWidget extends StatelessWidget {
-  final TextEditingController newUserMailController = TextEditingController();
+class VerificationCodeStepWidget extends StatelessWidget {
+  final TextEditingController codeController = TextEditingController();
+  final String userMail;
   final Function nextStep;
 
-  MailStepWidget({super.key, required this.nextStep});
+  VerificationCodeStepWidget(
+      {super.key, required this.nextStep, required this.userMail});
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +16,17 @@ class MailStepWidget extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
-            child: JoyText.secundaryText('Digite seu email'),
+            child: JoyText.secundaryText(
+              'Digite o codigo de verificação enviado para $userMail',
+              textOverflow: TextOverflow.visible,
+              textAlign: TextAlign.center,
+            ),
           ),
           JoyTextFormField(
-            controller: newUserMailController,
-            labelText: 'Email',
-            keyboardType: TextInputType.emailAddress,
+            controller: codeController,
+            labelText: 'Código',
+            keyboardType: TextInputType.number,
             textCapitalization: TextCapitalization.none,
-            onFieldSubmitted: () => nextStep(
-              newUserMailController.text,
-            ),
           ),
           const SizedBox(
             height: 40,
@@ -31,7 +34,7 @@ class MailStepWidget extends StatelessWidget {
           JoyElevatedButton(
             text: 'Próximo',
             function: () => nextStep(
-              newUserMailController.text,
+              codeController.text,
             ),
           ),
         ],

@@ -1,4 +1,6 @@
+import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
 import 'package:meudin_ai_app/pages/sign_up/widgets/mail_step_widget.dart';
+import 'package:meudin_ai_app/pages/sign_up/widgets/verification_code_step_widget.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,12 +10,16 @@ class SignUpPageController extends GetxController {
   late Widget currentStepWidget;
   late List<Widget> signUpWidgets = [];
   late int currentStep;
+  late NewUserDto newUserDto;
 
   SignUpPageController() {
     loading = false;
+    newUserDto = NewUserDto();
+
     signUpWidgets = [
       MailStepWidget(nextStep: retriveUserMail),
-      Container(child: Text('2')),
+      VerificationCodeStepWidget(
+          nextStep: retriveVerificationCode, userMail: newUserDto.email),
       Container(child: Text('3')),
     ];
     currentStep = 0;
@@ -30,8 +36,8 @@ class SignUpPageController extends GetxController {
         title: 'Revise as informações preenchidas',
       );
     } else {
-
-      // newUserDto = NewUserDto(name: nameAndSurname, email: userMail!);
+      newUserDto.email = userMail!;
+      _fillWidgets();
       // _userService.sendVerificationCode(userMail: userMail);
 
       moveToNextStep();
@@ -52,9 +58,38 @@ class SignUpPageController extends GetxController {
     return errorList;
   }
 
+  retriveVerificationCode(String? verificationCode) {
+    if (verificationCode != null && verificationCode.length == 6) {
+      moveToNextStep();
+    } else {
+      JoyModal.bottomSheetError(
+        context: Get.context!,
+        errorList: ['Código inválido'],
+        title: 'Revise as informações preenchidas',
+      );
+    }
+  }
+
   moveToNextStep() {
     currentStep++;
     currentStepWidget = signUpWidgets[currentStep];
     update();
+  }
+
+  _fillWidgets() {
+    signUpWidgets = [
+      MailStepWidget(nextStep: retriveUserMail),
+      VerificationCodeStepWidget(
+          nextStep: retriveVerificationCode, userMail: newUserDto.email),
+      Container(child: Text('3')),
+    ];
+
+    update();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    _fillWidgets();
   }
 }
