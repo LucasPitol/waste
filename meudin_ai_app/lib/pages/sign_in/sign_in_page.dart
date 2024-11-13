@@ -15,9 +15,10 @@ class SignInPage extends StatelessWidget {
           body: SafeArea(
             child: Stack(
               children: [
-                SingleChildScrollView(
+                Container(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         width: double.infinity,
@@ -25,14 +26,14 @@ class SignInPage extends StatelessWidget {
                           left: 20,
                           right: 20,
                           bottom: 20,
-                          top: 60,
+                          top: 20,
                         ),
                         child: Form(
                           key: controller.formKey,
                           child: Column(
                             children: [
                               const JoyLogo(),
-                              const SizedBox(height: 40),
+                              const SizedBox(height: 60),
                               JoyTextFormField(
                                 controller: controller.signInDto.email,
                                 labelText: 'Email',

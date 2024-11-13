@@ -16,44 +16,48 @@ class SignUpPage extends StatelessWidget {
           body: SafeArea(
             child: Stack(
               children: [
-                SingleChildScrollView(
+                SizedBox(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            JoyText.h1('Cadastro'),
-                            IconButton(
-                              icon: const FaIcon(
-                                FontAwesomeIcons.xmark,
-                                color: Styles.primaryTextColor,
-                                size: 22,
-                              ),
-                              onPressed: () {
-                                Get.back();
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
                       Container(
                         width: double.infinity,
                         margin: const EdgeInsets.only(
                           left: 20,
                           right: 20,
                           bottom: 20,
-                          top: 60,
+                          top: 20,
                         ),
                         child: Column(
                           children: [
                             const JoyLogo(),
-                            const SizedBox(height: 40),
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              child: controller.currentStepWidget,
+                            )
                           ],
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      JoyText.h1('Cadastro'),
+                      IconButton(
+                        icon: const FaIcon(
+                          FontAwesomeIcons.xmark,
+                          color: Styles.primaryTextColor,
+                          size: 22,
+                        ),
+                        onPressed: () {
+                          Get.back();
+                        },
                       ),
                     ],
                   ),

@@ -36,6 +36,9 @@ class Styles {
     borderRadius: const BorderRadius.all(Radius.circular(10)),
   );
 
+  static BorderRadius sexyBorderRadius =
+      const BorderRadius.all(Radius.circular(16.0));
+
   static BorderRadius rectangularBorderRadius =
       const BorderRadius.all(Radius.circular(5.0));
 }
