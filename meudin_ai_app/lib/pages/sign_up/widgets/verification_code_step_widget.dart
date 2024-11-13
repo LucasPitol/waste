@@ -27,6 +27,9 @@ class VerificationCodeStepWidget extends StatelessWidget {
             labelText: 'Código',
             keyboardType: TextInputType.number,
             textCapitalization: TextCapitalization.none,
+            onFieldSubmitted: nextStep(
+              codeController.text,
+            ),
           ),
           const SizedBox(
             height: 40,

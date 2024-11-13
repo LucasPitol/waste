@@ -1,6 +1,7 @@
-import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
-import 'package:meudin_ai_app/pages/sign_up/widgets/mail_step_widget.dart';
 import 'package:meudin_ai_app/pages/sign_up/widgets/verification_code_step_widget.dart';
+import 'package:meudin_ai_app/pages/sign_up/widgets/password_step_widget.dart';
+import 'package:meudin_ai_app/pages/sign_up/widgets/mail_step_widget.dart';
+import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ class SignUpPageController extends GetxController {
       MailStepWidget(nextStep: retriveUserMail),
       VerificationCodeStepWidget(
           nextStep: retriveVerificationCode, userMail: newUserDto.email),
-      Container(child: Text('3')),
+      PasswordStepWidget(nextStep: retriveUserPassword),
     ];
     currentStep = 0;
     currentStepWidget = signUpWidgets[currentStep];
@@ -37,7 +38,8 @@ class SignUpPageController extends GetxController {
       );
     } else {
       newUserDto.email = userMail!;
-      _fillWidgets();
+      signUpWidgets[1] = VerificationCodeStepWidget(
+          nextStep: retriveVerificationCode, userMail: newUserDto.email);
       // _userService.sendVerificationCode(userMail: userMail);
 
       moveToNextStep();
@@ -70,26 +72,39 @@ class SignUpPageController extends GetxController {
     }
   }
 
+  retriveUserPassword(String? password, String? repassword) {
+    List<String> errors = [];
+
+    if (password == null || repassword == null) {
+      errors.add('Preencha os 2 campos');
+    } else {
+      if (password != repassword) {
+        errors.add('Digite a mesma senha nos 2 campos');
+      }
+
+      if (password.length < 6) {
+        errors.add('A senha deve ter pelo menos 6 caracteres');
+      }
+    }
+
+    if (errors.isNotEmpty) {
+      JoyModal.bottomSheetError(
+        context: Get.context!,
+        errorList: errors,
+        title: 'Revise as informações preenchidas',
+      );
+    } else {
+      _createUser();
+    }
+  }
+
+  _createUser() {
+    print('Create user');
+  }
+
   moveToNextStep() {
     currentStep++;
     currentStepWidget = signUpWidgets[currentStep];
     update();
-  }
-
-  _fillWidgets() {
-    signUpWidgets = [
-      MailStepWidget(nextStep: retriveUserMail),
-      VerificationCodeStepWidget(
-          nextStep: retriveVerificationCode, userMail: newUserDto.email),
-      Container(child: Text('3')),
-    ];
-
-    update();
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    _fillWidgets();
   }
 }
