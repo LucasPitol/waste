@@ -22,17 +22,17 @@ class VerificationCodeStepWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          JoyTextFormField(
-            controller: codeController,
-            labelText: 'Código',
-            keyboardType: TextInputType.number,
-            textCapitalization: TextCapitalization.none,
-            onFieldSubmitted: nextStep(
-              codeController.text,
+          Container(
+            margin: const EdgeInsets.only(bottom: 40),
+            child: JoyTextFormField(
+              controller: codeController,
+              labelText: 'Código',
+              keyboardType: TextInputType.number,
+              textCapitalization: TextCapitalization.none,
+              onFieldSubmitted: () => nextStep(
+                codeController.text,
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 40,
           ),
           JoyElevatedButton(
             text: 'Próximo',

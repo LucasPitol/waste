@@ -15,7 +15,8 @@ class JoyTextFormField extends StatelessWidget {
   final int? maxLenght;
   final String? hintText;
 
-  JoyTextFormField({
+  const JoyTextFormField({
+    super.key,
     required this.controller,
     this.labelText = '',
     this.obscureText = false,
@@ -40,7 +41,9 @@ class JoyTextFormField extends StatelessWidget {
       validator: (value) {
         return validator(value);
       },
-      onFieldSubmitted: (_) => onFieldSubmitted != null ? onFieldSubmitted() : FocusScope.of(Get.context!).nextFocus(),
+      onFieldSubmitted: (_) => onFieldSubmitted != null
+          ? onFieldSubmitted()
+          : FocusScope.of(Get.context!).nextFocus(),
       style: const TextStyle(color: Styles.primaryTextColor),
       decoration: InputDecoration(
         counterText: '',

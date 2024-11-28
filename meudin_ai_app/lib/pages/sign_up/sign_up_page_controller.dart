@@ -2,6 +2,7 @@ import 'package:meudin_ai_app/pages/sign_up/widgets/verification_code_step_widge
 import 'package:meudin_ai_app/pages/sign_up/widgets/password_step_widget.dart';
 import 'package:meudin_ai_app/pages/sign_up/widgets/mail_step_widget.dart';
 import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
+import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,8 +20,7 @@ class SignUpPageController extends GetxController {
 
     signUpWidgets = [
       MailStepWidget(nextStep: retriveUserMail),
-      VerificationCodeStepWidget(
-          nextStep: retriveVerificationCode, userMail: newUserDto.email),
+      Container(),
       PasswordStepWidget(nextStep: retriveUserPassword),
     ];
     currentStep = 0;
@@ -41,7 +41,7 @@ class SignUpPageController extends GetxController {
       signUpWidgets[1] = VerificationCodeStepWidget(
           nextStep: retriveVerificationCode, userMail: newUserDto.email);
       // _userService.sendVerificationCode(userMail: userMail);
-
+      
       moveToNextStep();
     }
   }
@@ -72,7 +72,7 @@ class SignUpPageController extends GetxController {
     }
   }
 
-  retriveUserPassword(String? password, String? repassword) {
+  retriveUserPassword(String? password, String? repassword) async {
     List<String> errors = [];
 
     if (password == null || repassword == null) {
@@ -95,6 +95,8 @@ class SignUpPageController extends GetxController {
       );
     } else {
       _createUser();
+
+      await Get.offNamed(AppRoutes.homeAppRoute);
     }
   }
 

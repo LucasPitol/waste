@@ -31,7 +31,7 @@ class PasswordStepWidget extends StatelessWidget {
             keyboardType: TextInputType.visiblePassword,
             textCapitalization: TextCapitalization.none,
             obscureText: true,
-            onFieldSubmitted: nextStep(
+            onFieldSubmitted: () => nextStep(
               passwordController.text,
               rePasswordController.text,
             ),
