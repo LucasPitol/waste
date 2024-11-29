@@ -42,7 +42,7 @@ class HomeModule extends StatelessWidget {
                               size: 20,
                             ),
                             onPressed: () {
-                              print('Open wallet selector');
+                              controller.openWalletSelector();
                             },
                           ),
                         ],

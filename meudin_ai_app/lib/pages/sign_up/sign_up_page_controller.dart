@@ -41,7 +41,7 @@ class SignUpPageController extends GetxController {
       signUpWidgets[1] = VerificationCodeStepWidget(
           nextStep: retriveVerificationCode, userMail: newUserDto.email);
       // _userService.sendVerificationCode(userMail: userMail);
-      
+
       moveToNextStep();
     }
   }
@@ -72,7 +72,7 @@ class SignUpPageController extends GetxController {
     }
   }
 
-  retriveUserPassword(String? password, String? repassword) async {
+  retriveUserPassword(String? password, String? repassword) {
     List<String> errors = [];
 
     if (password == null || repassword == null) {
@@ -95,13 +95,11 @@ class SignUpPageController extends GetxController {
       );
     } else {
       _createUser();
-
-      await Get.offNamed(AppRoutes.homeAppRoute);
     }
   }
 
-  _createUser() {
-    print('Create user');
+  _createUser() async {
+    await Get.offNamed(AppRoutes.homeAppRoute);
   }
 
   moveToNextStep() {

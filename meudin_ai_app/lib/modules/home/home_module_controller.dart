@@ -1,10 +1,16 @@
-import 'package:get/get.dart';
-import 'package:meudin_ai_app/models/dtos/response_dto.dart';
+import 'package:flutter/material.dart';
+import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/wallet_selector_widget.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
+import 'package:meudin_ai_app/models/dtos/response_dto.dart';
+import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/wallet.dart';
+import 'package:meudin_ai_app/models/user.dart';
+import 'package:get/get.dart';
+import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class HomeModuleController extends GetxController {
+  User? _user;
   late Wallet currentWallet;
   late bool isWalletOwner;
   late bool loading;
@@ -18,6 +24,8 @@ class HomeModuleController extends GetxController {
   late TransactionService _transactionService;
 
   HomeModuleController() {
+    // _user = UserService.currentUser;
+    _user = UserService.mockCurrentUser();
     isWalletOwner = false;
     monthRevenue = 0.0;
     monthSpends = 0.0;
@@ -36,6 +44,25 @@ class HomeModuleController extends GetxController {
     updatePageData();
   }
 
+  openWalletSelector() async {
+    List<Wallet> userWallets = _user!.walletList;
+
+    String? newWalletId = await showModalBottomSheet(
+        context: Get.context!,
+        backgroundColor: Styles.whiteColor,
+        builder: (builder) {
+          return WalletSelectorWidget(
+            walletList: userWallets,
+            // handleNewWalletPage: _goToNewWalletPage,
+          );
+        });
+
+    print(newWalletId);
+    if (newWalletId != null && newWalletId.isNotEmpty) {
+      // _switchCurrentWallet(newWalletId);
+    }
+  }
+
   _fillStandardDate() {
     DateTime now = DateTime.now();
     startDate = DateTime(now.year, now.month, 1);
@@ -48,7 +75,7 @@ class HomeModuleController extends GetxController {
 
     await _updateWallets();
 
-    String walletId = currentWallet.walletId;
+    String walletId = currentWallet.id;
 
     ResponseDto res = await _transactionService.getTransactionDtoList(
       walletId,
@@ -93,7 +120,7 @@ class HomeModuleController extends GetxController {
     // mock
     currentWallet.name = 'Carteira pessoal';
     currentWallet.ownerId = 'abc';
-    currentWallet.walletId = 'wal1';
+    currentWallet.id = 'wal1';
     currentWallet.membersIds = ['wal1'];
   }
 }
