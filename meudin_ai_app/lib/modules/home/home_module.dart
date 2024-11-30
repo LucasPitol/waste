@@ -32,7 +32,7 @@ class HomeModule extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.symmetric(vertical: 10),
                             child: JoyText.h1(
-                              'Carteira pessoal',
+                              controller.currentWallet.name,
                             ),
                           ),
                           IconButton(

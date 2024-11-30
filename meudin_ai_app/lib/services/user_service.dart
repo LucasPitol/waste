@@ -9,11 +9,13 @@ class UserService {
     wallet1.membersIds = ['1'];
     wallet1.name = 'Wallet 1';
     wallet1.id = '1';
+    wallet1.ownerId = '1';
 
     var wallet2 = Wallet();
     wallet2.membersIds = ['1', '2'];
     wallet2.name = 'Wallet 2';
     wallet2.id = '2';
+    wallet2.ownerId = '2';
 
     var user = User();
     user.currentWalletId = wallet1.id;
@@ -30,7 +32,9 @@ class UserService {
     return currentUser;
   }
 
-  forceSignOut() {
-    
+  updateUserWallets() {
+    // request to get wallets
   }
+
+  forceSignOut() {}
 }

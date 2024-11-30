@@ -22,18 +22,21 @@ class HomeModuleController extends GetxController {
   late List<Transaction> transactionDtoList;
   late List<Transaction> twoFirstTransactionDtoList;
   late TransactionService _transactionService;
+  late UserService _userService;
 
   HomeModuleController() {
+    _userService = UserService();
     // _user = UserService.currentUser;
     _user = UserService.mockCurrentUser();
-    isWalletOwner = false;
+    currentWallet = _user!.walletList
+        .singleWhere((element) => element.id == _user!.currentWalletId);
+    isWalletOwner = (currentWallet.ownerId == _user!.id);
     monthRevenue = 0.0;
     monthSpends = 0.0;
     monthBalance = 0.0;
     transactionDtoList = [];
     twoFirstTransactionDtoList = [];
     _transactionService = TransactionService();
-    currentWallet = Wallet();
   }
 
   @override
@@ -70,7 +73,19 @@ class HomeModuleController extends GetxController {
   }
 
   _switchCurrentWallet(String newWalletId) {
-    print(newWalletId);
+    Wallet walletTemp =
+        _user!.walletList.singleWhere((element) => element.id == newWalletId);
+
+    UserService.currentUser!.currentWalletId = newWalletId;
+
+    bool isWalletOwnerTemp = (walletTemp.ownerId == _user!.id);
+
+    currentWallet = walletTemp;
+    isWalletOwner = isWalletOwnerTemp;
+
+    update();
+
+    updatePageData();
   }
 
   _fillStandardDate() {
@@ -127,10 +142,18 @@ class HomeModuleController extends GetxController {
   }
 
   _updateWallets() async {
-    // mock
-    currentWallet.name = 'Carteira pessoal';
-    currentWallet.ownerId = 'abc';
-    currentWallet.id = 'wal1';
-    currentWallet.membersIds = ['wal1'];
+    await _userService.updateUserWallets();
+
+    _user = UserService.currentUser;
+
+    Wallet currentWalletTemp = _user!.walletList
+        .singleWhere((element) => element.id == _user!.currentWalletId);
+
+    bool isWalletOwnerTemp = (currentWalletTemp.ownerId == _user!.id);
+
+    currentWallet = currentWalletTemp;
+    isWalletOwner = isWalletOwnerTemp;
+
+    update();
   }
 }

@@ -28,7 +28,7 @@ class HomeAppBar extends StatelessWidget {
                         size: 20,
                       ),
                       onPressed: () {
-                        print('Refresh');
+                        controller.refreshPage();
                       },
                     ),
                     IconButton(
