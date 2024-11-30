@@ -47,20 +47,30 @@ class HomeModuleController extends GetxController {
   openWalletSelector() async {
     List<Wallet> userWallets = _user!.walletList;
 
-    String? newWalletId = await showModalBottomSheet(
+    Map<String, dynamic>? newWalletOptions = await showModalBottomSheet(
         context: Get.context!,
         backgroundColor: Styles.whiteColor,
         builder: (builder) {
           return WalletSelectorWidget(
             walletList: userWallets,
-            // handleNewWalletPage: _goToNewWalletPage,
           );
         });
 
-    print(newWalletId);
-    if (newWalletId != null && newWalletId.isNotEmpty) {
-      // _switchCurrentWallet(newWalletId);
+    if (newWalletOptions != null) {
+      if (newWalletOptions.containsKey('newWalletId') &&
+          newWalletOptions['createNewWallet'] == false) {
+        final newWalletId = newWalletOptions['newWalletId'];
+        _switchCurrentWallet(newWalletId);
+      }
+
+      if (newWalletOptions['createNewWallet'] == true) {
+        print('Create new wallet');
+      }
     }
+  }
+
+  _switchCurrentWallet(String newWalletId) {
+    print(newWalletId);
   }
 
   _fillStandardDate() {

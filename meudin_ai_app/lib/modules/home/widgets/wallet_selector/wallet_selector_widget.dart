@@ -32,15 +32,17 @@ class WalletSelectorWidget extends StatelessWidget {
                 },
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       JoyText.secundaryText(
                         'Nova carteira',
                         fontWeight: FontWeight.bold,
+                        size: 16,
                         textColor: Styles.primaryColor,
                       ),
+                      const SizedBox(width: 16),
                       const FaIcon(
                         FontAwesomeIcons.plus,
                         color: Styles.primaryColor,
@@ -95,6 +97,7 @@ class WalletSelectorWidget extends StatelessWidget {
                 wallet.name,
               ),
               JoyText.secundaryText(
+                size: 16,
                 members,
               ),
             ],

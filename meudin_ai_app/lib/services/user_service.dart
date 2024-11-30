@@ -29,4 +29,8 @@ class UserService {
 
     return currentUser;
   }
+
+  forceSignOut() {
+    
+  }
 }
