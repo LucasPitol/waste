@@ -2,9 +2,9 @@ import { SpendingCategoryService } from "./services/spending-category-service";
 import { TransactionService } from "./services/transaction-service";
 import { WalletService } from "./services/wallet-service";
 import { UserService } from "./services/user-service";
-import { MockService } from "./services/mock-service";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { CreateNewUserUseCase } from "./use-cases/user/create-new-user-use-case";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -15,9 +15,8 @@ const app = express();
 
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
-const mockService = new MockService()
-mockService.mockData()
 
+const createUserUseCase = new CreateNewUserUseCase();
 const userService = new UserService()
 const walletService = new WalletService()
 const transactionService = new TransactionService()
@@ -51,7 +50,7 @@ export const createNewUser = functions.https.onRequest(async (req, res) => {
   var body = req.body
   var newUserDto = body.newUserDto
 
-  var ret = await userService.createNewUserRes(newUserDto)
+  var ret = await createUserUseCase.execute(newUserDto)
 
   console.log(ret)
   res.send(ret)
@@ -217,3 +216,18 @@ export const addMemberToWallet = functions.https.onRequest(async (req, res) => {
   res.send(ret)
 
 });
+
+
+//////////////// DEV ////////////////
+
+// export const setUpDevData = functions.https.onRequest(async (req, res) => {
+
+//   var body = req.body
+//   var newUserDto = body.newUserDto
+
+//   var ret = await userService.createNewUserRes(newUserDto)
+
+//   console.log(ret)
+//   res.send(ret)
+
+// });

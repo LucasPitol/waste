@@ -3,129 +3,123 @@ import { db } from "../index";
 
 
 export class UserDao {
-    usersCollectionName = User.collectionName
+  usersCollectionName = User.collectionName
 
-    async createNewUser(name: string, email: string, password: string) {
-        let now = new Date()
+  async createNewUser(name: string, email: string, password: string) {
+    let now = new Date()
 
-        const batch = db.batch()
+    const batch = db.batch()
 
-        const userDocRef = db.collection(this.usersCollectionName).doc()
+    const userDocRef = db.collection(this.usersCollectionName).doc()
 
-        var uid = userDocRef.id
+    var uid = userDocRef.id
 
-        batch.set(userDocRef, {
-            id: uid,
-            displayName: name,
-            password: password,
-            email: email,
-            lastUpdate: now,
-            creationDate: now,
-            privacyPolicyCheckedAt: now,
-        })
+    batch.set(userDocRef, {
+      id: uid,
+      displayName: name,
+      password: password,
+      email: email,
+      lastUpdate: now,
+      creationDate: now,
+      privacyPolicyCheckedAt: now,
+    })
 
-        await batch.commit()
+    await batch.commit()
 
-        return uid
+    return uid
+  }
+
+  async changePassword(uid: string, password: string) {
+    let now = new Date()
+
+    const batch = db.batch()
+
+    const userDocRef = db.collection(this.usersCollectionName).doc(uid)
+
+    batch.set(userDocRef, {
+      password: password,
+      lastUpdate: now,
+    }, { merge: true })
+
+    await batch.commit()
+
+    return uid
+  }
+
+  async getUsersByIds(ids: string[]) {
+
+    var users: User[] = []
+
+    var snapShot = await db
+      .collection(this.usersCollectionName)
+      .where('id', 'in', ids)
+      .get()
+
+    if (snapShot.empty) {
+      return users
+    } else {
+      for (const doc of snapShot.docs) {
+        var user = new User(doc)
+
+        users.push(user)
+      }
     }
 
-    async changePassword(uid: string, password: string) {
-        let now = new Date()
+    return users
+  }
 
-        const batch = db.batch()
+  async getUserById(id: string): Promise<User | null> {
+    var user: User | null = null
 
-        const userDocRef = db.collection(this.usersCollectionName).doc(uid)
+    const userRef = db.collection(this.usersCollectionName).doc(id);
 
-        batch.set(userDocRef, {
-            password: password,
-            lastUpdate: now,
-        }, { merge: true })
+    const snapShot = await userRef.get()
 
-        await batch.commit()
-
-        return uid
+    if (snapShot.exists) {
+      user = new User(snapShot)
     }
 
-    async getUsersByIds(ids: string[]) {
+    return user
+  }
 
-        var users: User[] = []
+  async getUserByEmail(email?: string): Promise<User | null> {
+    var user: User | null = null
 
-        var snapShot = await db
-            .collection(this.usersCollectionName)
-            .where('id', 'in', ids)
-            .get()
+    var snapshot = await db
+      .collection(this.usersCollectionName)
+      .where('email', '==', email)
+      .get()
 
-        if (snapShot.empty) {
-            return users
-        } else {
-            for (const doc of snapShot.docs) {
-                var user = new User(doc)
-
-                users.push(user)
-            }
-        }
-
-        return users
+    if (snapshot.empty) {
+      return null
+    } else {
+      for (const doc of snapshot.docs) {
+        user = new User(doc)
+      }
     }
 
-    async getUserById(id: string): Promise<User | null> {
-        var user: User | null = null
+    return user
+  }
 
-        var snapshot = await db
-            .collection(this.usersCollectionName)
-            .where('id', '==', id)
-            .get()
+  async auth(email: string, password: string) {
 
-        if (snapshot.empty) {
-            return null
-        } else {
+    var snapshot = await db
+      .collection(this.usersCollectionName)
+      .where('email', '==', email)
+      .where('password', '==', password)
+      .get()
 
-            for (const doc of snapshot.docs) {
-                user = new User(doc)
-            }
-        }
+    if (snapshot.empty) {
+      return null
+    } else {
+      var user
 
-        return user
+      for (const doc of snapshot.docs) {
+        user = new User(doc)
+      }
     }
 
-    async getUserByEmail(email?: string): Promise<User | null> {
-        var user: User | null = null
-
-        var snapshot = await db
-            .collection(this.usersCollectionName)
-            .where('email', '==', email)
-            .get()
-
-        if (snapshot.empty) {
-            return null
-        } else {
-            for (const doc of snapshot.docs) {
-                user = new User(doc)
-            }
-        }
-
-        return user
-    }
-
-    async auth(email: string, password: string) {
-
-        var snapshot = await db
-            .collection(this.usersCollectionName)
-            .where('email', '==', email)
-            .where('password', '==', password)
-            .get()
-
-        if (snapshot.empty) {
-            return null
-        } else {
-            var user
-
-            for (const doc of snapshot.docs) {
-                user = new User(doc)
-            }
-        }
-
-        return user
-    }
+    return user
+  }
 
 }

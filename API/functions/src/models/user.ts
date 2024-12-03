@@ -1,4 +1,4 @@
-import { DocumentSnapshot } from "firebase-functions/lib/providers/firestore"
+import { DocumentSnapshot } from "firebase-functions/v2/firestore"
 import { AbstractModel } from "./abstract-model"
 
 export class User extends AbstractModel {

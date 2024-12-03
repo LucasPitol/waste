@@ -1,4 +1,4 @@
-import { DocumentSnapshot } from "firebase-functions/v1/firestore";
+import { DocumentSnapshot } from "firebase-functions/v2/firestore"
 import { AbstractModel } from "./abstract-model";
 
 export class Wallet extends AbstractModel {

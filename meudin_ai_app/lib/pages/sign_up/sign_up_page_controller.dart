@@ -2,6 +2,7 @@ import 'package:meudin_ai_app/pages/sign_up/widgets/verification_code_step_widge
 import 'package:meudin_ai_app/pages/sign_up/widgets/password_step_widget.dart';
 import 'package:meudin_ai_app/pages/sign_up/widgets/mail_step_widget.dart';
 import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
+import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +14,16 @@ class SignUpPageController extends GetxController {
   late List<Widget> signUpWidgets = [];
   late int currentStep;
   late NewUserDto newUserDto;
+  late UserService _userService;
 
   SignUpPageController() {
     loading = false;
     newUserDto = NewUserDto();
+    _userService = UserService();
 
     signUpWidgets = [
       MailStepWidget(nextStep: retriveUserMail),
-      Container(),
+      Container(),  
       PasswordStepWidget(nextStep: retriveUserPassword),
     ];
     currentStep = 0;
@@ -94,11 +97,13 @@ class SignUpPageController extends GetxController {
         title: 'Revise as informações preenchidas',
       );
     } else {
+      newUserDto.password = password!;
       _createUser();
     }
   }
 
   _createUser() async {
+    _userService.createNewUser(newUserDto);
     await Get.offNamed(AppRoutes.homeAppRoute);
   }
 
