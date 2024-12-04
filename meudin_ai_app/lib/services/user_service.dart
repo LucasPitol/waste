@@ -23,6 +23,40 @@ class UserService {
     _walletService = WalletService();
   }
 
+  Future<ResponseDto> signInByEmailAndPassword(
+    String userMail,
+    String password,
+  ) async {
+    Uri url = Uri.parse('${apiUrl}logIn');
+
+    String hashPassword = await _encryptionService.encryptString(password);
+
+    var response = await http.post(
+      url,
+      headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+      },
+      body: jsonEncode(
+        {
+          'email': userMail,
+          'password': hashPassword,
+        },
+      ),
+    );
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    if (responseDto.success) {
+      User user = _handleUser(responseDto.data);
+      currentUser = user;
+
+      await _localStorageService.storeUserData(user);
+    }
+
+    return responseDto;
+  }
+
   Future<ResponseDto> createNewUser(NewUserDto newUserDto) async {
     Uri url = Uri.parse('${apiUrl}createNewUser');
 

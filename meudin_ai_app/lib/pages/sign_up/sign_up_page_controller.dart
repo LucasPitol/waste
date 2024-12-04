@@ -22,16 +22,16 @@ class SignUpPageController extends GetxController {
     _userService = UserService();
 
     signUpWidgets = [
-      MailStepWidget(nextStep: retriveUserMail),
-      Container(),  
+      MailStepWidget(nextStep: retriveUserInfo),
+      Container(),
       PasswordStepWidget(nextStep: retriveUserPassword),
     ];
     currentStep = 0;
     currentStepWidget = signUpWidgets[currentStep];
   }
 
-  retriveUserMail(String? userMail) {
-    var errors = validateMailForm(userMail);
+  retriveUserInfo(String? userMail, String? userName) {
+    List<String> errors = validateUserInfoForm(userMail, userName);
 
     if (errors.isNotEmpty) {
       JoyModal.bottomSheetError(
@@ -49,7 +49,7 @@ class SignUpPageController extends GetxController {
     }
   }
 
-  validateMailForm(String? userMail) {
+  validateUserInfoForm(String? userMail, String? userName) {
     List<String> errorList = [];
 
     if (userMail == null || userMail.trim().isEmpty) {
@@ -58,6 +58,10 @@ class SignUpPageController extends GetxController {
       if (!userMail.isEmail) {
         errorList.add('Email inválido, verifique o campo preenchido');
       }
+    }
+
+    if (userName == null || userName.trim().isEmpty) {
+      errorList.add('Preencha o campo nome');
     }
 
     return errorList;
