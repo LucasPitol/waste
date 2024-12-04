@@ -8,13 +8,6 @@ import 'package:meudin_ai_app/utils/constants.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting(Constants.ptLanguageCode, null);
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-
-  // if (kDebugMode) {
-  //   FirebaseFirestore.instance.useFirestoreEmulator('127.0.0.1', 8080);
-  // }
 
   runApp(const MyApp());
 }

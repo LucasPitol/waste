@@ -8,187 +8,184 @@ import { Constants } from "../utils/constants";
 import { WalletService } from "./wallet-service";
 
 export class UserService {
-    userDao: UserDao
-    walletService: WalletService
+  userDao: UserDao
+  walletService: WalletService
 
-    constructor() {
-        this.userDao = new UserDao()
-        this.walletService = new WalletService()
+  constructor() {
+    this.userDao = new UserDao()
+    this.walletService = new WalletService()
+  }
+
+  async changePasswordRes(uid: string, password: string): Promise<ResponseDto> {
+    let ret = new ResponseDto()
+
+    let uidN: string = await this.userDao.changePassword(uid, password)
+
+    if (uidN == null) {
+      ret.success = false
+      ret.errorMsg =
+        'Não foi possível alterar a senha, tente novamente mais tarde'
+    } else {
+      ret.success = true
+      ret.data = true
     }
 
-    async changePasswordRes(uid: string, password: string): Promise<ResponseDto> {
-        let ret = new ResponseDto()
+    return ret
+  }
 
-        let uidN: string = await this.userDao.changePassword(uid, password)
+  async getWalletMembersRes(memberIdList: string[]): Promise<ResponseDto> {
+    let ret = new ResponseDto()
 
-        if (uidN == null) {
-            ret.success = false
-            ret.errorMsg =
-                'Não foi possível alterar a senha, tente novamente mais tarde'
-        } else {
-            ret.success = true
-            ret.data = true
+    var walletMembers: MemberDto[] = []
+
+    var usersFromWallet = await this.userDao.getUsersByIds(memberIdList)
+
+    if (usersFromWallet.length > 0) {
+      var walletMembersTemp: MemberDto[] = []
+
+      for (const user of usersFromWallet) {
+
+        var memberDto = new MemberDto()
+
+        memberDto.email = user.email
+        memberDto.id = user.id
+        memberDto.name = user.name
+
+        walletMembersTemp.push(memberDto)
+      }
+      let sortered = walletMembersTemp.sort((n1, n2) => {
+        if (n1.name! > n2.name!) {
+          return 1
         }
 
-        return ret
+        if (n1.name! < n2.name!) {
+          return -1
+        }
+
+        return 0
+      })
+
+      walletMembers = sortered
     }
 
-    async getWalletMembersRes(memberIdList: string[]): Promise<ResponseDto> {
-        let ret = new ResponseDto()
+    ret.success = true
+    ret.data = walletMembers
 
-        var walletMembers: MemberDto[] = []
+    return ret
+  }
 
-        var usersFromWallet = await this.userDao.getUsersByIds(memberIdList)
+  async addMemberToWalletRes(memberMail: string, walletId: string): Promise<ResponseDto> {
+    let ret = new ResponseDto()
 
-        if (usersFromWallet.length > 0) {
-            var walletMembersTemp: MemberDto[] = []
+    var wallet: Wallet | null = await this.walletService.getWalletById(walletId)
 
-            for (const user of usersFromWallet) {
+    if (wallet == null) {
+      ret.success = false
+      ret.errorMsg = 'Erro inesperado, tente novamente mais tarde'
 
-                var memberDto = new MemberDto()
-
-                memberDto.email = user.email
-                memberDto.id = user.id
-                memberDto.name = user.name
-
-                walletMembersTemp.push(memberDto)
-            }
-            let sortered = walletMembersTemp.sort((n1, n2) => {
-                if (n1.name! > n2.name!) {
-                    return 1
-                }
-
-                if (n1.name! < n2.name!) {
-                    return -1
-                }
-
-                return 0
-            })
-
-            walletMembers = sortered
-        }
-
-        ret.success = true
-        ret.data = walletMembers
-
-        return ret
+      return ret
     }
 
-    async addMemberToWalletRes(memberMail: string, walletId: string): Promise<ResponseDto> {
-        let ret = new ResponseDto()
+    var walletMembersIds = wallet.membersIds
 
-        var wallet: Wallet | null = await this.walletService.getWalletById(walletId)
+    var currentMembersCount: number = walletMembersIds.length
 
-        if (wallet == null) {
-            ret.success = false
-            ret.errorMsg = 'Erro inesperado, tente novamente mais tarde'
+    if (currentMembersCount >= Constants.walletMembersLimitOnFreePlan) {
+      var walletName: string = wallet.name
 
-            return ret
-        }
+      ret.success = false
+      ret.errorMsg = `Limite de membros atingido em ${walletName}, em breve o limite será estendido`
 
-        var walletMembersIds = wallet.membersId
-
-        var currentMembersCount: number = walletMembersIds.length
-
-        if (currentMembersCount >= Constants.walletMembersLimitOnFreePlan) {
-            var walletName: string = wallet.name
-
-            ret.success = false
-            ret.errorMsg = `Limite de membros atingido em ${walletName}, em breve o limite será estendido`
-
-            return ret
-        }
-
-        var member: User | null = await this.userDao.getUserByEmail(memberMail);
-
-        if (member == null) {
-            ret.success = false
-            ret.errorMsg = 'Membro não encontrado, verifique o email digitado'
-
-            return ret
-        }
-
-        var memberId = member.id
-
-        if (walletMembersIds.includes(memberId)) {
-            ret.success = false
-            ret.errorMsg = 'Membro jà adicionado'
-
-            return ret
-        }
-
-        await this.walletService.addMemberToWallet(memberId, wallet)
-
-        ret.success = true
-        ret.data = member.name
-
-        return ret
+      return ret
     }
 
-    handleUserDto(user: User, walletList: Wallet[]) {
-        let userDto: UserDto = new UserDto()
+    var member: User | null = await this.userDao.getUserByEmail(memberMail);
 
-        let userId: string = user.id;
+    if (member == null) {
+      ret.success = false
+      ret.errorMsg = 'Membro não encontrado, verifique o email digitado'
 
-        if (walletList.length > 0) {
-            userDto.creationDate = user.creationDate
-            userDto.email = user.email
-            userDto.id = userId
-            userDto.displayName = user.name
-            userDto.walletList = walletList
-
-            userDto.currentWalletId = walletList[0].id
-        }
-
-        return userDto
+      return ret
     }
 
-    async logInByUidRes(userId: string): Promise<ResponseDto> {
-        let ret = new ResponseDto()
+    var memberId = member.id
 
-        let user = await this.userDao.getUserById(userId)
+    if (walletMembersIds.includes(memberId)) {
+      ret.success = false
+      ret.errorMsg = 'Membro jà adicionado'
 
-        if (user != null) {
-
-            let userId = user.id
-
-            let walletList: Wallet[] = await this.walletService.getWalletsByUserId(userId)
-
-            let userDto = this.handleUserDto(user, walletList)
-
-            ret.success = true;
-            ret.data = userDto;
-
-        } else {
-            ret.success = false;
-            ret.errorMsg = 'Usuário não encontrado';
-        }
-
-        return ret
+      return ret
     }
 
-    async logInByEmailAndPasswordRes(email: string, password: string): Promise<ResponseDto> {
+    await this.walletService.addMemberToWallet(memberId, wallet)
 
-        let ret = new ResponseDto()
+    ret.success = true
+    ret.data = member.name
 
-        let user = await this.userDao.auth(email, password)
+    return ret
+  }
 
-        if (user != null) {
+  handleUserDto(user: User, walletList: Wallet[]) {
+    let userDto: UserDto = new UserDto()
 
-            let userId = user.id
+    let userId: string = user.id;
 
-            let walletList: Wallet[] = await this.walletService.getWalletsByUserId(userId)
+    userDto.creationDate = user.creationDate
+    userDto.email = user.email
+    userDto.id = userId
+    userDto.displayName = user.name
+    userDto.walletList = walletList
 
-            let userDto = this.handleUserDto(user, walletList)
+    userDto.currentWalletId = walletList[0].id
+    return userDto
+  }
 
-            ret.success = true;
-            ret.data = userDto;
+  async logInByUidRes(userId: string): Promise<ResponseDto> {
+    let ret = new ResponseDto()
 
-        } else {
-            ret.success = false;
-            ret.errorMsg = 'Usuário não encontrado';
-        }
+    let user = await this.userDao.getUserById(userId)
 
-        return ret
+    if (user != null) {
+
+      let userId = user.id
+
+      let walletList: Wallet[] = await this.walletService.getWalletsByUserId(userId)
+
+      let userDto = this.handleUserDto(user, walletList)
+
+      ret.success = true;
+      ret.data = userDto;
+
+    } else {
+      ret.success = false;
+      ret.errorMsg = 'Usuário não encontrado';
     }
+
+    return ret
+  }
+
+  async logInByEmailAndPasswordRes(email: string, password: string): Promise<ResponseDto> {
+
+    let ret = new ResponseDto()
+
+    let user = await this.userDao.auth(email, password)
+
+    if (user != null) {
+
+      let userId = user.id
+
+      let walletList: Wallet[] = await this.walletService.getWalletsByUserId(userId)
+
+      let userDto = this.handleUserDto(user, walletList)
+
+      ret.success = true;
+      ret.data = userDto;
+
+    } else {
+      ret.success = false;
+      ret.errorMsg = 'Usuário não encontrado';
+    }
+
+    return ret
+  }
 }

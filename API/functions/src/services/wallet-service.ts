@@ -32,7 +32,7 @@ export class WalletService {
 
     async addMemberToWallet(memberId: string, wallet: Wallet) {
 
-        var members = wallet.membersId
+        var members = wallet.membersIds
         members.push(memberId)
 
         await this.walletDao.updateMemberIdList(members, wallet)
@@ -51,7 +51,7 @@ export class WalletService {
 
         var wallet = await this.getWalletById(walletId)
 
-        var oldMembers = wallet?.membersId!
+        var oldMembers = wallet?.membersIds!
         var newMembers: string[] = []
 
         for (const member of oldMembers) {

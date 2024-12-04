@@ -15,12 +15,21 @@ class User extends AbstractModel {
   }
 
   User.fromJson(Map<String, dynamic> json) {
+    walletList = [];
+
     id = json['id'];
     displayName = json['displayName'];
     email = json['email'];
     currentWalletId = json['currentWalletId'];
     token = json['token'];
     creationDate = DateTime.parse(json['creationDate']);
+
+    List<dynamic> walletListMap = json['walletList'];
+
+    walletListMap.forEach((e) {
+      final wallet = Wallet.fromJson(e);
+      walletList.add(wallet);
+    });
   }
 
   Map<String, dynamic> toJson() => {

@@ -50,6 +50,7 @@ class UserService {
 
     if (responseDto.success) {
       User user = _handleUser(responseDto.data);
+      // User user = User.fromJson(responseDto.data);
       currentUser = user;
 
       await _localStorageService.storeUserData(user);

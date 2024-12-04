@@ -1,7 +1,6 @@
 import 'package:meudin_ai_app/models/wallet.dart';
 
 class WalletService {
-
   Wallet handleWallet(Map<String, dynamic> walletMap) {
     Wallet wallet = Wallet();
 
