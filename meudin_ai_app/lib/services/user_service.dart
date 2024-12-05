@@ -23,7 +23,35 @@ class UserService {
     _walletService = WalletService();
   }
 
-  Future<ResponseDto> sendVerificationCode({required String userMail}) async {
+  Future<ResponseDto> validateVerificationCode({
+    required String userMail,
+    required String verificationCode,
+  }) async {
+    Uri url = Uri.parse('${apiUrl}validateVerificationCode');
+    
+    var response = await http.post(
+      url,
+      headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+      },
+      body: jsonEncode(
+        {
+          'userMail': userMail,
+          'verificationCode': verificationCode,
+        },
+      ),
+    );
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
+  Future<ResponseDto> sendVerificationCode({
+    required String userMail,
+    required String verificationType,
+  }) async {
     Uri url = Uri.parse('${apiUrl}sendVerificationCode');
 
     var response = await http.post(
@@ -35,6 +63,7 @@ class UserService {
       body: jsonEncode(
         {
           'userMail': userMail,
+          'verificationType': verificationType,
         },
       ),
     );

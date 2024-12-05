@@ -43,7 +43,8 @@ class SignUpPageController extends GetxController {
       newUserDto.email = userMail!;
       signUpWidgets[1] = VerificationCodeStepWidget(
           nextStep: retriveVerificationCode, userMail: newUserDto.email);
-      _userService.sendVerificationCode(userMail: userMail);
+      _userService.sendVerificationCode(
+          userMail: userMail, verificationType: 'NEW_USER');
 
       moveToNextStep();
     }
@@ -67,9 +68,29 @@ class SignUpPageController extends GetxController {
     return errorList;
   }
 
-  retriveVerificationCode(String? verificationCode) {
+  retriveVerificationCode(String? verificationCode) async {
     if (verificationCode != null && verificationCode.length == 6) {
-      moveToNextStep();
+      loading = true;
+      update();
+
+      final verificationCodeResponse =
+          await _userService.validateVerificationCode(
+        userMail: newUserDto.email,
+        verificationCode: verificationCode,
+      );
+
+      loading = false;
+
+      if (verificationCodeResponse.success) {
+        moveToNextStep();
+      } else {
+        JoyModal.bottomSheetError(
+          context: Get.context!,
+          errorList: [verificationCodeResponse.errorMessage!],
+          title: 'Revise as informações preenchidas',
+        );
+      }
+      update();
     } else {
       JoyModal.bottomSheetError(
         context: Get.context!,

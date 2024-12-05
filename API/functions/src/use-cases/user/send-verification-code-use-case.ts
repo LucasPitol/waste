@@ -13,7 +13,7 @@ export class SendVerificationCodeUseCase {
     this.verificationCodeService = new VerificationCodeService()
   }
 
-  async execute(userMail: string, verificationType: string): Promise<ResponseDto> {
+  async execute(userMail: string): Promise<ResponseDto> {
     let ret = new ResponseDto()
 
     if (userMail == null || userMail == '') {

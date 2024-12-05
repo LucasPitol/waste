@@ -1,16 +1,19 @@
-import { UserDao } from "../../db/user-dao";
-import { Constants } from "../../utils/constants";
-import { NewUserDto } from "../../models/dtos/new-user-dto";
-import { ResponseDto } from "../../models/dtos/response-dto";
+import { VerificationCodeService } from "../../services/verification-code-service";
 import { WalletService } from "../../services/wallet-service";
+import { ResponseDto } from "../../models/dtos/response-dto";
+import { NewUserDto } from "../../models/dtos/new-user-dto";
+import { Constants } from "../../utils/constants";
+import { UserDao } from "../../db/user-dao";
 
 export class CreateNewUserUseCase {
   userDao: UserDao
   walletService: WalletService
+  verificationCodeService: VerificationCodeService
 
   constructor() {
     this.userDao = new UserDao()
     this.walletService = new WalletService()
+    this.verificationCodeService = new VerificationCodeService()
   }
 
   async execute(newUserDto: NewUserDto): Promise<ResponseDto> {
@@ -29,6 +32,14 @@ export class CreateNewUserUseCase {
     if (user != null) {
       ret.success = false;
       ret.errorMsg = 'Email já cadastrado'
+
+      return ret
+    }
+
+    const verificationCode = await this.verificationCodeService.getByUserMail(userMail)
+    if (verificationCode?.verified == false) {
+      ret.success = false;
+      ret.errorMsg = 'Email não validado'
 
       return ret
     }

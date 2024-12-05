@@ -13,7 +13,7 @@ export class VerificationCodeDao {
 
     if (!snapShot.empty) {
       snapShot.forEach(doc => {
-        const verificationCode = new VerificationCode(doc)
+        verificationCode = new VerificationCode(doc)
 
         return verificationCode
       })

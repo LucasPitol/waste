@@ -7,7 +7,7 @@ class ResponseDto {
 
   ResponseDto.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    errorMessage = json['errorMessage'];
+    errorMessage = json['errorMsg'];
     data = success ? json['data'] : '';
 
     if (!success && errorMessage == null) {

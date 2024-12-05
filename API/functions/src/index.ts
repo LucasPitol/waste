@@ -7,6 +7,7 @@ import * as admin from "firebase-admin";
 import { CreateNewUserUseCase } from "./use-cases/user/create-new-user-use-case";
 import { SignInUseCase } from "./use-cases/user/sign-in-use-case";
 import { SendVerificationCodeUseCase } from "./use-cases/user/send-verification-code-use-case";
+import { ValidateVerificationCodeUseCase } from "./use-cases/user/validate-verification-code-use-case";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -25,6 +26,7 @@ const spendingCategoryService = new SpendingCategoryService()
 const signInUseCase = new SignInUseCase();
 const createUserUseCase = new CreateNewUserUseCase();
 const sendVerificationCodeUseCase = new SendVerificationCodeUseCase();
+const validateVerificationCodeUseCase = new ValidateVerificationCodeUseCase();
 
 // user
 export const logIn = functions.https.onRequest(async (req, res) => {
@@ -53,9 +55,20 @@ export const sendVerificationCode = functions.https.onRequest(async (req, res) =
 
   var body = req.body
   var userMail = body.userMail
-  var verificationType = body.verificationType
+  // var verificationType = body.verificationType
 
-  var ret = await sendVerificationCodeUseCase.execute(userMail, verificationType)
+  var ret = await sendVerificationCodeUseCase.execute(userMail)
+
+  res.send(ret)
+});
+
+export const validateVerificationCode = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+  var userMail = body.userMail
+  var verificationCode = body.verificationCode
+
+  var ret = await validateVerificationCodeUseCase.execute(userMail, verificationCode)
 
   res.send(ret)
 });
@@ -68,7 +81,6 @@ export const changePassword = functions.https.onRequest(async (req, res) => {
 
   var ret = await userService.changePasswordRes(uid, password)
 
-  console.log(ret)
   res.send(ret)
 
 });
@@ -81,9 +93,7 @@ export const loginByUid = functions.https.onRequest(async (req, res) => {
 
   var ret = await userService.logInByUidRes(uid)
 
-  console.log(ret)
   res.send(ret)
-
 });
 
 // wallet
@@ -95,9 +105,7 @@ export const getUserWallets = functions.https.onRequest(async (req, res) => {
 
   var ret = await walletService.getWalletsByUserIdRes(uid)
 
-  console.log(ret)
   res.send(ret)
-
 });
 
 export const createNewWallet = functions.https.onRequest(async (req, res) => {
@@ -109,9 +117,7 @@ export const createNewWallet = functions.https.onRequest(async (req, res) => {
 
   var ret = await walletService.createNewWalletRes(ownerId, walletName)
 
-  console.log(ret)
   res.send(ret)
-
 });
 
 export const removeMemberFromWallet = functions.https.onRequest(async (req, res) => {
@@ -123,9 +129,7 @@ export const removeMemberFromWallet = functions.https.onRequest(async (req, res)
 
   var ret = await walletService.removeMemberFromWalletRes(memberId, walletId)
 
-  console.log(ret)
   res.send(ret)
-
 });
 
 // transactions
@@ -139,9 +143,7 @@ export const getTransactionsByWalletIdAndDateInterval = functions.https.onReques
 
   var ret = await transactionService.getTransactionsByWalletIdAndDateIntervalRes(walletId, startDate, endDate)
 
-  console.log(ret)
   res.send(ret)
-
 });
 
 export const saveNewWaste = functions.https.onRequest(async (req, res) => {
@@ -153,7 +155,6 @@ export const saveNewWaste = functions.https.onRequest(async (req, res) => {
   var ret = await transactionService.saveNewWasteRes(newWasteDto)
 
   res.send(ret)
-
 });
 
 export const saveNewRevenue = functions.https.onRequest(async (req, res) => {
@@ -165,7 +166,6 @@ export const saveNewRevenue = functions.https.onRequest(async (req, res) => {
   var ret = await transactionService.saveNewRevenueRes(newRevenueDto)
 
   res.send(ret)
-
 });
 
 export const getOverviewPageData = functions.https.onRequest(async (req, res) => {
