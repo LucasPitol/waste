@@ -16,6 +16,10 @@ export class UserService {
     this.walletService = new WalletService()
   }
 
+  async getUserByEmail(userMail: string): Promise<User | null> {
+    return await this.userDao.getUserByEmail(userMail)
+  }
+
   async changePasswordRes(uid: string, password: string): Promise<ResponseDto> {
     let ret = new ResponseDto()
 

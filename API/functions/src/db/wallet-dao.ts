@@ -2,97 +2,97 @@ import { Wallet } from "../models/wallet";
 import { db } from "../index";
 
 export class WalletDao {
-    walletsCollectionName = Wallet.collectionName
+  walletsCollectionName = Wallet.collectionName
 
-    async getWalletsByUserId(userId: string): Promise<Wallet[]> {
-        let walletList: Wallet[] = []
+  async getWalletsByUserId(userId: string): Promise<Wallet[]> {
+    let walletList: Wallet[] = []
 
-        var snapshot = await db
-            .collection(this.walletsCollectionName)
-            .where('membersIds', 'array-contains', userId)
-            .get()
+    var snapshot = await db
+      .collection(this.walletsCollectionName)
+      .where('membersIds', 'array-contains', userId)
+      .get()
 
-        for (const doc of snapshot.docs) {
-            let wallet = new Wallet(doc)
-            walletList.push(wallet)
-        }
-
-        return walletList
+    for (const doc of snapshot.docs) {
+      let wallet = new Wallet(doc)
+      walletList.push(wallet)
     }
 
-    async getById(walletId: string): Promise<Wallet | null> {
-        let wallet: Wallet | null = null
+    return walletList
+  }
 
-        var snapshot = await db
-            .collection(this.walletsCollectionName)
-            .doc(walletId)
-            .get()
+  async getById(walletId: string): Promise<Wallet | null> {
+    let wallet: Wallet | null = null
 
-        if (snapshot.exists) {
-            wallet = new Wallet(snapshot)
-        }
+    var snapshot = await db
+      .collection(this.walletsCollectionName)
+      .doc(walletId)
+      .get()
 
-        return wallet
+    if (snapshot.exists) {
+      wallet = new Wallet(snapshot)
     }
 
-    async getWalletByNameAndOwnerId(walletName: string, userId: string): Promise<Wallet | null> {
-        let wallet: Wallet | null = null
+    return wallet
+  }
 
-        var snapshot = await db
-            .collection(this.walletsCollectionName)
-            .where('ownerId', '==', userId)
-            .where('name', '==', walletName)
-            .get()
+  async getWalletByNameAndOwnerId(walletName: string, userId: string): Promise<Wallet | null> {
+    let wallet: Wallet | null = null
 
-        if (!snapshot.empty) {
-            for (const doc of snapshot.docs) {
-                wallet = new Wallet(doc)
-            }
-        }
+    var snapshot = await db
+      .collection(this.walletsCollectionName)
+      .where('ownerId', '==', userId)
+      .where('name', '==', walletName)
+      .get()
 
-        return wallet
+    if (!snapshot.empty) {
+      for (const doc of snapshot.docs) {
+        wallet = new Wallet(doc)
+      }
     }
 
-    async updateMemberIdList(members: string[], wallet: Wallet) {
-        const batch = db.batch()
+    return wallet
+  }
 
-        var walletId = wallet.id
+  async updateMemberIdList(members: string[], wallet: Wallet) {
+    const batch = db.batch()
 
-        const walletDocRef = db.collection(this.walletsCollectionName).doc(walletId)
+    var walletId = wallet.id
 
-        let now = new Date()
+    const walletDocRef = db.collection(this.walletsCollectionName).doc(walletId)
 
-        batch.set(walletDocRef, {
-            membersIds: members,
-            lastUpdate: now,
-        }, { merge: true })
+    let now = new Date()
 
-        await batch.commit()
+    batch.set(walletDocRef, {
+      membersIds: members,
+      lastUpdate: now,
+    }, { merge: true })
 
-        return walletId
-    }
+    await batch.commit()
 
-    async createNewWallet(userId: string, walletName: string) {
-        let now = new Date()
+    return walletId
+  }
 
-        const batch = db.batch()
+  async createNewWallet(userId: string, walletName: string) {
+    let now = new Date()
 
-        const walletDocRef = db.collection(this.walletsCollectionName).doc()
+    const batch = db.batch()
 
-        var uid = walletDocRef.id
+    const walletDocRef = db.collection(this.walletsCollectionName).doc()
 
-        let membersIds: string[] = [userId];
+    var uid = walletDocRef.id
 
-        batch.set(walletDocRef, {
-            id: uid,
-            name: walletName,
-            ownerId: userId,
-            membersIds: membersIds,
-            creationDate: now,
-        })
+    let membersIds: string[] = [userId];
 
-        await batch.commit()
+    batch.set(walletDocRef, {
+      id: uid,
+      name: walletName,
+      ownerId: userId,
+      membersIds: membersIds,
+      creationDate: now,
+    })
 
-        return uid
-    }
+    await batch.commit()
+
+    return uid
+  }
 }

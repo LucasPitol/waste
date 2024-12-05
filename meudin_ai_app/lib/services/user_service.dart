@@ -23,6 +23,27 @@ class UserService {
     _walletService = WalletService();
   }
 
+  Future<ResponseDto> sendVerificationCode({required String userMail}) async {
+    Uri url = Uri.parse('${apiUrl}sendVerificationCode');
+
+    var response = await http.post(
+      url,
+      headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+      },
+      body: jsonEncode(
+        {
+          'userMail': userMail,
+        },
+      ),
+    );
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
   Future<ResponseDto> signInByEmailAndPassword(
     String userMail,
     String password,

@@ -6,6 +6,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { CreateNewUserUseCase } from "./use-cases/user/create-new-user-use-case";
 import { SignInUseCase } from "./use-cases/user/sign-in-use-case";
+import { SendVerificationCodeUseCase } from "./use-cases/user/send-verification-code-use-case";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -23,6 +24,7 @@ const transactionService = new TransactionService()
 const spendingCategoryService = new SpendingCategoryService()
 const signInUseCase = new SignInUseCase();
 const createUserUseCase = new CreateNewUserUseCase();
+const sendVerificationCodeUseCase = new SendVerificationCodeUseCase();
 
 // user
 export const logIn = functions.https.onRequest(async (req, res) => {
@@ -34,9 +36,7 @@ export const logIn = functions.https.onRequest(async (req, res) => {
 
   var ret = await signInUseCase.execute(email, password)
 
-  console.log(ret)
   res.send(ret)
-
 });
 
 export const createNewUser = functions.https.onRequest(async (req, res) => {
@@ -46,9 +46,18 @@ export const createNewUser = functions.https.onRequest(async (req, res) => {
 
   var ret = await createUserUseCase.execute(newUserDto)
 
-  console.log(ret)
   res.send(ret)
+});
 
+export const sendVerificationCode = functions.https.onRequest(async (req, res) => {
+
+  var body = req.body
+  var userMail = body.userMail
+  var verificationType = body.verificationType
+
+  var ret = await sendVerificationCodeUseCase.execute(userMail, verificationType)
+
+  res.send(ret)
 });
 
 export const changePassword = functions.https.onRequest(async (req, res) => {

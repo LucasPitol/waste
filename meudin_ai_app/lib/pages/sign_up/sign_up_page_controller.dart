@@ -43,7 +43,7 @@ class SignUpPageController extends GetxController {
       newUserDto.email = userMail!;
       signUpWidgets[1] = VerificationCodeStepWidget(
           nextStep: retriveVerificationCode, userMail: newUserDto.email);
-      // _userService.sendVerificationCode(userMail: userMail);
+      _userService.sendVerificationCode(userMail: userMail);
 
       moveToNextStep();
     }
@@ -109,7 +109,7 @@ class SignUpPageController extends GetxController {
   _createUser() async {
     loading = true;
     update();
-    
+
     final createNewUserResponse = await _userService.createNewUser(newUserDto);
 
     if (createNewUserResponse.success) {

@@ -17,8 +17,7 @@ export class SignInUseCase {
   
   async execute(userMail: string, password: string): Promise<ResponseDto> {
     let ret = new ResponseDto()
-    console.log(userMail)
-    console.log(password)
+
     let user = await this.userDao.auth(userMail, password)
 
     if (user != null) {
