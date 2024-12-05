@@ -107,8 +107,39 @@ class SignUpPageController extends GetxController {
   }
 
   _createUser() async {
-    _userService.createNewUser(newUserDto);
-    await Get.offNamed(AppRoutes.homeAppRoute);
+    loading = true;
+    update();
+    
+    final createNewUserResponse = await _userService.createNewUser(newUserDto);
+
+    if (createNewUserResponse.success) {
+      final authResponse = await _userService.signInByEmailAndPassword(
+        newUserDto.email,
+        newUserDto.password,
+      );
+
+      if (authResponse.success) {
+        await Get.offNamed(AppRoutes.homeAppRoute);
+      } else {
+        loading = false;
+        update();
+
+        JoyModal.bottomSheetError(
+          context: Get.context!,
+          errorList: [authResponse.errorMessage!],
+          title: 'Não foi fazer a autenticação :(',
+        );
+      }
+    } else {
+      loading = false;
+      update();
+
+      JoyModal.bottomSheetError(
+        context: Get.context!,
+        errorList: [createNewUserResponse.errorMessage!],
+        title: 'Não foi possível criar o usuário :(',
+      );
+    }
   }
 
   moveToNextStep() {

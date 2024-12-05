@@ -5,6 +5,7 @@ import { UserService } from "./services/user-service";
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { CreateNewUserUseCase } from "./use-cases/user/create-new-user-use-case";
+import { SignInUseCase } from "./use-cases/user/sign-in-use-case";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -16,11 +17,12 @@ const app = express();
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
 
-const createUserUseCase = new CreateNewUserUseCase();
 const userService = new UserService()
 const walletService = new WalletService()
 const transactionService = new TransactionService()
 const spendingCategoryService = new SpendingCategoryService()
+const signInUseCase = new SignInUseCase();
+const createUserUseCase = new CreateNewUserUseCase();
 
 // user
 export const logIn = functions.https.onRequest(async (req, res) => {
@@ -30,7 +32,7 @@ export const logIn = functions.https.onRequest(async (req, res) => {
   var email = body.email
   var password = body.password
 
-  var ret = await userService.logInByEmailAndPasswordRes(email, password)
+  var ret = await signInUseCase.execute(email, password)
 
   console.log(ret)
   res.send(ret)

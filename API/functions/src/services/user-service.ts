@@ -164,28 +164,4 @@ export class UserService {
     return ret
   }
 
-  async logInByEmailAndPasswordRes(email: string, password: string): Promise<ResponseDto> {
-
-    let ret = new ResponseDto()
-
-    let user = await this.userDao.auth(email, password)
-
-    if (user != null) {
-
-      let userId = user.id
-
-      let walletList: Wallet[] = await this.walletService.getWalletsByUserId(userId)
-
-      let userDto = this.handleUserDto(user, walletList)
-
-      ret.success = true;
-      ret.data = userDto;
-
-    } else {
-      ret.success = false;
-      ret.errorMsg = 'Usuário não encontrado';
-    }
-
-    return ret
-  }
 }

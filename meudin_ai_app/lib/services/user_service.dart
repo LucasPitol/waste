@@ -28,7 +28,6 @@ class UserService {
     String password,
   ) async {
     Uri url = Uri.parse('${apiUrl}logIn');
-
     String hashPassword = await _encryptionService.encryptString(password);
 
     var response = await http.post(
@@ -60,12 +59,15 @@ class UserService {
   Future<ResponseDto> createNewUser(NewUserDto newUserDto) async {
     Uri url = Uri.parse('${apiUrl}createNewUser');
 
+    NewUserDto newUserDtoTemp = NewUserDto();
+    newUserDtoTemp.email = newUserDto.email;
+    newUserDtoTemp.name = newUserDto.name;
     String passwordEncrypt =
         await _encryptionService.encryptString(newUserDto.password);
 
-    newUserDto.password = passwordEncrypt;
+    newUserDtoTemp.password = passwordEncrypt;
 
-    var jsonNewUserDto = newUserDto.toJson();
+    var jsonNewUserDto = newUserDtoTemp.toJson();
 
     var response = await http.post(
       url,
@@ -81,14 +83,6 @@ class UserService {
     );
 
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
-
-    if (responseDto.success) {
-      User user = _handleUser(responseDto.data);
-      // User user = User.fromJson(responseDto.data);
-      currentUser = user;
-
-      await _localStorageService.storeUserData(user);
-    }
 
     return responseDto;
   }
