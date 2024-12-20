@@ -48,7 +48,7 @@ class SignInPageController extends GetxController {
     }
   }
 
-  recoverPassword() {
-    print('recover password');
+  goToRecoverPasswordPage(String userMail) {
+    Get.toNamed(AppRoutes.recoverPasswordRoute, arguments: {'userMail': userMail});
   }
 }

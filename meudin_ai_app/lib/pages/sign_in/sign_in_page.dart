@@ -90,7 +90,10 @@ class SignInPage extends StatelessWidget {
                                         'Esqueceu sua senha?'),
                                     JoyTextButton(
                                       text: 'Recuperar senha',
-                                      function: controller.recoverPassword,
+                                      function: () {
+                                        controller.goToRecoverPasswordPage(
+                                            controller.signInDto.email.text);
+                                      },
                                     ),
                                   ],
                                 ),
