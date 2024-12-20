@@ -148,7 +148,7 @@ class SignUpPageController extends GetxController {
         JoyModal.bottomSheetError(
           context: Get.context!,
           errorList: [authResponse.errorMessage!],
-          title: 'Não foi fazer a autenticação :(',
+          title: 'Não foi possível fazer a autenticação :(',
         );
       }
     } else {

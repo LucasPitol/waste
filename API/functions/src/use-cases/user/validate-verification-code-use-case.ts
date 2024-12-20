@@ -13,7 +13,7 @@ export class ValidateVerificationCodeUseCase {
 
   async execute(userMail: string, code: string): Promise<ResponseDto> {
     let ret = new ResponseDto()
-    console.log(userMail)
+
     if (userMail == null || userMail == '') {
       ret.success = false
       ret.errorMsg = 'Email Inválido'
@@ -37,7 +37,6 @@ export class ValidateVerificationCodeUseCase {
       ret.errorMsg = 'Código expirado'
       return ret
     }
-    console.log(verificationCode)
 
     if (verificationCode?.code == code.trim()) {
       verificationCode.verified = true

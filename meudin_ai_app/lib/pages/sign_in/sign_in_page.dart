@@ -49,19 +49,28 @@ class SignInPage extends StatelessWidget {
                                   obscureText: true,
                                   keyboardType: TextInputType.visiblePassword,
                                   textCapitalization: TextCapitalization.none,
-                                  onFieldSubmitted: controller.signIn,
+                                  onFieldSubmitted: () {
+                                    controller.signIn(
+                                      controller.signInDto.email.text,
+                                      controller.signInDto.password.text,
+                                    );
+                                  },
                                 ),
                               ),
                               Container(
                                 alignment: Alignment.center,
                                 child: JoyElevatedButton(
                                   text: 'Entrar',
-                                  function: controller.signIn,
+                                  function: () {
+                                    controller.signIn(
+                                      controller.signInDto.email.text,
+                                      controller.signInDto.password.text,
+                                    );
+                                  },
                                 ),
                               ),
                               Container(
-                                margin:
-                                    const EdgeInsets.only(top: 20),
+                                margin: const EdgeInsets.only(top: 20),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -77,7 +86,8 @@ class SignInPage extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    JoyText.secundaryText('Esqueceu sua senha?'),
+                                    JoyText.secundaryText(
+                                        'Esqueceu sua senha?'),
                                     JoyTextButton(
                                       text: 'Recuperar senha',
                                       function: controller.recoverPassword,
