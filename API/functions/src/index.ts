@@ -8,6 +8,7 @@ import { CreateNewUserUseCase } from "./use-cases/user/create-new-user-use-case"
 import { SignInUseCase } from "./use-cases/user/sign-in-use-case";
 import { SendVerificationCodeUseCase } from "./use-cases/user/send-verification-code-use-case";
 import { ValidateVerificationCodeUseCase } from "./use-cases/user/validate-verification-code-use-case";
+import { UpdatePasswordUseCase } from "./use-cases/user/update-password";
 admin.initializeApp();
 export const db = admin.firestore()
 // const cors = require('cors')({ origin: true });
@@ -27,7 +28,7 @@ const signInUseCase = new SignInUseCase();
 const createUserUseCase = new CreateNewUserUseCase();
 const sendVerificationCodeUseCase = new SendVerificationCodeUseCase();
 const validateVerificationCodeUseCase = new ValidateVerificationCodeUseCase();
-
+const updatePasswordUseCase = new UpdatePasswordUseCase();
 // user
 export const logIn = functions.https.onRequest(async (req, res) => {
 
@@ -79,7 +80,7 @@ export const updatePassword = functions.https.onRequest(async (req, res) => {
   var uid = body.userMail
   var newPassword = body.newPassword
 
-  var ret = await userService.changePasswordRes(uid, newPassword)
+  var ret = await updatePasswordUseCase.execute(uid, newPassword)
 
   res.send(ret)
 
