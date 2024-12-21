@@ -73,13 +73,13 @@ export const validateVerificationCode = functions.https.onRequest(async (req, re
   res.send(ret)
 });
 
-export const changePassword = functions.https.onRequest(async (req, res) => {
+export const updatePassword = functions.https.onRequest(async (req, res) => {
 
   var body = req.body
-  var uid = body.uid
-  var password = body.password
+  var uid = body.userMail
+  var newPassword = body.newPassword
 
-  var ret = await userService.changePasswordRes(uid, password)
+  var ret = await userService.changePasswordRes(uid, newPassword)
 
   res.send(ret)
 

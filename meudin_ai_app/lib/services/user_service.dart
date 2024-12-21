@@ -23,12 +23,39 @@ class UserService {
     _walletService = WalletService();
   }
 
+  Future<ResponseDto> updateUserPassword({
+    required String userMail,
+    required String newPassword,
+  }) async {
+    Uri url = Uri.parse('${apiUrl}updatePassword');
+
+    String passwordEncrypt =
+        await _encryptionService.encryptString(newPassword);
+    var response = await http.post(
+      url,
+      headers: {
+        "Accept": "application/json",
+        "content-type": "application/json",
+      },
+      body: jsonEncode(
+        {
+          'userMail': userMail,
+          'newPassword': passwordEncrypt,
+        },
+      ),
+    );
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
   Future<ResponseDto> validateVerificationCode({
     required String userMail,
     required String verificationCode,
   }) async {
     Uri url = Uri.parse('${apiUrl}validateVerificationCode');
-    
+
     var response = await http.post(
       url,
       headers: {
