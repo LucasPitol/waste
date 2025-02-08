@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:meudin_ai_app/services/local_storage_service.dart';
-import 'package:meudin_ai_app/services/encryption_service.dart';
 import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/environment/environment.dart';
@@ -13,12 +12,10 @@ import 'package:http/http.dart' as http;
 class UserService {
   static User? currentUser;
   String apiUrl = Environment.apiUrl;
-  late EncryptionService _encryptionService;
   late LocalStorageService _localStorageService;
   late WalletService _walletService;
 
   UserService() {
-    _encryptionService = EncryptionService();
     _localStorageService = LocalStorageService();
     _walletService = WalletService();
   }
@@ -29,8 +26,6 @@ class UserService {
   }) async {
     Uri url = Uri.parse('${apiUrl}updatePassword');
 
-    String passwordEncrypt =
-        await _encryptionService.encryptString(newPassword);
     var response = await http.post(
       url,
       headers: {
@@ -40,7 +35,7 @@ class UserService {
       body: jsonEncode(
         {
           'userMail': userMail,
-          'newPassword': passwordEncrypt,
+          'newPassword': newPassword,
         },
       ),
     );
@@ -138,6 +133,7 @@ class UserService {
     NewUserDto newUserDtoTemp = NewUserDto();
     newUserDtoTemp.email = newUserDto.email;
     newUserDtoTemp.name = newUserDto.name;
+    newUserDtoTemp.password = newUserDto.password;
 
     var jsonNewUserDto = newUserDtoTemp.toJson();
 

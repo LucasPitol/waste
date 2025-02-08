@@ -7,59 +7,63 @@ import { UserDao } from "../../db/user-dao";
 import { EncryptionService } from "../../services/encryption-service";
 
 export class CreateNewUserUseCase {
-  userDao: UserDao
-  encryptionService: EncryptionService
-  walletService: WalletService
-  verificationCodeService: VerificationCodeService
+  userDao: UserDao;
+  encryptionService: EncryptionService;
+  walletService: WalletService;
+  verificationCodeService: VerificationCodeService;
 
   constructor() {
-    this.userDao = new UserDao()
-    this.encryptionService = new EncryptionService()
-    this.walletService = new WalletService()
-    this.verificationCodeService = new VerificationCodeService()
+    this.userDao = new UserDao();
+    this.encryptionService = new EncryptionService();
+    this.walletService = new WalletService();
+    this.verificationCodeService = new VerificationCodeService();
   }
 
   async execute(newUserDto: NewUserDto): Promise<ResponseDto> {
-    let ret = new ResponseDto()
+    let ret = new ResponseDto();
 
-    let userMail: string | undefined = newUserDto.email
-    if (userMail == null || userMail == '') {
-      ret.success = false
-      ret.errorMsg = 'Email Inválido'
+    let userMail: string | undefined = newUserDto.email;
+    if (userMail == null || userMail == "") {
+      ret.success = false;
+      ret.errorMsg = "Email Inválido";
 
-      return ret
+      return ret;
     }
 
-    let user = await this.userDao.getUserByEmail(userMail)
+    let user = await this.userDao.getUserByEmail(userMail);
 
     if (user != null) {
       ret.success = false;
-      ret.errorMsg = 'Email já cadastrado'
+      ret.errorMsg = "Email já cadastrado";
 
-      return ret
+      return ret;
     }
 
-    const verificationCode = await this.verificationCodeService.getByUserMail(userMail)
+    const verificationCode = await this.verificationCodeService.getByUserMail(
+      userMail
+    );
     if (verificationCode?.verified == false) {
       ret.success = false;
-      ret.errorMsg = 'Email não validado'
+      ret.errorMsg = "Email não validado";
 
-      return ret
+      return ret;
     }
 
-    let name = newUserDto.name!
-    let password = await this.encryptionService.hashString(newUserDto.password!);
+    let name = newUserDto.name!;
+    let hashedPassword = await this.encryptionService.hashString(
+      newUserDto.password!
+    );
 
-    let uid = await this.userDao.createNewUser(name, userMail, password)
+    let uid = await this.userDao.createNewUser(name, userMail, hashedPassword);
 
     // create standard wallet
-    let standardWalletName = Constants.standardWalletName
+    let standardWalletName = Constants.standardWalletName;
 
-    await this.walletService.createNewWallet(uid, standardWalletName)
+    await this.walletService.createNewWallet(uid, standardWalletName);
 
-    ret.success = true
-    ret.data = true
+    ret.success = true;
+    ret.data = true;
 
-    return ret
+    return ret;
   }
 }
