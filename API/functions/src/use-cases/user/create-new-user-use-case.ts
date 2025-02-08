@@ -4,14 +4,17 @@ import { ResponseDto } from "../../models/dtos/response-dto";
 import { NewUserDto } from "../../models/dtos/new-user-dto";
 import { Constants } from "../../utils/constants";
 import { UserDao } from "../../db/user-dao";
+import { EncryptionService } from "../../services/encryption-service";
 
 export class CreateNewUserUseCase {
   userDao: UserDao
+  encryptionService: EncryptionService
   walletService: WalletService
   verificationCodeService: VerificationCodeService
 
   constructor() {
     this.userDao = new UserDao()
+    this.encryptionService = new EncryptionService()
     this.walletService = new WalletService()
     this.verificationCodeService = new VerificationCodeService()
   }
@@ -45,7 +48,7 @@ export class CreateNewUserUseCase {
     }
 
     let name = newUserDto.name!
-    let password = newUserDto.password!
+    let password = await this.encryptionService.hashString(newUserDto.password!);
 
     let uid = await this.userDao.createNewUser(name, userMail, password)
 

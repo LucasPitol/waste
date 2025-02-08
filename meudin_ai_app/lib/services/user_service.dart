@@ -105,7 +105,6 @@ class UserService {
     String password,
   ) async {
     Uri url = Uri.parse('${apiUrl}logIn');
-    String hashPassword = await _encryptionService.encryptString(password);
 
     var response = await http.post(
       url,
@@ -116,7 +115,7 @@ class UserService {
       body: jsonEncode(
         {
           'email': userMail,
-          'password': hashPassword,
+          'password': password,
         },
       ),
     );
@@ -139,10 +138,6 @@ class UserService {
     NewUserDto newUserDtoTemp = NewUserDto();
     newUserDtoTemp.email = newUserDto.email;
     newUserDtoTemp.name = newUserDto.name;
-    String passwordEncrypt =
-        await _encryptionService.encryptString(newUserDto.password);
-
-    newUserDtoTemp.password = passwordEncrypt;
 
     var jsonNewUserDto = newUserDtoTemp.toJson();
 

@@ -101,25 +101,4 @@ export class UserDao {
     return user
   }
 
-  async auth(email: string, password: string) {
-
-    var snapshot = await db
-      .collection(this.usersCollectionName)
-      .where('email', '==', email)
-      .where('password', '==', password)
-      .get()
-
-    if (snapshot.empty) {
-      return null
-    } else {
-      var user
-
-      for (const doc of snapshot.docs) {
-        user = new User(doc)
-      }
-    }
-
-    return user
-  }
-
 }

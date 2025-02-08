@@ -6,6 +6,7 @@ export class User extends AbstractModel {
 
     name?: string
     email?: string
+    password?: string
 
     constructor(doc: DocumentSnapshot) {
         var docMap = doc.data()
@@ -15,6 +16,7 @@ export class User extends AbstractModel {
         this.id = doc.id
         this.email = docMap?.email
         this.name = docMap?.displayName
+        this.password = docMap?.password
 
         return this
     }
