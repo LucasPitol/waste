@@ -29,7 +29,6 @@ export class SignInUseCase {
       ret.errorMsg = "Usuário não encontrado";
       return ret;
     }
-    console.log("Stored Hashed Password:", user.password);
 
     if (await bcrypt.compare(password, user.password)) {
       let userId = user.id;
