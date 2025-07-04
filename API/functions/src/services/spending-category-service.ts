@@ -1,13 +1,13 @@
-import { SpendingCategoryDao } from "../db/spending-category-dao"
+import { SpendingCategorySP } from "../db/sp/spending-category-sp"
 import { ResponseDto } from "../models/dtos/response-dto"
 import { SpendingCategory } from "../models/spending-category"
 
 export class SpendingCategoryService {
 
-    spendingCategoryDao: SpendingCategoryDao
+    spendingCategorySP: SpendingCategorySP
 
     constructor() {
-        this.spendingCategoryDao = new SpendingCategoryDao()
+        this.spendingCategorySP = new SpendingCategorySP()
     }
 
     async createNewSpendingCategory(name: string, value: string) {
@@ -16,20 +16,20 @@ export class SpendingCategoryService {
         var spendingCategory = await this.getSpendingCategoryByValue(value)
 
         if (spendingCategory == null) {
-            id = await this.spendingCategoryDao.createNewSpendingCategory(name, value)
+            id = await this.spendingCategorySP.createNewSpendingCategory(name, value)
         }
 
         return id
     }
 
     async getSpendingCategoryByValue(value: string) {
-        return await this.spendingCategoryDao.getByValue(value)
+        return await this.spendingCategorySP.getByValue(value)
     }
 
     async getSpendingCategoriesRes() {
         let ret = new ResponseDto()
 
-        var spendingCategories: SpendingCategory[] = await this.spendingCategoryDao.getSpendingCategories()
+        var spendingCategories: SpendingCategory[] = await this.spendingCategorySP.getSpendingCategories()
 
         // sort
         if (spendingCategories.length > 0) {

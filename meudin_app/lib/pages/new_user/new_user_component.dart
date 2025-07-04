@@ -7,7 +7,6 @@ import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterUserComponent extends StatefulWidget {
   @override
@@ -40,7 +39,7 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            AppLocalizations.of(context)!.signUpInf,
+            'Cadastro',
             style: Styles.montTextTitle,
           ),
           IconButton(
@@ -88,12 +87,11 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
                 keyboardType: TextInputType.name,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg(context);
+                    return Constants.requiredField;
                   }
                   return null;
                 },
-                decoration: Styles.getTextFieldDecorationUnderline(
-                    AppLocalizations.of(context)!.name),
+                decoration: Styles.getTextFieldDecorationUnderline('Nome'),
               ),
             ),
             Container(
@@ -106,11 +104,11 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
                 textCapitalization: TextCapitalization.none,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg(context);
+                    return Constants.requiredField;
                   }
 
                   if ((!value.contains('.com') || !value.contains('@'))) {
-                    return Constants.getDefaultInvalidEmailMsg(context);
+                    return Constants.invalidMail;
                   }
 
                   return null;
@@ -129,18 +127,16 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
                 obscureText: true,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg(context);
+                    return Constants.requiredField;
                   }
 
                   if (value.length <= 6) {
-                    return AppLocalizations.of(context)!
-                        .passwordMustBeLongerThan6Characters;
+                    return 'Senha deve ter mais de 6 caracteres';
                   }
 
                   return null;
                 },
-                decoration: Styles.getTextFieldDecorationUnderline(
-                    AppLocalizations.of(context)!.password),
+                decoration: Styles.getTextFieldDecorationUnderline('Senha'),
               ),
             ),
             Container(
@@ -199,7 +195,7 @@ class _RegisterUserComponentState extends State<RegisterUserComponent> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Styles.primaryColor,
+                    backgroundColor: Styles.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: Styles.defaultBorderRadius,
                     ),

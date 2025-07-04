@@ -7,4 +7,8 @@ export class EncryptionService {
     const saltRound = Constants.saltRound
     return await bcrypt.hash(userPassword, saltRound);
   }
+
+  async verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+  }
 }

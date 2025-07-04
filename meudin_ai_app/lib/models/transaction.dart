@@ -1,11 +1,20 @@
 class Transaction {
-  late String? transactionId;
-  late String? reason;
-  late DateTime? transactionDate;
-  late double amount;
-  late String? categoryId;
+  String? transactionId;
+  String? reason;
+  DateTime? transactionDate;
+  double? amount;
+  String? categoryId;
 
-  Transaction() {
-    amount = 0;
+  Transaction();
+
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction()
+      ..transactionId = json['transactionId'] as String?
+      ..reason = json['reason'] as String?
+      ..transactionDate = json['transactionDate'] != null
+          ? DateTime.parse(json['transactionDate'])
+          : null
+      ..amount = json['amount'] != null ? (json['amount'] as num).toDouble() : null
+      ..categoryId = json['categoryId'] as String?;
   }
 }

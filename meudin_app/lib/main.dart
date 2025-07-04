@@ -4,18 +4,15 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:meudin_app/utils/styles.dart';
 
-import 'l10n/l10n.dart';
 import 'main_component.dart';
 import 'models/user.dart';
 import 'pages/login/login_component.dart';
 import 'services/user_service.dart';
-import 'utils/styles.dart';
 import 'utils/utils.dart';
 
-const bool USE_EMULATOR = false;
+const bool USE_EMULATOR = true;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +37,6 @@ Future _connectToFirebaseEmulator() async {
     sslEnabled: false,
     persistenceEnabled: false,
   );
-  // FirebaseFirestore.instance.useFirestoreEmulator('192.168.0.17', 8080);
 }
 
 class MyApp extends StatefulWidget {
@@ -57,7 +53,7 @@ class _MyAppState extends State<MyApp> {
   _MyAppState() {
     // var brightness = SchedulerBinding.instance!.window.platformBrightness;
     // Styles.isDarkMode = brightness == Brightness.dark;
-    SchedulerBinding.instance!.addPostFrameCallback((_) => _updateMainState());
+    SchedulerBinding.instance.addPostFrameCallback((_) => _updateMainState());
   }
 
   void _updateMainState() {
@@ -75,9 +71,7 @@ class _MyAppState extends State<MyApp> {
       theme: Styles.mainTheme,
       home:
           isAuthenticated ? MainComponent() : LoginComponent(_updateMainState),
-      supportedLocales: L10n.all,
       localizationsDelegates: [
-        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

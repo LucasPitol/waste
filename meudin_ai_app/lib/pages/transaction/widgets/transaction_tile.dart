@@ -12,9 +12,9 @@ class TransactionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     String title = transaction.reason ?? '';
     String date = Utils.formatDateDDMMYY(transaction.transactionDate);
-    String amountStr = Utils.getAmountFormated(transaction.amount);
+    String amountStr = Utils.getAmountFormated(transaction.amount!);
 
-    if (transaction.amount > 0) {
+    if (transaction.amount! > 0) {
       amountStr = '+$amountStr';
     }
 

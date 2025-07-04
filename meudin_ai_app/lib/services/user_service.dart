@@ -20,6 +20,10 @@ class UserService {
     _walletService = WalletService();
   }
 
+  User? getCurrentUser() {
+    return currentUser;
+  }
+
   Future<ResponseDto> updateUserPassword({
     required String userMail,
     required String newPassword,
@@ -161,7 +165,7 @@ class UserService {
     user.id = userMap['id'];
     user.displayName = userMap['displayName'];
     user.email = userMap['email'];
-    user.token = userMap['token'];
+    user.token = userMap['token'] ?? '';
 
     user.creationDate = DateTime.parse(userMap['creationDate']);
     user.lastUpdate = userMap['lastUpdate'] != null
@@ -182,38 +186,6 @@ class UserService {
     user.walletList = walletList;
 
     return user;
-  }
-
-  static User? mockCurrentUser() {
-    var wallet1 = Wallet();
-    wallet1.membersIds = ['1'];
-    wallet1.name = 'Wallet 1';
-    wallet1.id = '1';
-    wallet1.ownerId = '1';
-
-    var wallet2 = Wallet();
-    wallet2.membersIds = ['1', '2'];
-    wallet2.name = 'Wallet 2';
-    wallet2.id = '2';
-    wallet2.ownerId = '2';
-
-    var user = User();
-    user.currentWalletId = wallet1.id;
-    user.displayName = 'Severaldo Messi';
-    user.email = 'mail@ll.com';
-    user.walletList = [
-      wallet1,
-      wallet2,
-    ];
-    user.id = '1';
-
-    currentUser = user;
-
-    return currentUser;
-  }
-
-  updateUserWallets() {
-    // request to get wallets
   }
 
   forceSignOut() {}

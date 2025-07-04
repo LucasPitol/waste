@@ -21,4 +21,6 @@ class WalletService {
 
     return wallet;
   }
+
+  updateUserWallets() {}
 }

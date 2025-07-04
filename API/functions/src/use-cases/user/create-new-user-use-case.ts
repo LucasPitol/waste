@@ -3,18 +3,15 @@ import { WalletService } from "../../services/wallet-service";
 import { ResponseDto } from "../../models/dtos/response-dto";
 import { NewUserDto } from "../../models/dtos/new-user-dto";
 import { Constants } from "../../utils/constants";
-import { UserDao } from "../../db/user-dao";
-import { EncryptionService } from "../../services/encryption-service";
+import { UserService } from "../../services/user-service";
 
 export class CreateNewUserUseCase {
-  userDao: UserDao;
-  encryptionService: EncryptionService;
+  userService: UserService;
   walletService: WalletService;
   verificationCodeService: VerificationCodeService;
 
   constructor() {
-    this.userDao = new UserDao();
-    this.encryptionService = new EncryptionService();
+    this.userService = new UserService();
     this.walletService = new WalletService();
     this.verificationCodeService = new VerificationCodeService();
   }
@@ -30,7 +27,7 @@ export class CreateNewUserUseCase {
       return ret;
     }
 
-    let user = await this.userDao.getUserByEmail(userMail);
+    let user = await this.userService.getUserByEmail(userMail);
 
     if (user != null) {
       ret.success = false;
@@ -50,11 +47,7 @@ export class CreateNewUserUseCase {
     }
 
     let name = newUserDto.name!;
-    let hashedPassword = await this.encryptionService.hashString(
-      newUserDto.password!
-    );
-
-    let uid = await this.userDao.createNewUser(name, userMail, hashedPassword);
+    let uid = await this.userService.createUser(name, userMail, newUserDto.password!);
 
     // create standard wallet
     let standardWalletName = Constants.standardWalletName;

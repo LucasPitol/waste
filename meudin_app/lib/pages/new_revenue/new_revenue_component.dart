@@ -1,5 +1,4 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -170,7 +169,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                 controller: _newRevenueForm.reason,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg(context);
+                    return Constants.requiredField;
                   }
 
                   return null;
@@ -192,7 +191,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                 inputFormatters: [CurrencyTextInputFormatter(symbol: '')],
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg(context);
+                    return Constants.requiredField;
                   }
 
                   if (Utils.convertStringFormToDouble(value) <= 0.0) {
@@ -248,7 +247,7 @@ class _NewRevenueComponenState extends State<NewRevenueComponent> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Styles.primaryColor,
+                    backgroundColor: Styles.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: Styles.defaultBorderRadius,
                     ),

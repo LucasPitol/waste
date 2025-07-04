@@ -1,237 +1,32 @@
-import { SpendingCategoryService } from "./services/spending-category-service";
-import { TransactionService } from "./services/transaction-service";
-import { WalletService } from "./services/wallet-service";
-import { UserService } from "./services/user-service";
-import * as functions from "firebase-functions";
+// User endpoints
+export { logIn } from "./endpoints/user/login";
+export { createNewUser } from "./endpoints/user/create-user";
+export { updatePassword } from "./endpoints/user/update-password";
+export { sendVerificationCode } from "./endpoints/user/send-verification-code";
+export { validateVerificationCode } from "./endpoints/user/validate-verification-code";
+export { loginByUid } from "./endpoints/user/login-by-uid";
+
+// Wallet endpoints
+export { getUserWallets } from "./endpoints/wallet/get-user-wallets";
+export { createNewWallet } from "./endpoints/wallet/create-wallet";
+export { removeMemberFromWallet } from "./endpoints/wallet/remove-member";
+export { getMembersByMemberIds } from "./endpoints/wallet/get-members";
+export { addMemberToWallet } from "./endpoints/wallet/add-member";
+
+// Transaction endpoints
+export { getTransactionsByWalletIdAndDateInterval } from "./endpoints/transaction/get-transactions";
+export { saveTransaction } from "./endpoints/transaction/save-transaction";
+export { getOverviewPageData } from "./endpoints/transaction/get-overview";
+
+// Spending categories
+export { getSpendingCategories } from "./endpoints/spending-categories";
+
+// Test endpoints
+export { test } from "./endpoints/test";
+export { testSupabaseConnection } from "./endpoints/test/supabase-connection";
+export { debugDatabaseSchema } from "./endpoints/test/debug-schema";
+
+// Legacy Firebase setup (if still needed for other parts)
 import * as admin from "firebase-admin";
-import { CreateNewUserUseCase } from "./use-cases/user/create-new-user-use-case";
-import { SignInUseCase } from "./use-cases/user/sign-in-use-case";
-import { SendVerificationCodeUseCase } from "./use-cases/user/send-verification-code-use-case";
-import { ValidateVerificationCodeUseCase } from "./use-cases/user/validate-verification-code-use-case";
-import { UpdatePasswordUseCase } from "./use-cases/user/update-password";
 admin.initializeApp();
-export const db = admin.firestore()
-// const cors = require('cors')({ origin: true });
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
-
-// Automatically allow cross-origin requests
-app.use(cors({ origin: true }));
-
-const userService = new UserService()
-const walletService = new WalletService()
-const transactionService = new TransactionService()
-const spendingCategoryService = new SpendingCategoryService()
-const signInUseCase = new SignInUseCase();
-const createUserUseCase = new CreateNewUserUseCase();
-const sendVerificationCodeUseCase = new SendVerificationCodeUseCase();
-const validateVerificationCodeUseCase = new ValidateVerificationCodeUseCase();
-const updatePasswordUseCase = new UpdatePasswordUseCase();
-// user
-export const logIn = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var email = body.email
-  var password = body.password
-
-  var ret = await signInUseCase.execute(email, password)
-
-  res.send(ret)
-});
-
-export const createNewUser = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-  var newUserDto = body.newUserDto
-
-  var ret = await createUserUseCase.execute(newUserDto)
-
-  res.send(ret)
-});
-
-export const sendVerificationCode = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-  var userMail = body.userMail
-  // var verificationType = body.verificationType
-
-  var ret = await sendVerificationCodeUseCase.execute(userMail)
-
-  res.send(ret)
-});
-
-export const validateVerificationCode = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-  var userMail = body.userMail
-  var verificationCode = body.verificationCode
-
-  var ret = await validateVerificationCodeUseCase.execute(userMail, verificationCode)
-
-  res.send(ret)
-});
-
-export const updatePassword = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-  var uid = body.userMail
-  var newPassword = body.newPassword
-
-  var ret = await updatePasswordUseCase.execute(uid, newPassword)
-
-  res.send(ret)
-
-});
-
-export const loginByUid = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var uid = body.uid
-
-  var ret = await userService.logInByUidRes(uid)
-
-  res.send(ret)
-});
-
-// wallet
-export const getUserWallets = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var uid = body.uid
-
-  var ret = await walletService.getWalletsByUserIdRes(uid)
-
-  res.send(ret)
-});
-
-export const createNewWallet = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var walletName = body.walletName
-  var ownerId = body.userId
-
-  var ret = await walletService.createNewWalletRes(ownerId, walletName)
-
-  res.send(ret)
-});
-
-export const removeMemberFromWallet = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var memberId = body.memberId
-  var walletId = body.walletId
-
-  var ret = await walletService.removeMemberFromWalletRes(memberId, walletId)
-
-  res.send(ret)
-});
-
-// transactions
-export const getTransactionsByWalletIdAndDateInterval = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var walletId = body.walletId
-  var startDate = new Date(body.startDate)
-  var endDate = new Date(body.endDate)
-
-  var ret = await transactionService.getTransactionsByWalletIdAndDateIntervalRes(walletId, startDate, endDate)
-
-  res.send(ret)
-});
-
-export const saveNewWaste = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var newWasteDto = body.newWasteDto
-
-  var ret = await transactionService.saveNewWasteRes(newWasteDto)
-
-  res.send(ret)
-});
-
-export const saveNewRevenue = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var newRevenueDto = body.newRevenueDto
-
-  var ret = await transactionService.saveNewRevenueRes(newRevenueDto)
-
-  res.send(ret)
-});
-
-export const getOverviewPageData = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var walletId = body.walletId
-  var startDate = new Date(body.startDate)
-  var endDate = new Date(body.endDate)
-
-  var ret = await transactionService.getOverviewPageDataRes(walletId, startDate, endDate)
-
-  console.log(ret)
-  res.send(ret)
-
-});
-
-export const getSpendingCategories = functions.https.onRequest(async (req, res) => {
-
-  var ret = await spendingCategoryService.getSpendingCategoriesRes()
-
-  console.log(ret)
-  res.send(ret)
-
-});
-
-// members
-export const getMembersByMemberIds = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var memberIdList = body.memberIdList
-
-  var ret = await userService.getWalletMembersRes(memberIdList)
-
-  console.log(ret)
-  res.send(ret)
-
-});
-
-export const addMemberToWallet = functions.https.onRequest(async (req, res) => {
-
-  var body = req.body
-
-  var memberMail = body.memberMail
-  var walletId = body.walletId
-
-  var ret = await userService.addMemberToWalletRes(memberMail, walletId)
-
-  console.log(ret)
-  res.send(ret)
-
-});
-
-
-//////////////// DEV ////////////////
-
-// export const setUpDevData = functions.https.onRequest(async (req, res) => {
-
-//   var body = req.body
-//   var newUserDto = body.newUserDto
-
-//   var ret = await userService.createNewUserRes(newUserDto)
-
-//   console.log(ret)
-//   res.send(ret)
-
-// });
+export const db = admin.firestore();

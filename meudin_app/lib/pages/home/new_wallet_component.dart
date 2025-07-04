@@ -62,7 +62,7 @@ class _NewWalletComponentState extends State<NewWalletComponent> {
           textCapitalization: TextCapitalization.sentences,
           validator: (value) {
             if (value!.isEmpty) {
-              return Constants.getDefaultEmptyFieldMsg(context);
+              return Constants.requiredField;
             }
 
             return null;
@@ -144,7 +144,7 @@ class _NewWalletComponentState extends State<NewWalletComponent> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Styles.primaryColor,
+                    backgroundColor: Styles.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: Styles.defaultBorderRadius,
                     ),

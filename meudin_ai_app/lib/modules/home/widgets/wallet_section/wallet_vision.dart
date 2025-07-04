@@ -143,9 +143,9 @@ class WalletVisionWidget extends StatelessWidget {
                 children: twoFirstTransactionDtoList.map((e) {
                   String title = e.reason ?? '';
                   String date = Utils.formatDateDDMMYY(e.transactionDate);
-                  String amountStr = Utils.getAmountFormated(e.amount);
+                  String amountStr = Utils.getAmountFormated(e.amount!);
 
-                  if (e.amount > 0) {
+                  if (e.amount! > 0) {
                     amountStr = '+' + amountStr;
                   }
 

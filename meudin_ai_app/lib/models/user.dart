@@ -5,7 +5,7 @@ import 'wallet.dart';
 class User extends AbstractModel {
   late String displayName;
   late String email;
-  late String? token;
+  String? token;
 
   late String currentWalletId;
   late List<Wallet> walletList;
@@ -21,7 +21,7 @@ class User extends AbstractModel {
     displayName = json['displayName'];
     email = json['email'];
     currentWalletId = json['currentWalletId'];
-    token = json['token'];
+    token = json['token'] ?? '';
     creationDate = DateTime.parse(json['creationDate']);
 
     List<dynamic> walletListMap = json['walletList'];
@@ -37,7 +37,7 @@ class User extends AbstractModel {
         'displayName': displayName,
         'email': email,
         'currentWalletId': currentWalletId,
-        'token': token,
+        'token': token ?? '',
         'creationDate': creationDate.toIso8601String(),
       };
 }

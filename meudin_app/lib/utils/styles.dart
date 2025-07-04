@@ -28,7 +28,6 @@ class Styles {
     ),
     textTheme: GoogleFonts.montserratTextTheme(),
     // textTheme: GoogleFonts.varelaTextTheme(),
-    backgroundColor: mainBackgroundColor,
   );
 
   static Color primaryColor = Colors.deepPurple;
@@ -118,7 +117,7 @@ class Styles {
     shape: RoundedRectangleBorder(
       borderRadius: defaultBorderRadius,
     ),
-    primary: Styles.primaryColor,
+    backgroundColor: Styles.primaryColor,
   );
 
   static getAppLogo() {

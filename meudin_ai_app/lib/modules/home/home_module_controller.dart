@@ -7,6 +7,7 @@ import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/wallet.dart';
 import 'package:meudin_ai_app/models/user.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class HomeModuleController extends GetxController {
@@ -22,12 +23,12 @@ class HomeModuleController extends GetxController {
   late List<Transaction> transactionDtoList;
   late List<Transaction> twoFirstTransactionDtoList;
   late TransactionService _transactionService;
+  late WalletService _walletService;
   late UserService _userService;
 
   HomeModuleController() {
     _userService = UserService();
-    // _user = UserService.currentUser;
-    _user = UserService.mockCurrentUser();
+    _user = _userService.getCurrentUser();
     currentWallet = _user!.walletList
         .singleWhere((element) => element.id == _user!.currentWalletId);
     isWalletOwner = (currentWallet.ownerId == _user!.id);
@@ -37,14 +38,23 @@ class HomeModuleController extends GetxController {
     transactionDtoList = [];
     twoFirstTransactionDtoList = [];
     _transactionService = TransactionService();
+    _walletService = WalletService();
   }
 
   @override
   void onInit() {
     super.onInit();
     loading = true;
+    refreshUserAndWallet();
     _fillStandardDate();
     updatePageData();
+  }
+
+  void refreshUserAndWallet() {
+    _user = UserService.currentUser;
+    currentWallet = _user!.walletList
+        .singleWhere((element) => element.id == _user!.currentWalletId);
+    isWalletOwner = (currentWallet.ownerId == _user!.id);
   }
 
   openWalletSelector() async {
@@ -101,7 +111,6 @@ class HomeModuleController extends GetxController {
     await _updateWallets();
 
     String walletId = currentWallet.id;
-
     ResponseDto res = await _transactionService.getTransactionDtoList(
       walletId,
       startDate,
@@ -109,16 +118,25 @@ class HomeModuleController extends GetxController {
     );
 
     loading = false;
-
     if (res.success) {
-      transactionDtoList = res.data.isNotEmpty ? res.data : [];
+      transactionDtoList = res.data.isNotEmpty
+          ? res.data.map<Transaction>((e) => Transaction.fromJson(e)).toList()
+          : [];
+
+      // Sort by transactionDate descending (most recent first)
+      transactionDtoList.sort((a, b) {
+        if (a.transactionDate == null && b.transactionDate == null) return 0;
+        if (a.transactionDate == null) return 1;
+        if (b.transactionDate == null) return -1;
+        return b.transactionDate!.compareTo(a.transactionDate!);
+      });
 
       double totalAmountTemp = 0;
       double totalRevenueTemp = 0;
       double totalSpendTemp = 0;
 
       for (var element in transactionDtoList) {
-        double amount = element.amount;
+        double amount = element.amount!;
 
         if (amount > 0) {
           totalRevenueTemp = totalRevenueTemp + amount;
@@ -135,14 +153,20 @@ class HomeModuleController extends GetxController {
 
       twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
     } else {
-      // modal
+      update();
+
+      JoyModal.bottomSheetError(
+        context: Get.context!,
+        errorList: [res.errorMessage!],
+        title: 'Erro ao carregar transações',
+      );
     }
 
     update();
   }
 
   _updateWallets() async {
-    await _userService.updateUserWallets();
+    await _walletService.updateUserWallets();
 
     _user = UserService.currentUser;
 

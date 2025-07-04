@@ -41,6 +41,7 @@ class SignUpPageController extends GetxController {
       );
     } else {
       newUserDto.email = userMail!;
+      newUserDto.name = userName!;
       signUpWidgets[1] = VerificationCodeStepWidget(
           nextStep: retriveVerificationCode, userMail: newUserDto.email);
       _userService.sendVerificationCode(

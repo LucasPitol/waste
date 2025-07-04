@@ -198,7 +198,7 @@ class _NewSpendComponentState extends State<NewSpendComponent> {
                 controller: _newWasteForm.reason,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg(context);
+                    return Constants.requiredField;
                   }
 
                   return null;
@@ -220,7 +220,7 @@ class _NewSpendComponentState extends State<NewSpendComponent> {
                 inputFormatters: [CurrencyTextInputFormatter(symbol: '')],
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return Constants.getDefaultEmptyFieldMsg(context);
+                    return Constants.requiredField;
                   }
 
                   if (Utils.convertStringFormToDouble(value) <= 0.0) {
@@ -309,7 +309,7 @@ class _NewSpendComponentState extends State<NewSpendComponent> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Styles.primaryColor,
+                    backgroundColor: Styles.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: Styles.defaultBorderRadius,
                     ),

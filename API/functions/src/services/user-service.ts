@@ -1,4 +1,4 @@
-import { UserDao } from "../db/user-dao";
+import { UserSP } from "../db/sp/user-sp";
 import { MemberDto } from "../models/dtos/member-dto";
 import { ResponseDto } from "../models/dtos/response-dto";
 import { UserDto } from "../models/dtos/user-dto";
@@ -6,22 +6,39 @@ import { User } from "../models/user";
 import { Wallet } from "../models/wallet";
 import { Constants } from "../utils/constants";
 import { WalletService } from "./wallet-service";
+import { EncryptionService } from "./encryption-service";
 
 export class UserService {
-  userDao: UserDao
+  userSP: UserSP
   walletService: WalletService
+  encryptionService: EncryptionService
 
   constructor() {
-    this.userDao = new UserDao()
+    this.userSP = new UserSP()
     this.walletService = new WalletService()
+    this.encryptionService = new EncryptionService()
   }
 
   async getUserByEmail(userMail: string): Promise<User | null> {
-    return await this.userDao.getUserByEmail(userMail)
+    return await this.userSP.getUserByEmail(userMail)
+  }
+
+  async createUser(name: string, email: string, password: string): Promise<string> {
+    // Hash the password at service layer
+    const hashedPassword = await this.encryptionService.hashString(password);
+    const userId = await this.userSP.createUserWithHashedPassword(name, email, hashedPassword);
+    return userId; // Return as string (UUID)
+  }
+
+  async loginUser(email: string, password: string): Promise<User | null> {
+    // Use the direct login method from SP layer
+    return await this.userSP.loginUser(email, password);
   }
 
   async updateUserPassword(uid: string, newPassword: string) {
-    let uidN: string = await this.userDao.changePassword(uid, newPassword)
+    // Hash the password before updating (since service layer handles this logic)
+    const hashedPassword = await this.encryptionService.hashString(newPassword);
+    let uidN: string = await this.userSP.changePasswordWithHashedPassword(uid, hashedPassword)
 
     return uidN
   }
@@ -31,7 +48,7 @@ export class UserService {
 
     var walletMembers: MemberDto[] = []
 
-    var usersFromWallet = await this.userDao.getUsersByIds(memberIdList)
+    var usersFromWallet = await this.userSP.getUsersByIds(memberIdList)
 
     if (usersFromWallet.length > 0) {
       var walletMembersTemp: MemberDto[] = []
@@ -42,7 +59,7 @@ export class UserService {
 
         memberDto.email = user.email
         memberDto.id = user.id
-        memberDto.name = user.name
+        memberDto.name = user.displayName
 
         walletMembersTemp.push(memberDto)
       }
@@ -67,8 +84,16 @@ export class UserService {
     return ret
   }
 
-  async addMemberToWalletRes(memberMail: string, walletId: string): Promise<ResponseDto> {
+  async addMemberToWalletRes(memberMail: string, walletId: string, ownerId: string): Promise<ResponseDto> {
     let ret = new ResponseDto()
+
+    // Check if the requester is the wallet owner
+    const isOwner = await this.walletService.isWalletOwner(walletId, ownerId)
+    if (!isOwner) {
+      ret.success = false
+      ret.errorMsg = 'Apenas o proprietário da carteira pode adicionar membros'
+      return ret
+    }
 
     var wallet: Wallet | null = await this.walletService.getWalletById(walletId)
 
@@ -92,7 +117,7 @@ export class UserService {
       return ret
     }
 
-    var member: User | null = await this.userDao.getUserByEmail(memberMail);
+    var member: User | null = await this.userSP.getUserByEmail(memberMail);
 
     if (member == null) {
       ret.success = false
@@ -113,7 +138,7 @@ export class UserService {
     await this.walletService.addMemberToWallet(memberId, wallet)
 
     ret.success = true
-    ret.data = member.name
+    ret.data = member.displayName
 
     return ret
   }
@@ -126,7 +151,7 @@ export class UserService {
     userDto.creationDate = user.creationDate
     userDto.email = user.email
     userDto.id = userId
-    userDto.displayName = user.name
+    userDto.displayName = user.displayName
     userDto.walletList = walletList
 
     userDto.currentWalletId = walletList[0].id
@@ -136,7 +161,7 @@ export class UserService {
   async logInByUidRes(userId: string): Promise<ResponseDto> {
     let ret = new ResponseDto()
 
-    let user = await this.userDao.getUserById(userId)
+    let user = await this.userSP.getUserById(userId) // Use as UUID string
 
     if (user != null) {
 

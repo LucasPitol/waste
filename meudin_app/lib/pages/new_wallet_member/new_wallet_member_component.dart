@@ -89,11 +89,11 @@ class _NewWalletMemberComponentState extends State<NewWalletMemberComponent> {
           controller: _newMemberMailController,
           validator: (value) {
             if (value!.isEmpty) {
-              return Constants.getDefaultEmptyFieldMsg(context);
+              return Constants.requiredField;
             }
 
             if ((!value.contains('.com') || !value.contains('@'))) {
-              return Constants.getDefaultInvalidEmailMsg(context);
+              return Constants.invalidMail;
             }
 
             if (_isUserMail(value)) {
@@ -220,7 +220,7 @@ class _NewWalletMemberComponentState extends State<NewWalletMemberComponent> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Styles.primaryColor,
+                    backgroundColor: Styles.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: Styles.defaultBorderRadius,
                     ),

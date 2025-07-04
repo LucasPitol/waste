@@ -87,7 +87,7 @@ class _OptionBottomSheetWidgetState extends State<OptionBottomSheetWidget> {
                     _closeDialog(true);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Styles.primaryColor,
+                    backgroundColor: Styles.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: Styles.defaultBorderRadius,
                     ),

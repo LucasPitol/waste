@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Constants {
   static const String EMPTY_STRING = '---';
@@ -16,13 +15,9 @@ class Constants {
 
   static int walletMembersLimitOnFreePlan = 2;
 
-  static String getDefaultEmptyFieldMsg(BuildContext context) {
-    return AppLocalizations.of(context)!.requiredField;
-  }
-
-  static String getDefaultInvalidEmailMsg(BuildContext context) {
-    return AppLocalizations.of(context)!.invalidMail;
-  }
+  static String unableToConnectTheServer = "Não foi possível comunicar-se com o servidor, tente novamente mais tarde";
+  static String requiredField = "Campo obrigatório";
+  static String invalidMail = "Email inválido";
 
   static Map<int, String> monthDict = {
     1: 'Janeiro',

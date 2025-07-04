@@ -7,9 +7,6 @@ import 'package:meudin_app/pages/shared/loading_block.dart';
 import 'package:meudin_app/services/user_service.dart';
 import 'package:meudin_app/utils/constants.dart';
 import 'package:meudin_app/utils/styles.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../new_user/new_user_component.dart';
 
 class LoginComponent extends StatefulWidget {
   final Function selectHandler;
@@ -59,8 +56,7 @@ class _LoginComponentState extends State<LoginComponent> {
           _openInfoBottomSheet(title, message);
         } else {
           String title = 'Ops...';
-          String message =
-              AppLocalizations.of(context)!.unableToConnectTheServer;
+          String message = Constants.unableToConnectTheServer;
 
           _openInfoBottomSheet(title, message);
         }
@@ -144,12 +140,15 @@ class _LoginComponentState extends State<LoginComponent> {
                               right: 20,
                             ),
                             child: TextFormField(
-                              style: TextStyle(color: Styles.darkModeEnabled() ? Colors.grey.shade100 : Styles.mainTextColor),
+                              style: TextStyle(
+                                  color: Styles.darkModeEnabled()
+                                      ? Colors.grey.shade100
+                                      : Styles.mainTextColor),
                               keyboardType: TextInputType.emailAddress,
                               controller: _loginForm.userMail,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return Constants.getDefaultEmptyFieldMsg(context);
+                                  return Constants.requiredField;
                                 }
 
                                 return null;
@@ -163,18 +162,21 @@ class _LoginComponentState extends State<LoginComponent> {
                             margin: const EdgeInsets.only(
                                 top: 10, bottom: 20, left: 20, right: 20),
                             child: TextFormField(
-                              style: TextStyle(color: Styles.darkModeEnabled() ? Colors.grey.shade100 : Styles.mainTextColor),
+                              style: TextStyle(
+                                  color: Styles.darkModeEnabled()
+                                      ? Colors.grey.shade100
+                                      : Styles.mainTextColor),
                               controller: _loginForm.password,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return Constants.getDefaultEmptyFieldMsg(context);
+                                  return Constants.requiredField;
                                 }
 
                                 return null;
                               },
                               decoration:
                                   Styles.getTextFieldDecorationUnderline(
-                                      AppLocalizations.of(context)!.password),
+                                      'Senha'),
                               obscureText: true,
                             ),
                           ),
@@ -191,13 +193,13 @@ class _LoginComponentState extends State<LoginComponent> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Styles.primaryColor,
+                                  backgroundColor: Styles.primaryColor,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: Styles.defaultBorderRadius,
                                   ),
                                 ),
                                 child: Text(
-                                  AppLocalizations.of(context)!.signIn,
+                                  'Entrar',
                                   style: Styles.buttonTextStyle,
                                 ),
                               ),
@@ -213,13 +215,13 @@ class _LoginComponentState extends State<LoginComponent> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          AppLocalizations.of(context)!.newArroundHere,
+                          'Novo por aqui?',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         ),
                         TextButton(
                           onPressed: _goToNewMemberPage,
                           child: Text(
-                            AppLocalizations.of(context)!.signUp,
+                            'Cadastrar',
                             style: TextStyle(
                               fontSize: 14.0,
                               color: Styles.primaryColor,

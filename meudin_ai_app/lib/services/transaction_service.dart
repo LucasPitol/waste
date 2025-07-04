@@ -1,14 +1,64 @@
+import 'dart:convert';
+
 import 'package:meudin_ai_app/environment/environment.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
-import 'package:meudin_ai_app/models/transaction.dart';
-// import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
+import 'package:meudin_ai_app/services/user_service.dart';
 
 class TransactionService {
   String apiUrl = Environment.apiUrl;
-  // late UserService _userService;
+  late UserService _userService;
 
   TransactionService() {
-    // _userService = UserService();
+    _userService = UserService();
+  }
+
+  Future<ResponseDto> saveNewRevenue(
+    String amount,
+    String reason,
+    DateTime selectedDate,
+  ) async {
+    final user = _userService.getCurrentUser();
+    final userId = user?.id;
+    final walletId = user?.currentWalletId;
+    final authToken = user?.token;
+
+    final url = Uri.parse('${apiUrl}saveTransaction');
+
+    // Robust currency string to double conversion
+    String cleanAmount = amount.trim();
+    // Remove currency symbol and spaces
+    cleanAmount = cleanAmount.replaceAll(RegExp(r'[^0-9.,]'), '');
+    // If comma is the decimal separator (e.g., 3.000,50)
+    if (cleanAmount.contains(',') && cleanAmount.lastIndexOf(',') > cleanAmount.lastIndexOf('.')) {
+      cleanAmount = cleanAmount.replaceAll('.', ''); // remove thousand sep
+      cleanAmount = cleanAmount.replaceAll(',', '.'); // convert decimal sep
+    } else {
+      cleanAmount = cleanAmount.replaceAll(',', ''); // remove thousand sep
+    }
+    final parsedAmount = double.tryParse(cleanAmount) ?? 0.0;
+
+    final body = jsonEncode({
+      'newTransactionDto': {
+        'reason': reason,
+        'amount': parsedAmount,
+        'transactionDate': selectedDate.toIso8601String(),
+        'userId': userId,
+        'walletId': walletId,
+        'type': "revenue",
+      }
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final response = await http.post(url, body: body, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
   }
 
   Future<ResponseDto> getTransactionDtoList(
@@ -16,43 +66,26 @@ class TransactionService {
     DateTime startDate,
     DateTime endDate,
   ) async {
-    // Uri url = Uri.parse('${apiUrl}getHomeDto');
+    final user = _userService.getCurrentUser();
+    final userId = user?.id;
+    final authToken = user?.token;
 
-    // final user = await _userService.getUser();
+    final url = Uri.parse('${apiUrl}getTransactionsByWalletIdAndDateInterval');
+    final body = jsonEncode({
+      'walletId': walletId,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'userId': userId,
+    });
 
-    // final userId = user?.uid;
-    // final authToken = user?.token;
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
 
-    ResponseDto responseDto;
+    final response = await http.post(url, body: body, headers: headers);
 
-    DateTime now = DateTime.now();
-    final t1 = Transaction();
-    t1.amount = 10000;
-    t1.reason = 'Salário';
-    t1.transactionId = 't1';
-    t1.transactionDate = DateTime(now.year, now.month, 5);
-
-    final t2 = Transaction();
-    t2.amount = -3000;
-    t2.reason = 'Video game';
-    t2.categoryId = 'fun';
-    t2.transactionId = 't2';
-    t2.transactionDate = DateTime(now.year, now.month, 2);
-
-    final t3 = Transaction();
-    t3.amount = -1000;
-    t3.reason = 'Revisão do carro';
-    t3.categoryId = 'vehicle';
-    t3.transactionId = 't3';
-    t3.transactionDate = DateTime(now.year, now.month, 8);
-
-    responseDto = ResponseDto();
-    responseDto.success = true;
-    responseDto.data = [
-      t1,
-      t2,
-      t3,
-    ];
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
     return responseDto;
   }

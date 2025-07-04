@@ -1,3 +1,4 @@
+import 'package:meudin_ai_app/pages/new_revenue/new_revenue_page.dart';
 import 'package:meudin_ai_app/pages/recover_password/recover_password_page.dart';
 import 'package:meudin_ai_app/pages/transaction/transactions_page.dart';
 import 'package:meudin_ai_app/pages/home_app/main_app_page.dart';
@@ -12,6 +13,8 @@ class AppRoutes {
   static String signUpRoute = '/sign-up';
   static String recoverPasswordRoute = '/recover-password';
   static String profileRoute = '/profile';
+  static String newRevenueRoute = '/new-revenue';
+  static String newSpendRoute = '/new-spend';
 
   static final List<GetPage<dynamic>> pages = <GetPage<dynamic>>[
     GetPage(
@@ -23,6 +26,14 @@ class AppRoutes {
       page: () => const TransactionsPage(),
     ),
     GetPage(
+      name: newRevenueRoute,
+      page: () => const NewRevenuePage(),
+    ),
+    GetPage(
+      name: newSpendRoute,
+      page: () => const NewRevenuePage(),
+    ),
+    GetPage(
       name: signInRoute,
       page: () => const SignInPage(),
     ),
@@ -32,7 +43,7 @@ class AppRoutes {
     ),
     GetPage(
       name: recoverPasswordRoute,
-      page: () =>const RecoverPasswordPage(),
+      page: () => const RecoverPasswordPage(),
     ),
     // GetPage(
     //   name: profileRoute,
