@@ -2,24 +2,87 @@ import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 
 class JoyModal {
-  static bottomSheetError({
-    required context,
+  static Widget errorBottomSheet({
+    required BuildContext context,
+    required List<String> errorList,
+    String title = 'Ops... Algo deu errado',
+    String imagePath = 'assets/form_error.png',
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 36),
+      child: SizedBox(
+        height: 380,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Grey bar at the very top
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 24),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            Image.asset(
+              imagePath,
+              height: 140,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 18),
+            ...errorList.map((e) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('• ', style: TextStyle(color: Colors.red, fontSize: 16)),
+                      Expanded(
+                        child: Text(
+                          e,
+                          style: const TextStyle(fontSize: 16, color: Colors.black87),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            const SizedBox(height: 18),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget bottomSheetError({
+    required BuildContext context,
     required List<String> errorList,
     String title = 'Ops...',
   }) {
-    bool isScroll = false;
-
     List<Widget> errorTileList = [];
     for (var i = 0; i < errorList.length; i++) {
       var errorText = errorList[i];
       errorTileList.add(JoyText.secundaryText('• $errorText'));
     }
 
-    if (errorList.length > 2) {
-      isScroll = true;
-    }
-
-    final Widget content = Container(
+    return Container(
       decoration: BoxDecoration(
         color: Styles.whiteColor,
         borderRadius: Styles.sexyBorderRadius,
@@ -60,8 +123,6 @@ class JoyModal {
         ),
       ),
     );
-
-    showJouBottomSheet(context: context, content: content, isScroll: isScroll);
   }
 
   static bottomSheetWarning({

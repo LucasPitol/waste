@@ -36,11 +36,20 @@ class RecoverPasswordPageController extends GetxController {
     List<String> errors = validateUserInfoForm(userMailTemp);
 
     if (errors.isNotEmpty) {
-      JoyModal.bottomSheetError(
-        context: Get.context!,
-        errorList: errors,
-        title: 'Revise as informações preenchidas',
-      );
+      Future.microtask(() {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: errors,
+            title: 'Revise as informações preenchidas',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      });
     } else {
       userMail = userMailTemp!;
 

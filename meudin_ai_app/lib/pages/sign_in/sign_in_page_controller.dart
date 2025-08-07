@@ -31,12 +31,20 @@ class SignInPageController extends GetxController {
     } else {
       loading = false;
       update();
-
-      JoyModal.bottomSheetError(
-        context: Get.context!,
-        errorList: [authResponse.errorMessage!],
-        title: 'Não foi possível fazer a autenticação :(',
-      );
+      Future.microtask(() {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: [authResponse.errorMessage!],
+            title: 'Não foi possível fazer a autenticação :(',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      });
     }
   }
 

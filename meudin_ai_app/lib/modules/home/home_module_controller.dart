@@ -60,14 +60,14 @@ class HomeModuleController extends GetxController {
   openWalletSelector() async {
     List<Wallet> userWallets = _user!.walletList;
 
-    Map<String, dynamic>? newWalletOptions = await showModalBottomSheet(
-        context: Get.context!,
-        backgroundColor: Styles.whiteColor,
-        builder: (builder) {
-          return WalletSelectorWidget(
-            walletList: userWallets,
-          );
-        });
+    Map<String, dynamic>? newWalletOptions = await Get.bottomSheet(
+      WalletSelectorWidget(walletList: userWallets),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Styles.whiteColor,
+    );
 
     if (newWalletOptions != null) {
       if (newWalletOptions.containsKey('newWalletId') &&

@@ -34,11 +34,20 @@ class SignUpPageController extends GetxController {
     List<String> errors = validateUserInfoForm(userMail, userName);
 
     if (errors.isNotEmpty) {
-      JoyModal.bottomSheetError(
-        context: Get.context!,
-        errorList: errors,
-        title: 'Revise as informações preenchidas',
-      );
+      Future.microtask(() {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: errors,
+            title: 'Revise as informações preenchidas',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      });
     } else {
       newUserDto.email = userMail!;
       newUserDto.name = userName!;

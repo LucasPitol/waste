@@ -1,4 +1,5 @@
 import 'package:meudin_ai_app/pages/new_revenue/new_revenue_page.dart';
+import 'package:meudin_ai_app/pages/new_spend/new_spend_page.dart';
 import 'package:meudin_ai_app/pages/recover_password/recover_password_page.dart';
 import 'package:meudin_ai_app/pages/transaction/transactions_page.dart';
 import 'package:meudin_ai_app/pages/home_app/main_app_page.dart';
@@ -31,7 +32,7 @@ class AppRoutes {
     ),
     GetPage(
       name: newSpendRoute,
-      page: () => const NewRevenuePage(),
+      page: () => const NewSpendPage(),
     ),
     GetPage(
       name: signInRoute,

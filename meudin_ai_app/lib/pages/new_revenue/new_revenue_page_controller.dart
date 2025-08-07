@@ -42,11 +42,20 @@ class NewRevenuePageController extends GetxController {
       errors.add('Preencha a descrição');
     }
     if (errors.isNotEmpty) {
-      JoyModal.bottomSheetError(
-        context: Get.context!,
-        errorList: errors,
-        title: 'Revise as informações preenchidas',
-      );
+      Future.microtask(() {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: errors,
+            title: 'Revise as informações preenchidas',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      });
       return;
     }
     loading = true;
@@ -65,11 +74,20 @@ class NewRevenuePageController extends GetxController {
     if (response.success) {
       Get.back(result: true);
     } else {
-      JoyModal.bottomSheetError(
-        context: Get.context!,
-        errorList: [response.errorMessage!],
-        title: 'Erro ao salvar transação',
-      );
+      Future.microtask(() {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: [response.errorMessage!],
+            title: 'Erro ao salvar transação',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      });
     }
   }
 
