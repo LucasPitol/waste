@@ -64,6 +64,7 @@ class HomeModule extends StatelessWidget {
                 transactionDtoList: controller.transactionDtoList,
                 twoFirstTransactionDtoList:
                     controller.twoFirstTransactionDtoList,
+                loading: controller.loading,
               ),
             ],
           ),
