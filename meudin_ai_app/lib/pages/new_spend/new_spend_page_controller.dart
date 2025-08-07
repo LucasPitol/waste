@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
-import '../../ui/joy_ui.dart';
+import 'package:meudin_ai_app/services/transaction_service.dart';
+import 'package:meudin_ai_app/models/dtos/response_dto.dart';
+
 
 class NewSpendPageController extends GetxController {
+  late TransactionService _transactionService;
   final amountController = TextEditingController();
   final reasonController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -20,6 +23,7 @@ class NewSpendPageController extends GetxController {
   void onInit() {
     super.onInit();
     _spendingCategoryService = SpendingCategoryService();
+    _transactionService = TransactionService();
     fetchCategories();
   }
 
@@ -107,11 +111,28 @@ class NewSpendPageController extends GetxController {
     }
     loading = true;
     update();
-    // TODO: Implement save logic, validation, and API call
-    await Future.delayed(const Duration(seconds: 1));
-    loading = false;
-    update();
-    Get.back(result: true);
+    try {
+      debugPrint('Calling saveNewSpend with: amount=${amountController.text.trim()}, reason=${reasonController.text.trim()}, categoryId=$selectedCategoryId, date=$selectedDate');
+      ResponseDto response = await _transactionService.saveNewSpend(
+        amountController.text.trim(),
+        reasonController.text.trim(),
+        selectedCategoryId,
+        selectedDate,
+      );
+      loading = false;
+      update();
+      if (response.success) {
+        Get.back(result: true);
+      } else {
+        errorList = [response.errorMessage ?? 'Erro ao salvar gasto'];
+        update();
+      }
+    } catch (e, stack) {
+      debugPrint('Exception in saveSpend: $e\n$stack');
+      loading = false;
+      errorList = ['Erro inesperado ao salvar gasto'];
+      update();
+    }
   }
 
   @override
