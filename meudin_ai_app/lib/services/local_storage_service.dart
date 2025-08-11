@@ -15,16 +15,19 @@ class LocalStorageService {
   }
 
   Future<User?> getUserData() async {
-    User? user;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     final String? userStr = prefs.getString(_userLocalKey);
 
     if (userStr != null) {
-      user = User.fromJson(jsonDecode(userStr));
+      try {
+        return User.fromJson(jsonDecode(userStr));
+      } catch (e) {
+        // If parsing fails, clear the bad data and return null
+        await prefs.remove(_userLocalKey);
+        return null;
+      }
     }
-
-    return user;
+    return null;
   }
 
   Future<void> deleteUserData() async {

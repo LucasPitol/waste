@@ -29,12 +29,13 @@ class UserService {
     required String newPassword,
   }) async {
     Uri url = Uri.parse('${apiUrl}updatePassword');
-
+    var token = currentUser?.token ?? '';
     var response = await http.post(
       url,
       headers: {
         "Accept": "application/json",
         "content-type": "application/json",
+        "Authorization": "Bearer $token",
       },
       body: jsonEncode(
         {
@@ -54,12 +55,14 @@ class UserService {
     required String verificationCode,
   }) async {
     Uri url = Uri.parse('${apiUrl}validateVerificationCode');
+    var token = currentUser?.token ?? '';
 
     var response = await http.post(
       url,
       headers: {
         "Accept": "application/json",
         "content-type": "application/json",
+        "Authorization": "Bearer $token",
       },
       body: jsonEncode(
         {
@@ -79,10 +82,12 @@ class UserService {
     required String verificationType,
   }) async {
     Uri url = Uri.parse('${apiUrl}sendVerificationCode');
+    var token = currentUser?.token ?? '';
 
     var response = await http.post(
       url,
       headers: {
+        "Authorization": "Bearer $token",
         "Accept": "application/json",
         "content-type": "application/json",
       },
@@ -118,13 +123,11 @@ class UserService {
         },
       ),
     );
-
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
     if (responseDto.success) {
       User user = _handleUser(responseDto.data);
       currentUser = user;
-
       await _localStorageService.storeUserData(user);
     }
 

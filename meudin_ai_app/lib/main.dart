@@ -8,7 +8,6 @@ import 'package:meudin_ai_app/utils/constants.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting(Constants.ptLanguageCode, null);
-
   runApp(const MyApp());
 }
 
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Styles.mainTheme,
-      initialRoute: AppRoutes.signInRoute,
+      initialRoute: AppRoutes.splashRoute,
       getPages: AppRoutes.pages,
     );
   }
