@@ -26,6 +26,7 @@ class HomeModuleController extends GetxController {
   late WalletService _walletService;
   late UserService _userService;
   late bool isWalletListLoading;
+  late bool isRefreshing;
 
   HomeModuleController() {
     _userService = UserService();
@@ -41,27 +42,47 @@ class HomeModuleController extends GetxController {
     _transactionService = TransactionService();
     _walletService = WalletService();
     isWalletListLoading = false;
+    isRefreshing = false;
   }
 
   @override
   void onInit() {
     super.onInit();
-    loading = true;
-    refreshUserAndWallet();
     _fillStandardDate();
-    updatePageData();
+    refreshAll();
   }
 
   Future<void> refreshUserAndWallet() async {
     isWalletListLoading = true;
-    await _walletService.getUserWallets();
+    update();
+    
+    try {
+      await _walletService.getUserWallets();
+      _user = UserService.currentUser;
 
-    _user = UserService.currentUser;
+      currentWallet = _user!.walletList
+          .singleWhere((element) => element.id == _user!.currentWalletId);
+      isWalletOwner = (currentWallet.ownerId == _user!.id);
+    } catch (e) {
+      // Handle wallet loading error
+      print('Error loading wallets: $e');
+      // Optionally show error to user
+    } finally {
+      isWalletListLoading = false;
+      update();
+    }
+  }
 
-    currentWallet = _user!.walletList
-        .singleWhere((element) => element.id == _user!.currentWalletId);
-    isWalletOwner = (currentWallet.ownerId == _user!.id);
-    isWalletListLoading = false;
+  /// Complete refresh - both wallets and transactions with unified loading
+  Future<void> refreshAll() async {
+    isRefreshing = true;
+    update();
+    
+    await refreshUserAndWallet();
+    await updatePageData();
+    
+    isRefreshing = false;
+    update();
   }
 
   openWalletSelector() async {
@@ -69,7 +90,7 @@ class HomeModuleController extends GetxController {
 
     Map<String, dynamic>? newWalletOptions = await Get.bottomSheet(
       WalletSelectorWidget(walletList: userWallets),
-      isScrollControlled: true,
+      isScrollControlled: false,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -114,8 +135,6 @@ class HomeModuleController extends GetxController {
   updatePageData() async {
     loading = true;
     update();
-
-    await _updateWallets();
 
     String walletId = currentWallet.id;
     ResponseDto res = await _transactionService.getTransactionDtoList(
@@ -168,22 +187,6 @@ class HomeModuleController extends GetxController {
         title: 'Erro ao carregar transações',
       );
     }
-
-    update();
-  }
-
-  _updateWallets() async {
-    await _walletService.updateUserWallets();
-
-    _user = UserService.currentUser;
-
-    Wallet currentWalletTemp = _user!.walletList
-        .singleWhere((element) => element.id == _user!.currentWalletId);
-
-    bool isWalletOwnerTemp = (currentWalletTemp.ownerId == _user!.id);
-
-    currentWallet = currentWalletTemp;
-    isWalletOwner = isWalletOwnerTemp;
 
     update();
   }

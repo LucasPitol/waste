@@ -1,5 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision.dart';
+import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_skeleton.dart';
 import 'package:meudin_ai_app/modules/home/widgets/app_bar/home_app_bar.dart';
 import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +32,11 @@ class HomeModule extends StatelessWidget {
                         children: [
                           Container(
                             margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: JoyText.h1(
-                              controller.currentWallet.name,
-                            ),
+                            child: controller.isRefreshing
+                                ? const SkeletonLoader(width: 120, height: 28)
+                                : JoyText.h1(
+                                    controller.currentWallet.name,
+                                  ),
                           ),
                           IconButton(
                             icon: const FaIcon(
@@ -41,9 +44,11 @@ class HomeModule extends StatelessWidget {
                               color: Colors.grey,
                               size: 20,
                             ),
-                            onPressed: () {
-                              controller.openWalletSelector();
-                            },
+                            onPressed: controller.isRefreshing
+                                ? null
+                                : () {
+                                    controller.openWalletSelector();
+                                  },
                           ),
                         ],
                       ),
@@ -64,7 +69,7 @@ class HomeModule extends StatelessWidget {
                 transactionDtoList: controller.transactionDtoList,
                 twoFirstTransactionDtoList:
                     controller.twoFirstTransactionDtoList,
-                loading: controller.loading,
+                loading: controller.isRefreshing,
               ),
             ],
           ),
