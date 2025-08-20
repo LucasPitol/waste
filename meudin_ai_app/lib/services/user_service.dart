@@ -4,7 +4,6 @@ import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/environment/environment.dart';
-import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/models/wallet.dart';
 import 'package:meudin_ai_app/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -13,11 +12,9 @@ class UserService {
   static User? currentUser;
   String apiUrl = Environment.apiUrl;
   late LocalStorageService _localStorageService;
-  late WalletService _walletService;
 
   UserService() {
     _localStorageService = LocalStorageService();
-    _walletService = WalletService();
   }
 
   User? getCurrentUser() {
@@ -181,7 +178,7 @@ class UserService {
     List<Wallet> walletList = [];
 
     for (var element in walletListMap) {
-      Wallet wallet = _walletService.handleWallet(element);
+      Wallet wallet = handleWallet(element);
 
       walletList.add(wallet);
     }
@@ -191,5 +188,29 @@ class UserService {
     return user;
   }
 
-  forceSignOut() {}
+  Wallet handleWallet(Map<String, dynamic> walletMap) {
+    Wallet wallet = Wallet();
+
+    wallet.id = walletMap['id'];
+    wallet.name = walletMap['name'];
+    wallet.ownerId = walletMap['ownerId'];
+    wallet.lastUpdate = DateTime.parse(walletMap['lastUpdate']);
+    wallet.creationDate = DateTime.parse(walletMap['creationDate']);
+
+    List<String> membersId = [];
+    var membersIdMap = walletMap['membersIds'];
+    for (var element in membersIdMap) {
+      String id = element.toString();
+      membersId.add(id);
+    }
+
+    wallet.membersIds = membersId;
+
+    return wallet;
+  }
+
+  forceSignOut() {
+    currentUser = null;
+    _localStorageService.deleteUserData();
+  }
 }

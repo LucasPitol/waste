@@ -37,7 +37,8 @@ Waste API is a modular, serverless backend for a collaborative personal finance 
 - **Login:**
   - Email/password checked against Supabase, bcrypt for password
 - **Wallets:**
-  - Users can create, join, or leave wallets; only wallet owners can add/remove members
+  - Users can create wallets; only wallet owners can add/remove members
+  - Leave wallet functionality will be implemented later
 - **Transactions:**
   - Users can add/view transactions in wallets they own or are members of
   - Transactions are saved with a business date (`transaction_date`)
@@ -49,6 +50,7 @@ Waste API is a modular, serverless backend for a collaborative personal finance 
 - `POST /signIn` — Login
 - `POST /wallet/create` — Create wallet
 - `POST /wallet/addMember` — Add member to wallet
+- `POST /wallet/getUserWallets` — Get all wallets for a user
 - `POST /transaction/save` — Save new transaction
 - `POST /transaction/get` — Get transactions by wallet/date
 

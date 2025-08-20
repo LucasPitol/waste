@@ -25,6 +25,7 @@ class HomeModuleController extends GetxController {
   late TransactionService _transactionService;
   late WalletService _walletService;
   late UserService _userService;
+  late bool isWalletListLoading;
 
   HomeModuleController() {
     _userService = UserService();
@@ -39,6 +40,7 @@ class HomeModuleController extends GetxController {
     twoFirstTransactionDtoList = [];
     _transactionService = TransactionService();
     _walletService = WalletService();
+    isWalletListLoading = false;
   }
 
   @override
@@ -50,11 +52,16 @@ class HomeModuleController extends GetxController {
     updatePageData();
   }
 
-  void refreshUserAndWallet() {
+  Future<void> refreshUserAndWallet() async {
+    isWalletListLoading = true;
+    await _walletService.getUserWallets();
+
     _user = UserService.currentUser;
+
     currentWallet = _user!.walletList
         .singleWhere((element) => element.id == _user!.currentWalletId);
     isWalletOwner = (currentWallet.ownerId == _user!.id);
+    isWalletListLoading = false;
   }
 
   openWalletSelector() async {

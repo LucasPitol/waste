@@ -6,6 +6,13 @@ import 'package:http/http.dart' as http;
 import 'package:meudin_ai_app/services/user_service.dart';
 
 class TransactionService {
+  String apiUrl = Environment.apiUrl;
+  late UserService _userService;
+
+  TransactionService() {
+    _userService = UserService();
+  }
+  
   Future<ResponseDto> saveNewSpend(
     String amount,
     String reason,
@@ -57,13 +64,6 @@ class TransactionService {
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
     return responseDto;
-  }
-
-  String apiUrl = Environment.apiUrl;
-  late UserService _userService;
-
-  TransactionService() {
-    _userService = UserService();
   }
 
   Future<ResponseDto> saveNewRevenue(

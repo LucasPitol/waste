@@ -9,6 +9,13 @@ export class GetUserWalletsUseCase {
   }
 
   async execute(userId: string): Promise<ResponseDto> {
-    return await this.walletService.getWalletsByUserIdRes(userId);
+    let ret = new ResponseDto();
+
+    let wallets = await this.walletService.getWalletsByUserId(userId);
+
+    ret.success = true;
+    ret.data = wallets;
+
+    return ret;
   }
 }

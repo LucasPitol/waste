@@ -12,7 +12,7 @@ export const getUserWallets = functions.https.onRequest(async (req, res) => {
 
     const getUserWalletsUseCase = new GetUserWalletsUseCase();
     const result = await getUserWalletsUseCase.execute(uid);
-
+    console.log(result);
     res.send(result);
   } catch (error) {
     console.error("Get user wallets error:", error);
