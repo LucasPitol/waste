@@ -25,18 +25,16 @@ class UserService {
     required String userMail,
     required String newPassword,
   }) async {
-    Uri url = Uri.parse('${apiUrl}updatePassword');
-    var token = currentUser?.token ?? '';
+    Uri url = Uri.parse('${apiUrl}auth/update-password');
     var response = await http.post(
       url,
       headers: {
         "Accept": "application/json",
         "content-type": "application/json",
-        "Authorization": "Bearer $token",
       },
       body: jsonEncode(
         {
-          'userMail': userMail,
+          'email': userMail,
           'newPassword': newPassword,
         },
       ),
@@ -51,20 +49,18 @@ class UserService {
     required String userMail,
     required String verificationCode,
   }) async {
-    Uri url = Uri.parse('${apiUrl}validateVerificationCode');
-    var token = currentUser?.token ?? '';
+    Uri url = Uri.parse('${apiUrl}auth/validate-verification-code');
 
     var response = await http.post(
       url,
       headers: {
         "Accept": "application/json",
         "content-type": "application/json",
-        "Authorization": "Bearer $token",
       },
       body: jsonEncode(
         {
-          'userMail': userMail,
-          'verificationCode': verificationCode,
+          'email': userMail,
+          'code': verificationCode,
         },
       ),
     );
@@ -78,20 +74,17 @@ class UserService {
     required String userMail,
     required String verificationType,
   }) async {
-    Uri url = Uri.parse('${apiUrl}sendVerificationCode');
-    var token = currentUser?.token ?? '';
+    Uri url = Uri.parse('${apiUrl}auth/send-verification-code');
 
     var response = await http.post(
       url,
       headers: {
-        "Authorization": "Bearer $token",
         "Accept": "application/json",
         "content-type": "application/json",
       },
       body: jsonEncode(
         {
-          'userMail': userMail,
-          'verificationType': verificationType,
+          'email': userMail,
         },
       ),
     );
@@ -105,7 +98,7 @@ class UserService {
     String userMail,
     String password,
   ) async {
-    Uri url = Uri.parse('${apiUrl}logIn');
+    Uri url = Uri.parse('${apiUrl}auth/login');
 
     var response = await http.post(
       url,
@@ -132,14 +125,7 @@ class UserService {
   }
 
   Future<ResponseDto> createNewUser(NewUserDto newUserDto) async {
-    Uri url = Uri.parse('${apiUrl}createNewUser');
-
-    NewUserDto newUserDtoTemp = NewUserDto();
-    newUserDtoTemp.email = newUserDto.email;
-    newUserDtoTemp.name = newUserDto.name;
-    newUserDtoTemp.password = newUserDto.password;
-
-    var jsonNewUserDto = newUserDtoTemp.toJson();
+    Uri url = Uri.parse('${apiUrl}auth/register');
 
     var response = await http.post(
       url,
@@ -149,7 +135,9 @@ class UserService {
       },
       body: jsonEncode(
         {
-          'newUserDto': jsonNewUserDto,
+          'name': newUserDto.name,
+          'email': newUserDto.email,
+          'password': newUserDto.password,
         },
       ),
     );

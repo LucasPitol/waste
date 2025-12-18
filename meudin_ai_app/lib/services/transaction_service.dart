@@ -24,7 +24,7 @@ class TransactionService {
     final walletId = user?.currentWalletId;
     final authToken = user?.token;
 
-    final url = Uri.parse('${apiUrl}saveTransaction');
+    final url = Uri.parse('${apiUrl}transaction/waste');
 
     // Robust currency string to double conversion
     String cleanAmount = amount.trim();
@@ -38,28 +38,31 @@ class TransactionService {
     }
     final parsedAmount = double.tryParse(cleanAmount) ?? 0.0;
 
-    final Map<String, dynamic> newTransactionDto = {
-      'reason': reason,
-      'amount': parsedAmount,
-      'transactionDate': selectedDate.toIso8601String(),
-      'userId': userId,
+    final Map<String, dynamic> body = {
+      'waste': parsedAmount,
       'walletId': walletId,
-      'type': "waste",
     };
-    if (categoryId != null && categoryId.isNotEmpty) {
-      newTransactionDto['categoryId'] = categoryId;
+    
+    if (reason.isNotEmpty) {
+      body['reason'] = reason;
     }
-
-    final body = jsonEncode({
-      'newTransactionDto': newTransactionDto,
-    });
+    
+    if (categoryId != null && categoryId.isNotEmpty) {
+      body['categoryId'] = categoryId;
+    }
+    
+    if (userId != null) {
+      body['uid'] = userId;
+    }
+    
+    body['spendDate'] = selectedDate.toIso8601String();
 
     final headers = {
       'Content-Type': 'application/json',
       if (authToken != null) 'Authorization': 'Bearer $authToken',
     };
 
-    final response = await http.post(url, body: body, headers: headers);
+    final response = await http.post(url, body: jsonEncode(body), headers: headers);
 
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
@@ -76,7 +79,7 @@ class TransactionService {
     final walletId = user?.currentWalletId;
     final authToken = user?.token;
 
-    final url = Uri.parse('${apiUrl}saveTransaction');
+    final url = Uri.parse('${apiUrl}transaction/revenue');
 
     // Robust currency string to double conversion
     String cleanAmount = amount.trim();
@@ -92,23 +95,27 @@ class TransactionService {
     }
     final parsedAmount = double.tryParse(cleanAmount) ?? 0.0;
 
-    final body = jsonEncode({
-      'newTransactionDto': {
-        'reason': reason,
-        'amount': parsedAmount,
-        'transactionDate': selectedDate.toIso8601String(),
-        'userId': userId,
-        'walletId': walletId,
-        'type': "revenue",
-      }
-    });
+    final Map<String, dynamic> body = {
+      'amount': parsedAmount,
+      'walletId': walletId,
+    };
+    
+    if (reason.isNotEmpty) {
+      body['reason'] = reason;
+    }
+    
+    if (userId != null) {
+      body['uid'] = userId;
+    }
+    
+    body['payDay'] = selectedDate.toIso8601String();
 
     final headers = {
       'Content-Type': 'application/json',
       if (authToken != null) 'Authorization': 'Bearer $authToken',
     };
 
-    final response = await http.post(url, body: body, headers: headers);
+    final response = await http.post(url, body: jsonEncode(body), headers: headers);
 
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
@@ -121,23 +128,46 @@ class TransactionService {
     DateTime endDate,
   ) async {
     final user = _userService.getCurrentUser();
-    final userId = user?.id;
     final authToken = user?.token;
 
-    final url = Uri.parse('${apiUrl}getTransactionsByWalletIdAndDateInterval');
-    final body = jsonEncode({
-      'walletId': walletId,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
-      'userId': userId,
-    });
+    // Format dates to YYYY-MM-DD
+    final startDateStr = '${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}';
+    final endDateStr = '${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}';
+
+    final url = Uri.parse('${apiUrl}transaction?walletId=$walletId&startDate=$startDateStr&endDate=$endDateStr');
 
     final headers = {
       'Content-Type': 'application/json',
       if (authToken != null) 'Authorization': 'Bearer $authToken',
     };
 
-    final response = await http.post(url, body: body, headers: headers);
+    final response = await http.get(url, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
+  Future<ResponseDto> getOverview(
+    String walletId,
+    DateTime startDate,
+    DateTime endDate,
+  ) async {
+    final user = _userService.getCurrentUser();
+    final authToken = user?.token;
+
+    // Format dates to YYYY-MM-DD
+    final startDateStr = '${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}';
+    final endDateStr = '${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}';
+
+    final url = Uri.parse('${apiUrl}transaction/overview?walletId=$walletId&startDate=$startDateStr&endDate=$endDateStr');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final response = await http.get(url, headers: headers);
 
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 

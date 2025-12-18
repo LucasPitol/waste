@@ -13,13 +13,11 @@ class SpendingCategoryService {
   }
 
   Future<ResponseDto> getSpendingCategories() async {
-    final user = _userService.getCurrentUser();
-    final authToken = user?.token;
-    final url = Uri.parse('${apiUrl}getSpendingCategories');
+    // Este endpoint é público - não requer autenticação
+    final url = Uri.parse('${apiUrl}spending-categories');
 
     final headers = {
       'Content-Type': 'application/json',
-      if (authToken != null) 'Authorization': 'Bearer $authToken',
     };
 
     final response = await http.get(url, headers: headers);

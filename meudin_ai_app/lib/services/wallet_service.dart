@@ -19,18 +19,14 @@ class WalletService {
     final userId = user?.id;
     final authToken = user?.token;
 
-    final url = Uri.parse('${apiUrl}getUserWallets');
+    final url = Uri.parse('${apiUrl}wallet${userId != null ? '?userId=$userId' : ''}');
 
     final headers = {
       'Content-Type': 'application/json',
       if (authToken != null) 'Authorization': 'Bearer $authToken',
     };
 
-    final body = jsonEncode({
-      'uid': userId,
-    });
-
-    final response = await http.post(url, body: body, headers: headers);
+    final response = await http.get(url, headers: headers);
 
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
@@ -52,20 +48,123 @@ class WalletService {
     return responseDto;
   }
 
+  Future<ResponseDto> createWallet(String walletName) async {
+    final user = UserService.currentUser;
+    final authToken = user?.token;
+
+    final url = Uri.parse('${apiUrl}wallet');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final body = jsonEncode({
+      'walletName': walletName,
+    });
+
+    final response = await http.post(url, body: body, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
+  Future<ResponseDto> addMemberToWallet(String walletId, String memberEmail) async {
+    final user = UserService.currentUser;
+    final authToken = user?.token;
+
+    final url = Uri.parse('${apiUrl}wallet/add-member');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final body = jsonEncode({
+      'walletId': walletId,
+      'memberEmail': memberEmail,
+    });
+
+    final response = await http.post(url, body: body, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
+  Future<ResponseDto> removeMemberFromWallet(String walletId, String memberId) async {
+    final user = UserService.currentUser;
+    final authToken = user?.token;
+
+    final url = Uri.parse('${apiUrl}wallet/remove-member');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final body = jsonEncode({
+      'walletId': walletId,
+      'memberId': memberId,
+    });
+
+    final response = await http.post(url, body: body, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
+  Future<ResponseDto> getWalletMembers(String walletId) async {
+    final user = UserService.currentUser;
+    final authToken = user?.token;
+
+    final url = Uri.parse('${apiUrl}wallet/members?walletId=$walletId');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
   Wallet handleWallet(Map<String, dynamic> walletMap) {
     Wallet wallet = Wallet();
 
     wallet.id = walletMap['id'];
     wallet.name = walletMap['name'];
-    wallet.ownerId = walletMap['ownerId'];
-    wallet.lastUpdate = DateTime.parse(walletMap['lastUpdate']);
-    wallet.creationDate = DateTime.parse(walletMap['creationDate']);
+    wallet.ownerId = walletMap['ownerId'] ?? walletMap['owner_id'];
+    
+    // Handle dates with fallback
+    if (walletMap['lastUpdate'] != null) {
+      wallet.lastUpdate = DateTime.parse(walletMap['lastUpdate']);
+    } else if (walletMap['updated_at'] != null) {
+      wallet.lastUpdate = DateTime.parse(walletMap['updated_at']);
+    } else {
+      wallet.lastUpdate = DateTime.now();
+    }
+    
+    if (walletMap['creationDate'] != null) {
+      wallet.creationDate = DateTime.parse(walletMap['creationDate']);
+    } else if (walletMap['created_at'] != null) {
+      wallet.creationDate = DateTime.parse(walletMap['created_at']);
+    } else {
+      wallet.creationDate = DateTime.now();
+    }
 
     List<String> membersId = [];
     var membersIdMap = walletMap['membersIds'];
-    for (var element in membersIdMap) {
-      String id = element.toString();
-      membersId.add(id);
+    if (membersIdMap != null) {
+      for (var element in membersIdMap) {
+        String id = element.toString();
+        membersId.add(id);
+      }
     }
 
     wallet.membersIds = membersId;
