@@ -19,9 +19,41 @@ class Styles {
       selectionHandleColor: primaryTextColor,
     ),
     primaryColor: primaryColor,
-    scaffoldBackgroundColor: whiteColor,
+    scaffoldBackgroundColor: whiteConfortColor,
     textTheme: GoogleFonts.montserratTextTheme(),
-    // colorSchemeSeed: primaryColor,
+    colorScheme: const ColorScheme.light(
+      primary: primaryColor,
+      surface: whiteColor,
+      onSurface: primaryTextColor,
+      onPrimary: whiteColor,
+    ),
+  );
+
+  static ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: whiteColor,
+      selectionColor: primaryColor.withOpacity(0.3),
+      selectionHandleColor: primaryColor,
+    ),
+    primaryColor: primaryColor,
+    scaffoldBackgroundColor: const Color(0xFF121212),
+    textTheme: GoogleFonts.montserratTextTheme(
+      ThemeData.dark().textTheme.copyWith(
+        bodyLarge: const TextStyle(color: Colors.white),
+        bodyMedium: const TextStyle(color: Colors.white70),
+        bodySmall: const TextStyle(color: Colors.white60),
+        titleLarge: const TextStyle(color: Colors.white),
+        titleMedium: const TextStyle(color: Colors.white),
+        titleSmall: const TextStyle(color: Colors.white),
+      ),
+    ),
+    colorScheme: const ColorScheme.dark(
+      primary: primaryColor,
+      surface: Color(0xFF1E1E1E),
+      onSurface: whiteColor,
+      onPrimary: whiteColor,
+    ),
   );
 
   static BoxDecoration cardDecoration = BoxDecoration(

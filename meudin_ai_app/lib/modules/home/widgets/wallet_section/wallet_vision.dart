@@ -32,16 +32,31 @@ class WalletVisionWidget extends StatelessWidget {
     this.onDateTap,
   });
 
-  _buildHomeBox(WalletVisionWidgetController controller) {
+  _buildHomeBox(WalletVisionWidgetController controller, BuildContext context) {
     if (loading) {
       return const WalletVisionSkeleton();
     }
+    final theme = Theme.of(context);
     // Normal wallet vision box
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       width: double.infinity,
-      decoration: Styles.cardDecoration,
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.dark 
+            ? theme.colorScheme.surface 
+            : Styles.whiteColor,
+        boxShadow: [
+          BoxShadow(
+            color: theme.brightness == Brightness.dark 
+                ? Colors.black.withOpacity(0.3)
+                : Styles.greyLighter,
+            offset: const Offset(0, 2),
+            blurRadius: 2,
+          ),
+        ],
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
       child: SizedBox(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +189,9 @@ class WalletVisionWidget extends StatelessWidget {
                         ),
                         JoyText(
                           amountStr,
-                          textColor: isPositive ? Colors.green : Styles.primaryTextColor,
+                          textColor: isPositive 
+                              ? Colors.green 
+                              : (theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor),
                         ),
                       ],
                     ),
@@ -197,6 +214,7 @@ class WalletVisionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GetBuilder<WalletVisionWidgetController>(
       init: WalletVisionWidgetController(),
       builder: (controller) {
@@ -222,11 +240,28 @@ class WalletVisionWidget extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 5),
                             decoration: isOptionSelected
-                                ? Styles.cardDecoration
+                                ? BoxDecoration(
+                                    color: theme.brightness == Brightness.dark 
+                                        ? theme.colorScheme.surface 
+                                        : Styles.whiteColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: theme.brightness == Brightness.dark 
+                                            ? Colors.black.withOpacity(0.3)
+                                            : Styles.greyLighter,
+                                        offset: const Offset(0, 2),
+                                        blurRadius: 2,
+                                      ),
+                                    ],
+                                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                  )
                                 : BoxDecoration(
-                                    color: Styles.whiteConfortColor),
+                                    color: theme.scaffoldBackgroundColor),
                             child: Text(
                               element.t2,
+                              style: TextStyle(
+                                color: theme.textTheme.bodyLarge?.color,
+                              ),
                             ),
                           ),
                         ),
@@ -236,7 +271,7 @@ class WalletVisionWidget extends StatelessWidget {
                 ),
               ),
               controller.selectedTab == 0
-                  ? _buildHomeBox(controller)
+                  ? _buildHomeBox(controller, context)
                   : _buildMembersBox(),
             ],
           ),

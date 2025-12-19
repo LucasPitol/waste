@@ -9,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class LocalStorageService {
   // Storage keys
   static const String _userDataKey = 'secure_user_data';
+  static const String _themePreferenceKey = 'theme_preference';
 
   // Secure storage configuration
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
@@ -156,6 +157,28 @@ class LocalStorageService {
       }
     } catch (e) {
       // Silent error handling
+    }
+  }
+
+  /// Save theme preference (system, light, dark)
+  Future<void> saveThemePreference(String themeMode) async {
+    try {
+      await _secureStorage.write(
+        key: _themePreferenceKey,
+        value: themeMode,
+      );
+    } catch (e) {
+      // Silent error handling
+    }
+  }
+
+  /// Get theme preference (default: 'system')
+  Future<String> getThemePreference() async {
+    try {
+      final themeMode = await _secureStorage.read(key: _themePreferenceKey);
+      return themeMode ?? 'system';
+    } catch (e) {
+      return 'system';
     }
   }
 }

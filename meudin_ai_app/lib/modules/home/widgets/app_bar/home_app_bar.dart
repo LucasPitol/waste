@@ -9,6 +9,7 @@ class HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GetBuilder<HomeAppBarController>(
       init: HomeAppBarController(),
       builder: (controller) {
@@ -22,9 +23,9 @@ class HomeAppBar extends StatelessWidget {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const FaIcon(
+                      icon: FaIcon(
                         FontAwesomeIcons.arrowRotateRight,
-                        color: Styles.primaryTextColor,
+                        color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                         size: 20,
                       ),
                       onPressed: () {
@@ -32,9 +33,9 @@ class HomeAppBar extends StatelessWidget {
                       },
                     ),
                     IconButton(
-                      icon: const FaIcon(
+                      icon: FaIcon(
                         FontAwesomeIcons.solidCircleUser,
-                        color: Styles.primaryTextColor,
+                        color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                         size: 22,
                       ),
                       onPressed: () {

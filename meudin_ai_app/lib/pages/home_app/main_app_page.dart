@@ -12,23 +12,28 @@ class MainAppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GetBuilder<MainAppPageController>(
       init: MainAppPageController(),
       builder: (controller) {
         return Scaffold(
-          backgroundColor: Styles.whiteConfortColor,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: controller.widgetOptions[controller.selectedIndex],
           ),
           floatingActionButton: SpeedDial(
-            backgroundColor: Styles.whiteColor,
+            backgroundColor: theme.brightness == Brightness.dark 
+                ? theme.colorScheme.surface 
+                : Styles.whiteColor,
             icon: FontAwesomeIcons.plus,
             foregroundColor: Styles.primaryColor,
-            overlayColor: Styles.whiteColor,
+            overlayColor: theme.brightness == Brightness.dark 
+                ? theme.colorScheme.surface 
+                : Styles.whiteColor,
             activeIcon: FontAwesomeIcons.xmark,
             children: [
               SpeedDialChild(
-                  backgroundColor: Styles.whiteConfortColor,
+                  backgroundColor: theme.scaffoldBackgroundColor,
                   child: const FaIcon(
                     FontAwesomeIcons.arrowTrendDown,
                     color: Colors.red,
@@ -41,7 +46,7 @@ class MainAppPage extends StatelessWidget {
                     }
                   }),
               SpeedDialChild(
-                backgroundColor: Styles.whiteConfortColor,
+                backgroundColor: theme.scaffoldBackgroundColor,
                 child: const FaIcon(
                   FontAwesomeIcons.arrowTrendUp,
                   color: Colors.green,
@@ -61,7 +66,9 @@ class MainAppPage extends StatelessWidget {
               FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomAppBar(
             shape: const CircularNotchedRectangle(),
-            color: Styles.whiteColor,
+            color: theme.brightness == Brightness.dark 
+                ? theme.colorScheme.surface 
+                : Styles.whiteColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

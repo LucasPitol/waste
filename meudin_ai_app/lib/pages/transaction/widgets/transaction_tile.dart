@@ -10,6 +10,7 @@ class TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     String title = transaction.reason ?? '';
     String date = Utils.formatDateDDMMYY(transaction.transactionDate);
     String amountStr = Utils.getAmountFormated(transaction.amount!);
@@ -39,7 +40,9 @@ class TransactionTile extends StatelessWidget {
           ),
           JoyText(
             amountStr,
-            textColor: isPositive ? Colors.green : Styles.primaryTextColor,
+            textColor: isPositive 
+                ? Colors.green 
+                : (theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor),
           ),
         ],
       ),

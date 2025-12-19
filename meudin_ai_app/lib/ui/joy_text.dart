@@ -51,10 +51,18 @@ class JoyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    // Se textColor não foi especificado ou é a cor padrão hardcoded, usa a cor do tema
+    final effectiveColor = textColor == Styles.primaryTextColor 
+        ? theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor
+        : (textColor == Styles.grey 
+            ? theme.textTheme.bodyMedium?.color ?? Styles.grey
+            : textColor);
+    
     return Text(
       text,
       style: TextStyle(
-        color: textColor,
+        color: effectiveColor,
         fontWeight: fontWeight,
         fontSize: size,
         overflow: textOverflow,

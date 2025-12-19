@@ -9,26 +9,27 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GetBuilder<ProfilePageController>(
       init: ProfilePageController(),
       builder: (controller) {
         return Scaffold(
-          backgroundColor: Styles.whiteColor,
+          backgroundColor: theme.scaffoldBackgroundColor,
           appBar: AppBar(
-            backgroundColor: Styles.whiteColor,
+            backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
             leading: IconButton(
-              icon: const FaIcon(
+              icon: FaIcon(
                 FontAwesomeIcons.arrowLeft,
-                color: Styles.primaryTextColor,
+                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 size: 20,
               ),
               onPressed: () => Get.back(),
             ),
-            title: const Text(
+            title: Text(
               'Perfil',
               style: TextStyle(
-                color: Styles.primaryTextColor,
+                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
@@ -47,7 +48,7 @@ class ProfilePage extends StatelessWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: Styles.grey.withOpacity(0.1),
+                          color: theme.colorScheme.surface.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Column(
@@ -70,18 +71,18 @@ class ProfilePage extends StatelessWidget {
                             const SizedBox(height: 16),
                             Text(
                               controller.userName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,
-                                color: Styles.primaryTextColor,
+                                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               controller.userEmail,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
-                                color: Styles.grey,
+                                color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
                               ),
                             ),
                           ],
@@ -90,15 +91,77 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(height: 32),
 
                       // Options
-                      const Text(
+                      Text(
                         'Configurações',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Styles.primaryTextColor,
+                          color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                         ),
                       ),
                       const SizedBox(height: 16),
+
+                      // Theme Option
+                      InkWell(
+                        onTap: () => _showThemeSelector(context, controller),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: (theme.textTheme.bodyMedium?.color ?? Styles.grey).withOpacity(0.2),
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Styles.primaryColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                  child: FaIcon(
+                                    FontAwesomeIcons.palette,
+                                    size: 18,
+                                    color: Styles.primaryColor,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  'Tema',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                controller.currentThemeName,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              FaIcon(
+                                FontAwesomeIcons.chevronRight,
+                                size: 16,
+                                color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
 
                       // Logout Button
                       InkWell(
@@ -111,7 +174,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: Styles.grey.withOpacity(0.2),
+                              color: (theme.textTheme.bodyMedium?.color ?? Styles.grey).withOpacity(0.2),
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -143,10 +206,10 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const FaIcon(
+                              FaIcon(
                                 FontAwesomeIcons.chevronRight,
                                 size: 16,
-                                color: Styles.grey,
+                                color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
                               ),
                             ],
                           ),
@@ -157,6 +220,105 @@ class ProfilePage extends StatelessWidget {
                 ),
         );
       },
+    );
+  }
+
+  void _showThemeSelector(BuildContext context, ProfilePageController controller) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: theme.scaffoldBackgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Selecione o tema',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildThemeOption(
+                context,
+                controller,
+                ThemeMode.system,
+                'Sistema',
+                FontAwesomeIcons.desktop,
+              ),
+              _buildThemeOption(
+                context,
+                controller,
+                ThemeMode.light,
+                'Claro',
+                FontAwesomeIcons.sun,
+              ),
+              _buildThemeOption(
+                context,
+                controller,
+                ThemeMode.dark,
+                'Escuro',
+                FontAwesomeIcons.moon,
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context,
+    ProfilePageController controller,
+    ThemeMode themeMode,
+    String label,
+    IconData icon,
+  ) {
+    final theme = Theme.of(context);
+    final isSelected = controller.currentThemeMode == themeMode;
+    
+    return InkWell(
+      onTap: () {
+        controller.changeTheme(themeMode);
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Row(
+          children: [
+            FaIcon(
+              icon,
+              size: 20,
+              color: isSelected ? Styles.primaryColor : theme.textTheme.bodyMedium?.color ?? Styles.grey,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected ? Styles.primaryColor : theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                ),
+              ),
+            ),
+            if (isSelected)
+              const FaIcon(
+                FontAwesomeIcons.check,
+                size: 18,
+                color: Styles.primaryColor,
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
