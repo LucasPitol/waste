@@ -18,16 +18,16 @@ class CategoryPickerBottomSheet extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
+            // Handle bar - mais sutil
             Container(
-              margin: const EdgeInsets.only(top: 12, bottom: 8),
-              width: 40,
+              margin: const EdgeInsets.only(top: 8, bottom: 4),
+              width: 36,
               height: 4,
               decoration: BoxDecoration(
                 color: Colors.grey[300],
@@ -35,65 +35,46 @@ class CategoryPickerBottomSheet extends StatelessWidget {
               ),
             ),
             
-            // Header
+            // Header - simples e limpo
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Row(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Styles.primaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const FaIcon(
-                      FontAwesomeIcons.layerGroup,
-                      size: 20,
-                      color: Styles.primaryColor,
+                  const Text(
+                    'Selecione uma categoria',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Styles.primaryTextColor,
+                      letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Selecione uma categoria',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Styles.primaryTextColor,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'Organize seus gastos',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Styles.grey,
-                          ),
-                        ),
-                      ],
+                  const SizedBox(height: 4),
+                  Text(
+                    'Organize seus gastos',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
               ),
             ),
             
-            const Divider(height: 1),
-            
-            // Categories Grid
+            // Categories Grid - mais limpo
             Flexible(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                 child: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    crossAxisSpacing: 12,
+                    crossAxisSpacing: 8,
                     mainAxisSpacing: 12,
-                    childAspectRatio: 0.85,
+                    childAspectRatio: 0.9,
                   ),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
@@ -109,8 +90,6 @@ class CategoryPickerBottomSheet extends StatelessWidget {
                 ),
               ),
             ),
-            
-            const SizedBox(height: 8),
           ],
         ),
       ),
@@ -118,7 +97,7 @@ class CategoryPickerBottomSheet extends StatelessWidget {
   }
 }
 
-class _CategoryCard extends StatelessWidget {
+class _CategoryCard extends StatefulWidget {
   final SpendingCategory category;
   final bool isSelected;
   final VoidCallback onTap;
@@ -130,90 +109,99 @@ class _CategoryCard extends StatelessWidget {
   });
 
   @override
+  State<_CategoryCard> createState() => _CategoryCardState();
+}
+
+class _CategoryCardState extends State<_CategoryCard> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOut,
         decoration: BoxDecoration(
-          color: isSelected 
-              ? category.colorData.withOpacity(0.15)
-              : Colors.grey[50],
-          borderRadius: BorderRadius.circular(16),
+          color: _getBackgroundColor(),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
-                ? category.colorData
-                : Colors.grey[200]!,
-            width: isSelected ? 2 : 1,
+            color: _getBorderColor(),
+            width: widget.isSelected ? 1.5 : 0.5,
           ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: category.colorData.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon container
+            // Icon container - menor e mais sutil
             Container(
-              width: 56,
-              height: 56,
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
-                color: category.colorData.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(14),
+                color: widget.category.colorData.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: FaIcon(
-                  category.iconData,
-                  size: 26,
-                  color: category.colorData,
+                  widget.category.iconData,
+                  size: 24,
+                  color: widget.category.colorData,
                 ),
               ),
             ),
             
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             
-            // Category name
+            // Category name - sempre legível
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
-                category.name,
+                widget.category.name,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected 
-                      ? category.colorData
-                      : Styles.primaryTextColor,
+                  fontSize: 13,
+                  fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: _getTextColor(),
                   height: 1.2,
+                  letterSpacing: -0.2,
                 ),
               ),
             ),
-            
-            // Selected indicator
-            if (isSelected)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: category.colorData,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
           ],
         ),
       ),
     );
+  }
+
+  Color _getBackgroundColor() {
+    if (_isPressed) {
+      return Colors.grey[100]!;
+    }
+    if (widget.isSelected) {
+      return widget.category.colorData.withOpacity(0.08);
+    }
+    return Colors.transparent;
+  }
+
+  Color _getBorderColor() {
+    if (widget.isSelected) {
+      return widget.category.colorData.withOpacity(0.4);
+    }
+    return Colors.grey[200]!;
+  }
+
+  Color _getTextColor() {
+    if (widget.isSelected) {
+      return widget.category.colorData;
+    }
+    return Styles.primaryTextColor;
   }
 }
 
