@@ -13,8 +13,9 @@ class TransactionTile extends StatelessWidget {
     String title = transaction.reason ?? '';
     String date = Utils.formatDateDDMMYY(transaction.transactionDate);
     String amountStr = Utils.getAmountFormated(transaction.amount!);
+    bool isPositive = transaction.amount! > 0;
 
-    if (transaction.amount! > 0) {
+    if (isPositive) {
       amountStr = '+$amountStr';
     }
 
@@ -38,6 +39,7 @@ class TransactionTile extends StatelessWidget {
           ),
           JoyText(
             amountStr,
+            textColor: isPositive ? Colors.green : Styles.primaryTextColor,
           ),
         ],
       ),

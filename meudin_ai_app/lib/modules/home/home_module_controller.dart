@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/wallet_selector_widget.dart';
+import 'package:meudin_ai_app/modules/home/widgets/wallet_section/month_year_picker_bottom_sheet.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
@@ -133,6 +134,43 @@ class HomeModuleController extends GetxController {
     DateTime now = DateTime.now();
     startDate = DateTime(now.year, now.month, 1);
     endDate = DateTime(now.year, now.month, now.day, 59, 59, 59, 59);
+  }
+
+  void _updateDatesForMonth(DateTime selectedDate) {
+    DateTime now = DateTime.now();
+    int selectedYear = selectedDate.year;
+    int selectedMonth = selectedDate.month;
+
+    // Start date is always the first day of the selected month
+    startDate = DateTime(selectedYear, selectedMonth, 1);
+
+    // End date logic:
+    // - If selected month is current month: use current day
+    // - Otherwise: use last day of the selected month
+    if (selectedYear == now.year && selectedMonth == now.month) {
+      endDate = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    } else {
+      // Get last day of the selected month
+      final lastDay = DateTime(selectedYear, selectedMonth + 1, 0);
+      endDate = DateTime(selectedYear, selectedMonth, lastDay.day, 23, 59, 59, 999);
+    }
+  }
+
+  Future<void> openMonthYearPicker() async {
+    final selectedDate = await Get.bottomSheet<DateTime>(
+      MonthYearPickerBottomSheet(initialDate: startDate),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.transparent,
+    );
+
+    if (selectedDate != null) {
+      _updateDatesForMonth(selectedDate);
+      update();
+      await updatePageData();
+    }
   }
 
   updatePageData() async {

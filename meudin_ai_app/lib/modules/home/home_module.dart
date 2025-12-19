@@ -70,6 +70,7 @@ class HomeModule extends StatelessWidget {
                 twoFirstTransactionDtoList:
                     controller.twoFirstTransactionDtoList,
                 loading: controller.isRefreshing,
+                onDateTap: controller.openMonthYearPicker,
               ),
             ],
           ),

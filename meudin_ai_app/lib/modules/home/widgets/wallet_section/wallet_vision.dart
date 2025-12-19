@@ -16,6 +16,7 @@ class WalletVisionWidget extends StatelessWidget {
   final double monthSpends;
   final List<Transaction> transactionDtoList;
   final List<Transaction> twoFirstTransactionDtoList;
+  final VoidCallback? onDateTap;
 
   final bool loading;
 
@@ -28,6 +29,7 @@ class WalletVisionWidget extends StatelessWidget {
     required this.transactionDtoList,
     required this.twoFirstTransactionDtoList,
     required this.loading,
+    this.onDateTap,
   });
 
   _buildHomeBox(WalletVisionWidgetController controller) {
@@ -61,9 +63,7 @@ class WalletVisionWidget extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    // Open switch date bottom sheet
-                  },
+                  onPressed: onDateTap,
                   child: Text(
                     DateFormat.yMMMM(Constants.ptLanguageCode)
                         .format(startDate),
@@ -148,8 +148,9 @@ class WalletVisionWidget extends StatelessWidget {
                   String title = e.reason ?? '';
                   String date = Utils.formatDateDDMMYY(e.transactionDate);
                   String amountStr = Utils.getAmountFormated(e.amount!);
+                  bool isPositive = e.amount! > 0;
 
-                  if (e.amount! > 0) {
+                  if (isPositive) {
                     amountStr = '+' + amountStr;
                   }
 
@@ -173,6 +174,7 @@ class WalletVisionWidget extends StatelessWidget {
                         ),
                         JoyText(
                           amountStr,
+                          textColor: isPositive ? Colors.green : Styles.primaryTextColor,
                         ),
                       ],
                     ),
