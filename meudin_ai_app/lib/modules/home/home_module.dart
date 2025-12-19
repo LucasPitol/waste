@@ -34,22 +34,37 @@ class HomeModule extends StatelessWidget {
                           Container(
                             margin: const EdgeInsets.symmetric(vertical: 10),
                             child: controller.isRefreshing
-                                ? const SkeletonLoader(width: 120, height: 28)
-                                : JoyText.h1(
-                                    controller.currentWallet.name,
+                                ? const SkeletonLoader(width: 120, height: 20)
+                                : InkWell(
+                                    onTap: controller.isRefreshing
+                                        ? null
+                                        : () {
+                                            controller.openWalletSelector();
+                                          },
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            controller.currentWallet.name,
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w500,
+                                              color: Styles.primaryColor,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const FaIcon(
+                                            FontAwesomeIcons.sortDown,
+                                            color: Colors.grey,
+                                            size: 14,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                          ),
-                          IconButton(
-                            icon: const FaIcon(
-                              FontAwesomeIcons.sortDown,
-                              color: Colors.grey,
-                              size: 20,
-                            ),
-                            onPressed: controller.isRefreshing
-                                ? null
-                                : () {
-                                    controller.openWalletSelector();
-                                  },
                           ),
                         ],
                       ),

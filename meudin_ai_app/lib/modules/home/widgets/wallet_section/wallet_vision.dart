@@ -71,22 +71,44 @@ class WalletVisionWidget extends StatelessWidget {
                       JoyText.h1(
                         Utils.getAmountFormated(balance),
                       ),
-                      JoyText.secundaryText(
+                      const SizedBox(height: 4),
+                      Text(
                         'Balanço do mês',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w400,
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 TextButton(
                   onPressed: onDateTap,
-                  child: Text(
-                    DateFormat.yMMMM(Constants.ptLanguageCode)
-                        .format(startDate),
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Styles.primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        DateFormat.yMMMM(Constants.ptLanguageCode)
+                            .format(startDate),
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Styles.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.keyboard_arrow_down,
+                        size: 16,
+                        color: Styles.primaryColor,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -104,8 +126,14 @@ class WalletVisionWidget extends StatelessWidget {
                       JoyText(
                         '+' + Utils.getAmountFormated(monthRevenue),
                       ),
-                      JoyText.secundaryText(
+                      const SizedBox(height: 4),
+                      Text(
                         'Entrada',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w400,
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
@@ -121,8 +149,14 @@ class WalletVisionWidget extends StatelessWidget {
                       JoyText(
                         Utils.getAmountFormated(monthSpends),
                       ),
-                      JoyText.secundaryText(
+                      const SizedBox(height: 4),
+                      Text(
                         'Saida',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w400,
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
@@ -136,8 +170,13 @@ class WalletVisionWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                JoyText.h1(
+                Text(
                   'Transações',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -146,12 +185,17 @@ class WalletVisionWidget extends StatelessWidget {
                       startDate: startDate,
                     );
                   },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     'Ver todas',
                     style: TextStyle(
                       fontSize: 14.0,
                       color: Styles.primaryColor,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
