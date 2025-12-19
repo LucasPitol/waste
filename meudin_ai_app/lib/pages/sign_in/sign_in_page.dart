@@ -12,38 +12,114 @@ class SignInPage extends StatelessWidget {
       init: SignInPageController(),
       builder: (controller) {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: SafeArea(
             child: Stack(
               children: [
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(
-                          left: 20,
-                          right: 20,
-                          bottom: 20,
-                          top: 20,
-                        ),
-                        child: Form(
-                          key: controller.formKey,
-                          child: Column(
-                            children: [
-                              const JoyLogo(),
-                              const SizedBox(height: 60),
-                              JoyTextFormField(
-                                controller: controller.signInDto.email,
-                                labelText: 'Email',
-                                keyboardType: TextInputType.emailAddress,
-                                textCapitalization: TextCapitalization.none,
-                              ),
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                child: JoyTextFormField(
+                Center(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 40),
+                          
+                          // Logo com animação
+                          TweenAnimationBuilder(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 600),
+                            curve: Curves.easeOut,
+                            builder: (context, double value, child) {
+                              return Opacity(
+                                opacity: value,
+                                child: Transform.translate(
+                                  offset: Offset(0, 20 * (1 - value)),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Styles.primaryColor,
+                                        Styles.primaryColorLight,
+                                      ],
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.account_balance_wallet_rounded,
+                                    size: 56,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                const JoyLogo(),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Seu dinheiro, organizado',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[400],
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 64),
+                          
+                          // Título
+                          Text(
+                            'Bem-vindo de volta!',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w700,
+                              color: Styles.primaryTextColor,
+                              letterSpacing: -0.8,
+                              height: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Entre para continuar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[500],
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 48),
+                          
+                          // Formulário
+                          Form(
+                            key: controller.formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // Email field
+                                JoyTextFormField(
+                                  controller: controller.signInDto.email,
+                                  labelText: 'Email',
+                                  keyboardType: TextInputType.emailAddress,
+                                  textCapitalization: TextCapitalization.none,
+                                ),
+                                const SizedBox(height: 20),
+                                
+                                // Password field
+                                JoyTextFormField(
                                   controller: controller.signInDto.password,
                                   labelText: 'Senha',
                                   obscureText: true,
@@ -56,53 +132,93 @@ class SignInPage extends StatelessWidget {
                                     );
                                   },
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                child: JoyElevatedButton(
-                                  text: 'Entrar',
-                                  function: () {
-                                    controller.signIn(
-                                      controller.signInDto.email.text,
-                                      controller.signInDto.password.text,
-                                    );
-                                  },
+                                const SizedBox(height: 32),
+                                
+                                // Botão de entrar
+                                SizedBox(
+                                  height: 56,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      controller.signIn(
+                                        controller.signInDto.email.text,
+                                        controller.signInDto.password.text,
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Styles.primaryColor,
+                                      foregroundColor: Colors.white,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'ENTRAR',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 32),
+                          
+                          // Links de cadastro e recuperação
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Novo por aqui?',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 20),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    JoyText.secundaryText('Novo por aqui?'),
-                                    JoyTextButton(
-                                      text: 'Cadastre-se',
-                                      function: controller.goToSignUpPage,
-                                    ),
-                                  ],
+                              TextButton(
+                                onPressed: controller.goToSignUpPage,
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
                                 ),
-                              ),
-                              SizedBox(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    JoyText.secundaryText(
-                                        'Esqueceu sua senha?'),
-                                    JoyTextButton(
-                                      text: 'Recuperar acesso',
-                                      function: () {
-                                        controller.goToRecoverPasswordPage(
-                                            controller.signInDto.email.text);
-                                      },
-                                    ),
-                                  ],
+                                child: Text(
+                                  'Cadastre-se',
+                                  style: TextStyle(
+                                    color: Styles.primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
+                          
+                          const SizedBox(height: 4),
+                          
+                          TextButton(
+                            onPressed: () {
+                              controller.goToRecoverPasswordPage(
+                                controller.signInDto.email.text,
+                              );
+                            },
+                            child: Text(
+                              'Esqueceu sua senha?',
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 40),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
                 JoyLoadingBlock(controller.loading),

@@ -7,11 +7,22 @@ class JoyLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Meudin',
-      style: GoogleFonts.lobster(
-        fontSize: 28,
-        color: Styles.primaryColor,
+    return ShaderMask(
+      shaderCallback: (bounds) => LinearGradient(
+        colors: [
+          Styles.primaryColor,
+          Styles.primaryColorLight,
+        ],
+      ).createShader(bounds),
+      child: Text(
+        'Meudin',
+        style: GoogleFonts.inter(
+          fontSize: 40,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+          letterSpacing: -1.2,
+          height: 1,
+        ),
       ),
     );
   }

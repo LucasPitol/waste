@@ -44,23 +44,68 @@ class JoyTextFormField extends StatelessWidget {
       onFieldSubmitted: (_) => onFieldSubmitted != null
           ? onFieldSubmitted()
           : FocusScope.of(Get.context!).nextFocus(),
-      style: const TextStyle(color: Styles.primaryTextColor),
+      style: const TextStyle(
+        color: Styles.primaryTextColor,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
       decoration: InputDecoration(
         counterText: '',
         hintText: hintText,
-        hintStyle: const TextStyle(color: Styles.greyDarker, fontSize: 14),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Styles.primaryTextColor),
+        hintStyle: TextStyle(
+          color: Colors.grey[400],
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+        ),
+        filled: true,
+        fillColor: Colors.grey[50],
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 18,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Styles.grey),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Colors.grey[200]!,
+            width: 1,
+          ),
         ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Styles.primaryTextColor),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Styles.primaryColor,
+            width: 2,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(
+            color: Colors.red[300]!,
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 2,
+          ),
         ),
         labelText: labelText,
-        focusColor: Styles.primaryColor,
-        labelStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+        labelStyle: TextStyle(
+          color: Colors.grey[600],
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+        ),
+        floatingLabelStyle: TextStyle(
+          color: Styles.primaryColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
