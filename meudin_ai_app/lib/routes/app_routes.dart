@@ -7,6 +7,7 @@ import 'package:meudin_ai_app/pages/home_app/main_app_page.dart';
 import 'package:meudin_ai_app/pages/sign_in/sign_in_page.dart';
 import 'package:meudin_ai_app/pages/sign_up/sign_up_page.dart';
 import 'package:meudin_ai_app/pages/profile/profile_page.dart';
+import 'package:meudin_ai_app/pages/faq/faq_page.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -17,6 +18,7 @@ class AppRoutes {
   static String signUpRoute = '/sign-up';
   static String recoverPasswordRoute = '/recover-password';
   static String profileRoute = '/profile';
+  static String faqRoute = '/faq';
   static String newRevenueRoute = '/new-revenue';
   static String newSpendRoute = '/new-spend';
 
@@ -56,6 +58,10 @@ class AppRoutes {
     GetPage(
       name: profileRoute,
       page: () => const ProfilePage(),
+    ),
+    GetPage(
+      name: faqRoute,
+      page: () => const FAQPage(),
     ),
   ];
 }

@@ -120,14 +120,14 @@ class ProfilePage extends StatelessWidget {
                         onTap: controller.openFAQ,
                       ),
                       const SizedBox(height: 4),
-                      _buildSettingItem(
-                        context,
-                        theme,
-                        controller,
-                        icon: FontAwesomeIcons.message,
-                        title: 'Enviar sugestão',
-                        onTap: controller.sendFeedback,
-                      ),
+                      // _buildSettingItem(
+                      //   context,
+                      //   theme,
+                      //   controller,
+                      //   icon: FontAwesomeIcons.message,
+                      //   title: 'Enviar sugestão',
+                      //   onTap: controller.sendFeedback,
+                      // ),
                       const SizedBox(height: 4),
                       _buildSettingItem(
                         context,
@@ -148,7 +148,7 @@ class ProfilePage extends StatelessWidget {
                         controller,
                         icon: FontAwesomeIcons.circleInfo,
                         title: 'Sobre o Meudin',
-                        onTap: controller.showAbout,
+                        onTap: () => _showAboutBottomSheet(context, controller),
                       ),
                       const SizedBox(height: 4),
                       _buildSettingItem(
@@ -239,6 +239,86 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 10),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  void _showAboutBottomSheet(BuildContext context, ProfilePageController controller) {
+    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: theme.scaffoldBackgroundColor,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.9,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+              child: Column(
+                children: [
+                  // Handle bar
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 24),
+                    decoration: BoxDecoration(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.2) ?? Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  // Title
+                  Text(
+                    'Sobre o Meudin',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Content
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'O Meudin é um aplicativo de gestão financeira pessoal e compartilhada, focado em simplicidade e controle real de gastos.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              height: 1.6,
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) ?? Colors.grey.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            'Com o Meudin, você pode:\n\n• Criar e gerenciar carteiras para diferentes contextos\n• Compartilhar finanças com outras pessoas\n• Registrar receitas e despesas de forma simples\n• Visualizar gráficos e análises por categoria\n• Filtrar transações por período',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              height: 1.6,
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) ?? Colors.grey.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );

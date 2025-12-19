@@ -38,8 +38,7 @@ class ProfilePageController extends GetxController {
   }
 
   void openFAQ() {
-    // TODO: Implementar navegação para FAQ
-    Get.snackbar('FAQ', 'Em breve');
+    Get.toNamed(AppRoutes.faqRoute);
   }
 
   void sendFeedback() {
@@ -52,9 +51,8 @@ class ProfilePageController extends GetxController {
     Get.snackbar('Suporte', 'Em breve');
   }
 
-  void showAbout() {
-    // TODO: Implementar tela sobre
-    Get.snackbar('Sobre', 'Em breve');
+  void showAbout(BuildContext context) {
+    // Implementado na ProfilePage._showAboutBottomSheet
   }
 
   void openTerms() {
