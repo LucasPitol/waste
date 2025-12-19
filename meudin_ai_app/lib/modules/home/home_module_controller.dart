@@ -160,6 +160,27 @@ class HomeModuleController extends GetxController {
     // Ordena por valor descendente
     _categoryExpenses.sort((a, b) => b.amount.compareTo(a.amount));
     
+    // Limita a 4 categorias, agrupa o resto em "Outros"
+    if (_categoryExpenses.length > 4) {
+      final topCategories = _categoryExpenses.take(4).toList();
+      final others = _categoryExpenses.skip(4);
+      
+      final othersTotal = others.fold(0.0, (sum, cat) => sum + cat.amount);
+      final othersPercentage = (othersTotal / totalAmount) * 100;
+
+      if (othersTotal > 0) {
+        topCategories.add(CategoryExpense(
+          categoryId: 'others',
+          categoryName: 'Outros',
+          categoryColor: Colors.grey,
+          amount: othersTotal,
+          percentage: othersPercentage,
+        ));
+      }
+
+      _categoryExpenses = topCategories;
+    }
+    
     // CORREÇÃO: Garante que os percentuais somem exatamente 100%
     // Ajusta o último item para compensar erros de arredondamento
     if (_categoryExpenses.isNotEmpty) {
@@ -176,27 +197,6 @@ class HomeModuleController extends GetxController {
           percentage: _categoryExpenses[lastIndex].percentage + difference,
         );
       }
-    }
-
-    // Limita a 6 categorias, agrupa o resto em "Outros"
-    if (_categoryExpenses.length > 6) {
-      final topCategories = _categoryExpenses.take(6).toList();
-      final others = _categoryExpenses.skip(6);
-      
-      final othersTotal = others.fold(0.0, (sum, cat) => sum + cat.amount);
-      final othersPercentage = (othersTotal / totalAmount) * 100;
-
-      if (othersTotal > 0) {
-        topCategories.add(CategoryExpense(
-          categoryId: 'others',
-          categoryName: 'Outros',
-          categoryColor: Colors.grey,
-          amount: othersTotal,
-          percentage: othersPercentage,
-        ));
-      }
-
-      _categoryExpenses = topCategories;
     }
   }
 
