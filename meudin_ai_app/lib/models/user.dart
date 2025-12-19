@@ -39,5 +39,6 @@ class User extends AbstractModel {
         'currentWalletId': currentWalletId,
         'token': token ?? '',
         'creationDate': creationDate.toIso8601String(),
+        'walletList': walletList.map((wallet) => wallet.toJson()).toList(),
       };
 }

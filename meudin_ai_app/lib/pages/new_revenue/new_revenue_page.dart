@@ -16,10 +16,19 @@ class NewRevenuePage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: const FaIcon(
+                FontAwesomeIcons.arrowLeft,
+                size: 20,
+              ),
               onPressed: () => Get.back(),
             ),
-            title: const Text('Nova Receita'),
+            title: const Text(
+              'Nova Receita',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             backgroundColor: Styles.whiteColor,
             foregroundColor: Styles.primaryTextColor,
             elevation: 0,

@@ -38,7 +38,7 @@ class HomeAppBar extends StatelessWidget {
                         size: 22,
                       ),
                       onPressed: () {
-                        print('profile');
+                        controller.goToProfile();
                       },
                     ),
                   ],

@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
+import 'package:meudin_ai_app/models/spending_category.dart';
+import 'package:meudin_ai_app/pages/new_spend/widgets/category_picker_bottom_sheet.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class NewSpendPageController extends GetxController {
@@ -13,10 +16,11 @@ class NewSpendPageController extends GetxController {
   bool loading = false;
   List<String>? errorList;
 
-  String? selectedCategoryId;
+  SpendingCategory? selectedCategory;
   String selectedCategoryName = 'Selecione';
+  IconData selectedCategoryIcon = FontAwesomeIcons.shapes;
 
-  List<Map<String, String>> categories = [];
+  List<SpendingCategory> categories = [];
   late SpendingCategoryService _spendingCategoryService;
 
   @override
@@ -29,13 +33,21 @@ class NewSpendPageController extends GetxController {
 
   Future<void> fetchCategories() async {
     final res = await _spendingCategoryService.getSpendingCategories();
+    
+    // 🖨️ Print da resposta da API
+    print('📊 [SpendingCategories] Response: ${res.success}');
+    print('📊 [SpendingCategories] Data: ${res.data}');
+    
     if (res.success && res.data is List) {
       categories = (res.data as List)
-          .map<Map<String, String>>((e) => {
-                'value': e['value'].toString(),
-                'name': e['name'].toString(),
-              })
+          .map<SpendingCategory>((e) => SpendingCategory.fromApi(e))
           .toList();
+      
+      print('📊 [SpendingCategories] Parsed ${categories.length} categories');
+      for (var cat in categories) {
+        print('   - ${cat.name} (${cat.id})');
+        print('     Value: ${cat.value}, Icon: ${cat.icon}, Color: ${cat.color}');
+      }
       update();
     }
   }
@@ -59,34 +71,19 @@ class NewSpendPageController extends GetxController {
   }
 
   void pickCategory() async {
-    final result = await Get.bottomSheet(
-      Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text('Selecione uma categoria', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ),
-                ...categories.map((cat) => ListTile(
-                      title: Text(cat['name']!),
-                      onTap: () => Get.back(result: cat),
-                    )),
-              ],
-            ),
-          ),
-        ),
+    final result = await Get.bottomSheet<SpendingCategory>(
+      CategoryPickerBottomSheet(
+        categories: categories,
+        selectedCategoryId: selectedCategory?.id,
       ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
     );
-    if (result != null && result is Map<String, String>) {
-      selectedCategoryId = result['value'];
-      selectedCategoryName = result['name']!;
+    
+    if (result != null) {
+      selectedCategory = result;
+      selectedCategoryName = result.name;
+      selectedCategoryIcon = result.iconData;
       update();
     }
   }
@@ -99,7 +96,7 @@ class NewSpendPageController extends GetxController {
     if (reasonController.text.trim().isEmpty) {
       errors.add('Preencha a descrição');
     }
-    if (selectedCategoryId == null) {
+    if (selectedCategory == null) {
       errors.add('Selecione uma categoria');
     }
     if (errors.isNotEmpty) {
@@ -112,11 +109,11 @@ class NewSpendPageController extends GetxController {
     loading = true;
     update();
     try {
-      debugPrint('Calling saveNewSpend with: amount=${amountController.text.trim()}, reason=${reasonController.text.trim()}, categoryId=$selectedCategoryId, date=$selectedDate');
+      debugPrint('Calling saveNewSpend with: amount=${amountController.text.trim()}, reason=${reasonController.text.trim()}, categoryId=${selectedCategory?.id}, categoryValue=${selectedCategory?.value}, date=$selectedDate');
       ResponseDto response = await _transactionService.saveNewSpend(
         amountController.text.trim(),
         reasonController.text.trim(),
-        selectedCategoryId,
+        selectedCategory?.id, // Usando UUID do backend
         selectedDate,
       );
       loading = false;

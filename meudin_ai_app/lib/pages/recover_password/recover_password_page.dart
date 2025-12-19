@@ -47,20 +47,27 @@ class RecoverPasswordPage extends StatelessWidget {
                 ),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      JoyText.h1('Recuperação de senha'),
                       IconButton(
                         icon: const FaIcon(
-                          FontAwesomeIcons.xmark,
+                          FontAwesomeIcons.arrowLeft,
                           color: Styles.primaryTextColor,
-                          size: 22,
+                          size: 20,
                         ),
                         onPressed: () {
                           Get.back();
                         },
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Recuperação de senha',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Styles.primaryTextColor,
+                        ),
                       ),
                     ],
                   ),

@@ -3,7 +3,11 @@ class ResponseDto {
   late bool success;
   late String? errorMessage;
 
-  ResponseDto() {}
+  ResponseDto({
+    this.success = false,
+    this.errorMessage,
+    this.data,
+  });
 
   ResponseDto.fromJson(Map<String, dynamic> json) {
     success = json['success'];

@@ -13,7 +13,21 @@ class Wallet extends AbstractModel {
     id = json['id'];
     name = json['name'];
     ownerId = json['ownerId'];
-    membersIds = json['membersIds'];
+    membersIds = json['membersIds'] != null 
+        ? List<String>.from(json['membersIds'])
+        : [];
     creationDate = DateTime.parse(json['creationDate']);
+    lastUpdate = json['lastUpdate'] != null 
+        ? DateTime.parse(json['lastUpdate'])
+        : creationDate;
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'ownerId': ownerId,
+        'membersIds': membersIds,
+        'creationDate': creationDate.toIso8601String(),
+        'lastUpdate': lastUpdate.toIso8601String(),
+      };
 }

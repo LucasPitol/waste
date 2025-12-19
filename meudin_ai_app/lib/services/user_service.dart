@@ -21,8 +21,102 @@ class UserService {
     return currentUser;
   }
 
-  // ❌ REMOVIDOS: Endpoints de verificação manual
-  // O Supabase agora gerencia a verificação de email automaticamente
+  /// Get headers with authentication token
+  static Map<String, String> getAuthHeaders() {
+    final headers = {
+      "Accept": "application/json",
+      "content-type": "application/json",
+    };
+
+    if (currentUser?.token != null && currentUser!.token!.isNotEmpty) {
+      headers["Authorization"] = "Bearer ${currentUser!.token}";
+    }
+
+    return headers;
+  }
+
+  /// Refresh token - renova o token JWT e retorna dados atualizados do usuário
+  Future<ResponseDto> refreshToken() async {
+    Uri url = Uri.parse('${apiUrl}auth/refresh-token');
+
+    try {
+      var response = await http.post(
+        url,
+        headers: getAuthHeaders(),
+      );
+
+      ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+      if (responseDto.success) {
+        User user = _handleUser(responseDto.data);
+        currentUser = user;
+        await _localStorageService.storeUserData(user);
+      }
+
+      return responseDto;
+    } catch (e) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Erro ao renovar token: $e',
+      );
+    }
+  }
+
+  /// Logout - invalida a sessão no servidor
+  Future<ResponseDto> logout() async {
+    Uri url = Uri.parse('${apiUrl}auth/logout');
+
+    try {
+      var response = await http.post(
+        url,
+        headers: getAuthHeaders(),
+      );
+
+      ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+      // Limpar dados locais independente do resultado
+      currentUser = null;
+      await _localStorageService.deleteUserData();
+
+      return responseDto;
+    } catch (e) {
+      // Mesmo com erro, limpar dados locais
+      currentUser = null;
+      await _localStorageService.deleteUserData();
+      
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Erro ao fazer logout: $e',
+      );
+    }
+  }
+
+  /// Get current user data from server
+  Future<ResponseDto> getCurrentUserData() async {
+    Uri url = Uri.parse('${apiUrl}auth/me');
+
+    try {
+      var response = await http.get(
+        url,
+        headers: getAuthHeaders(),
+      );
+
+      ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+      if (responseDto.success) {
+        User user = _handleUser(responseDto.data);
+        currentUser = user;
+        await _localStorageService.storeUserData(user);
+      }
+
+      return responseDto;
+    } catch (e) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Erro ao buscar dados do usuário: $e',
+      );
+    }
+  }
 
   Future<ResponseDto> signInByEmailAndPassword(
     String userMail,
@@ -43,6 +137,7 @@ class UserService {
         },
       ),
     );
+
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
     if (responseDto.success) {
@@ -84,7 +179,6 @@ class UserService {
     user.displayName = userMap['displayName'];
     user.email = userMap['email'];
     user.token = userMap['token'] ?? '';
-
     user.creationDate = DateTime.parse(userMap['creationDate']);
     user.lastUpdate = userMap['lastUpdate'] != null
         ? DateTime.parse(userMap['lastUpdate'])
@@ -92,12 +186,10 @@ class UserService {
     user.currentWalletId = userMap['currentWalletId'];
 
     List<dynamic> walletListMap = userMap['walletList'];
-
     List<Wallet> walletList = [];
 
-    for (var element in walletListMap) {
-      Wallet wallet = handleWallet(element);
-
+    for (var i = 0; i < walletListMap.length; i++) {
+      Wallet wallet = handleWallet(walletListMap[i]);
       walletList.add(wallet);
     }
 
@@ -111,15 +203,26 @@ class UserService {
 
     wallet.id = walletMap['id'];
     wallet.name = walletMap['name'];
-    wallet.ownerId = walletMap['ownerId'];
-    wallet.lastUpdate = DateTime.parse(walletMap['lastUpdate']);
-    wallet.creationDate = DateTime.parse(walletMap['creationDate']);
+    wallet.ownerId = walletMap['ownerId'] ?? walletMap['owner_id'];
+
+    final lastUpdateStr = walletMap['lastUpdate'] ?? walletMap['updated_at'];
+    wallet.lastUpdate = lastUpdateStr != null 
+        ? DateTime.parse(lastUpdateStr)
+        : DateTime.now();
+
+    final creationDateStr = walletMap['creationDate'] ?? walletMap['created_at'];
+    wallet.creationDate = creationDateStr != null
+        ? DateTime.parse(creationDateStr)
+        : DateTime.now();
 
     List<String> membersId = [];
     var membersIdMap = walletMap['membersIds'];
-    for (var element in membersIdMap) {
-      String id = element.toString();
-      membersId.add(id);
+    
+    if (membersIdMap != null && membersIdMap is List) {
+      for (var element in membersIdMap) {
+        String id = element.toString();
+        membersId.add(id);
+      }
     }
 
     wallet.membersIds = membersId;
@@ -127,8 +230,9 @@ class UserService {
     return wallet;
   }
 
-  forceSignOut() {
+  /// Force sign out (local only, without calling API)
+  Future<void> forceSignOut() async {
     currentUser = null;
-    _localStorageService.deleteUserData();
+    await _localStorageService.deleteUserData();
   }
 }

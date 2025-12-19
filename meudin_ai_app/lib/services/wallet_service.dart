@@ -39,9 +39,9 @@ class WalletService {
       if (UserService.currentUser != null) {
         UserService.currentUser!.walletList = wallets;
         
-        // Optionally save the updated user to local storage
+        // Save the updated wallet list to secure storage
         final localStorageService = LocalStorageService();
-        await localStorageService.storeUserData(UserService.currentUser!);
+        await localStorageService.updateWalletList(wallets);
       }
     }
 

@@ -35,10 +35,19 @@ class NewSpendPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: const FaIcon(
+                FontAwesomeIcons.arrowLeft,
+                size: 20,
+              ),
               onPressed: () => Get.back(),
             ),
-            title: const Text('Novo Gasto'),
+            title: const Text(
+              'Novo Gasto',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             backgroundColor: Styles.whiteColor,
             foregroundColor: Styles.primaryTextColor,
             elevation: 0,
@@ -172,7 +181,20 @@ class NewSpendPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.shapes, size: 18, color: Colors.grey),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: controller.selectedCategory != null
+                              ? controller.selectedCategory!.colorData.withOpacity(0.15)
+                              : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: FaIcon(
+                          controller.selectedCategoryIcon,
+                          size: 18,
+                          color: controller.selectedCategory?.colorData ?? Colors.grey,
+                        ),
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: InkWell(
@@ -186,13 +208,27 @@ class NewSpendPage extends StatelessWidget {
                                 const SizedBox(height: 2),
                                 Text(
                                   controller.selectedCategoryName,
-                                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: controller.selectedCategory != null
+                                        ? Colors.black
+                                        : Colors.grey[600],
+                                    fontWeight: controller.selectedCategory != null
+                                        ? FontWeight.w500
+                                        : FontWeight.w400,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
                       ),
+                      const FaIcon(
+                        FontAwesomeIcons.chevronRight,
+                        size: 14,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 4),
                     ],
                   ),
                 ),

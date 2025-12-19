@@ -6,6 +6,7 @@ import 'package:meudin_ai_app/pages/transaction/transactions_page.dart';
 import 'package:meudin_ai_app/pages/home_app/main_app_page.dart';
 import 'package:meudin_ai_app/pages/sign_in/sign_in_page.dart';
 import 'package:meudin_ai_app/pages/sign_up/sign_up_page.dart';
+import 'package:meudin_ai_app/pages/profile/profile_page.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -52,9 +53,9 @@ class AppRoutes {
       name: recoverPasswordRoute,
       page: () => const RecoverPasswordPage(),
     ),
-    // GetPage(
-    //   name: profileRoute,
-    //   page: () => const ProfilePage(),
-    // ),
+    GetPage(
+      name: profileRoute,
+      page: () => const ProfilePage(),
+    ),
   ];
 }

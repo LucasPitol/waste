@@ -12,33 +12,43 @@ class TransactionPageHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      alignment: Alignment.topRight,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                JoyText.h1(
-                  'Transações',
-                ),
-                JoyText.secundaryText(
-                  Utils.formatDateMMMdeYYYY(startDate),
-                ),
-              ],
-            ),
-          ),
           IconButton(
             icon: const FaIcon(
-              FontAwesomeIcons.xmark,
+              FontAwesomeIcons.arrowLeft,
               color: Styles.primaryTextColor,
-              size: 22,
+              size: 20,
             ),
             onPressed: () {
               Get.back();
             },
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Transações',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Styles.primaryTextColor,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  Utils.formatDateMMMdeYYYY(startDate),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -31,9 +31,12 @@ class HomeModuleController extends GetxController {
   HomeModuleController() {
     _userService = UserService();
     _user = _userService.getCurrentUser();
+    
     currentWallet = _user!.walletList
         .singleWhere((element) => element.id == _user!.currentWalletId);
+    
     isWalletOwner = (currentWallet.ownerId == _user!.id);
+    
     monthRevenue = 0.0;
     monthSpends = 0.0;
     monthBalance = 0.0;
@@ -64,9 +67,7 @@ class HomeModuleController extends GetxController {
           .singleWhere((element) => element.id == _user!.currentWalletId);
       isWalletOwner = (currentWallet.ownerId == _user!.id);
     } catch (e) {
-      // Handle wallet loading error
-      print('Error loading wallets: $e');
-      // Optionally show error to user
+      // Handle wallet loading error silently
     } finally {
       isWalletListLoading = false;
       update();
@@ -78,11 +79,13 @@ class HomeModuleController extends GetxController {
     isRefreshing = true;
     update();
     
-    await refreshUserAndWallet();
-    await updatePageData();
-    
-    isRefreshing = false;
-    update();
+    try {
+      await refreshUserAndWallet();
+      await updatePageData();
+    } finally {
+      isRefreshing = false;
+      update();
+    }
   }
 
   openWalletSelector() async {
@@ -136,58 +139,68 @@ class HomeModuleController extends GetxController {
     loading = true;
     update();
 
-    String walletId = currentWallet.id;
-    ResponseDto res = await _transactionService.getTransactionDtoList(
-      walletId,
-      startDate,
-      endDate,
-    );
+    try {
+      String walletId = currentWallet.id;
+      ResponseDto res = await _transactionService.getTransactionDtoList(
+        walletId,
+        startDate,
+        endDate,
+      );
 
-    loading = false;
-    if (res.success) {
-      transactionDtoList = res.data.isNotEmpty
-          ? res.data.map<Transaction>((e) => Transaction.fromJson(e)).toList()
-          : [];
+      loading = false;
+      
+      if (res.success) {
+        transactionDtoList = res.data.isNotEmpty
+            ? res.data.map<Transaction>((e) => Transaction.fromJson(e)).toList()
+            : [];
 
-      // Sort by transactionDate descending (most recent first)
-      transactionDtoList.sort((a, b) {
-        if (a.transactionDate == null && b.transactionDate == null) return 0;
-        if (a.transactionDate == null) return 1;
-        if (b.transactionDate == null) return -1;
-        return b.transactionDate!.compareTo(a.transactionDate!);
-      });
+        // Sort by transactionDate descending (most recent first)
+        transactionDtoList.sort((a, b) {
+          if (a.transactionDate == null && b.transactionDate == null) return 0;
+          if (a.transactionDate == null) return 1;
+          if (b.transactionDate == null) return -1;
+          return b.transactionDate!.compareTo(a.transactionDate!);
+        });
 
-      double totalAmountTemp = 0;
-      double totalRevenueTemp = 0;
-      double totalSpendTemp = 0;
+        double totalAmountTemp = 0;
+        double totalRevenueTemp = 0;
+        double totalSpendTemp = 0;
 
-      for (var element in transactionDtoList) {
-        double amount = element.amount!;
+        for (var element in transactionDtoList) {
+          double amount = element.amount!;
 
-        if (amount > 0) {
-          totalRevenueTemp = totalRevenueTemp + amount;
-        } else {
-          totalSpendTemp = totalSpendTemp + amount;
+          if (amount > 0) {
+            totalRevenueTemp = totalRevenueTemp + amount;
+          } else {
+            totalSpendTemp = totalSpendTemp + amount;
+          }
         }
+
+        totalAmountTemp = (totalRevenueTemp + totalSpendTemp);
+
+        monthRevenue = totalRevenueTemp;
+        monthSpends = totalSpendTemp;
+        monthBalance = totalAmountTemp;
+
+        twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
+      } else {
+        JoyModal.bottomSheetError(
+          context: Get.context!,
+          errorList: [res.errorMessage!],
+          title: 'Erro ao carregar transações',
+        );
       }
-
-      totalAmountTemp = (totalRevenueTemp + totalSpendTemp);
-
-      monthRevenue = totalRevenueTemp;
-      monthSpends = totalSpendTemp;
-      monthBalance = totalAmountTemp;
-
-      twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
-    } else {
-      update();
-
+    } catch (e) {
+      loading = false;
+      
       JoyModal.bottomSheetError(
         context: Get.context!,
-        errorList: [res.errorMessage!],
-        title: 'Erro ao carregar transações',
+        errorList: ['Erro ao carregar dados: $e'],
+        title: 'Erro',
       );
+    } finally {
+      loading = false;
+      update();
     }
-
-    update();
   }
 }
