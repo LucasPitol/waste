@@ -3,6 +3,7 @@ import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision.
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_skeleton.dart';
 import 'package:meudin_ai_app/modules/home/widgets/app_bar/home_app_bar.dart';
 import 'package:meudin_ai_app/modules/home/widgets/upgrade_banner/upgrade_banner_widget.dart';
+import 'package:meudin_ai_app/modules/home/widgets/expense_category_chart/expense_category_chart_widget.dart';
 import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -114,6 +115,12 @@ class HomeModule extends StatelessWidget {
                             },
                           ),
                         ),
+                      ),
+                      // Gráfico de gastos por categoria
+                      ExpenseCategoryChartWidget(
+                        categoryExpenses: controller.categoryExpenses,
+                        startDate: controller.startDate,
+                        loading: controller.isRefreshing,
                       ),
                       const SizedBox(height: 20), // Espaço extra no final
                     ],

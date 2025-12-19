@@ -13,6 +13,9 @@ import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/wallet.dart';
 import 'package:meudin_ai_app/models/user.dart';
+import 'package:meudin_ai_app/models/category_expense.dart';
+import 'package:meudin_ai_app/models/spending_category.dart';
+import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
@@ -33,11 +36,14 @@ class HomeModuleController extends GetxController {
   late TransactionService _transactionService;
   late WalletService _walletService;
   late UserService _userService;
+  late SpendingCategoryService _spendingCategoryService;
   late bool isWalletListLoading;
   late bool isRefreshing;
   late bool showUpgradeBanner;
   late UpgradeBannerVersion selectedBannerVersion;
   Timer? _upgradeBannerTimer;
+  List<SpendingCategory> _categories = [];
+  List<CategoryExpense> _categoryExpenses = [];
 
   HomeModuleController() {
     _userService = UserService();
@@ -55,6 +61,7 @@ class HomeModuleController extends GetxController {
     twoFirstTransactionDtoList = [];
     _transactionService = TransactionService();
     _walletService = WalletService();
+    _spendingCategoryService = SpendingCategoryService();
     isWalletListLoading = false;
     isRefreshing = false;
     showUpgradeBanner = false;
@@ -75,8 +82,122 @@ class HomeModuleController extends GetxController {
   void onInit() {
     super.onInit();
     _fillStandardDate();
+    _fetchCategories();
     refreshAll();
     _startUpgradeBannerTimer();
+  }
+
+  Future<void> _fetchCategories() async {
+    final res = await _spendingCategoryService.getSpendingCategories();
+    if (res.success && res.data is List) {
+      _categories = (res.data as List)
+          .map<SpendingCategory>((e) => SpendingCategory.fromApi(e))
+          .toList();
+    }
+  }
+
+  List<CategoryExpense> get categoryExpenses => _categoryExpenses;
+
+  /// Calcula gastos por categoria usando APENAS os dados já carregados em transactionDtoList
+  /// Não faz nenhuma nova requisição de transações - usa os mesmos dados do saldo e listagem
+  void _calculateCategoryExpenses() {
+    // Usa transactionDtoList que já foi carregado em updatePageData()
+    // Filtra apenas despesas (valores negativos) com categoria
+    final expenses = transactionDtoList
+        .where((t) => t.amount != null && t.amount! < 0 && t.categoryId != null)
+        .toList();
+
+    if (expenses.isEmpty) {
+      _categoryExpenses = [];
+      return;
+    }
+
+    // Agrupa por categoria usando os dados já carregados
+    final Map<String, double> totalByCategory = {};
+    
+    for (var transaction in expenses) {
+      final categoryId = transaction.categoryId!;
+      final amount = transaction.amount!.abs(); // Converte para positivo
+      totalByCategory[categoryId] = (totalByCategory[categoryId] ?? 0.0) + amount;
+    }
+
+    // Calcula total
+    final double totalAmount = totalByCategory.values.fold(0.0, (sum, value) => sum + value);
+
+    if (totalAmount == 0) {
+      _categoryExpenses = [];
+      return;
+    }
+
+    // Cria lista de CategoryExpense usando apenas os dados já carregados
+    _categoryExpenses = totalByCategory.entries.map((entry) {
+      final categoryId = entry.key;
+      final amount = entry.value;
+      // Calcula percentual com precisão
+      final percentage = (amount / totalAmount) * 100;
+
+      // Busca informações da categoria (já carregadas em _categories)
+      final category = _categories.firstWhere(
+        (cat) => cat.id == categoryId,
+        orElse: () => SpendingCategory(
+          id: categoryId,
+          name: 'Outro',
+          value: 'other',
+          creationDate: DateTime.now(),
+          lastUpdate: DateTime.now(),
+        ),
+      );
+
+      return CategoryExpense(
+        categoryId: categoryId,
+        categoryName: category.name,
+        categoryColor: category.colorData,
+        amount: amount,
+        percentage: percentage,
+      );
+    }).toList();
+
+    // Ordena por valor descendente
+    _categoryExpenses.sort((a, b) => b.amount.compareTo(a.amount));
+    
+    // CORREÇÃO: Garante que os percentuais somem exatamente 100%
+    // Ajusta o último item para compensar erros de arredondamento
+    if (_categoryExpenses.isNotEmpty) {
+      final totalPercentage = _categoryExpenses.fold(0.0, (sum, e) => sum + e.percentage);
+      final difference = 100.0 - totalPercentage;
+      if (difference.abs() > 0.001) { // Se diferença > 0.001%
+        // Ajusta o último item para garantir soma = 100%
+        final lastIndex = _categoryExpenses.length - 1;
+        _categoryExpenses[lastIndex] = CategoryExpense(
+          categoryId: _categoryExpenses[lastIndex].categoryId,
+          categoryName: _categoryExpenses[lastIndex].categoryName,
+          categoryColor: _categoryExpenses[lastIndex].categoryColor,
+          amount: _categoryExpenses[lastIndex].amount,
+          percentage: _categoryExpenses[lastIndex].percentage + difference,
+        );
+      }
+    }
+
+    // Limita a 6 categorias, agrupa o resto em "Outros"
+    if (_categoryExpenses.length > 6) {
+      final topCategories = _categoryExpenses.take(6).toList();
+      final others = _categoryExpenses.skip(6);
+      
+      final othersTotal = others.fold(0.0, (sum, cat) => sum + cat.amount);
+      final othersPercentage = (othersTotal / totalAmount) * 100;
+
+      if (othersTotal > 0) {
+        topCategories.add(CategoryExpense(
+          categoryId: 'others',
+          categoryName: 'Outros',
+          categoryColor: Colors.grey,
+          amount: othersTotal,
+          percentage: othersPercentage,
+        ));
+      }
+
+      _categoryExpenses = topCategories;
+    }
   }
 
   void _startUpgradeBannerTimer() {
@@ -452,6 +573,13 @@ class HomeModuleController extends GetxController {
     update();
 
     try {
+      // Garante que categorias estão carregadas (apenas uma vez, se necessário)
+      // Isso é necessário apenas para mapear categoryId -> nome/cor, não é nova requisição de transações
+      if (_categories.isEmpty) {
+        await _fetchCategories();
+      }
+
+      // ÚNICA requisição de transações - mesma usada para saldo e listagem
       String walletId = currentWallet.id;
       ResponseDto res = await _transactionService.getTransactionDtoList(
         walletId,
@@ -474,6 +602,7 @@ class HomeModuleController extends GetxController {
           return b.transactionDate!.compareTo(a.transactionDate!);
         });
 
+        // Calcula saldo, receitas e despesas usando transactionDtoList
         double totalAmountTemp = 0;
         double totalRevenueTemp = 0;
         double totalSpendTemp = 0;
@@ -495,6 +624,10 @@ class HomeModuleController extends GetxController {
         monthBalance = totalAmountTemp;
 
         twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
+
+        // Calcula gastos por categoria usando os MESMOS dados (transactionDtoList)
+        // Não faz nova requisição - apenas processa os dados já carregados
+        _calculateCategoryExpenses();
       } else {
         JoyModal.bottomSheetError(
           context: Get.context!,
