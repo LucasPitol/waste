@@ -34,20 +34,11 @@ class NewSpendPageController extends GetxController {
   Future<void> fetchCategories() async {
     final res = await _spendingCategoryService.getSpendingCategories();
     
-    // 🖨️ Print da resposta da API
-    print('📊 [SpendingCategories] Response: ${res.success}');
-    print('📊 [SpendingCategories] Data: ${res.data}');
-    
     if (res.success && res.data is List) {
       categories = (res.data as List)
           .map<SpendingCategory>((e) => SpendingCategory.fromApi(e))
           .toList();
       
-      print('📊 [SpendingCategories] Parsed ${categories.length} categories');
-      for (var cat in categories) {
-        print('   - ${cat.name} (${cat.id})');
-        print('     Value: ${cat.value}, Icon: ${cat.icon}, Color: ${cat.color}');
-      }
       update();
     }
   }
