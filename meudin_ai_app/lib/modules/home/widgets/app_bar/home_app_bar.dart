@@ -19,31 +19,15 @@ class HomeAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const JoyLogo(),
-              SizedBox(
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: FaIcon(
-                        FontAwesomeIcons.arrowRotateRight,
-                        color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        controller.refreshPage();
-                      },
-                    ),
-                    IconButton(
-                      icon: FaIcon(
-                        FontAwesomeIcons.solidCircleUser,
-                        color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
-                        size: 22,
-                      ),
-                      onPressed: () {
-                        controller.goToProfile();
-                      },
-                    ),
-                  ],
+              IconButton(
+                icon: FaIcon(
+                  FontAwesomeIcons.solidCircleUser,
+                  color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                  size: 22,
                 ),
+                onPressed: () {
+                  controller.goToProfile();
+                },
               ),
             ],
           ),

@@ -17,95 +17,111 @@ class HomeModule extends StatelessWidget {
     return GetBuilder<HomeModuleController>(
       init: HomeModuleController(),
       builder: (controller) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              const HomeAppBar(),
-              // plan
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: SizedBox(
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return RefreshIndicator(
+              onRefresh: () async {
+                await controller.refreshAll();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: controller.isRefreshing
-                                ? const SkeletonLoader(width: 120, height: 20)
-                                : InkWell(
-                                    onTap: controller.isRefreshing
-                                        ? null
-                                        : () {
-                                            controller.openWalletSelector();
-                                          },
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            controller.currentWallet.name,
-                                            style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.w500,
-                                              color: Styles.primaryColor,
+                      const HomeAppBar(),
+                      // plan
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        child: SizedBox(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(vertical: 10),
+                                    child: controller.isRefreshing
+                                        ? const SkeletonLoader(width: 120, height: 20)
+                                        : InkWell(
+                                            onTap: controller.isRefreshing
+                                                ? null
+                                                : () {
+                                                    controller.openWalletSelector();
+                                                  },
+                                            borderRadius: BorderRadius.circular(4),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    controller.currentWallet.name,
+                                                    style: TextStyle(
+                                                      fontSize: 14.0,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: Styles.primaryColor,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  const FaIcon(
+                                                    FontAwesomeIcons.sortDown,
+                                                    color: Colors.grey,
+                                                    size: 14,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                          const SizedBox(width: 4),
-                                          const FaIcon(
-                                            FontAwesomeIcons.sortDown,
-                                            color: Colors.grey,
-                                            size: 14,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
                                   ),
+                                ],
+                              ),
+                              JoyText.secundaryText('Plano iniciante'),
+                              const SizedBox(
+                                width: double.infinity,
+                                height: 20,
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                      JoyText.secundaryText('Plano iniciante'),
-                      const SizedBox(
-                        width: double.infinity,
-                        height: 20,
+                      WalletVisionWidget(
+                        startDate: controller.startDate,
+                        balance: controller.monthBalance,
+                        monthRevenue: controller.monthRevenue,
+                        monthSpends: controller.monthSpends,
+                        transactionDtoList: controller.transactionDtoList,
+                        twoFirstTransactionDtoList:
+                            controller.twoFirstTransactionDtoList,
+                        loading: controller.isRefreshing,
+                        onDateTap: controller.openMonthYearPicker,
                       ),
+                      // Banner de Upgrade (discreto, abaixo do card principal)
+                      // Versão escolhida aleatoriamente em tempo de execução (50% de chance para cada)
+                      AnimatedOpacity(
+                        opacity: controller.showUpgradeBanner ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: IgnorePointer(
+                          ignoring: !controller.showUpgradeBanner,
+                          child: UpgradeBannerWidget(
+                            version: controller.selectedBannerVersion,
+                            onTap: () {
+                              // TODO: Implementar navegação para página de planos
+                              // Get.toNamed(AppRoutes.plans);
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20), // Espaço extra no final
                     ],
                   ),
                 ),
               ),
-              WalletVisionWidget(
-                startDate: controller.startDate,
-                balance: controller.monthBalance,
-                monthRevenue: controller.monthRevenue,
-                monthSpends: controller.monthSpends,
-                transactionDtoList: controller.transactionDtoList,
-                twoFirstTransactionDtoList:
-                    controller.twoFirstTransactionDtoList,
-                loading: controller.isRefreshing,
-                onDateTap: controller.openMonthYearPicker,
-              ),
-              // Banner de Upgrade (discreto, abaixo do card principal)
-              // Versão escolhida aleatoriamente em tempo de execução (50% de chance para cada)
-              AnimatedOpacity(
-                opacity: controller.showUpgradeBanner ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
-                child: controller.showUpgradeBanner
-                    ? UpgradeBannerWidget(
-                        version: controller.selectedBannerVersion,
-                        onTap: () {
-                          // TODO: Implementar navegação para página de planos
-                          // Get.toNamed(AppRoutes.plans);
-                        },
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              const SizedBox(height: 20), // Espaço extra no final
-            ],
-          ),
+            );
+          },
         );
       },
     );
