@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/wallet_selector_widget.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/month_year_picker_bottom_sheet.dart';
+import 'package:meudin_ai_app/modules/home/widgets/upgrade_banner/upgrade_banner_widget.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
@@ -29,8 +31,9 @@ class HomeModuleController extends GetxController {
   late UserService _userService;
   late bool isWalletListLoading;
   late bool isRefreshing;
-  late bool showPlanCarousel;
-  Timer? _planCarouselTimer;
+  late bool showUpgradeBanner;
+  late UpgradeBannerVersion selectedBannerVersion;
+  Timer? _upgradeBannerTimer;
 
   HomeModuleController() {
     _userService = UserService();
@@ -50,7 +53,18 @@ class HomeModuleController extends GetxController {
     _walletService = WalletService();
     isWalletListLoading = false;
     isRefreshing = false;
-    showPlanCarousel = false;
+    showUpgradeBanner = false;
+    // Seleção aleatória da versão do banner (50% de chance para cada)
+    selectedBannerVersion = _selectRandomBannerVersion();
+  }
+
+  /// Seleciona aleatoriamente uma versão do banner (50% de chance para cada)
+  UpgradeBannerVersion _selectRandomBannerVersion() {
+    final random = Random();
+    // 50% de chance para cada versão
+    return random.nextBool() 
+        ? UpgradeBannerVersion.neutral 
+        : UpgradeBannerVersion.contextual;
   }
 
   @override
@@ -58,19 +72,19 @@ class HomeModuleController extends GetxController {
     super.onInit();
     _fillStandardDate();
     refreshAll();
-    _startPlanCarouselTimer();
+    _startUpgradeBannerTimer();
   }
 
-  void _startPlanCarouselTimer() {
-    _planCarouselTimer = Timer(const Duration(seconds: 3), () {
-      showPlanCarousel = true;
+  void _startUpgradeBannerTimer() {
+    _upgradeBannerTimer = Timer(const Duration(seconds: 3), () {
+      showUpgradeBanner = true;
       update();
     });
   }
 
   @override
   void onClose() {
-    _planCarouselTimer?.cancel();
+    _upgradeBannerTimer?.cancel();
     super.onClose();
   }
 
