@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/pages/recover_password/widgets/mail_step_widget.dart';
 import 'package:meudin_ai_app/pages/recover_password/widgets/new_password_step_widget.dart';
-import 'package:meudin_ai_app/pages/sign_up/widgets/verification_code_step_widget.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
+
+// ⚠️ ATENÇÃO: Este controller precisa ser refatorado para usar o sistema de
+// recuperação de senha do Supabase (email magic link)
+// Por enquanto, a funcionalidade está desabilitada
 
 class RecoverPasswordPageController extends GetxController {
   late bool loading;
@@ -53,11 +56,15 @@ class RecoverPasswordPageController extends GetxController {
     } else {
       userMail = userMailTemp!;
 
-      signUpWidgets[1] = VerificationCodeStepWidget(
-          nextStep: retriveVerificationCode, userMail: userMail);
-
-      _userService.sendVerificationCode(
-          userMail: userMail, verificationType: 'CHANGE_PASSWORD');
+      // ⚠️ TODO: Implementar recuperação de senha via Supabase
+      // Supabase.auth.resetPasswordForEmail(userMail)
+      
+      JoyModal.bottomSheetError(
+        context: Get.context!,
+        errorList: ['Funcionalidade em desenvolvimento. Use o Supabase para recuperar senha.'],
+        title: 'Em breve',
+      );
+      return;
 
       moveToNextStep();
     }
@@ -77,37 +84,7 @@ class RecoverPasswordPageController extends GetxController {
     return errorList;
   }
 
-  retriveVerificationCode(String? verificationCode) async {
-    if (verificationCode != null && verificationCode.length == 6) {
-      loading = true;
-      update();
-
-      final verificationCodeResponse =
-          await _userService.validateVerificationCode(
-        userMail: userMail,
-        verificationCode: verificationCode,
-      );
-
-      loading = false;
-
-      if (verificationCodeResponse.success) {
-        moveToNextStep();
-      } else {
-        JoyModal.bottomSheetError(
-          context: Get.context!,
-          errorList: [verificationCodeResponse.errorMessage!],
-          title: 'Revise as informações preenchidas',
-        );
-      }
-      update();
-    } else {
-      JoyModal.bottomSheetError(
-        context: Get.context!,
-        errorList: ['Código inválido'],
-        title: 'Revise as informações preenchidas',
-      );
-    }
-  }
+  // ⚠️ REMOVIDO: Verificação manual de código não é mais necessária
 
   retriveUserNewPassword(String? password, String? repassword) {
     loading = true;
@@ -137,11 +114,15 @@ class RecoverPasswordPageController extends GetxController {
         title: 'Revise as informações preenchidas',
       );
     } else {
-      _userService.updateUserPassword(
-        userMail: userMail,
-        newPassword: password!,
+      // ⚠️ TODO: Implementar atualização de senha via Supabase
+      loading = false;
+      update();
+      
+      JoyModal.bottomSheetError(
+        context: Get.context!,
+        errorList: ['Funcionalidade em desenvolvimento. Use o Supabase para recuperar senha.'],
+        title: 'Em breve',
       );
-      Get.back();
     }
   }
 

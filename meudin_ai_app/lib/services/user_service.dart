@@ -21,78 +21,8 @@ class UserService {
     return currentUser;
   }
 
-  Future<ResponseDto> updateUserPassword({
-    required String userMail,
-    required String newPassword,
-  }) async {
-    Uri url = Uri.parse('${apiUrl}auth/update-password');
-    var response = await http.post(
-      url,
-      headers: {
-        "Accept": "application/json",
-        "content-type": "application/json",
-      },
-      body: jsonEncode(
-        {
-          'email': userMail,
-          'newPassword': newPassword,
-        },
-      ),
-    );
-
-    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
-
-    return responseDto;
-  }
-
-  Future<ResponseDto> validateVerificationCode({
-    required String userMail,
-    required String verificationCode,
-  }) async {
-    Uri url = Uri.parse('${apiUrl}auth/validate-verification-code');
-
-    var response = await http.post(
-      url,
-      headers: {
-        "Accept": "application/json",
-        "content-type": "application/json",
-      },
-      body: jsonEncode(
-        {
-          'email': userMail,
-          'code': verificationCode,
-        },
-      ),
-    );
-
-    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
-
-    return responseDto;
-  }
-
-  Future<ResponseDto> sendVerificationCode({
-    required String userMail,
-    required String verificationType,
-  }) async {
-    Uri url = Uri.parse('${apiUrl}auth/send-verification-code');
-
-    var response = await http.post(
-      url,
-      headers: {
-        "Accept": "application/json",
-        "content-type": "application/json",
-      },
-      body: jsonEncode(
-        {
-          'email': userMail,
-        },
-      ),
-    );
-
-    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
-
-    return responseDto;
-  }
+  // ❌ REMOVIDOS: Endpoints de verificação manual
+  // O Supabase agora gerencia a verificação de email automaticamente
 
   Future<ResponseDto> signInByEmailAndPassword(
     String userMail,

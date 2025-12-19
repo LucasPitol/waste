@@ -1,4 +1,3 @@
-import 'package:meudin_ai_app/pages/sign_up/widgets/verification_code_step_widget.dart';
 import 'package:meudin_ai_app/pages/sign_up/widgets/password_step_widget.dart';
 import 'package:meudin_ai_app/pages/sign_up/widgets/mail_step_widget.dart';
 import 'package:meudin_ai_app/models/dtos/new_user_dto.dart';
@@ -21,9 +20,9 @@ class SignUpPageController extends GetxController {
     newUserDto = NewUserDto();
     _userService = UserService();
 
+    // ✅ SIMPLIFICADO: Apenas 2 etapas (email/nome + senha)
     signUpWidgets = [
       MailStepWidget(nextStep: retriveUserInfo),
-      Container(),
       PasswordStepWidget(nextStep: retriveUserPassword),
     ];
     currentStep = 0;
@@ -51,11 +50,6 @@ class SignUpPageController extends GetxController {
     } else {
       newUserDto.email = userMail!;
       newUserDto.name = userName!;
-      signUpWidgets[1] = VerificationCodeStepWidget(
-          nextStep: retriveVerificationCode, userMail: newUserDto.email);
-      _userService.sendVerificationCode(
-          userMail: userMail, verificationType: 'NEW_USER');
-
       moveToNextStep();
     }
   }
@@ -76,38 +70,6 @@ class SignUpPageController extends GetxController {
     }
 
     return errorList;
-  }
-
-  retriveVerificationCode(String? verificationCode) async {
-    if (verificationCode != null && verificationCode.length == 6) {
-      loading = true;
-      update();
-
-      final verificationCodeResponse =
-          await _userService.validateVerificationCode(
-        userMail: newUserDto.email,
-        verificationCode: verificationCode,
-      );
-
-      loading = false;
-
-      if (verificationCodeResponse.success) {
-        moveToNextStep();
-      } else {
-        JoyModal.bottomSheetError(
-          context: Get.context!,
-          errorList: [verificationCodeResponse.errorMessage!],
-          title: 'Revise as informações preenchidas',
-        );
-      }
-      update();
-    } else {
-      JoyModal.bottomSheetError(
-        context: Get.context!,
-        errorList: ['Código inválido'],
-        title: 'Revise as informações preenchidas',
-      );
-    }
   }
 
   retriveUserPassword(String? password, String? repassword) {
@@ -143,32 +105,51 @@ class SignUpPageController extends GetxController {
 
     final createNewUserResponse = await _userService.createNewUser(newUserDto);
 
+    loading = false;
+    update();
+
     if (createNewUserResponse.success) {
-      final authResponse = await _userService.signInByEmailAndPassword(
-        newUserDto.email,
-        newUserDto.password,
+      // ✅ Usuário criado! Mostrar mensagem de sucesso
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green[600], size: 28),
+              const SizedBox(width: 12),
+              const Text('Conta criada!'),
+            ],
+          ),
+          content: const Text(
+            'Verifique seu email para ativar sua conta. '
+            'Após a verificação, você poderá fazer login.',
+            style: TextStyle(fontSize: 15),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Fecha o diálogo
+                Get.back(); // Volta para tela de login
+              },
+              child: Text(
+                'OK, ENTENDI',
+                style: TextStyle(
+                  color: Styles.primaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
       );
-
-      if (authResponse.success) {
-        await Get.offNamed(AppRoutes.homeAppRoute);
-      } else {
-        loading = false;
-        update();
-
-        JoyModal.bottomSheetError(
-          context: Get.context!,
-          errorList: [authResponse.errorMessage!],
-          title: 'Não foi possível fazer a autenticação :(',
-        );
-      }
     } else {
-      loading = false;
-      update();
-
       JoyModal.bottomSheetError(
         context: Get.context!,
         errorList: [createNewUserResponse.errorMessage!],
-        title: 'Não foi possível criar o usuário :(',
+        title: 'Não foi possível criar o usuário',
       );
     }
   }
