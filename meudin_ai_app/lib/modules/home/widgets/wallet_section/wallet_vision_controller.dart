@@ -2,6 +2,7 @@ import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/tuple.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
+import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
 
 class WalletVisionWidgetController extends GetxController {
   late List<Tuple> tabs;
@@ -32,7 +33,9 @@ class WalletVisionWidgetController extends GetxController {
     );
 
     if (refresh != null && refresh) {
-      // Handle refresh
+      // Refresh data in home module
+      final homeController = Get.find<HomeModuleController>();
+      await homeController.updatePageData();
     }
   }
 }

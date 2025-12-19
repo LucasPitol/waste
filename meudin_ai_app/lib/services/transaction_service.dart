@@ -212,4 +212,106 @@ class TransactionService {
 
     return responseDto;
   }
+
+  Future<ResponseDto> updateTransaction({
+    required String transactionId,
+    String? reason,
+    String? amount,
+    DateTime? transactionDate,
+    String? type,
+    String? categoryId,
+  }) async {
+    final user = _userService.getCurrentUser();
+    final authToken = user?.token;
+
+    if (authToken == null || authToken.isEmpty) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Token de autenticação não encontrado',
+      );
+    }
+
+    final url = Uri.parse('${apiUrl}transaction');
+
+    final Map<String, dynamic> body = {
+      'transactionId': transactionId,
+    };
+
+    if (reason != null && reason.isNotEmpty) {
+      body['reason'] = reason;
+    }
+
+    if (amount != null && amount.isNotEmpty) {
+      // Converter valor
+      String cleanAmount = amount.trim();
+      cleanAmount = cleanAmount.replaceAll(RegExp(r'[^0-9.,]'), '');
+      if (cleanAmount.contains(',') &&
+          cleanAmount.lastIndexOf(',') > cleanAmount.lastIndexOf('.')) {
+        cleanAmount = cleanAmount.replaceAll('.', '');
+        cleanAmount = cleanAmount.replaceAll(',', '.');
+      } else {
+        cleanAmount = cleanAmount.replaceAll(',', '');
+      }
+      
+      final parsedAmount = double.tryParse(cleanAmount) ?? 0.0;
+      if (parsedAmount != 0.0) {
+        // Se for waste, valor deve ser negativo
+        if (type == 'waste') {
+          body['amount'] = -parsedAmount;
+        } else {
+          body['amount'] = parsedAmount;
+        }
+      }
+    }
+
+    if (transactionDate != null) {
+      body['transactionDate'] = transactionDate.toIso8601String();
+    }
+
+    if (type != null && type.isNotEmpty) {
+      body['type'] = type;
+    }
+
+    if (categoryId != null && categoryId.isNotEmpty) {
+      body['categoryId'] = categoryId;
+    }
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authToken',
+    };
+
+    final response = await http.put(url, body: jsonEncode(body), headers: headers);
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
+  Future<ResponseDto> deleteTransaction(String transactionId) async {
+    final user = _userService.getCurrentUser();
+    final authToken = user?.token;
+
+    if (authToken == null || authToken.isEmpty) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Token de autenticação não encontrado',
+      );
+    }
+
+    final url = Uri.parse('${apiUrl}transaction');
+
+    final body = jsonEncode({
+      'transactionId': transactionId,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authToken',
+    };
+
+    final response = await http.delete(url, body: body, headers: headers);
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
 }

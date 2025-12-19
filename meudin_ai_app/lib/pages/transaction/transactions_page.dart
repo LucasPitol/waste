@@ -15,7 +15,10 @@ class TransactionsPage extends StatelessWidget {
     final startDate = arugments[1];
 
     return GetBuilder<TransactionsPageController>(
-      init: TransactionsPageController(transactions: transactions),
+      init: TransactionsPageController(
+        transactions: transactions,
+        startDate: startDate,
+      ),
       builder: (controller) {
         return Scaffold(
           body: SafeArea(
@@ -28,14 +31,14 @@ class TransactionsPage extends StatelessWidget {
                     height: 10,
                   ),
                   // transactions list
-                  transactions.isEmpty
+                  controller.transactions.isEmpty
                       ? Container(
                           margin: const EdgeInsets.symmetric(vertical: 40),
                           child: const JoyText('Sem transações nesta data'),
                         )
                       : SizedBox(
                           child: Column(
-                            children: transactions.map((e) {
+                            children: controller.transactions.map((e) {
                               return TransactionTile(transaction: e);
                             }).toList(),
                           ),
