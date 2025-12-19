@@ -30,10 +30,41 @@ class ProfilePageController extends GetxController {
 
   ThemeMode get currentThemeMode => _themeService.themeMode;
   String get currentThemeName => _themeService.getThemeModeName();
+  String get appVersion => '1.0.0'; // TODO: Implementar com package_info_plus
 
   Future<void> changeTheme(ThemeMode newThemeMode) async {
     await _themeService.setThemeMode(newThemeMode);
     update();
+  }
+
+  void openFAQ() {
+    // TODO: Implementar navegação para FAQ
+    Get.snackbar('FAQ', 'Em breve');
+  }
+
+  void sendFeedback() {
+    // TODO: Implementar modal/bottom sheet para feedback
+    Get.snackbar('Feedback', 'Em breve');
+  }
+
+  void contactSupport() {
+    // TODO: Implementar contato com suporte
+    Get.snackbar('Suporte', 'Em breve');
+  }
+
+  void showAbout() {
+    // TODO: Implementar tela sobre
+    Get.snackbar('Sobre', 'Em breve');
+  }
+
+  void openTerms() {
+    // TODO: Implementar navegação para termos
+    Get.snackbar('Termos', 'Em breve');
+  }
+
+  void openPrivacyPolicy() {
+    // TODO: Implementar navegação para política
+    Get.snackbar('Política', 'Em breve');
   }
 
   Future<void> logout() async {

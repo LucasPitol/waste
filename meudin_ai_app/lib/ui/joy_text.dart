@@ -53,10 +53,13 @@ class JoyText extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     // Se textColor não foi especificado ou é a cor padrão hardcoded, usa a cor do tema
+    // Mas mantém cinza escurecido no tema claro para subtítulos
     final effectiveColor = textColor == Styles.primaryTextColor 
         ? theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor
         : (textColor == Styles.grey 
-            ? theme.textTheme.bodyMedium?.color ?? Styles.grey
+            ? (theme.brightness == Brightness.dark 
+                ? theme.textTheme.bodyMedium?.color ?? Styles.grey
+                : Colors.grey.shade600) // Cinza mais escuro no tema claro
             : textColor);
     
     return Text(

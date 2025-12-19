@@ -46,24 +46,26 @@ class ProfilePage extends StatelessWidget {
                       // User Info Card
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(24),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.surface.withOpacity(0.5),
+                          color: theme.brightness == Brightness.dark 
+                              ? theme.colorScheme.surface.withOpacity(0.5)
+                              : Colors.transparent,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Column(
                           children: [
                             Container(
-                              width: 80,
-                              height: 80,
+                              width: 72,
+                              height: 72,
                               decoration: BoxDecoration(
-                                color: Styles.primaryColor.withOpacity(0.1),
+                                color: Styles.primaryColor.withOpacity(0.08),
                                 shape: BoxShape.circle,
                               ),
                               child: const Center(
                                 child: FaIcon(
                                   FontAwesomeIcons.solidUser,
-                                  size: 36,
+                                  size: 32,
                                   color: Styles.primaryColor,
                                 ),
                               ),
@@ -72,149 +74,116 @@ class ProfilePage extends StatelessWidget {
                             Text(
                               controller.userName,
                               style: TextStyle(
-                                fontSize: 22,
+                                fontSize: 20,
                                 fontWeight: FontWeight.w600,
                                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 6),
                             Text(
                               controller.userEmail,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
+                                fontWeight: FontWeight.w400,
+                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey.shade600,
                               ),
                             ),
                           ],
                         ),
                       ),
+                      const SizedBox(height: 40),
+
+                      // Aparência Section
+                      _buildSectionHeader(context, theme, 'Aparência'),
+                      const SizedBox(height: 12),
+                      _buildSettingItem(
+                        context,
+                        theme,
+                        controller,
+                        icon: FontAwesomeIcons.palette,
+                        title: 'Tema',
+                        subtitle: controller.currentThemeName,
+                        onTap: () => _showThemeSelector(context, controller),
+                        isPrimary: true,
+                      ),
                       const SizedBox(height: 32),
 
-                      // Options
-                      Text(
-                        'Configurações',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Theme Option
-                      InkWell(
-                        onTap: () => _showThemeSelector(context, controller),
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: (theme.textTheme.bodyMedium?.color ?? Styles.grey).withOpacity(0.2),
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Styles.primaryColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Center(
-                                  child: FaIcon(
-                                    FontAwesomeIcons.palette,
-                                    size: 18,
-                                    color: Styles.primaryColor,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Text(
-                                  'Tema',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                controller.currentThemeName,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              FaIcon(
-                                FontAwesomeIcons.chevronRight,
-                                size: 16,
-                                color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Ajuda & Suporte Section
+                      _buildSectionHeader(context, theme, 'Ajuda & Suporte'),
                       const SizedBox(height: 12),
+                      _buildSettingItem(
+                        context,
+                        theme,
+                        controller,
+                        icon: FontAwesomeIcons.circleQuestion,
+                        title: 'FAQ',
+                        onTap: controller.openFAQ,
+                      ),
+                      const SizedBox(height: 4),
+                      _buildSettingItem(
+                        context,
+                        theme,
+                        controller,
+                        icon: FontAwesomeIcons.message,
+                        title: 'Enviar sugestão',
+                        onTap: controller.sendFeedback,
+                      ),
+                      const SizedBox(height: 4),
+                      _buildSettingItem(
+                        context,
+                        theme,
+                        controller,
+                        icon: FontAwesomeIcons.headset,
+                        title: 'Falar com suporte',
+                        onTap: controller.contactSupport,
+                      ),
+                      const SizedBox(height: 32),
 
-                      // Logout Button
-                      InkWell(
-                        onTap: controller.logout,
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 16,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: (theme.textTheme.bodyMedium?.color ?? Styles.grey).withOpacity(0.2),
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Center(
-                                  child: FaIcon(
-                                    FontAwesomeIcons.arrowRightFromBracket,
-                                    size: 18,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              const Expanded(
-                                child: Text(
-                                  'Sair',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                              FaIcon(
-                                FontAwesomeIcons.chevronRight,
-                                size: 16,
-                                color: theme.textTheme.bodyMedium?.color ?? Styles.grey,
-                              ),
-                            ],
+                      // Sobre Section
+                      _buildSectionHeader(context, theme, 'Sobre'),
+                      const SizedBox(height: 12),
+                      _buildSettingItem(
+                        context,
+                        theme,
+                        controller,
+                        icon: FontAwesomeIcons.circleInfo,
+                        title: 'Sobre o Meudin',
+                        onTap: controller.showAbout,
+                      ),
+                      const SizedBox(height: 4),
+                      _buildSettingItem(
+                        context,
+                        theme,
+                        controller,
+                        icon: FontAwesomeIcons.fileLines,
+                        title: 'Termos de uso',
+                        onTap: controller.openTerms,
+                      ),
+                      const SizedBox(height: 4),
+                      _buildSettingItem(
+                        context,
+                        theme,
+                        controller,
+                        icon: FontAwesomeIcons.shield,
+                        title: 'Política de privacidade',
+                        onTap: controller.openPrivacyPolicy,
+                      ),
+                      const SizedBox(height: 24),
+                      
+                      // Versão (sem card, texto simples)
+                      Center(
+                        child: Text(
+                          'Versão ${controller.appVersion}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ?? Colors.grey.shade400,
                           ),
                         ),
                       ),
+                      const SizedBox(height: 32),
+
+                      // Logout Button (isolado)
+                      _buildLogoutButton(context, theme, controller),
                     ],
                   ),
                 ),
@@ -316,6 +285,171 @@ class ProfilePage extends StatelessWidget {
                 size: 18,
                 color: Styles.primaryColor,
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, ThemeData theme, String title) {
+    return Text(
+      title.toUpperCase(),
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Styles.grey,
+        letterSpacing: 0.5,
+      ),
+    );
+  }
+
+  Widget _buildSettingItem(
+    BuildContext context,
+    ThemeData theme,
+    ProfilePageController controller, {
+    IconData? icon,
+    required String title,
+    String? subtitle,
+    VoidCallback? onTap,
+    bool showChevron = true,
+    bool isPrimary = false,
+  }) {
+    final isClickable = onTap != null;
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return InkWell(
+      onTap: isClickable ? onTap : null,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        constraints: const BoxConstraints(minHeight: 52),
+        decoration: BoxDecoration(
+          border: isDark 
+              ? Border.all(
+                  color: theme.colorScheme.surface.withOpacity(0.3),
+                  width: 0.5,
+                )
+              : null,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            if (icon != null) ...[
+              Container(
+                width: isPrimary ? 36 : 32,
+                height: isPrimary ? 36 : 32,
+                decoration: BoxDecoration(
+                  color: Styles.primaryColor.withOpacity(isPrimary ? 0.12 : 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: FaIcon(
+                    icon,
+                    size: isPrimary ? 16 : 14,
+                    color: Styles.primaryColor,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (showChevron && isClickable)
+              FaIcon(
+                FontAwesomeIcons.chevronRight,
+                size: 12,
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4) ?? Colors.grey.shade400,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton(
+    BuildContext context,
+    ThemeData theme,
+    ProfilePageController controller,
+  ) {
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return InkWell(
+      onTap: controller.logout,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        constraints: const BoxConstraints(minHeight: 52),
+        decoration: BoxDecoration(
+          border: isDark
+              ? Border.all(
+                  color: Colors.red.withOpacity(0.3),
+                  width: 0.5,
+                )
+              : Border.all(
+                  color: Colors.red.withOpacity(0.2),
+                  width: 0.5,
+                ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Center(
+                child: FaIcon(
+                  FontAwesomeIcons.arrowRightFromBracket,
+                  size: 14,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text(
+                'Sair',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.red,
+                ),
+              ),
+            ),
           ],
         ),
       ),
