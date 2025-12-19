@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/wallet_selector_widget.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/month_year_picker_bottom_sheet.dart';
@@ -28,6 +29,8 @@ class HomeModuleController extends GetxController {
   late UserService _userService;
   late bool isWalletListLoading;
   late bool isRefreshing;
+  late bool showPlanCarousel;
+  Timer? _planCarouselTimer;
 
   HomeModuleController() {
     _userService = UserService();
@@ -47,6 +50,7 @@ class HomeModuleController extends GetxController {
     _walletService = WalletService();
     isWalletListLoading = false;
     isRefreshing = false;
+    showPlanCarousel = false;
   }
 
   @override
@@ -54,6 +58,20 @@ class HomeModuleController extends GetxController {
     super.onInit();
     _fillStandardDate();
     refreshAll();
+    _startPlanCarouselTimer();
+  }
+
+  void _startPlanCarouselTimer() {
+    _planCarouselTimer = Timer(const Duration(seconds: 3), () {
+      showPlanCarousel = true;
+      update();
+    });
+  }
+
+  @override
+  void onClose() {
+    _planCarouselTimer?.cancel();
+    super.onClose();
   }
 
   Future<void> refreshUserAndWallet() async {
