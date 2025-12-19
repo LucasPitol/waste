@@ -52,7 +52,7 @@ class SignInPageController extends GetxController {
     final signInDtoTemp = await Get.toNamed(AppRoutes.signUpRoute);
 
     if (signInDtoTemp != null) {
-      print('signIn');
+      // Handle sign in from sign up
     }
   }
 

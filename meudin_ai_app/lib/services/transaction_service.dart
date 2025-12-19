@@ -20,13 +20,26 @@ class TransactionService {
     DateTime selectedDate,
   ) async {
     final user = _userService.getCurrentUser();
-    final userId = user?.id;
     final walletId = user?.currentWalletId;
     final authToken = user?.token;
 
-    final url = Uri.parse('${apiUrl}transaction/waste');
+    if (walletId == null || walletId.isEmpty) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Carteira não encontrada',
+      );
+    }
 
-    // Robust currency string to double conversion
+    if (authToken == null || authToken.isEmpty) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Token de autenticação não encontrado',
+      );
+    }
+
+    final url = Uri.parse('${apiUrl}transaction');
+
+    // Converter valor
     String cleanAmount = amount.trim();
     cleanAmount = cleanAmount.replaceAll(RegExp(r'[^0-9.,]'), '');
     if (cleanAmount.contains(',') &&
@@ -36,11 +49,20 @@ class TransactionService {
     } else {
       cleanAmount = cleanAmount.replaceAll(',', '');
     }
-    final parsedAmount = double.tryParse(cleanAmount) ?? 0.0;
+    final parsedAmount = -(double.tryParse(cleanAmount) ?? 0.0);
+
+    if (parsedAmount == 0.0) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Valor inválido',
+      );
+    }
 
     final Map<String, dynamic> body = {
-      'waste': parsedAmount,
+      'type': 'waste',
+      'amount': parsedAmount,
       'walletId': walletId,
+      'transactionDate': selectedDate.toIso8601String(),
     };
     
     if (reason.isNotEmpty) {
@@ -50,20 +72,13 @@ class TransactionService {
     if (categoryId != null && categoryId.isNotEmpty) {
       body['categoryId'] = categoryId;
     }
-    
-    if (userId != null) {
-      body['uid'] = userId;
-    }
-    
-    body['spendDate'] = selectedDate.toIso8601String();
 
     final headers = {
       'Content-Type': 'application/json',
-      if (authToken != null) 'Authorization': 'Bearer $authToken',
+      if (authToken != null && authToken.isNotEmpty) 'Authorization': 'Bearer $authToken',
     };
 
     final response = await http.post(url, body: jsonEncode(body), headers: headers);
-
     ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
 
     return responseDto;
@@ -75,11 +90,24 @@ class TransactionService {
     DateTime selectedDate,
   ) async {
     final user = _userService.getCurrentUser();
-    final userId = user?.id;
     final walletId = user?.currentWalletId;
     final authToken = user?.token;
 
-    final url = Uri.parse('${apiUrl}transaction/revenue');
+    if (walletId == null || walletId.isEmpty) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Carteira não encontrada',
+      );
+    }
+
+    if (authToken == null || authToken.isEmpty) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Token de autenticação não encontrado',
+      );
+    }
+
+    final url = Uri.parse('${apiUrl}transaction');
 
     // Robust currency string to double conversion
     String cleanAmount = amount.trim();
@@ -93,22 +121,33 @@ class TransactionService {
     } else {
       cleanAmount = cleanAmount.replaceAll(',', ''); // remove thousand sep
     }
+    // Para receitas, o valor deve ser positivo
     final parsedAmount = double.tryParse(cleanAmount) ?? 0.0;
 
+    if (parsedAmount == 0.0) {
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Valor inválido',
+      );
+    }
+
+    // Montar body conforme especificação da API
+    // Campos obrigatórios: type, amount, transactionDate, walletId
+    // Campos opcionais: reason
+    // categoryId NÃO é enviado para receitas (apenas para despesas)
     final Map<String, dynamic> body = {
-      'amount': parsedAmount,
-      'walletId': walletId,
+      'type': 'revenue', // OBRIGATÓRIO
+      'amount': parsedAmount, // OBRIGATÓRIO (positivo para receitas)
+      'walletId': walletId, // OBRIGATÓRIO (validado antes)
+      'transactionDate': selectedDate.toIso8601String(), // OBRIGATÓRIO
     };
     
+    // Campos opcionais - só adiciona se tiver valor
     if (reason.isNotEmpty) {
       body['reason'] = reason;
     }
     
-    if (userId != null) {
-      body['uid'] = userId;
-    }
-    
-    body['payDay'] = selectedDate.toIso8601String();
+    // categoryId NÃO é enviado para receitas (apenas para despesas)
 
     final headers = {
       'Content-Type': 'application/json',

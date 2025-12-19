@@ -32,7 +32,7 @@ class WalletVisionWidgetController extends GetxController {
     );
 
     if (refresh != null && refresh) {
-      print('Refresh');
+      // Handle refresh
     }
   }
 }

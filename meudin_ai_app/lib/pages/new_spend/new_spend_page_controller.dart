@@ -100,23 +100,23 @@ class NewSpendPageController extends GetxController {
     loading = true;
     update();
     try {
-      debugPrint('Calling saveNewSpend with: amount=${amountController.text.trim()}, reason=${reasonController.text.trim()}, categoryId=${selectedCategory?.id}, categoryValue=${selectedCategory?.value}, date=$selectedDate');
       ResponseDto response = await _transactionService.saveNewSpend(
         amountController.text.trim(),
         reasonController.text.trim(),
-        selectedCategory?.id, // Usando UUID do backend
+        selectedCategory?.id,
         selectedDate,
       );
+      
       loading = false;
       update();
+      
       if (response.success) {
         Get.back(result: true);
       } else {
         errorList = [response.errorMessage ?? 'Erro ao salvar gasto'];
         update();
       }
-    } catch (e, stack) {
-      debugPrint('Exception in saveSpend: $e\n$stack');
+    } catch (e) {
       loading = false;
       errorList = ['Erro inesperado ao salvar gasto'];
       update();

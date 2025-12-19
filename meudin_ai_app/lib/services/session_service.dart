@@ -38,7 +38,7 @@ class SessionService {
         await _storage.storeUserData(user);
       }
     } catch (e) {
-      print('Error saving session: $e');
+      // Silent error handling
     }
   }
 
@@ -54,7 +54,6 @@ class SessionService {
       await _storage.deleteUserData();
       UserService.currentUser = null;
     } catch (e) {
-      print('Error during logout: $e');
       // Force clear even if there's an error
       await _storage.deleteUserData();
       UserService.currentUser = null;
@@ -78,7 +77,7 @@ class SessionService {
         UserService.currentUser!.currentWalletId = walletId;
       }
     } catch (e) {
-      print('Error updating current wallet ID: $e');
+      // Silent error handling
     }
   }
 }

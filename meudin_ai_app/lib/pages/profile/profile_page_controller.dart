@@ -34,8 +34,6 @@ class ProfilePageController extends GetxController {
     } catch (e) {
       loading = false;
       update();
-      // Show error if needed
-      print('Error during logout: $e');
     }
   }
 }

@@ -62,7 +62,7 @@ class WalletVisionWidget extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    print('_openSwitchDateBottomSheet');
+                    // Open switch date bottom sheet
                   },
                   child: Text(
                     DateFormat.yMMMM(Constants.ptLanguageCode)

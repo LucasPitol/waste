@@ -143,7 +143,7 @@ class HttpInterceptor {
       try {
         await request();
       } catch (e) {
-        print('Error processing queued request: $e');
+        // Silent error handling
       }
     }
     _requestsQueue.clear();
@@ -160,7 +160,7 @@ class HttpInterceptor {
         Get.offAllNamed(AppRoutes.signInRoute);
       }
     } catch (e) {
-      print('Error handling unauthorized: $e');
+      // Silent error handling
     }
   }
 

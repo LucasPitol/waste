@@ -33,7 +33,6 @@ class LocalStorageService {
         value: userJson,
       );
     } catch (e) {
-      print('Error storing user data: $e');
       rethrow;
     }
   }
@@ -69,7 +68,6 @@ class LocalStorageService {
       return user;
     } catch (e) {
       // If parsing fails, clear the bad data and return null
-      print('Error retrieving user data: $e');
       await deleteUserData();
       return null;
     }
@@ -80,12 +78,11 @@ class LocalStorageService {
     try {
       await _secureStorage.delete(key: _userDataKey);
     } catch (e) {
-      print('Error deleting user data: $e');
       // Force delete all if specific key fails
       try {
         await _secureStorage.deleteAll();
       } catch (e) {
-        print('Error deleting all secure storage: $e');
+        // Silent error handling
       }
     }
   }
@@ -140,7 +137,7 @@ class LocalStorageService {
         await storeUserData(user);
       }
     } catch (e) {
-      print('Error updating current wallet ID: $e');
+      // Silent error handling
     }
   }
 
@@ -158,7 +155,7 @@ class LocalStorageService {
         await storeUserData(user);
       }
     } catch (e) {
-      print('Error updating wallet list: $e');
+      // Silent error handling
     }
   }
 }

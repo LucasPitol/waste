@@ -108,7 +108,7 @@ class HomeModuleController extends GetxController {
       }
 
       if (newWalletOptions['createNewWallet'] == true) {
-        print('Create new wallet');
+        // Create new wallet functionality
       }
     }
   }
