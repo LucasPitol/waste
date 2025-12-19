@@ -16,10 +16,9 @@ class WalletService {
 
   Future<ResponseDto> getUserWallets() async {
     final user = UserService.currentUser;
-    final userId = user?.id;
     final authToken = user?.token;
 
-    final url = Uri.parse('${apiUrl}wallet${userId != null ? '?userId=$userId' : ''}');
+    final url = Uri.parse('${apiUrl}wallet');
 
     final headers = {
       'Content-Type': 'application/json',

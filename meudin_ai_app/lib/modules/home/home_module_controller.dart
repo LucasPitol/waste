@@ -12,6 +12,7 @@ import 'package:meudin_ai_app/models/wallet.dart';
 import 'package:meudin_ai_app/models/user.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
+import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class HomeModuleController extends GetxController {
@@ -141,7 +142,16 @@ class HomeModuleController extends GetxController {
       }
 
       if (newWalletOptions['createNewWallet'] == true) {
-        // Create new wallet functionality
+        final result = await Get.toNamed(AppRoutes.newWalletRoute);
+        if (result != null && result is String) {
+          // Refresh wallet list after creating new wallet
+          await refreshUserAndWallet();
+          // Select the newly created wallet
+          final newWalletId = result as String;
+          if (_user!.walletList.any((w) => w.id == newWalletId)) {
+            _switchCurrentWallet(newWalletId);
+          }
+        }
       }
     }
   }
