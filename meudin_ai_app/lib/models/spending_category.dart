@@ -154,14 +154,7 @@ class SpendingCategory {
     };
 
     final lowerIcon = iconString.toLowerCase();
-    final iconData = iconMap[lowerIcon] ?? FontAwesomeIcons.circleQuestion;
-    
-    // Debug: print quando não encontrar ícone
-    if (!iconMap.containsKey(lowerIcon)) {
-      print('⚠️ [SpendingCategory] Ícone não encontrado: "$iconString" (usando fallback)');
-    }
-    
-    return iconData;
+    return iconMap[lowerIcon] ?? FontAwesomeIcons.circleQuestion;
   }
 
   /// Converte hex string para Color
