@@ -4,11 +4,17 @@ import 'package:meudin_ai_app/models/wallet.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/services/user_service.dart';
 
 class WalletSelectorWidget extends StatelessWidget {
   final List<Wallet> walletList;
+  final String? currentUserId;
 
-  const WalletSelectorWidget({super.key, required this.walletList});
+  const WalletSelectorWidget({
+    super.key, 
+    required this.walletList,
+    this.currentUserId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +79,11 @@ class WalletSelectorWidget extends StatelessWidget {
   }
 
   Widget _buildWalletItem(Wallet wallet, WalletSelectorController controller) {
+    final theme = Theme.of(Get.context!);
     int membersLength = wallet.membersIds.length;
     String members = membersLength.toString();
+    final isOwner = currentUserId != null && wallet.ownerId == currentUserId;
+    final isCurrentWallet = UserService.currentUser?.currentWalletId == wallet.id;
 
     if (membersLength > 1) {
       members = '$members membros';
@@ -82,27 +91,87 @@ class WalletSelectorWidget extends StatelessWidget {
       members = '$members membro';
     }
 
-    return InkWell(
-      onTap: () {
-        controller.switchWallet(wallet.id);
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: double.infinity,
-        padding: const EdgeInsets.all(10),
-        child: SizedBox(
-          child: Column(
-            children: [
-              JoyText(
-                wallet.name,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () {
+                controller.switchWallet(wallet.id);
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              if (isCurrentWallet)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.check,
+                                    size: 14,
+                                    color: Styles.primaryColor,
+                                  ),
+                                ),
+                              Flexible(
+                                child: JoyText(
+                                  wallet.name,
+                                ),
+                              ),
+                              if (isOwner)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Styles.primaryColor.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      'Dono',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: Styles.primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    JoyText.secundaryText(
+                      size: 14,
+                      members,
+                    ),
+                  ],
+                ),
               ),
-              JoyText.secundaryText(
-                size: 16,
-                members,
-              ),
-            ],
+            ),
           ),
-        ),
+          if (isOwner)
+            IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.ellipsisVertical,
+                size: 16,
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey,
+              ),
+              onPressed: () {
+                controller.showWalletMenu(wallet);
+              },
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+        ],
       ),
     );
   }

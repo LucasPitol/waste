@@ -133,6 +133,51 @@ class WalletService {
     return responseDto;
   }
 
+  Future<ResponseDto> updateWallet(String walletId, String walletName) async {
+    final user = UserService.currentUser;
+    final authToken = user?.token;
+
+    final url = Uri.parse('${apiUrl}wallet');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final body = jsonEncode({
+      'walletId': walletId,
+      'walletName': walletName,
+    });
+
+    final response = await http.put(url, body: body, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
+  Future<ResponseDto> deleteWallet(String walletId) async {
+    final user = UserService.currentUser;
+    final authToken = user?.token;
+
+    final url = Uri.parse('${apiUrl}wallet');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (authToken != null) 'Authorization': 'Bearer $authToken',
+    };
+
+    final body = jsonEncode({
+      'walletId': walletId,
+    });
+
+    final response = await http.delete(url, body: body, headers: headers);
+
+    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+
+    return responseDto;
+  }
+
   Wallet handleWallet(Map<String, dynamic> walletMap) {
     Wallet wallet = Wallet();
 

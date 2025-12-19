@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/wallet_selector_widget.dart';
+import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/edit_wallet_modal.dart';
+import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/delete_wallet_modal.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/month_year_picker_bottom_sheet.dart';
 import 'package:meudin_ai_app/modules/home/widgets/upgrade_banner/upgrade_banner_widget.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
@@ -126,7 +129,10 @@ class HomeModuleController extends GetxController {
     List<Wallet> userWallets = _user!.walletList;
 
     Map<String, dynamic>? newWalletOptions = await Get.bottomSheet(
-      WalletSelectorWidget(walletList: userWallets),
+      WalletSelectorWidget(
+        walletList: userWallets,
+        currentUserId: _user!.id,
+      ),
       isScrollControlled: false,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -135,12 +141,22 @@ class HomeModuleController extends GetxController {
     );
 
     if (newWalletOptions != null) {
+      // Handle wallet menu (edit/delete)
+      if (newWalletOptions['action'] == 'menu') {
+        final walletId = newWalletOptions['walletId'] as String;
+        final walletName = newWalletOptions['walletName'] as String;
+        await _showWalletMenu(walletId, walletName);
+        return;
+      }
+
+      // Handle wallet selection
       if (newWalletOptions.containsKey('newWalletId') &&
           newWalletOptions['createNewWallet'] == false) {
         final newWalletId = newWalletOptions['newWalletId'];
         _switchCurrentWallet(newWalletId);
       }
 
+      // Handle new wallet creation
       if (newWalletOptions['createNewWallet'] == true) {
         final result = await Get.toNamed(AppRoutes.newWalletRoute);
         if (result != null && result is String) {
@@ -170,6 +186,222 @@ class HomeModuleController extends GetxController {
     update();
 
     updatePageData();
+  }
+
+  Future<void> _showWalletMenu(String walletId, String walletName) async {
+    final theme = Theme.of(Get.context!);
+    final result = await Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: theme.brightness == Brightness.dark 
+              ? theme.colorScheme.surface 
+              : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: FaIcon(
+                FontAwesomeIcons.pen,
+                size: 18,
+                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+              ),
+              title: Text(
+                'Editar nome',
+                style: TextStyle(
+                  color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                ),
+              ),
+              onTap: () {
+                Get.back(result: 'edit');
+              },
+            ),
+            ListTile(
+              leading: FaIcon(
+                FontAwesomeIcons.trash,
+                size: 18,
+                color: Colors.red,
+              ),
+              title: Text(
+                'Excluir carteira',
+                style: const TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onTap: () {
+                Get.back(result: 'delete');
+              },
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.transparent,
+    );
+
+    if (result == 'edit') {
+      await _editWallet(walletId, walletName);
+    } else if (result == 'delete') {
+      await _deleteWallet(walletId, walletName);
+    }
+  }
+
+  Future<void> _editWallet(String walletId, String currentName) async {
+    final theme = Theme.of(Get.context!);
+    String? newName;
+
+    await Get.bottomSheet(
+      EditWalletModal(
+        currentName: currentName,
+        onSave: (name) {
+          newName = name;
+        },
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.transparent,
+    );
+
+    if (newName != null && newName!.isNotEmpty && newName != currentName) {
+      isRefreshing = true;
+      update();
+
+      try {
+        final response = await _walletService.updateWallet(walletId, newName!);
+        
+        if (response.success) {
+          await refreshUserAndWallet();
+          
+          // If the edited wallet is the current one, update it
+          if (currentWallet.id == walletId) {
+            currentWallet = _user!.walletList
+                .singleWhere((element) => element.id == walletId);
+            update();
+          }
+        } else {
+          Get.bottomSheet(
+            JoyModal.errorBottomSheet(
+              context: Get.context!,
+              errorList: [response.errorMessage ?? 'Erro ao editar carteira'],
+              title: 'Erro ao editar carteira',
+            ),
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            backgroundColor: Colors.transparent,
+          );
+        }
+      } catch (e) {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: ['Erro ao editar carteira: $e'],
+            title: 'Erro ao editar carteira',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      } finally {
+        isRefreshing = false;
+        update();
+      }
+    }
+  }
+
+  Future<void> _deleteWallet(String walletId, String walletName) async {
+    final theme = Theme.of(Get.context!);
+    bool? confirmed;
+
+    await Get.bottomSheet(
+      DeleteWalletModal(
+        walletName: walletName,
+        onConfirm: () {
+          confirmed = true;
+        },
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.transparent,
+    );
+
+    if (confirmed == true) {
+      // Check if it's the only wallet
+      if (_user!.walletList.length <= 1) {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: ['Você não pode excluir sua única carteira'],
+            title: 'Não é possível excluir',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+        return;
+      }
+
+      isRefreshing = true;
+      update();
+
+      try {
+        final response = await _walletService.deleteWallet(walletId);
+        
+        if (response.success) {
+          await refreshUserAndWallet();
+          
+          // If the deleted wallet was the current one, switch to the first available wallet
+          if (currentWallet.id == walletId) {
+            if (_user!.walletList.isNotEmpty) {
+              _switchCurrentWallet(_user!.walletList.first.id);
+            }
+          }
+        } else {
+          Get.bottomSheet(
+            JoyModal.errorBottomSheet(
+              context: Get.context!,
+              errorList: [response.errorMessage ?? 'Erro ao excluir carteira'],
+              title: 'Erro ao excluir carteira',
+            ),
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            backgroundColor: Colors.transparent,
+          );
+        }
+      } catch (e) {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: ['Erro ao excluir carteira: $e'],
+            title: 'Erro ao excluir carteira',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      } finally {
+        isRefreshing = false;
+        update();
+      }
+    }
   }
 
   _fillStandardDate() {
