@@ -121,6 +121,8 @@ class HomeModule extends StatelessWidget {
                         categoryExpenses: controller.categoryExpenses,
                         startDate: controller.startDate,
                         loading: controller.isRefreshing,
+                        transactions: controller.transactionDtoList,
+                        categories: controller.categories,
                       ),
                       const SizedBox(height: 20), // Espaço extra no final
                     ],

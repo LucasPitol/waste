@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:meudin_ai_app/models/category_expense.dart';
+import 'package:meudin_ai_app/models/transaction.dart';
+import 'package:meudin_ai_app/models/spending_category.dart';
+import 'package:meudin_ai_app/modules/home/widgets/expense_category_chart/expense_category_detail_bottom_sheet.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:meudin_ai_app/utils/constants.dart';
 import 'package:meudin_ai_app/modules/home/widgets/expense_category_chart/expense_category_chart_skeleton.dart';
+import 'package:get/get.dart';
 
 class ExpenseCategoryChartWidget extends StatelessWidget {
   final List<CategoryExpense> categoryExpenses;
   final DateTime startDate;
   final bool loading;
+  final List<Transaction> transactions;
+  final List<SpendingCategory> categories;
 
   const ExpenseCategoryChartWidget({
     super.key,
     required this.categoryExpenses,
     required this.startDate,
     this.loading = false,
+    required this.transactions,
+    required this.categories,
   });
 
   /// Gera paleta com cores específicas definidas
@@ -55,25 +63,39 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.brightness == Brightness.dark 
-            ? theme.colorScheme.surface 
-            : Styles.whiteColor,
-        boxShadow: [
-          BoxShadow(
-            color: theme.brightness == Brightness.dark 
-                ? Colors.black.withOpacity(0.2)
-                : Colors.grey.shade200.withOpacity(0.5), // Sombra mais sutil
-            offset: const Offset(0, 1),
-            blurRadius: 1,
+    return GestureDetector(
+      onTap: () {
+        // Abre bottom sheet de detalhamento
+        Get.bottomSheet(
+          ExpenseCategoryDetailBottomSheet(
+            transactions: transactions,
+            categories: categories,
+            startDate: startDate,
+            chartCategoryExpenses: categoryExpenses,
           ),
-        ],
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-      ),
-      child: Column(
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.brightness == Brightness.dark 
+              ? theme.colorScheme.surface 
+              : Styles.whiteColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.brightness == Brightness.dark 
+                  ? Colors.black.withOpacity(0.2)
+                  : Colors.grey.shade200.withOpacity(0.5), // Sombra mais sutil
+              offset: const Offset(0, 1),
+              blurRadius: 1,
+            ),
+          ],
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
@@ -200,6 +222,7 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

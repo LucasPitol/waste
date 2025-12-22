@@ -134,6 +134,7 @@ class HomeModuleController extends GetxController {
   }
 
   List<CategoryExpense> get categoryExpenses => _categoryExpenses;
+  List<SpendingCategory> get categories => _categories;
 
   /// Calcula gastos por categoria usando APENAS os dados já carregados em transactionDtoList
   /// Não faz nenhuma nova requisição de transações - usa os mesmos dados do saldo e listagem
