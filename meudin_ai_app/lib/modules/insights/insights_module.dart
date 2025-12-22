@@ -32,6 +32,9 @@ class InsightsModule extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
+                      // Título da tela
+                      _InsightsAppBar(),
+                      const SizedBox(height: 20),
                       // Cabeçalho de filtros
                       DateFilterHeader(
                         startDate: controller.startDate,
@@ -83,6 +86,34 @@ class InsightsModule extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+/// AppBar simples para a tela de Insights
+class _InsightsAppBar extends StatelessWidget {
+  const _InsightsAppBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Insights',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+            ),
+          ),
+          // Espaço vazio para manter alinhamento (pode adicionar botão de perfil aqui no futuro)
+          const SizedBox(width: 40),
+        ],
+      ),
     );
   }
 }
