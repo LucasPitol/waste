@@ -23,11 +23,19 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
   /// Cores suaves e harmoniosas para visual discreto
   static List<Color> _generateSoftPalette(int count) {
     // Paleta de cores específicas: roxo principal + tons suaves
+    // final palette = [
+    //   const Color(0xff8147FF),
+    //   Styles.primaryColor,
+    //   const Color(0xffD1B0FF),
+    //   const Color(0xffE9D9FF),
+    // ];
+
+    // Vibrantes
     final palette = [
-      Styles.primaryColor, // Roxo principal (âncora visual)
-      const Color(0xFF7C9CBF), // Azul frio suave
-      const Color(0xFF94A3B8), // Azul acinzentado
-      Styles.primaryColorLight, // Lavanda clara
+      const Color(0xff2DD4BF),
+      Styles.primaryColor,
+      const Color(0xff6366F1),
+      const Color(0xffF472B6),
     ];
     
     return palette.take(count).toList();
