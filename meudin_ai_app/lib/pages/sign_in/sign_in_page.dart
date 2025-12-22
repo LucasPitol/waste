@@ -42,23 +42,13 @@ class SignInPage extends StatelessWidget {
                             },
                             child: Column(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(24),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Styles.primaryColor,
-                                        Styles.primaryColorLight,
-                                      ],
-                                    ),
-                                  ),
-                                  child: const Icon(
-                                    Icons.account_balance_wallet_rounded,
-                                    size: 56,
-                                    color: Colors.white,
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(28),
+                                  child: Image.asset(
+                                    'assets/internal/icon.png',
+                                    width: 124,
+                                    height: 124,
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
                                 const SizedBox(height: 24),
