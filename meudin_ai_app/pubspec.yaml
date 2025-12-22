@@ -47,12 +47,6 @@ dependencies:
   url_launcher: ^6.3.1
   fl_chart: ^0.69.0
 
-flutter_native_splash:
-  color: "#FFFFFF"
-  image: "assets/icon.jpg"
-  android: true
-  ios: true
-
 flutter_launcher_icons:
   android: true
   ios: true
