@@ -18,6 +18,8 @@ import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
+import 'package:meudin_ai_app/services/session_service.dart';
+import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
@@ -83,8 +85,43 @@ class HomeModuleController extends GetxController {
     super.onInit();
     _fillStandardDate();
     _fetchCategories();
-    refreshAll();
+    _restoreLastSelectedWallet();
     _startUpgradeBannerTimer();
+  }
+
+  /// Restaura a última carteira selecionada do local storage antes de buscar transações
+  Future<void> _restoreLastSelectedWallet() async {
+    try {
+      // Lê os dados do usuário do local storage para obter o currentWalletId atualizado
+      final localStorageService = LocalStorageService();
+      final storedUser = await localStorageService.getUserData();
+      
+      if (storedUser != null && storedUser.currentWalletId.isNotEmpty) {
+        // Verifica se a carteira ainda existe na lista de carteiras do usuário
+        final walletExists = _user!.walletList.any(
+          (wallet) => wallet.id == storedUser.currentWalletId,
+        );
+        
+        if (walletExists) {
+          // Atualiza o currentWalletId no UserService se for diferente
+          if (_user!.currentWalletId != storedUser.currentWalletId) {
+            _user!.currentWalletId = storedUser.currentWalletId;
+            UserService.currentUser!.currentWalletId = storedUser.currentWalletId;
+            
+            // Atualiza a carteira atual
+            currentWallet = _user!.walletList
+                .singleWhere((element) => element.id == storedUser.currentWalletId);
+            isWalletOwner = (currentWallet.ownerId == _user!.id);
+          }
+        }
+      }
+    } catch (e) {
+      // Se houver erro ao ler do storage, continua com a carteira atual
+      // (já definida no construtor)
+    }
+    
+    // Após restaurar a carteira, busca os dados
+    refreshAll();
   }
 
   Future<void> _fetchCategories() async {
@@ -286,6 +323,7 @@ class HomeModuleController extends GetxController {
           // Select the newly created wallet
           final newWalletId = result as String;
           if (_user!.walletList.any((w) => w.id == newWalletId)) {
+            // _switchCurrentWallet já salva no local storage
             _switchCurrentWallet(newWalletId);
           }
         }
@@ -298,6 +336,10 @@ class HomeModuleController extends GetxController {
         _user!.walletList.singleWhere((element) => element.id == newWalletId);
 
     UserService.currentUser!.currentWalletId = newWalletId;
+    _user!.currentWalletId = newWalletId;
+
+    // Salva a carteira selecionada no local storage
+    SessionService.updateCurrentWalletId(newWalletId);
 
     bool isWalletOwnerTemp = (walletTemp.ownerId == _user!.id);
 
@@ -488,6 +530,7 @@ class HomeModuleController extends GetxController {
           // If the deleted wallet was the current one, switch to the first available wallet
           if (currentWallet.id == walletId) {
             if (_user!.walletList.isNotEmpty) {
+              // _switchCurrentWallet já salva no local storage
               _switchCurrentWallet(_user!.walletList.first.id);
             }
           }
