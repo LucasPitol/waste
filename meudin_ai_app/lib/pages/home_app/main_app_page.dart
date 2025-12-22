@@ -1,4 +1,5 @@
 import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
+import 'package:meudin_ai_app/modules/insights/insights_module_controller.dart';
 import 'package:meudin_ai_app/pages/home_app/main_app_page_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -9,6 +10,38 @@ import 'package:get/get.dart';
 
 class MainAppPage extends StatelessWidget {
   const MainAppPage({super.key});
+
+  /// Atualiza os dados da tela ativa após criar uma nova transação
+  static void _refreshCurrentPage(int selectedIndex) {
+    // Atualiza a tela ativa
+    if (selectedIndex == 0) {
+      // Tela Home
+      if (Get.isRegistered<HomeModuleController>()) {
+        final homeController = Get.find<HomeModuleController>();
+        homeController.updatePageData();
+      }
+    } else if (selectedIndex == 1) {
+      // Tela Insights
+      if (Get.isRegistered<InsightsModuleController>()) {
+        final insightsController = Get.find<InsightsModuleController>();
+        insightsController.refreshAll();
+      }
+    }
+    
+    // Também tenta atualizar a outra tela se o controller estiver disponível
+    // Isso garante que quando o usuário trocar de tela, os dados estejam atualizados
+    if (selectedIndex == 0) {
+      if (Get.isRegistered<InsightsModuleController>()) {
+        final insightsController = Get.find<InsightsModuleController>();
+        insightsController.refreshAll();
+      }
+    } else {
+      if (Get.isRegistered<HomeModuleController>()) {
+        final homeController = Get.find<HomeModuleController>();
+        homeController.updatePageData();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +74,7 @@ class MainAppPage extends StatelessWidget {
                   onTap: () async {
                     final result = await Get.toNamed(AppRoutes.newSpendRoute);
                     if (result != null && result == true) {
-                      final homeController = Get.find<HomeModuleController>();
-                      homeController.updatePageData();
+                      _refreshCurrentPage(controller.selectedIndex);
                     }
                   }),
               SpeedDialChild(
@@ -55,8 +87,7 @@ class MainAppPage extends StatelessWidget {
                   // Navigate to New Revenue Page and wait for result
                   final result = await Get.toNamed(AppRoutes.newRevenueRoute);
                   if (result != null && result == true) {
-                    final homeController = Get.find<HomeModuleController>();
-                    homeController.updatePageData();
+                    _refreshCurrentPage(controller.selectedIndex);
                   }
                 },
               ),
