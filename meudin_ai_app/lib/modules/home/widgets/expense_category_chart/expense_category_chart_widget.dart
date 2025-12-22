@@ -19,18 +19,15 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
     this.loading = false,
   });
 
-  /// Gera paleta extremamente suave e discreta
-  /// Cores quase neutras, apenas o suficiente para diferenciar categorias
-  /// Visual silencioso que não compete com elementos principais
+  /// Gera paleta com cores específicas definidas
+  /// Cores suaves e harmoniosas para visual discreto
   static List<Color> _generateSoftPalette(int count) {
-    // Paleta de cores muito suaves, quase neutras
-    // Tons de cinza com leve variação, apenas para diferenciar
+    // Paleta de cores específicas: roxo principal + tons suaves
     final palette = [
-      Color(0xFFA0A0B0), // Cinza-azulado suave
-      Color(0xFFA8A8A8), // Cinza neutro
-      Color(0xFFB0A8A0), // Cinza-bege suave
-      Color(0xFFA8B0A8), // Cinza-esverdeado muito suave
-      Color(0xFFB0B0B0), // Cinza médio
+      Styles.primaryColor, // Roxo principal (âncora visual)
+      const Color(0xFF94A3B8), // Azul acinzentado
+      const Color(0xFF7C9CBF), // Azul frio suave
+      const Color(0xFFC4B5FD), // Lavanda clara
     ];
     
     return palette.take(count).toList();
@@ -95,41 +92,42 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          // Chart and Legend
+          // Chart and Legend - Mesma largura horizontal, alinhados
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Donut Chart - Discreto: anel fino, centro dominante, visual silencioso
-              SizedBox(
-                width: 110,
-                height: 110,
-                child: PieChart(
-                  PieChartData(
-                    sections: categoryExpenses.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final expense = entry.value;
-                      // Paleta extremamente suave
-                      final softPalette = _generateSoftPalette(categoryExpenses.length);
-                      final color = expense.categoryId == 'others' 
-                          ? Colors.grey.shade300 // "Outros" muito discreto
-                          : softPalette[index % softPalette.length];
-                      
-                      return PieChartSectionData(
-                        value: expense.amount,
-                        title: '',
-                        color: color,
-                        radius: 8, // ESPESSURA do anel (fino) - não é raio externo!
-                        showTitle: false,
-                      );
-                    }).toList(),
-                    centerSpaceRadius: 40, // Centro grande (anel fino)
-                    sectionsSpace: 0, // Sem separação (mais discreto)
-                    startDegreeOffset: -90, // Começa no topo
+              Expanded(
+                child: SizedBox(
+                  height: 110,
+                  child: PieChart(
+                    PieChartData(
+                      sections: categoryExpenses.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final expense = entry.value;
+                        // Paleta com cores específicas
+                        final softPalette = _generateSoftPalette(categoryExpenses.length);
+                        final color = expense.categoryId == 'others' 
+                            ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
+                            : softPalette[index % softPalette.length];
+                        
+                        return PieChartSectionData(
+                          value: expense.amount,
+                          title: '',
+                          color: color,
+                          radius: 8, // ESPESSURA do anel (fino)
+                          showTitle: false,
+                        );
+                      }).toList(),
+                      centerSpaceRadius: 40, // Centro grande (anel fino)
+                      sectionsSpace: 0, // Sem separação (mais discreto)
+                      startDegreeOffset: -90, // Começa no topo
+                    ),
                   ),
                 ),
               ),
               const SizedBox(width: 16),
-              // Legend - Refinada: hierarquia visual mais clara
+              // Legend - Mesma largura do gráfico (Expanded)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +136,7 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                     final expense = entry.value;
                     final softPalette = _generateSoftPalette(categoryExpenses.length);
                     final color = expense.categoryId == 'others' 
-                        ? Colors.grey.shade400
+                        ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
                         : softPalette[index % softPalette.length];
                     
                     return Padding(
@@ -153,25 +151,26 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                               shape: BoxShape.circle,
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
+                          const SizedBox(width: 8),
+                          Flexible(
                             child: Text(
                               expense.categoryName,
                               style: TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w500, // Peso médio - categoria é mais importante
+                                fontWeight: FontWeight.w500,
                                 color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) 
-                                    ?? Colors.grey.shade700, // Mais visível que percentual
+                                    ?? Colors.grey.shade700,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Text(
-                            '${expense.percentage.toStringAsFixed(0)}%',
+                            ' ${expense.percentage.toStringAsFixed(0)}%', // Espaço mínimo (1 espaço)
                             style: TextStyle(
-                              fontSize: 11, // Menor que categoria
-                              fontWeight: FontWeight.w400, // Peso normal
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
                               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4) 
-                                  ?? Colors.grey.shade400, // Muito discreto - não destaca
+                                  ?? Colors.grey.shade400,
                             ),
                           ),
                         ],
