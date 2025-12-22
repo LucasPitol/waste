@@ -11,14 +11,15 @@ class TransactionPageHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         children: [
           IconButton(
-            icon: const FaIcon(
+            icon: FaIcon(
               FontAwesomeIcons.arrowLeft,
-              color: Styles.primaryTextColor,
+              color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               size: 20,
             ),
             onPressed: () {
@@ -35,7 +36,7 @@ class TransactionPageHeaderWidget extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: Styles.primaryTextColor,
+                    color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -43,7 +44,8 @@ class TransactionPageHeaderWidget extends StatelessWidget {
                   Utils.formatDateMMMdeYYYY(startDate),
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey[600],
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                        ?? Colors.grey.shade600,
                     fontWeight: FontWeight.w400,
                   ),
                 ),

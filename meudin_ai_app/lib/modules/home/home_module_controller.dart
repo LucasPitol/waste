@@ -614,6 +614,7 @@ class HomeModuleController extends GetxController {
 
   updatePageData() async {
     loading = true;
+    isRefreshing = true;
     update();
 
     try {
@@ -632,6 +633,7 @@ class HomeModuleController extends GetxController {
       );
 
       loading = false;
+      isRefreshing = false;
       
       if (res.success) {
         transactionDtoList = res.data.isNotEmpty
@@ -681,6 +683,7 @@ class HomeModuleController extends GetxController {
       }
     } catch (e) {
       loading = false;
+      isRefreshing = false;
       
       JoyModal.bottomSheetError(
         context: Get.context!,
@@ -689,6 +692,7 @@ class HomeModuleController extends GetxController {
       );
     } finally {
       loading = false;
+      isRefreshing = false;
       update();
     }
   }

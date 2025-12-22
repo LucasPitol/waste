@@ -80,7 +80,7 @@ class HomeModule extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              JoyText.secundaryText('Plano iniciante'),
+                              JoyText.secundaryText('Plano Free'),
                               const SizedBox(
                                 width: double.infinity,
                                 height: 20,

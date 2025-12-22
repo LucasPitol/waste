@@ -16,7 +16,7 @@ class SubscriptionPlan {
     return [
       SubscriptionPlan(
         id: 'starter',
-        name: 'Plano Iniciante',
+        name: 'Plano Free',
         keyBenefit: 'Gestão básica de finanças pessoais',
         isCurrent: true,
       ),

@@ -55,10 +55,13 @@ class _MonthYearPickerBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.dark 
+            ? theme.colorScheme.surface 
+            : Styles.whiteColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SafeArea(
         child: Column(
@@ -70,7 +73,9 @@ class _MonthYearPickerBottomSheetState
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: theme.brightness == Brightness.dark
+                    ? Colors.grey.shade700
+                    : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -81,12 +86,12 @@ class _MonthYearPickerBottomSheetState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Selecione o mês e ano',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
-                      color: Styles.primaryTextColor,
+                      color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -95,7 +100,8 @@ class _MonthYearPickerBottomSheetState
                     'Filtre suas transações',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                          ?? Colors.grey.shade600,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -209,6 +215,7 @@ class _MonthYearPickerBottomSheetState
   }
 
   Widget _buildSectionTitle(String title) {
+    final theme = Theme.of(context);
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
@@ -216,7 +223,8 @@ class _MonthYearPickerBottomSheetState
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
-          color: Colors.grey[800],
+          color: theme.textTheme.bodyLarge?.color?.withOpacity(0.8) 
+              ?? Colors.grey.shade800,
         ),
       ),
     );
@@ -295,8 +303,11 @@ class _MonthCardState extends State<_MonthCard> {
   }
 
   Color _getBackgroundColor() {
+    final theme = Theme.of(context);
     if (_isPressed) {
-      return Colors.grey[100]!;
+      return theme.brightness == Brightness.dark
+          ? Colors.grey.shade800
+          : Colors.grey.shade100;
     }
     if (widget.isSelected) {
       return Styles.primaryColor.withOpacity(0.1);
@@ -305,17 +316,21 @@ class _MonthCardState extends State<_MonthCard> {
   }
 
   Color _getBorderColor() {
+    final theme = Theme.of(context);
     if (widget.isSelected) {
       return Styles.primaryColor.withOpacity(0.4);
     }
-    return Colors.grey[200]!;
+    return theme.brightness == Brightness.dark
+        ? Colors.grey.shade700
+        : Colors.grey.shade200;
   }
 
   Color _getTextColor() {
+    final theme = Theme.of(context);
     if (widget.isSelected) {
       return Styles.primaryColor;
     }
-    return Styles.primaryTextColor;
+    return theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor;
   }
 }
 
@@ -391,8 +406,11 @@ class _YearCardState extends State<_YearCard> {
   }
 
   Color _getBackgroundColor() {
+    final theme = Theme.of(context);
     if (_isPressed) {
-      return Colors.grey[100]!;
+      return theme.brightness == Brightness.dark
+          ? Colors.grey.shade800
+          : Colors.grey.shade100;
     }
     if (widget.isSelected) {
       return Styles.primaryColor.withOpacity(0.1);
@@ -401,16 +419,20 @@ class _YearCardState extends State<_YearCard> {
   }
 
   Color _getBorderColor() {
+    final theme = Theme.of(context);
     if (widget.isSelected) {
       return Styles.primaryColor.withOpacity(0.4);
     }
-    return Colors.grey[200]!;
+    return theme.brightness == Brightness.dark
+        ? Colors.grey.shade700
+        : Colors.grey.shade200;
   }
 
   Color _getTextColor() {
+    final theme = Theme.of(context);
     if (widget.isSelected) {
       return Styles.primaryColor;
     }
-    return Styles.primaryTextColor;
+    return theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor;
   }
 }
