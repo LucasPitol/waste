@@ -159,7 +159,7 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                                 shape: BoxShape.circle,
                               ),
                             ),
-                            Flexible(
+                            Expanded(
                               child: Text(
                                 expense.categoryName,
                                 style: TextStyle(
@@ -173,7 +173,7 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              ' ${expense.percentage.toStringAsFixed(0)}%',
+                              '${expense.percentage.toStringAsFixed(0)}%',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w400,
