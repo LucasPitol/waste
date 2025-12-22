@@ -15,10 +15,13 @@ class CategoryPickerBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.dark 
+            ? theme.colorScheme.surface 
+            : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SafeArea(
         child: Column(
@@ -30,7 +33,9 @@ class CategoryPickerBottomSheet extends StatelessWidget {
               width: 36,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: theme.brightness == Brightness.dark
+                    ? Colors.grey.shade700
+                    : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -41,12 +46,12 @@ class CategoryPickerBottomSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Selecione uma categoria',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
-                      color: Styles.primaryTextColor,
+                      color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -55,7 +60,8 @@ class CategoryPickerBottomSheet extends StatelessWidget {
                     'Organize seus gastos',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey[600],
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                          ?? Colors.grey.shade600,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -181,8 +187,11 @@ class _CategoryCardState extends State<_CategoryCard> {
   }
 
   Color _getBackgroundColor() {
+    final theme = Theme.of(context);
     if (_isPressed) {
-      return Colors.grey[100]!;
+      return theme.brightness == Brightness.dark
+          ? Colors.grey.shade800
+          : Colors.grey.shade100;
     }
     if (widget.isSelected) {
       return widget.category.colorData.withOpacity(0.08);
@@ -191,17 +200,21 @@ class _CategoryCardState extends State<_CategoryCard> {
   }
 
   Color _getBorderColor() {
+    final theme = Theme.of(context);
     if (widget.isSelected) {
       return widget.category.colorData.withOpacity(0.4);
     }
-    return Colors.grey[200]!;
+    return theme.brightness == Brightness.dark
+        ? Colors.grey.shade700
+        : Colors.grey.shade200;
   }
 
   Color _getTextColor() {
+    final theme = Theme.of(context);
     if (widget.isSelected) {
       return widget.category.colorData;
     }
-    return Styles.primaryTextColor;
+    return theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor;
   }
 }
 
