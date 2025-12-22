@@ -25,9 +25,9 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
     // Paleta de cores específicas: roxo principal + tons suaves
     final palette = [
       Styles.primaryColor, // Roxo principal (âncora visual)
-      const Color(0xFF94A3B8), // Azul acinzentado
       const Color(0xFF7C9CBF), // Azul frio suave
-      const Color(0xFFC4B5FD), // Lavanda clara
+      const Color(0xFF94A3B8), // Azul acinzentado
+      Styles.primaryColorLight, // Lavanda clara
     ];
     
     return palette.take(count).toList();
