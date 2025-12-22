@@ -92,94 +92,104 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          // Chart and Legend - Mesma largura horizontal, alinhados
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Donut Chart - Discreto: anel fino, centro dominante, visual silencioso
-              Expanded(
-                child: SizedBox(
-                  height: 110,
-                  child: PieChart(
-                    PieChartData(
-                      sections: categoryExpenses.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final expense = entry.value;
-                        // Paleta com cores específicas
-                        final softPalette = _generateSoftPalette(categoryExpenses.length);
-                        final color = expense.categoryId == 'others' 
-                            ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
-                            : softPalette[index % softPalette.length];
-                        
-                        return PieChartSectionData(
-                          value: expense.amount,
-                          title: '',
-                          color: color,
-                          radius: 8, // ESPESSURA do anel (fino)
-                          showTitle: false,
-                        );
-                      }).toList(),
-                      centerSpaceRadius: 40, // Centro grande (anel fino)
-                      sectionsSpace: 0, // Sem separação (mais discreto)
-                      startDegreeOffset: -90, // Começa no topo
+          // Chart and Legend - Mesmo bounding box vertical (sem espaço fantasma)
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Donut Chart - Ajustado para compartilhar altura com legenda
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      width: 100, // Diâmetro reduzido para melhor proporção
+                      height: 100,
+                      child: PieChart(
+                        PieChartData(
+                          sections: categoryExpenses.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final expense = entry.value;
+                            // Paleta com cores específicas
+                            final softPalette = _generateSoftPalette(categoryExpenses.length);
+                            final color = expense.categoryId == 'others' 
+                                ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
+                                : softPalette[index % softPalette.length];
+                            
+                            return PieChartSectionData(
+                              value: expense.amount,
+                              title: '',
+                              color: color,
+                              radius: 7, // Espessura do anel ajustada
+                              showTitle: false,
+                            );
+                          }).toList(),
+                          centerSpaceRadius: 36, // Centro ajustado proporcionalmente
+                          sectionsSpace: 0, // Sem separação (mais discreto)
+                          startDegreeOffset: -90, // Começa no topo
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              // Legend - Mesma largura do gráfico (Expanded)
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: categoryExpenses.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final expense = entry.value;
-                    final softPalette = _generateSoftPalette(categoryExpenses.length);
-                    final color = expense.categoryId == 'others' 
-                        ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
-                        : softPalette[index % softPalette.length];
-                    
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              expense.categoryName,
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) 
-                                    ?? Colors.grey.shade700,
+                const SizedBox(width: 16),
+                // Legend - Ajustada para compartilhar altura com gráfico
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: categoryExpenses.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final expense = entry.value;
+                      final softPalette = _generateSoftPalette(categoryExpenses.length);
+                      final color = expense.categoryId == 'others' 
+                          ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
+                          : softPalette[index % softPalette.length];
+                      
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8), // Espaçamento reduzido
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              margin: const EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          Text(
-                            ' ${expense.percentage.toStringAsFixed(0)}%', // Espaço mínimo (1 espaço)
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w400,
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4) 
-                                  ?? Colors.grey.shade400,
+                            Flexible(
+                              child: Text(
+                                expense.categoryName,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.2, // Line-height ajustado
+                                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8) 
+                                      ?? Colors.grey.shade700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                            Text(
+                              ' ${expense.percentage.toStringAsFixed(0)}%',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2, // Line-height consistente
+                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4) 
+                                    ?? Colors.grey.shade400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
