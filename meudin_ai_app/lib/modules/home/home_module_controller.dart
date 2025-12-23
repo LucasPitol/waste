@@ -20,6 +20,7 @@ import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/services/session_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
+import 'package:meudin_ai_app/services/cache_service.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
@@ -39,6 +40,7 @@ class HomeModuleController extends GetxController {
   late WalletService _walletService;
   late UserService _userService;
   late SpendingCategoryService _spendingCategoryService;
+  late CacheService _cacheService;
   late bool isWalletListLoading;
   late bool isRefreshing;
   late bool showUpgradeBanner;
@@ -64,6 +66,7 @@ class HomeModuleController extends GetxController {
     _transactionService = TransactionService();
     _walletService = WalletService();
     _spendingCategoryService = SpendingCategoryService();
+    _cacheService = CacheService();
     isWalletListLoading = false;
     isRefreshing = false;
     showUpgradeBanner = false;
@@ -271,13 +274,14 @@ class HomeModuleController extends GetxController {
   }
 
   /// Complete refresh - both wallets and transactions with unified loading
-  Future<void> refreshAll() async {
+  /// [forceRefresh] força busca na API mesmo com cache válido (pull to refresh)
+  Future<void> refreshAll({bool forceRefresh = false}) async {
     isRefreshing = true;
     update();
     
     try {
       await refreshUserAndWallet();
-      await updatePageData();
+      await updatePageData(forceRefresh: forceRefresh);
     } finally {
       isRefreshing = false;
       update();
@@ -349,6 +353,7 @@ class HomeModuleController extends GetxController {
 
     update();
 
+    // Ao trocar carteira, busca dados (cache será verificado por carteira)
     updatePageData();
   }
 
@@ -612,7 +617,9 @@ class HomeModuleController extends GetxController {
     }
   }
 
-  updatePageData() async {
+  /// Carrega dados da página, usando cache quando disponível
+  /// [forceRefresh] força busca na API mesmo com cache válido (pull to refresh)
+  updatePageData({bool forceRefresh = false}) async {
     loading = true;
     isRefreshing = true;
     update();
@@ -624,21 +631,20 @@ class HomeModuleController extends GetxController {
         await _fetchCategories();
       }
 
-      // ÚNICA requisição de transações - mesma usada para saldo e listagem
       String walletId = currentWallet.id;
-      ResponseDto res = await _transactionService.getTransactionDtoList(
-        walletId,
-        startDate,
-        endDate,
-      );
-
-      loading = false;
-      isRefreshing = false;
+      List<Map<String, dynamic>>? cachedData;
       
-      if (res.success) {
-        transactionDtoList = res.data.isNotEmpty
-            ? res.data.map<Transaction>((e) => Transaction.fromJson(e)).toList()
-            : [];
+      // Verifica cache apenas se não for refresh forçado
+      if (!forceRefresh) {
+        cachedData = await _cacheService.getCache('home', walletId);
+      }
+      
+      // Se tem cache válido, usa ele
+      if (cachedData != null && !forceRefresh) {
+        // Processa dados do cache
+        transactionDtoList = cachedData
+            .map<Transaction>((e) => Transaction.fromJson(e))
+            .toList();
 
         // Sort by transactionDate descending (most recent first)
         transactionDtoList.sort((a, b) {
@@ -672,7 +678,70 @@ class HomeModuleController extends GetxController {
         twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
 
         // Calcula gastos por categoria usando os MESMOS dados (transactionDtoList)
-        // Não faz nova requisição - apenas processa os dados já carregados
+        _calculateCategoryExpenses();
+        
+        loading = false;
+        isRefreshing = false;
+        update();
+        return; // Retorna sem fazer request à API
+      }
+
+      // Se não tem cache válido ou forceRefresh, busca da API
+      ResponseDto res = await _transactionService.getTransactionDtoList(
+        walletId,
+        startDate,
+        endDate,
+      );
+
+      loading = false;
+      isRefreshing = false;
+      
+      if (res.success) {
+        // Converte dados para lista de Map para salvar no cache
+        final dataList = res.data.isNotEmpty
+            ? (res.data as List).map((e) => e as Map<String, dynamic>).toList()
+            : <Map<String, dynamic>>[];
+        
+        // Salva no cache
+        await _cacheService.saveCache('home', walletId, dataList);
+        
+        // Processa dados para UI
+        transactionDtoList = dataList
+            .map<Transaction>((e) => Transaction.fromJson(e))
+            .toList();
+
+        // Sort by transactionDate descending (most recent first)
+        transactionDtoList.sort((a, b) {
+          if (a.transactionDate == null && b.transactionDate == null) return 0;
+          if (a.transactionDate == null) return 1;
+          if (b.transactionDate == null) return -1;
+          return b.transactionDate!.compareTo(a.transactionDate!);
+        });
+
+        // Calcula saldo, receitas e despesas usando transactionDtoList
+        double totalAmountTemp = 0;
+        double totalRevenueTemp = 0;
+        double totalSpendTemp = 0;
+
+        for (var element in transactionDtoList) {
+          double amount = element.amount!;
+
+          if (amount > 0) {
+            totalRevenueTemp = totalRevenueTemp + amount;
+          } else {
+            totalSpendTemp = totalSpendTemp + amount;
+          }
+        }
+
+        totalAmountTemp = (totalRevenueTemp + totalSpendTemp);
+
+        monthRevenue = totalRevenueTemp;
+        monthSpends = totalSpendTemp;
+        monthBalance = totalAmountTemp;
+
+        twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
+
+        // Calcula gastos por categoria usando os MESMOS dados (transactionDtoList)
         _calculateCategoryExpenses();
       } else {
         JoyModal.bottomSheetError(

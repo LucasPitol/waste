@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/services/session_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
+import 'package:meudin_ai_app/services/cache_service.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class InsightsModuleController extends GetxController {
@@ -30,6 +31,7 @@ class InsightsModuleController extends GetxController {
   late WalletService _walletService;
   late UserService _userService;
   late SpendingCategoryService _spendingCategoryService;
+  late CacheService _cacheService;
   late bool isRefreshing;
   List<SpendingCategory> _categories = [];
   List<CategoryExpense> _categoryExpenses = [];
@@ -54,6 +56,7 @@ class InsightsModuleController extends GetxController {
     _transactionService = TransactionService();
     _walletService = WalletService();
     _spendingCategoryService = SpendingCategoryService();
+    _cacheService = CacheService();
     isRefreshing = false;
     previousPeriodSpends = null;
     monthlyAverageSpends = null;
@@ -305,13 +308,14 @@ class InsightsModuleController extends GetxController {
   }
 
   /// Complete refresh - busca transações e calcula todos os dados
-  Future<void> refreshAll() async {
+  /// [forceRefresh] força busca na API mesmo com cache válido (pull to refresh)
+  Future<void> refreshAll({bool forceRefresh = false}) async {
     isRefreshing = true;
     update();
     
     try {
       await refreshUserAndWallet();
-      await updatePageData();
+      await updatePageData(forceRefresh: forceRefresh);
     } finally {
       isRefreshing = false;
       update();
@@ -331,7 +335,9 @@ class InsightsModuleController extends GetxController {
     }
   }
 
-  Future<void> updatePageData() async {
+  /// Carrega dados da página, usando cache quando disponível
+  /// [forceRefresh] força busca na API mesmo com cache válido (pull to refresh)
+  Future<void> updatePageData({bool forceRefresh = false}) async {
     loading = true;
     isRefreshing = true;
     update();
@@ -342,6 +348,61 @@ class InsightsModuleController extends GetxController {
       }
 
       String walletId = currentWallet.id;
+      List<Map<String, dynamic>>? cachedData;
+      
+      // Verifica cache apenas se não for refresh forçado
+      if (!forceRefresh) {
+        cachedData = await _cacheService.getCache('insights', walletId);
+      }
+      
+      // Se tem cache válido, usa ele
+      if (cachedData != null && !forceRefresh) {
+        // Processa dados do cache
+        transactionDtoList = cachedData
+            .map<Transaction>((e) => Transaction.fromJson(e))
+            .toList();
+
+        transactionDtoList.sort((a, b) {
+          if (a.transactionDate == null && b.transactionDate == null) return 0;
+          if (a.transactionDate == null) return 1;
+          if (b.transactionDate == null) return -1;
+          return b.transactionDate!.compareTo(a.transactionDate!);
+        });
+
+        // Calcula KPIs
+        double totalRevenueTemp = 0;
+        double totalSpendTemp = 0;
+
+        for (var element in transactionDtoList) {
+          double amount = element.amount!;
+
+          if (amount > 0) {
+            totalRevenueTemp = totalRevenueTemp + amount;
+          } else {
+            totalSpendTemp = totalSpendTemp + amount;
+          }
+        }
+
+        revenue = totalRevenueTemp;
+        spends = totalSpendTemp;
+        balance = totalRevenueTemp + totalSpendTemp;
+
+        // Calcula gastos por categoria
+        _calculateCategoryExpenses();
+        
+        // Calcula média mensal
+        _calculateMonthlyAverage();
+        
+        // Calcula comparativo (sempre busca da API pois depende de período anterior)
+        await _calculateComparison();
+        
+        loading = false;
+        isRefreshing = false;
+        update();
+        return; // Retorna sem fazer request à API
+      }
+
+      // Se não tem cache válido ou forceRefresh, busca da API
       ResponseDto res = await _transactionService.getTransactionDtoList(
         walletId,
         startDate,
@@ -352,9 +413,18 @@ class InsightsModuleController extends GetxController {
       isRefreshing = false;
       
       if (res.success) {
-        transactionDtoList = res.data.isNotEmpty
-            ? res.data.map<Transaction>((e) => Transaction.fromJson(e)).toList()
-            : [];
+        // Converte dados para lista de Map para salvar no cache
+        final dataList = res.data.isNotEmpty
+            ? (res.data as List).map((e) => e as Map<String, dynamic>).toList()
+            : <Map<String, dynamic>>[];
+        
+        // Salva no cache
+        await _cacheService.saveCache('insights', walletId, dataList);
+        
+        // Processa dados para UI
+        transactionDtoList = dataList
+            .map<Transaction>((e) => Transaction.fromJson(e))
+            .toList();
 
         transactionDtoList.sort((a, b) {
           if (a.transactionDate == null && b.transactionDate == null) return 0;

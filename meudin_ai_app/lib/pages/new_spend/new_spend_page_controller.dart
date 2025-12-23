@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
+import 'package:meudin_ai_app/services/cache_service.dart';
+import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/pages/new_spend/widgets/category_picker_bottom_sheet.dart';
@@ -11,6 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NewSpendPageController extends GetxController {
   late TransactionService _transactionService;
+  late CacheService _cacheService;
   final amountController = TextEditingController();
   final reasonController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -29,6 +32,7 @@ class NewSpendPageController extends GetxController {
     super.onInit();
     _spendingCategoryService = SpendingCategoryService();
     _transactionService = TransactionService();
+    _cacheService = CacheService();
     fetchCategories();
   }
 
@@ -126,6 +130,11 @@ class NewSpendPageController extends GetxController {
       update();
       
       if (response.success) {
+        // Invalida cache após criar transação
+        final user = UserService.currentUser;
+        if (user?.currentWalletId != null) {
+          await _cacheService.invalidateAllCachesForWallet(user!.currentWalletId!);
+        }
         Get.back(result: true);
       } else {
         errorList = [response.errorMessage ?? 'Erro ao salvar gasto'];

@@ -153,6 +153,7 @@ class MainAppPage extends StatelessWidget {
             color: theme.brightness == Brightness.dark 
                 ? theme.colorScheme.surface 
                 : Styles.whiteColor,
+            height: 56,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

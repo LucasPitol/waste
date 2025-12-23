@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
+import 'package:meudin_ai_app/services/cache_service.dart';
+import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
@@ -8,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditRevenuePageController extends GetxController {
   late TransactionService _transactionService;
+  late CacheService _cacheService;
   late Transaction _transaction;
   final amountController = TextEditingController();
   final reasonController = TextEditingController();
@@ -18,6 +21,7 @@ class EditRevenuePageController extends GetxController {
   EditRevenuePageController(Transaction transaction) : selectedDate = transaction.transactionDate ?? DateTime.now() {
     _transaction = transaction;
     _transactionService = TransactionService();
+    _cacheService = CacheService();
     
     // Pre-fill fields with transaction data
     if (transaction.amount != null) {
@@ -86,6 +90,11 @@ class EditRevenuePageController extends GetxController {
     update();
 
     if (response.success) {
+      // Invalida cache após editar transação
+      final user = UserService.currentUser;
+      if (user?.currentWalletId != null) {
+        await _cacheService.invalidateAllCachesForWallet(user!.currentWalletId!);
+      }
       Get.back(result: true);
     } else {
       Future.microtask(() {
@@ -118,6 +127,11 @@ class EditRevenuePageController extends GetxController {
       update();
       
       if (response.success) {
+        // Invalida cache após deletar transação
+        final user = UserService.currentUser;
+        if (user?.currentWalletId != null) {
+          await _cacheService.invalidateAllCachesForWallet(user!.currentWalletId!);
+        }
         Get.back(result: true);
       } else {
         Get.bottomSheet(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
+import 'package:meudin_ai_app/services/cache_service.dart';
+import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/utils/centavos_currency_formatter.dart';
 
 import '../../ui/joy_ui.dart';
@@ -11,9 +13,11 @@ class NewRevenuePageController extends GetxController {
   DateTime selectedDate = DateTime.now();
   bool loading = false;
   late TransactionService _transactionService;
+  late CacheService _cacheService;
 
   NewRevenuePageController() {
     _transactionService = TransactionService();
+    _cacheService = CacheService();
   }
 
   String get selectedDateString =>
@@ -87,6 +91,11 @@ class NewRevenuePageController extends GetxController {
     update();
 
     if (response.success) {
+      // Invalida cache após criar transação
+      final user = UserService.currentUser;
+      if (user?.currentWalletId != null) {
+        await _cacheService.invalidateAllCachesForWallet(user!.currentWalletId!);
+      }
       Get.back(result: true);
     } else {
       Future.microtask(() {

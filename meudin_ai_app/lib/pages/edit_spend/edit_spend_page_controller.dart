@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
+import 'package:meudin_ai_app/services/cache_service.dart';
+import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
@@ -13,6 +15,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EditSpendPageController extends GetxController {
   late TransactionService _transactionService;
+  late CacheService _cacheService;
   late Transaction _transaction;
   final amountController = TextEditingController();
   final reasonController = TextEditingController();
@@ -31,6 +34,7 @@ class EditSpendPageController extends GetxController {
   EditSpendPageController(Transaction transaction) : selectedDate = transaction.transactionDate ?? DateTime.now() {
     _transaction = transaction;
     _transactionService = TransactionService();
+    _cacheService = CacheService();
     _spendingCategoryService = SpendingCategoryService();
     
     // Pre-fill fields with transaction data
@@ -141,6 +145,11 @@ class EditSpendPageController extends GetxController {
       update();
       
       if (response.success) {
+        // Invalida cache após editar transação
+        final user = UserService.currentUser;
+        if (user?.currentWalletId != null) {
+          await _cacheService.invalidateAllCachesForWallet(user!.currentWalletId!);
+        }
         Get.back(result: true);
       } else {
         errorList = [response.errorMessage ?? 'Erro ao atualizar gasto'];
@@ -166,6 +175,11 @@ class EditSpendPageController extends GetxController {
       update();
       
       if (response.success) {
+        // Invalida cache após deletar transação
+        final user = UserService.currentUser;
+        if (user?.currentWalletId != null) {
+          await _cacheService.invalidateAllCachesForWallet(user!.currentWalletId!);
+        }
         Get.back(result: true);
       } else {
         Get.bottomSheet(

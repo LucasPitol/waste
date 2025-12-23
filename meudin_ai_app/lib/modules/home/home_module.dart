@@ -22,7 +22,7 @@ class HomeModule extends StatelessWidget {
           builder: (context, constraints) {
             return RefreshIndicator(
               onRefresh: () async {
-                await controller.refreshAll();
+                await controller.refreshAll(forceRefresh: true);
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
