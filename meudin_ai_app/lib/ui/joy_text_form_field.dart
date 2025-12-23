@@ -31,6 +31,9 @@ class JoyTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return TextFormField(
       controller: controller,
       textCapitalization: textCapitalization,
@@ -44,8 +47,8 @@ class JoyTextFormField extends StatelessWidget {
       onFieldSubmitted: (_) => onFieldSubmitted != null
           ? onFieldSubmitted()
           : FocusScope.of(Get.context!).nextFocus(),
-      style: const TextStyle(
-        color: Styles.primaryTextColor,
+      style: TextStyle(
+        color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
         fontSize: 16,
         fontWeight: FontWeight.w500,
       ),
@@ -53,12 +56,12 @@ class JoyTextFormField extends StatelessWidget {
         counterText: '',
         hintText: hintText,
         hintStyle: TextStyle(
-          color: Colors.grey[400],
+          color: isDark ? Colors.grey[500] : Colors.grey[400],
           fontSize: 15,
           fontWeight: FontWeight.w400,
         ),
         filled: true,
-        fillColor: Colors.grey[50],
+        fillColor: isDark ? theme.colorScheme.surface : Colors.grey[50],
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,
           vertical: 18,
@@ -70,7 +73,7 @@ class JoyTextFormField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: Colors.grey[200]!,
+            color: isDark ? Colors.grey[700]! : Colors.grey[200]!,
             width: 1,
           ),
         ),
@@ -97,7 +100,7 @@ class JoyTextFormField extends StatelessWidget {
         ),
         labelText: labelText,
         labelStyle: TextStyle(
-          color: Colors.grey[600],
+          color: isDark ? Colors.grey[400] : Colors.grey[600],
           fontSize: 15,
           fontWeight: FontWeight.w400,
         ),

@@ -5,6 +5,7 @@ import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/pages/new_spend/widgets/category_picker_bottom_sheet.dart';
+import 'package:meudin_ai_app/utils/centavos_currency_formatter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
@@ -100,9 +101,23 @@ class NewSpendPageController extends GetxController {
     loading = true;
     update();
     try {
-      ResponseDto response = await _transactionService.saveNewSpend(
+      // Extrai o valor numérico do texto formatado
+      final valorNumerico = CentavosCurrencyFormatter.parseValue(
         amountController.text.trim(),
-        reasonController.text.trim(),
+      );
+      
+      // Capitaliza a primeira letra da descrição se necessário
+      String descricao = reasonController.text.trim();
+      if (descricao.isNotEmpty) {
+        descricao = descricao[0].toUpperCase() + descricao.substring(1);
+      }
+      
+      // Converte para string no formato esperado pelo serviço
+      final valorString = valorNumerico.toStringAsFixed(2).replaceAll('.', ',');
+      
+      ResponseDto response = await _transactionService.saveNewSpend(
+        valorString,
+        descricao,
         selectedCategory?.id,
         selectedDate,
       );

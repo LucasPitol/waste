@@ -8,11 +8,12 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GetBuilder<SignInPageController>(
       init: SignInPageController(),
       builder: (controller) {
         return Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Stack(
               children: [
@@ -58,7 +59,7 @@ class SignInPage extends StatelessWidget {
                                   'Seu dinheiro, organizado',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey[400],
+                                    color: theme.textTheme.bodyMedium?.color ?? Colors.grey[400],
                                     fontWeight: FontWeight.w400,
                                     letterSpacing: 0.5,
                                   ),
@@ -67,7 +68,7 @@ class SignInPage extends StatelessWidget {
                             ),
                           ),
                           
-                          const SizedBox(height: 64),
+                          const SizedBox(height: 24),
                           
                           // Título
                           Text(
@@ -75,7 +76,7 @@ class SignInPage extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w700,
-                              color: Styles.primaryTextColor,
+                              color: theme.textTheme.titleLarge?.color ?? Styles.primaryTextColor,
                               letterSpacing: -0.8,
                               height: 1.2,
                             ),
@@ -85,7 +86,7 @@ class SignInPage extends StatelessWidget {
                             'Entre para continuar',
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey[500],
+                              color: theme.textTheme.bodyMedium?.color ?? Colors.grey[500],
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0.2,
                             ),
@@ -113,7 +114,7 @@ class SignInPage extends StatelessWidget {
                                   controller: controller.signInDto.password,
                                   labelText: 'Senha',
                                   obscureText: true,
-                                  keyboardType: TextInputType.visiblePassword,
+                                  keyboardType: TextInputType.text,
                                   textCapitalization: TextCapitalization.none,
                                   onFieldSubmitted: () {
                                     controller.signIn(
@@ -165,7 +166,7 @@ class SignInPage extends StatelessWidget {
                               Text(
                                 'Novo por aqui?',
                                 style: TextStyle(
-                                  color: Colors.grey[600],
+                                  color: theme.textTheme.bodyMedium?.color ?? Colors.grey[600],
                                   fontSize: 15,
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -198,7 +199,7 @@ class SignInPage extends StatelessWidget {
                             child: Text(
                               'Esqueceu sua senha?',
                               style: TextStyle(
-                                color: Colors.grey[500],
+                                color: theme.textTheme.bodySmall?.color ?? Colors.grey[500],
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
                               ),

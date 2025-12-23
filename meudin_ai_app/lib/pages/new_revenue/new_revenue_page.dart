@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_formatter/formatters/currency_input_formatter.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/pages/new_revenue/new_revenue_page_controller.dart';
+import 'package:meudin_ai_app/utils/centavos_currency_formatter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class NewRevenuePage extends StatelessWidget {
@@ -73,10 +73,9 @@ class NewRevenuePage extends StatelessWidget {
                       Expanded(
                         child: TextFormField(
                           controller: controller.amountController,
-                          keyboardType:
-                              TextInputType.numberWithOptions(decimal: true),
+                          keyboardType: TextInputType.number,
                           inputFormatters: [
-                            CurrencyInputFormatter(leadingSymbol: 'R\$')
+                            CentavosCurrencyFormatter(),
                           ],
                           style: TextStyle(
                             color: theme.textTheme.bodyLarge?.color,
@@ -124,6 +123,7 @@ class NewRevenuePage extends StatelessWidget {
                       Expanded(
                         child: TextFormField(
                           controller: controller.reasonController,
+                          textCapitalization: TextCapitalization.sentences,
                           style: TextStyle(
                             color: theme.textTheme.bodyLarge?.color,
                           ),

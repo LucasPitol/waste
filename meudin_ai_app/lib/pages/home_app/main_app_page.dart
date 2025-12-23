@@ -54,17 +54,70 @@ class MainAppPage extends StatelessWidget {
           body: SafeArea(
             child: controller.widgetOptions[controller.selectedIndex],
           ),
-          floatingActionButton: SpeedDial(
-            backgroundColor: theme.brightness == Brightness.dark 
-                ? theme.colorScheme.surface 
-                : Styles.whiteColor,
-            icon: FontAwesomeIcons.plus,
-            foregroundColor: Styles.primaryColor,
-            overlayColor: theme.brightness == Brightness.dark 
-                ? theme.colorScheme.surface 
-                : Styles.whiteColor,
-            activeIcon: FontAwesomeIcons.xmark,
-            children: [
+          floatingActionButton: theme.brightness == Brightness.dark
+              ? Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.35),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 6,
+                        spreadRadius: 0.5,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: SpeedDial(
+                    backgroundColor: theme.colorScheme.surface,
+                    icon: FontAwesomeIcons.plus,
+                    foregroundColor: Styles.primaryColor,
+                    overlayColor: theme.colorScheme.surface,
+                    activeIcon: FontAwesomeIcons.xmark,
+                    elevation: 8,
+                    children: [
+                      SpeedDialChild(
+                        backgroundColor: theme.scaffoldBackgroundColor,
+                        child: const FaIcon(
+                          FontAwesomeIcons.arrowTrendDown,
+                          color: Colors.red,
+                        ),
+                        onTap: () async {
+                          final result = await Get.toNamed(AppRoutes.newSpendRoute);
+                          if (result != null && result == true) {
+                            _refreshCurrentPage(controller.selectedIndex);
+                          }
+                        },
+                      ),
+                      SpeedDialChild(
+                        backgroundColor: theme.scaffoldBackgroundColor,
+                        child: const FaIcon(
+                          FontAwesomeIcons.arrowTrendUp,
+                          color: Colors.green,
+                        ),
+                        onTap: () async {
+                          // Navigate to New Revenue Page and wait for result
+                          final result = await Get.toNamed(AppRoutes.newRevenueRoute);
+                          if (result != null && result == true) {
+                            _refreshCurrentPage(controller.selectedIndex);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              : SpeedDial(
+              backgroundColor: Styles.whiteColor,
+              icon: FontAwesomeIcons.plus,
+              foregroundColor: Styles.primaryColor,
+              overlayColor: Styles.whiteColor,
+              activeIcon: FontAwesomeIcons.xmark,
+              children: [
               SpeedDialChild(
                   backgroundColor: theme.scaffoldBackgroundColor,
                   child: const FaIcon(

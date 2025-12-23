@@ -20,8 +20,42 @@ class SpendingCategoryService {
       'Content-Type': 'application/json',
     };
 
-    final response = await http.get(url, headers: headers);
-    ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
-    return responseDto;
+    try {
+      final response = await http.get(url, headers: headers);
+      
+      // Verifica se a resposta é bem-sucedida
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        // Tenta fazer parse do JSON apenas se o body não estiver vazio
+        if (response.body.isNotEmpty) {
+          try {
+            ResponseDto responseDto = ResponseDto.fromJson(jsonDecode(response.body));
+            return responseDto;
+          } catch (e) {
+            // Se não conseguir fazer parse do JSON, retorna erro
+            return ResponseDto(
+              success: false,
+              errorMessage: 'Erro ao processar resposta: $e',
+            );
+          }
+        } else {
+          return ResponseDto(
+            success: false,
+            errorMessage: 'Resposta vazia do servidor',
+          );
+        }
+      } else {
+        // Resposta HTTP com erro (404, 500, etc)
+        return ResponseDto(
+          success: false,
+          errorMessage: 'Erro ao buscar categorias: ${response.statusCode} ${response.reasonPhrase}',
+        );
+      }
+    } catch (e) {
+      // Erro de rede ou outro erro
+      return ResponseDto(
+        success: false,
+        errorMessage: 'Erro na requisição: $e',
+      );
+    }
   }
 }

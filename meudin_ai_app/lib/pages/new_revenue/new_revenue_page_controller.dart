@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
+import 'package:meudin_ai_app/utils/centavos_currency_formatter.dart';
 
 import '../../ui/joy_ui.dart';
 
@@ -61,10 +62,24 @@ class NewRevenuePageController extends GetxController {
     loading = true;
     update();
 
+    // Extrai o valor numérico do texto formatado
+    final valorNumerico = CentavosCurrencyFormatter.parseValue(
+      amountController.text.trim(),
+    );
+    
+    // Capitaliza a primeira letra da descrição se necessário
+    String descricao = reasonController.text.trim();
+    if (descricao.isNotEmpty) {
+      descricao = descricao[0].toUpperCase() + descricao.substring(1);
+    }
+    
+    // Converte para string no formato esperado pelo serviço
+    final valorString = valorNumerico.toStringAsFixed(2).replaceAll('.', ',');
+
     // API call
     final response = await _transactionService.saveNewRevenue(
-      amountController.text,
-      reasonController.text,
+      valorString,
+      descricao,
       selectedDate,
     );
 
