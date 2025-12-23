@@ -21,57 +21,10 @@ Future<void> main() async {
   runApp(MyApp(initialRoute: loggedIn ? AppRoutes.homeAppRoute : AppRoutes.signInRoute));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   final String initialRoute;
   
   const MyApp({super.key, required this.initialRoute});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _updateSystemUIOverlayStyle();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    super.didChangePlatformBrightness();
-    _updateSystemUIOverlayStyle();
-  }
-
-  void _updateSystemUIOverlayStyle() {
-    final themeService = Get.find<ThemeService>();
-    final brightness = _getBrightness(themeService.themeMode);
-    
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: brightness == Brightness.dark 
-            ? Brightness.light 
-            : Brightness.dark,
-        statusBarBrightness: brightness == Brightness.dark 
-            ? Brightness.dark 
-            : Brightness.light,
-        systemNavigationBarColor: brightness == Brightness.dark
-            ? const Color(0xFF121212)
-            : Colors.white,
-        systemNavigationBarIconBrightness: brightness == Brightness.dark
-            ? Brightness.light
-            : Brightness.dark,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,17 +33,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return Obx(
       () {
-        // Atualiza a status bar quando o tema mudar
+        // Determina o brightness baseado no tema
         final brightness = _getBrightness(themeService.themeMode);
+        
+        // Configura a status bar
         SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: brightness == Brightness.dark 
                 ? Brightness.light 
                 : Brightness.dark,
-            statusBarBrightness: brightness == Brightness.dark 
-                ? Brightness.dark 
-                : Brightness.light,
             systemNavigationBarColor: brightness == Brightness.dark
                 ? const Color(0xFF121212)
                 : Colors.white,
@@ -106,14 +58,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           theme: Styles.mainTheme,
           darkTheme: Styles.darkTheme,
           themeMode: themeService.themeMode,
-          initialRoute: widget.initialRoute,
+          initialRoute: initialRoute,
           getPages: AppRoutes.pages,
         );
       },
     );
   }
   
-  /// Determina o brightness atual baseado no themeMode
   Brightness _getBrightness(ThemeMode themeMode) {
     switch (themeMode) {
       case ThemeMode.light:
