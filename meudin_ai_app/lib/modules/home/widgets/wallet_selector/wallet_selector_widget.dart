@@ -18,17 +18,23 @@ class WalletSelectorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GetBuilder<WalletSelectorController>(
       init: WalletSelectorController(),
       builder: (controller) {
-        return SizedBox(
+        return Container(
+          color: theme.brightness == Brightness.dark 
+              ? theme.colorScheme.surface 
+              : Styles.whiteColor,
           child: Column(
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 10),
-                child: const Icon(
+                child: Icon(
                   Icons.maximize,
-                  color: Styles.grey,
+                  color: theme.brightness == Brightness.dark
+                      ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) ?? Colors.grey
+                      : Styles.grey,
                   size: 50,
                 ),
               ),
@@ -103,6 +109,14 @@ class WalletSelectorWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: isCurrentWallet 
+                      ? (theme.brightness == Brightness.dark
+                          ? Styles.primaryColor.withOpacity(0.15)
+                          : Styles.primaryColor.withOpacity(0.1))
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

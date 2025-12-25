@@ -34,8 +34,13 @@ class NewWalletPage extends StatelessWidget {
         }
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: theme.scaffoldBackgroundColor,
+            backgroundColor: theme.brightness == Brightness.dark 
+                ? theme.scaffoldBackgroundColor 
+                : Styles.whiteConfortColor,
             elevation: 0,
+            iconTheme: IconThemeData(
+              color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+            ),
             leading: IconButton(
               icon: FaIcon(
                 FontAwesomeIcons.arrowLeft,

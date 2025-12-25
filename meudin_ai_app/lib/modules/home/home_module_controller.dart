@@ -290,6 +290,7 @@ class HomeModuleController extends GetxController {
 
   openWalletSelector() async {
     List<Wallet> userWallets = _user!.walletList;
+    final theme = Theme.of(Get.context!);
 
     Map<String, dynamic>? newWalletOptions = await Get.bottomSheet(
       WalletSelectorWidget(
@@ -300,7 +301,9 @@ class HomeModuleController extends GetxController {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      backgroundColor: Styles.whiteColor,
+      backgroundColor: theme.brightness == Brightness.dark 
+          ? theme.colorScheme.surface 
+          : Styles.whiteColor,
     );
 
     if (newWalletOptions != null) {
