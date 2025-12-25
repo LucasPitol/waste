@@ -67,6 +67,7 @@ class HomeModuleController extends GetxController {
     _walletService = WalletService();
     _spendingCategoryService = SpendingCategoryService();
     _cacheService = CacheService();
+    loading = false;
     isWalletListLoading = false;
     isRefreshing = false;
     showUpgradeBanner = false;
@@ -623,10 +624,6 @@ class HomeModuleController extends GetxController {
   /// Carrega dados da página, usando cache quando disponível
   /// [forceRefresh] força busca na API mesmo com cache válido (pull to refresh)
   updatePageData({bool forceRefresh = false}) async {
-    loading = true;
-    isRefreshing = true;
-    update();
-
     try {
       // Garante que categorias estão carregadas (apenas uma vez, se necessário)
       // Isso é necessário apenas para mapear categoryId -> nome/cor, não é nova requisição de transações
@@ -642,54 +639,64 @@ class HomeModuleController extends GetxController {
         cachedData = await _cacheService.getCache('home', walletId);
       }
       
-      // Se tem cache válido, usa ele
-      if (cachedData != null && !forceRefresh) {
-        // Processa dados do cache
-        transactionDtoList = cachedData
-            .map<Transaction>((e) => Transaction.fromJson(e))
-            .toList();
+      // Se tem cache válido, usa ele SEM mostrar loading
+      if (cachedData != null && cachedData.isNotEmpty && !forceRefresh) {
+        try {
+          // Processa dados do cache
+          transactionDtoList = cachedData
+              .map<Transaction>((e) => Transaction.fromJson(e))
+              .toList();
 
-        // Sort by transactionDate descending (most recent first)
-        transactionDtoList.sort((a, b) {
-          if (a.transactionDate == null && b.transactionDate == null) return 0;
-          if (a.transactionDate == null) return 1;
-          if (b.transactionDate == null) return -1;
-          return b.transactionDate!.compareTo(a.transactionDate!);
-        });
+          // Sort by transactionDate descending (most recent first)
+          transactionDtoList.sort((a, b) {
+            if (a.transactionDate == null && b.transactionDate == null) return 0;
+            if (a.transactionDate == null) return 1;
+            if (b.transactionDate == null) return -1;
+            return b.transactionDate!.compareTo(a.transactionDate!);
+          });
 
-        // Calcula saldo, receitas e despesas usando transactionDtoList
-        double totalAmountTemp = 0;
-        double totalRevenueTemp = 0;
-        double totalSpendTemp = 0;
+          // Calcula saldo, receitas e despesas usando transactionDtoList
+          double totalAmountTemp = 0;
+          double totalRevenueTemp = 0;
+          double totalSpendTemp = 0;
 
-        for (var element in transactionDtoList) {
-          double amount = element.amount!;
+          for (var element in transactionDtoList) {
+            double amount = element.amount!;
 
-          if (amount > 0) {
-            totalRevenueTemp = totalRevenueTemp + amount;
-          } else {
-            totalSpendTemp = totalSpendTemp + amount;
+            if (amount > 0) {
+              totalRevenueTemp = totalRevenueTemp + amount;
+            } else {
+              totalSpendTemp = totalSpendTemp + amount;
+            }
           }
+
+          totalAmountTemp = (totalRevenueTemp + totalSpendTemp);
+
+          monthRevenue = totalRevenueTemp;
+          monthSpends = totalSpendTemp;
+          monthBalance = totalAmountTemp;
+
+          twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
+
+          // Calcula gastos por categoria usando os MESMOS dados (transactionDtoList)
+          _calculateCategoryExpenses();
+          
+          // Não precisa setar loading/isRefreshing pois nunca foram setados
+          update();
+          return; // Retorna sem fazer request à API
+        } catch (e) {
+          // Se houver erro ao processar cache, invalida e busca da API
+          await _cacheService.invalidateCache('home', walletId);
+          // Continua para buscar da API
         }
-
-        totalAmountTemp = (totalRevenueTemp + totalSpendTemp);
-
-        monthRevenue = totalRevenueTemp;
-        monthSpends = totalSpendTemp;
-        monthBalance = totalAmountTemp;
-
-        twoFirstTransactionDtoList = transactionDtoList.take(2).toList();
-
-        // Calcula gastos por categoria usando os MESMOS dados (transactionDtoList)
-        _calculateCategoryExpenses();
-        
-        loading = false;
-        isRefreshing = false;
-        update();
-        return; // Retorna sem fazer request à API
       }
 
       // Se não tem cache válido ou forceRefresh, busca da API
+      // Apenas agora mostra loading
+      loading = true;
+      isRefreshing = true;
+      update();
+
       ResponseDto res = await _transactionService.getTransactionDtoList(
         walletId,
         startDate,
@@ -701,9 +708,12 @@ class HomeModuleController extends GetxController {
       
       if (res.success) {
         // Converte dados para lista de Map para salvar no cache
-        final dataList = res.data.isNotEmpty
-            ? (res.data as List).map((e) => e as Map<String, dynamic>).toList()
-            : <Map<String, dynamic>>[];
+        List<Map<String, dynamic>> dataList = [];
+        if (res.data is List && (res.data as List).isNotEmpty) {
+          dataList = (res.data as List)
+              .map((e) => e as Map<String, dynamic>)
+              .toList();
+        }
         
         // Salva no cache
         await _cacheService.saveCache('home', walletId, dataList);

@@ -1,6 +1,21 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/// Entrada de cache em memória
+class _CacheEntry {
+  final List<Map<String, dynamic>> data;
+  final int timestamp;
+  static const Duration ttl = Duration(hours: 2);
+  
+  _CacheEntry(this.data, this.timestamp);
+  
+  bool isExpired() {
+    final cacheTime = DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true);
+    final now = DateTime.now().toUtc();
+    return now.difference(cacheTime) > ttl;
+  }
+}
+
 /// CacheService - Gerencia cache local de dados com TTL e invalidação por carteira
 /// 
 /// Estrutura de chaves:
@@ -14,6 +29,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// }
 class CacheService {
   static const Duration _ttl = Duration(hours: 2);
+  
+  // Cache em memória para acesso instantâneo
+  final Map<String, _CacheEntry> _memoryCache = {};
   
   // Secure storage configuration
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
@@ -40,6 +58,10 @@ class CacheService {
       final cacheKey = _getCacheKey(screen, walletId);
       final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
       
+      // Salva em memória primeiro (instantâneo)
+      _memoryCache[cacheKey] = _CacheEntry(data, timestamp);
+      
+      // Salva no storage persistente (assíncrono, não bloqueia)
       final cacheData = {
         'data': data,
         'timestamp': timestamp,
@@ -58,9 +80,24 @@ class CacheService {
   /// - Cache não existe
   /// - Cache expirado (TTL > 2 horas)
   /// - Erro ao ler/parsear
+  /// 
+  /// Prioriza cache em memória (instantâneo) antes de ler do storage
   Future<List<Map<String, dynamic>>?> getCache(String screen, String walletId) async {
     try {
       final cacheKey = _getCacheKey(screen, walletId);
+      
+      // PRIMEIRO: Verifica cache em memória (instantâneo, sem I/O)
+      final memoryEntry = _memoryCache[cacheKey];
+      if (memoryEntry != null && !memoryEntry.isExpired()) {
+        return memoryEntry.data;
+      }
+      
+      // Remove entrada expirada da memória
+      if (memoryEntry != null && memoryEntry.isExpired()) {
+        _memoryCache.remove(cacheKey);
+      }
+      
+      // SEGUNDO: Se não tem em memória, lê do storage persistente
       final cachedJson = await _secureStorage.read(key: cacheKey);
       
       if (cachedJson == null || cachedJson.isEmpty) {
@@ -79,16 +116,21 @@ class CacheService {
       if (age > _ttl) {
         // Cache expirado - remove e retorna null
         await _secureStorage.delete(key: cacheKey);
+        _memoryCache.remove(cacheKey);
         return null;
       }
       
-      // Cache válido - retorna dados
-      return data.map((e) => e as Map<String, dynamic>).toList();
+      // Cache válido - salva em memória para próximas leituras e retorna
+      final dataList = data.map((e) => e as Map<String, dynamic>).toList();
+      _memoryCache[cacheKey] = _CacheEntry(dataList, timestamp);
+      
+      return dataList;
     } catch (e) {
       // Em caso de erro, remove cache corrompido
       try {
         final cacheKey = _getCacheKey(screen, walletId);
         await _secureStorage.delete(key: cacheKey);
+        _memoryCache.remove(cacheKey);
       } catch (_) {
         // Silent error
       }
@@ -106,6 +148,8 @@ class CacheService {
   Future<void> invalidateCache(String screen, String walletId) async {
     try {
       final cacheKey = _getCacheKey(screen, walletId);
+      // Remove de ambos: memória e storage
+      _memoryCache.remove(cacheKey);
       await _secureStorage.delete(key: cacheKey);
     } catch (e) {
       // Silent error
@@ -127,9 +171,9 @@ class CacheService {
   /// Útil para limpeza geral ou logout
   Future<void> invalidateAllCaches() async {
     try {
-      // Como não temos lista de todas as chaves, vamos tentar deletar
-      // as chaves conhecidas. Em produção, pode ser necessário manter
-      // uma lista de chaves ativas ou usar um padrão de busca.
+      // Limpa cache em memória
+      _memoryCache.clear();
+      // Limpa storage persistente
       await _secureStorage.deleteAll();
     } catch (e) {
       // Silent error

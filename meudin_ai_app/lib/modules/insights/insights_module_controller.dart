@@ -57,6 +57,7 @@ class InsightsModuleController extends GetxController {
     _walletService = WalletService();
     _spendingCategoryService = SpendingCategoryService();
     _cacheService = CacheService();
+    loading = false;
     isRefreshing = false;
     previousPeriodSpends = null;
     monthlyAverageSpends = null;
@@ -338,10 +339,6 @@ class InsightsModuleController extends GetxController {
   /// Carrega dados da página, usando cache quando disponível
   /// [forceRefresh] força busca na API mesmo com cache válido (pull to refresh)
   Future<void> updatePageData({bool forceRefresh = false}) async {
-    loading = true;
-    isRefreshing = true;
-    update();
-
     try {
       if (_categories.isEmpty) {
         await _fetchCategories();
@@ -355,54 +352,64 @@ class InsightsModuleController extends GetxController {
         cachedData = await _cacheService.getCache('insights', walletId);
       }
       
-      // Se tem cache válido, usa ele
-      if (cachedData != null && !forceRefresh) {
-        // Processa dados do cache
-        transactionDtoList = cachedData
-            .map<Transaction>((e) => Transaction.fromJson(e))
-            .toList();
+      // Se tem cache válido, usa ele SEM mostrar loading
+      if (cachedData != null && cachedData.isNotEmpty && !forceRefresh) {
+        try {
+          // Processa dados do cache
+          transactionDtoList = cachedData
+              .map<Transaction>((e) => Transaction.fromJson(e))
+              .toList();
 
-        transactionDtoList.sort((a, b) {
-          if (a.transactionDate == null && b.transactionDate == null) return 0;
-          if (a.transactionDate == null) return 1;
-          if (b.transactionDate == null) return -1;
-          return b.transactionDate!.compareTo(a.transactionDate!);
-        });
+          transactionDtoList.sort((a, b) {
+            if (a.transactionDate == null && b.transactionDate == null) return 0;
+            if (a.transactionDate == null) return 1;
+            if (b.transactionDate == null) return -1;
+            return b.transactionDate!.compareTo(a.transactionDate!);
+          });
 
-        // Calcula KPIs
-        double totalRevenueTemp = 0;
-        double totalSpendTemp = 0;
+          // Calcula KPIs
+          double totalRevenueTemp = 0;
+          double totalSpendTemp = 0;
 
-        for (var element in transactionDtoList) {
-          double amount = element.amount!;
+          for (var element in transactionDtoList) {
+            double amount = element.amount!;
 
-          if (amount > 0) {
-            totalRevenueTemp = totalRevenueTemp + amount;
-          } else {
-            totalSpendTemp = totalSpendTemp + amount;
+            if (amount > 0) {
+              totalRevenueTemp = totalRevenueTemp + amount;
+            } else {
+              totalSpendTemp = totalSpendTemp + amount;
+            }
           }
+
+          revenue = totalRevenueTemp;
+          spends = totalSpendTemp;
+          balance = totalRevenueTemp + totalSpendTemp;
+
+          // Calcula gastos por categoria
+          _calculateCategoryExpenses();
+          
+          // Calcula média mensal
+          _calculateMonthlyAverage();
+          
+          // Calcula comparativo (sempre busca da API pois depende de período anterior)
+          await _calculateComparison();
+          
+          // Não precisa setar loading/isRefreshing pois nunca foram setados
+          update();
+          return; // Retorna sem fazer request à API
+        } catch (e) {
+          // Se houver erro ao processar cache, invalida e busca da API
+          await _cacheService.invalidateCache('insights', walletId);
+          // Continua para buscar da API
         }
-
-        revenue = totalRevenueTemp;
-        spends = totalSpendTemp;
-        balance = totalRevenueTemp + totalSpendTemp;
-
-        // Calcula gastos por categoria
-        _calculateCategoryExpenses();
-        
-        // Calcula média mensal
-        _calculateMonthlyAverage();
-        
-        // Calcula comparativo (sempre busca da API pois depende de período anterior)
-        await _calculateComparison();
-        
-        loading = false;
-        isRefreshing = false;
-        update();
-        return; // Retorna sem fazer request à API
       }
 
       // Se não tem cache válido ou forceRefresh, busca da API
+      // Apenas agora mostra loading
+      loading = true;
+      isRefreshing = true;
+      update();
+
       ResponseDto res = await _transactionService.getTransactionDtoList(
         walletId,
         startDate,
@@ -414,9 +421,12 @@ class InsightsModuleController extends GetxController {
       
       if (res.success) {
         // Converte dados para lista de Map para salvar no cache
-        final dataList = res.data.isNotEmpty
-            ? (res.data as List).map((e) => e as Map<String, dynamic>).toList()
-            : <Map<String, dynamic>>[];
+        List<Map<String, dynamic>> dataList = [];
+        if (res.data is List && (res.data as List).isNotEmpty) {
+          dataList = (res.data as List)
+              .map((e) => e as Map<String, dynamic>)
+              .toList();
+        }
         
         // Salva no cache
         await _cacheService.saveCache('insights', walletId, dataList);
