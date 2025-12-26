@@ -18,7 +18,7 @@ class MainAppPage extends StatelessWidget {
       // Tela Home
       if (Get.isRegistered<HomeModuleController>()) {
         final homeController = Get.find<HomeModuleController>();
-        homeController.updatePageData();
+        homeController.updatePageData(forceRefresh: true);
       }
     } else if (selectedIndex == 1) {
       // Tela Insights
@@ -38,7 +38,7 @@ class MainAppPage extends StatelessWidget {
     } else {
       if (Get.isRegistered<HomeModuleController>()) {
         final homeController = Get.find<HomeModuleController>();
-        homeController.updatePageData();
+        homeController.updatePageData(forceRefresh: true);
       }
     }
   }

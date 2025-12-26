@@ -28,42 +28,41 @@ class WalletVisionWidgetController extends GetxController {
   }
 
   void setWalletInfo(String walletId, bool owner) {
-    final walletChanged = currentWalletId != walletId;
-    final ownerChanged = isWalletOwner != owner;
+    final previousWalletId = currentWalletId;
+    final walletChanged = previousWalletId != null && previousWalletId != walletId;
+    
+    currentWalletId = walletId;
+    isWalletOwner = owner;
     
     // Reset members state when wallet changes
     if (walletChanged) {
       members = [];
       membersError = null;
       isLoadingMembers = false;
-      currentWalletId = walletId;
-      isWalletOwner = owner;
       
-      // If currently on members tab and wallet changed, load members for new wallet
+      // If on members tab, reload members for the new wallet
       if (selectedTab == 1 && walletId.isNotEmpty) {
-        loadMembers();
-      } else {
-        update();
+        Future.microtask(() {
+          if (!isLoadingMembers && selectedTab == 1 && currentWalletId == walletId) {
+            loadMembers(walletId);
+          }
+        });
       }
-    } else if (ownerChanged) {
-      // Just update owner status if wallet is the same
-      isWalletOwner = owner;
-      update();
     }
   }
 
-  selectTab(int newValue) {
+  selectTab(int newValue, {String? walletId}) {
     selectedTab = newValue;
-    // Load members when switching to members tab (only if not already loaded)
-    if (newValue == 1 && members.isEmpty && !isLoadingMembers && currentWalletId != null) {
-      loadMembers();
-    } else {
-      update();
+    update();
+    
+    // Load members ONLY when user taps on "Membros" tab (lazy loading as per requirements)
+    if (newValue == 1 && walletId != null && walletId.isNotEmpty) {
+      loadMembers(walletId);
     }
   }
 
-  Future<void> loadMembers() async {
-    if (currentWalletId == null) return;
+  Future<void> loadMembers(String walletId) async {
+    if (isLoadingMembers) return; // Prevent multiple simultaneous requests
     
     isLoadingMembers = true;
     membersError = null;
@@ -71,7 +70,7 @@ class WalletVisionWidgetController extends GetxController {
 
     try {
       final walletService = WalletService();
-      final response = await walletService.getWalletMembers(currentWalletId!);
+      final response = await walletService.getWalletMembers(walletId);
       
       if (response.success && response.data is List) {
         members = (response.data as List)
@@ -90,9 +89,11 @@ class WalletVisionWidgetController extends GetxController {
       update();
     }
   }
-
+  
   Future<void> refreshMembers() async {
-    await loadMembers();
+    if (currentWalletId != null && currentWalletId!.isNotEmpty) {
+      await loadMembers(currentWalletId!);
+    }
   }
 
   goToSeeAllTransactionsPage({

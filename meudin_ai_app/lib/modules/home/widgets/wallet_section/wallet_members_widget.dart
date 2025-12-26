@@ -13,11 +13,13 @@ import 'package:meudin_ai_app/ui/joy_ui.dart';
 class WalletMembersWidget extends StatelessWidget {
   final WalletVisionWidgetController controller;
   final bool isWalletOwner;
+  final String walletId;
 
   const WalletMembersWidget({
     super.key,
     required this.controller,
     required this.isWalletOwner,
+    required this.walletId,
   });
 
   @override
@@ -167,7 +169,9 @@ class WalletMembersWidget extends StatelessWidget {
               children: controller.members.map((member) {
                 final currentUserId = UserService.currentUser?.id;
                 final isCurrentUser = member.id == currentUserId;
-                final canRemove = isWalletOwner && !isCurrentUser;
+                final isOwner = member.isOwner;
+                // Dono não pode ser removido
+                final canRemove = isWalletOwner && !isOwner;
 
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
@@ -177,15 +181,37 @@ class WalletMembersWidget extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              member.name?.isNotEmpty == true 
-                                  ? member.name! 
-                                  : (member.email ?? ''),
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
-                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    member.name?.isNotEmpty == true 
+                                        ? member.name! 
+                                        : (member.email ?? ''),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                                    ),
+                                  ),
+                                ),
+                                if (isOwner)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Styles.primaryColor.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      'Dono',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                        color: Styles.primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                             if (member.name?.isNotEmpty == true && member.email?.isNotEmpty == true)
                               Padding(
@@ -198,7 +224,7 @@ class WalletMembersWidget extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            if (isCurrentUser)
+                            if (isCurrentUser && !isOwner)
                               Padding(
                                 padding: const EdgeInsets.only(top: 4),
                                 child: Text(
@@ -259,16 +285,16 @@ class WalletMembersWidget extends StatelessWidget {
   }
 
   Future<void> _navigateToAddMember(BuildContext context) async {
-    if (controller.currentWalletId == null) return;
+    if (walletId.isEmpty) return;
 
     final result = await Get.toNamed(
       AppRoutes.addMemberRoute,
-      arguments: controller.currentWalletId!,
+      arguments: walletId,
     );
 
-    if (result == true) {
+    if (result == true && walletId.isNotEmpty) {
       // Refresh members list
-      await controller.refreshMembers();
+      await controller.loadMembers(walletId);
     }
   }
 
@@ -291,7 +317,7 @@ class WalletMembersWidget extends StatelessWidget {
       backgroundColor: Colors.transparent,
     );
 
-    if (confirmed == true && member.id != null && controller.currentWalletId != null) {
+    if (confirmed == true && member.id != null && walletId.isNotEmpty) {
       // Show loading
       controller.isLoadingMembers = true;
       controller.update();
@@ -299,13 +325,13 @@ class WalletMembersWidget extends StatelessWidget {
       try {
         final walletService = WalletService();
         final response = await walletService.removeMemberFromWallet(
-          controller.currentWalletId!,
+          walletId,
           member.id!,
         );
 
         if (response.success) {
           // Refresh members list
-          await controller.refreshMembers();
+          await controller.loadMembers(walletId);
         } else {
           controller.isLoadingMembers = false;
           controller.update();

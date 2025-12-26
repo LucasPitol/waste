@@ -254,12 +254,10 @@ class WalletVisionWidget extends StatelessWidget {
   }
 
   _buildMembersBox(WalletVisionWidgetController controller, BuildContext context) {
-    // Update wallet info in controller when building members box
-    controller.setWalletInfo(currentWalletId, isWalletOwner);
-    
     return WalletMembersWidget(
       controller: controller,
       isWalletOwner: isWalletOwner,
+      walletId: currentWalletId,
     );
   }
 
@@ -269,6 +267,9 @@ class WalletVisionWidget extends StatelessWidget {
     return GetBuilder<WalletVisionWidgetController>(
       init: WalletVisionWidgetController(),
       builder: (controller) {
+        // Update wallet info in controller on every build to ensure currentWalletId is always set
+        controller.setWalletInfo(currentWalletId, isWalletOwner);
+        
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -285,7 +286,7 @@ class WalletVisionWidget extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 5),
                         child: GestureDetector(
                           onTap: () {
-                            controller.selectTab(element.t1);
+                            controller.selectTab(element.t1, walletId: currentWalletId);
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
