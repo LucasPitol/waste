@@ -120,14 +120,14 @@ class ProfilePage extends StatelessWidget {
                         onTap: controller.openFAQ,
                       ),
                       const SizedBox(height: 4),
-                      _buildSettingItem(
-                        context,
-                        theme,
-                        controller,
-                        icon: FontAwesomeIcons.message,
-                        title: 'Enviar sugestão',
-                        onTap: controller.sendFeedback,
-                      ),
+                      // _buildSettingItem(
+                      //   context,
+                      //   theme,
+                      //   controller,
+                      //   icon: FontAwesomeIcons.message,
+                      //   title: 'Enviar sugestão',
+                      //   onTap: controller.sendFeedback,
+                      // ),
                       const SizedBox(height: 4),
                       _buildSettingItem(
                         context,

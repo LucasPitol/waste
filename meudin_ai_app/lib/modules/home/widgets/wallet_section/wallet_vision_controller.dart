@@ -106,9 +106,9 @@ class WalletVisionWidgetController extends GetxController {
     );
 
     if (refresh != null && refresh) {
-      // Refresh data in home module
+      // Refresh data in home module (force refresh to get updated data)
       final homeController = Get.find<HomeModuleController>();
-      await homeController.updatePageData();
+      await homeController.updatePageData(forceRefresh: true);
     }
   }
 }
