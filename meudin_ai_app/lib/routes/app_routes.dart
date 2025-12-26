@@ -11,6 +11,7 @@ import 'package:meudin_ai_app/pages/faq/faq_page.dart';
 import 'package:meudin_ai_app/pages/new_wallet/new_wallet_page.dart';
 import 'package:meudin_ai_app/pages/edit_spend/edit_spend_page.dart';
 import 'package:meudin_ai_app/pages/edit_revenue/edit_revenue_page.dart';
+import 'package:meudin_ai_app/pages/add_member/add_member_page.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -27,6 +28,7 @@ class AppRoutes {
   static String newWalletRoute = '/new-wallet';
   static String editSpendRoute = '/edit-spend';
   static String editRevenueRoute = '/edit-revenue';
+  static String addMemberRoute = '/add-member';
 
   static final List<GetPage<dynamic>> pages = <GetPage<dynamic>>[
     GetPage(
@@ -80,6 +82,10 @@ class AppRoutes {
     GetPage(
       name: editRevenueRoute,
       page: () => const EditRevenuePage(),
+    ),
+    GetPage(
+      name: addMemberRoute,
+      page: () => const AddMemberPage(),
     ),
   ];
 }

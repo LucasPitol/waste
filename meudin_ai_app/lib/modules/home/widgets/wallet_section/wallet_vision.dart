@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_controller.dart';
+import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_members_widget.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,8 +18,9 @@ class WalletVisionWidget extends StatelessWidget {
   final List<Transaction> transactionDtoList;
   final List<Transaction> twoFirstTransactionDtoList;
   final VoidCallback? onDateTap;
-
   final bool loading;
+  final String currentWalletId;
+  final bool isWalletOwner;
 
   const WalletVisionWidget({
     super.key,
@@ -29,6 +31,8 @@ class WalletVisionWidget extends StatelessWidget {
     required this.transactionDtoList,
     required this.twoFirstTransactionDtoList,
     required this.loading,
+    required this.currentWalletId,
+    required this.isWalletOwner,
     this.onDateTap,
   });
 
@@ -249,10 +253,13 @@ class WalletVisionWidget extends StatelessWidget {
     );
   }
 
-  _buildMembersBox() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      width: double.infinity,
+  _buildMembersBox(WalletVisionWidgetController controller, BuildContext context) {
+    // Update wallet info in controller when building members box
+    controller.setWalletInfo(currentWalletId, isWalletOwner);
+    
+    return WalletMembersWidget(
+      controller: controller,
+      isWalletOwner: isWalletOwner,
     );
   }
 
@@ -316,7 +323,7 @@ class WalletVisionWidget extends StatelessWidget {
               ),
               controller.selectedTab == 0
                   ? _buildHomeBox(controller, context)
-                  : _buildMembersBox(),
+                  : _buildMembersBox(controller, context),
             ],
           ),
         );

@@ -98,6 +98,8 @@ class HomeModule extends StatelessWidget {
                         twoFirstTransactionDtoList:
                             controller.twoFirstTransactionDtoList,
                         loading: controller.isRefreshing,
+                        currentWalletId: controller.currentWallet.id,
+                        isWalletOwner: controller.isWalletOwner,
                         onDateTap: controller.openMonthYearPicker,
                       ),
                       // Banner de Upgrade (discreto, abaixo do card principal)

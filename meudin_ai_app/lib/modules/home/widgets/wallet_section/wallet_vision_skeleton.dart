@@ -160,3 +160,59 @@ class WalletVisionSkeleton extends StatelessWidget {
     );
   }
 }
+
+class WalletMembersSkeleton extends StatelessWidget {
+  const WalletMembersSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: isDark ? theme.colorScheme.surface : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: isDark 
+                ? Colors.black.withOpacity(0.3)
+                : Colors.black.withOpacity(0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          Column(
+            children: List.generate(3, (index) => Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SkeletonLoader(width: 150, height: 18),
+                        const SizedBox(height: 8),
+                        SkeletonLoader(width: 120, height: 14),
+                      ],
+                    ),
+                  ),
+                  SkeletonLoader(width: 24, height: 24, borderRadius: BorderRadius.circular(12)),
+                ],
+              ),
+            )),
+          ),
+        ],
+      ),
+    );
+  }
+}
