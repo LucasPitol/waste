@@ -12,6 +12,7 @@ class ExpenseCategoryDetailBottomSheet extends StatelessWidget {
   final List<SpendingCategory> categories;
   final DateTime startDate;
   final List<CategoryExpense> chartCategoryExpenses; // Para manter cores consistentes
+  final bool showDate;
 
   const ExpenseCategoryDetailBottomSheet({
     super.key,
@@ -19,6 +20,7 @@ class ExpenseCategoryDetailBottomSheet extends StatelessWidget {
     required this.categories,
     required this.startDate,
     required this.chartCategoryExpenses,
+    this.showDate = true,
   });
 
   /// Gera paleta com cores específicas definidas (mesma do gráfico)
@@ -172,16 +174,18 @@ class ExpenseCategoryDetailBottomSheet extends StatelessWidget {
                         color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      DateFormat.yMMMM(Constants.ptLanguageCode).format(startDate),
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                            ?? Colors.grey.shade600,
+                    if (showDate) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        DateFormat.yMMMM(Constants.ptLanguageCode).format(startDate),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                              ?? Colors.grey.shade600,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),

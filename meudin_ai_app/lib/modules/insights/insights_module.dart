@@ -60,6 +60,7 @@ class InsightsModule extends StatelessWidget {
                           loading: controller.isRefreshing,
                           transactions: controller.transactionDtoList,
                           categories: controller.categories,
+                          showDate: false,
                         ),
                         // Média mensal de despesas
                         MonthlyAverageWidget(

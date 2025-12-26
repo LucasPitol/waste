@@ -17,6 +17,7 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
   final bool loading;
   final List<Transaction> transactions;
   final List<SpendingCategory> categories;
+  final bool showDate;
 
   const ExpenseCategoryChartWidget({
     super.key,
@@ -25,6 +26,7 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
     this.loading = false,
     required this.transactions,
     required this.categories,
+    this.showDate = true,
   });
 
   /// Gera paleta com cores específicas definidas
@@ -72,6 +74,7 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
             categories: categories,
             startDate: startDate,
             chartCategoryExpenses: categoryExpenses,
+            showDate: showDate,
           ),
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
@@ -111,14 +114,15 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                       ?? Colors.grey.shade700, // Mais discreto
                 ),
               ),
-              Text(
-                DateFormat.yMMMM(Constants.ptLanguageCode).format(startDate),
-                style: TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w400,
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade600,
+              if (showDate)
+                Text(
+                  DateFormat.yMMMM(Constants.ptLanguageCode).format(startDate),
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w400,
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade600,
+                  ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 16),
