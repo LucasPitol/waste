@@ -60,8 +60,7 @@ class ProfilePageController extends GetxController {
   }
 
   void contactSupport() {
-    // TODO: Implementar contato com suporte
-    Get.snackbar('Suporte', 'Em breve');
+    Get.toNamed(AppRoutes.contactSupportRoute);
   }
 
   void showAbout(BuildContext context) {

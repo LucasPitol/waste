@@ -12,6 +12,7 @@ import 'package:meudin_ai_app/pages/new_wallet/new_wallet_page.dart';
 import 'package:meudin_ai_app/pages/edit_spend/edit_spend_page.dart';
 import 'package:meudin_ai_app/pages/edit_revenue/edit_revenue_page.dart';
 import 'package:meudin_ai_app/pages/add_member/add_member_page.dart';
+import 'package:meudin_ai_app/pages/contact_support/contact_support_page.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -23,6 +24,7 @@ class AppRoutes {
   static String recoverPasswordRoute = '/recover-password';
   static String profileRoute = '/profile';
   static String faqRoute = '/faq';
+  static String contactSupportRoute = '/contact-support';
   static String newRevenueRoute = '/new-revenue';
   static String newSpendRoute = '/new-spend';
   static String newWalletRoute = '/new-wallet';
@@ -70,6 +72,10 @@ class AppRoutes {
     GetPage(
       name: faqRoute,
       page: () => const FAQPage(),
+    ),
+    GetPage(
+      name: contactSupportRoute,
+      page: () => const ContactSupportPage(),
     ),
     GetPage(
       name: newWalletRoute,
