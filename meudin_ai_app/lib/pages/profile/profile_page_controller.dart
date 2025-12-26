@@ -4,17 +4,31 @@ import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/services/session_service.dart';
 import 'package:meudin_ai_app/services/theme_service.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ProfilePageController extends GetxController {
   late String userName;
   late String userEmail;
   late bool loading;
   late ThemeService _themeService;
+  String appVersion = '1.0.0'; // Default fallback
 
   ProfilePageController() {
     loading = false;
     _themeService = Get.find<ThemeService>();
     _loadUserData();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      appVersion = packageInfo.version;
+      update();
+    } catch (e) {
+      // Se houver erro, mantém o valor padrão
+      appVersion = '1.0.0';
+    }
   }
 
   void _loadUserData() {
@@ -30,7 +44,6 @@ class ProfilePageController extends GetxController {
 
   ThemeMode get currentThemeMode => _themeService.themeMode;
   String get currentThemeName => _themeService.getThemeModeName();
-  String get appVersion => '1.0.0'; // TODO: Implementar com package_info_plus
 
   Future<void> changeTheme(ThemeMode newThemeMode) async {
     await _themeService.setThemeMode(newThemeMode);
