@@ -1,5 +1,7 @@
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PasswordStepWidget extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
@@ -46,8 +48,72 @@ class PasswordStepWidget extends StatelessWidget {
               rePasswordController.text,
             ),
           ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text.rich(
+              TextSpan(
+                text: 'Ao finalizar, você concorda com os ',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey.shade600,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Termos de Uso',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Styles.primaryColor,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => _openTermsOfUse(context),
+                  ),
+                  TextSpan(
+                    text: ' e a ',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey.shade600,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Política de Privacidade',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Styles.primaryColor,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => _openPrivacyPolicy(context),
+                  ),
+                  TextSpan(
+                    text: ' do Meudin.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _openTermsOfUse(BuildContext context) async {
+    final uri = Uri.parse('https://phrygian-guan-5b6.notion.site/Termos-de-Uso-Meudin-2d6e00f9b28d809da295d1fa8494eef3');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _openPrivacyPolicy(BuildContext context) async {
+    final uri = Uri.parse('https://phrygian-guan-5b6.notion.site/Pol-tica-de-Privacidade-Meudin-2d6e00f9b28d80af8e51f8232c53254a');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 }

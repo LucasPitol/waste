@@ -5,6 +5,7 @@ import 'package:meudin_ai_app/services/session_service.dart';
 import 'package:meudin_ai_app/services/theme_service.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePageController extends GetxController {
   late String userName;
@@ -67,14 +68,22 @@ class ProfilePageController extends GetxController {
     // Implementado na ProfilePage._showAboutBottomSheet
   }
 
-  void openTerms() {
-    // TODO: Implementar navegação para termos
-    Get.snackbar('Termos', 'Em breve');
+  Future<void> openTerms() async {
+    final uri = Uri.parse('https://phrygian-guan-5b6.notion.site/Termos-de-Uso-Meudin-2d6e00f9b28d809da295d1fa8494eef3');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      Get.snackbar('Erro', 'Não foi possível abrir os termos de uso');
+    }
   }
 
-  void openPrivacyPolicy() {
-    // TODO: Implementar navegação para política
-    Get.snackbar('Política', 'Em breve');
+  Future<void> openPrivacyPolicy() async {
+    final uri = Uri.parse('https://phrygian-guan-5b6.notion.site/Pol-tica-de-Privacidade-Meudin-2d6e00f9b28d80af8e51f8232c53254a');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      Get.snackbar('Erro', 'Não foi possível abrir a política de privacidade');
+    }
   }
 
   Future<void> logout() async {

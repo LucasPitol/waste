@@ -615,7 +615,18 @@ class HomeModuleController extends GetxController {
     );
 
     if (selectedDate != null) {
+      // Verifica se o mês/ano realmente mudou antes de invalidar o cache
+      final newStartDate = DateTime(selectedDate.year, selectedDate.month, 1);
+      final monthChanged = newStartDate.year != startDate.year || 
+                          newStartDate.month != startDate.month;
+      
       _updateDatesForMonth(selectedDate);
+      
+      // Se o mês mudou, invalida o cache para forçar busca com as novas datas
+      if (monthChanged) {
+        await _cacheService.invalidateCache('home', currentWallet.id);
+      }
+      
       update();
       await updatePageData();
     }

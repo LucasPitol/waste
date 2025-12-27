@@ -294,8 +294,20 @@ class InsightsModuleController extends GetxController {
     );
 
     if (result != null) {
-      startDate = result['start']!;
-      endDate = result['end']!;
+      final newStartDate = result['start']!;
+      final newEndDate = result['end']!;
+      
+      // Verifica se as datas realmente mudaram antes de invalidar o cache
+      final datesChanged = newStartDate != startDate || newEndDate != endDate;
+      
+      startDate = newStartDate;
+      endDate = newEndDate;
+      
+      // Se as datas mudaram, invalida o cache para forçar busca com as novas datas
+      if (datesChanged) {
+        await _cacheService.invalidateCache('insights', currentWallet.id);
+      }
+      
       update();
       await refreshAll();
     }
@@ -304,6 +316,8 @@ class InsightsModuleController extends GetxController {
   /// Limpa filtros (volta para padrão: 01/01 do ano corrente até hoje)
   Future<void> clearFilters() async {
     _fillDefaultDates();
+    // Invalida o cache ao limpar filtros para garantir dados atualizados
+    await _cacheService.invalidateCache('insights', currentWallet.id);
     update();
     await refreshAll();
   }
