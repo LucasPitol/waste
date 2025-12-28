@@ -44,23 +44,13 @@ class ManageSubscriptionButton extends StatelessWidget {
         final url = response.data.toString();
         final uri = Uri.parse(url);
 
-        print('[ManageSubscription] URL que será aberta: $url');
-        print('[ManageSubscription] URI parseado: ${uri.toString()}');
-        print('[ManageSubscription] URI scheme: ${uri.scheme}');
-        print('[ManageSubscription] URI host: ${uri.host}');
-        print('[ManageSubscription] URI path: ${uri.path}');
-        print('[ManageSubscription] URI query: ${uri.query}');
-
         // Abrir URL no browser externo
         if (await canLaunchUrl(uri)) {
-          print('[ManageSubscription] Abrindo URL no browser externo...');
           await launchUrl(
             uri,
             mode: LaunchMode.externalApplication,
           );
-          print('[ManageSubscription] URL aberta com sucesso!');
         } else {
-          print('[ManageSubscription] ERRO: Não foi possível abrir a URL');
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

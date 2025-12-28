@@ -65,53 +65,38 @@ class SubscriptionService {
     final url = Uri.parse('${apiUrl}auth/sso');
     final headers = UserService.getAuthHeaders();
 
-    print('[SSO] Chamando endpoint: ${url.toString()}');
-    print('[SSO] Headers: ${headers.keys.join(", ")}');
-
     try {
       // POST /api/auth/sso
       // Body não é necessário, token vem no header Authorization
       final response = await HttpClient.post(url, headers: headers);
-
-      print('[SSO] Response success: ${response.success}');
-      print('[SSO] Response data: ${response.data}');
-      print('[SSO] Response error: ${response.errorMessage}');
 
       if (response.success && response.data != null) {
         // Response esperado: { "success": true, "data": { "sso_url": "...", "token": "...", "expires_in": 300 } }
         if (response.data is Map) {
           final data = response.data as Map<String, dynamic>;
           
-          print('[SSO] Response data é Map: ${data.keys.join(", ")}');
-          
           // Extrair sso_url do response
           if (data['sso_url'] != null) {
-            final ssoUrl = data['sso_url'] as String;
-            print('[SSO] URL extraída (sso_url): $ssoUrl');
             return ResponseDto(
               success: true,
-              data: ssoUrl,
+              data: data['sso_url'],
             );
           }
           
           // Fallback: se vier com nome diferente
           if (data['ssoUrl'] != null) {
-            final ssoUrl = data['ssoUrl'] as String;
-            print('[SSO] URL extraída (ssoUrl): $ssoUrl');
             return ResponseDto(
               success: true,
-              data: ssoUrl,
+              data: data['ssoUrl'],
             );
           }
         }
         
         // Se retornar URL diretamente como string
         if (response.data is String) {
-          final ssoUrl = response.data as String;
-          print('[SSO] URL retornada como string: $ssoUrl');
           return ResponseDto(
             success: true,
-            data: ssoUrl,
+            data: response.data,
           );
         }
       }
