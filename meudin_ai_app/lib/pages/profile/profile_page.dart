@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/pages/profile/profile_page_controller.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
+import 'package:meudin_ai_app/ui/subscription/manage_subscription_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -92,6 +93,12 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
+
+                      // Assinatura Section
+                      _buildSectionHeader(context, theme, 'Assinatura'),
+                      const SizedBox(height: 12),
+                      _buildSubscriptionCard(context, theme, controller),
+                      const SizedBox(height: 32),
 
                       // Aparência Section
                       _buildSectionHeader(context, theme, 'Aparência'),
@@ -532,6 +539,156 @@ class ProfilePage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSubscriptionCard(
+    BuildContext context,
+    ThemeData theme,
+    ProfilePageController controller,
+  ) {
+    final isDark = theme.brightness == Brightness.dark;
+    final isPremium = controller.hasActiveSubscription;
+    
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark 
+            ? theme.colorScheme.surface.withOpacity(0.5)
+            : Styles.whiteColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Styles.primaryColor.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header com ícone e plano
+          Row(
+            children: [
+              // Ícone com gradiente
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Styles.primaryColor,
+                      Styles.primaryColorLight,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Styles.primaryColor.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.crown,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              // Informações do plano
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      controller.currentPlanName,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    if (controller.hasActiveSubscription) ...[
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              controller.subscriptionStatusText,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.green.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ] else ...[
+                      const SizedBox(height: 6),
+                      Text(
+                        'Plano gratuito',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade500,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Divisor sutil
+          Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.transparent,
+                  Styles.primaryColor.withOpacity(0.1),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Botão de gerenciar
+          SizedBox(
+            width: double.infinity,
+            child: ManageSubscriptionButton(
+              customText: 'Gerenciar assinatura',
+              fontSize: 15,
+              textColor: Styles.primaryColor,
+            ),
+          ),
+        ],
       ),
     );
   }

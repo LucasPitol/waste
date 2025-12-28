@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/models/subscription.dart';
+import 'package:meudin_ai_app/models/user_subscription.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/services/session_service.dart';
+import 'package:meudin_ai_app/services/subscription_state_service.dart';
 import 'package:meudin_ai_app/services/theme_service.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -12,13 +15,57 @@ class ProfilePageController extends GetxController {
   late String userEmail;
   late bool loading;
   late ThemeService _themeService;
+  late SubscriptionStateService _subscriptionStateService;
   String appVersion = '1.0.0'; // Default fallback
+  UserSubscription? _userSubscription;
 
   ProfilePageController() {
     loading = false;
     _themeService = Get.find<ThemeService>();
+    _subscriptionStateService = SubscriptionStateService();
     _loadUserData();
     _loadAppVersion();
+    _loadSubscription();
+  }
+
+  Future<void> _loadSubscription() async {
+    try {
+      _userSubscription = await _subscriptionStateService.getSubscription();
+      update();
+    } catch (e) {
+      // Silent error - subscription data is optional
+    }
+  }
+
+  String get currentPlanName {
+    if (_userSubscription == null) {
+      return 'Plano Start';
+    }
+    return 'Plano ${_userSubscription!.plan.displayName}';
+  }
+
+  bool get hasActiveSubscription {
+    return _userSubscription?.subscription?.isActive ?? false;
+  }
+
+  String get subscriptionStatusText {
+    if (_userSubscription?.subscription == null) {
+      return 'Sem assinatura ativa';
+    }
+    
+    final status = _userSubscription!.subscription!.status;
+    switch (status) {
+      case SubscriptionStatus.active:
+        return 'Ativa';
+      case SubscriptionStatus.pending:
+        return 'Pagamento pendente';
+      case SubscriptionStatus.pastDue:
+        return 'Pagamento em atraso';
+      case SubscriptionStatus.canceled:
+        return 'Cancelada';
+      case SubscriptionStatus.expired:
+        return 'Expirada';
+    }
   }
 
   Future<void> _loadAppVersion() async {

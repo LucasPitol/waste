@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
+import 'package:meudin_ai_app/services/subscription_state_service.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class NewWalletPageController extends GetxController {
@@ -8,9 +9,11 @@ class NewWalletPageController extends GetxController {
   bool loading = false;
   List<String>? errorList;
   late WalletService _walletService;
+  late SubscriptionStateService _subscriptionStateService;
 
   NewWalletPageController() {
     _walletService = WalletService();
+    _subscriptionStateService = SubscriptionStateService();
   }
 
   void createWallet() async {
@@ -41,6 +44,26 @@ class NewWalletPageController extends GetxController {
       });
       errorList = null;
       update();
+      return;
+    }
+
+    // Validar limite de carteiras
+    final canCreate = await _subscriptionStateService.canCreateWallet();
+    if (!canCreate) {
+      Future.microtask(() {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: ['Você atingiu o limite de carteiras do seu plano. Faça upgrade para criar mais carteiras.'],
+            title: 'Limite atingido',
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      });
       return;
     }
 
