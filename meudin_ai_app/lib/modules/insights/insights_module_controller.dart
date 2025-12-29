@@ -215,8 +215,27 @@ class InsightsModuleController extends GetxController {
       return;
     }
 
-    // Calcula diferença em meses entre startDate e endDate
-    final monthsDifference = _calculateMonthsDifference(startDate, endDate);
+    // Filtra apenas despesas (valores negativos)
+    final expenses = transactionDtoList
+        .where((t) => t.amount != null && t.amount! < 0 && t.transactionDate != null)
+        .toList();
+
+    if (expenses.isEmpty) {
+      monthlyAverageSpends = 0.0;
+      return;
+    }
+
+    // Ordena por data (mais antiga primeiro)
+    expenses.sort((a, b) => a.transactionDate!.compareTo(b.transactionDate!));
+
+    // Encontra a transação mais próxima do startDate (primeira transação no período)
+    final firstTransactionDate = expenses.first.transactionDate!;
+    
+    // Encontra a última transação no período
+    final lastTransactionDate = expenses.last.transactionDate!;
+
+    // Calcula diferença em meses entre a primeira e última transação (meses com dados reais)
+    final monthsDifference = _calculateMonthsDifference(firstTransactionDate, lastTransactionDate);
     
     // Se período for menor que 1 mês, considera pelo menos 1 mês para cálculo
     final effectiveMonths = monthsDifference < 1.0 ? 1.0 : monthsDifference;

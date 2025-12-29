@@ -147,7 +147,7 @@ class MonthlyAverageWidget extends StatelessWidget {
                 const SizedBox(height: 20),
                 // Explanatory text
                 Text(
-                  'O custo médio mensal é calculado considerando todas as despesas registradas no período selecionado, divididas pelo número de meses.',
+                  'O custo médio mensal é calculado considerando todas as despesas registradas no período selecionado, divididas pelo número de meses em que existem transações reais (da primeira à última transação).',
                   style: TextStyle(
                     fontSize: 16,
                     height: 1.5,
