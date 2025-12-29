@@ -67,6 +67,9 @@ class NewSpendPageController extends GetxController {
   }
 
   void pickCategory() async {
+    // Fecha o teclado se estiver aberto
+    FocusManager.instance.primaryFocus?.unfocus();
+    
     final result = await Get.bottomSheet<SpendingCategory>(
       CategoryPickerBottomSheet(
         categories: categories,
