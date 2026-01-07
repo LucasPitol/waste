@@ -18,8 +18,6 @@ class KpiCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
     if (loading) {
       return _buildSkeleton(context);
     }
@@ -47,7 +45,7 @@ class KpiCardsWidget extends StatelessWidget {
           Expanded(
             child: _KpiCard(
               label: 'Saldo',
-              value: balance,
+              value: balance.abs(),
               color: balance > 0 
                   ? Colors.green 
                   : balance < 0 
