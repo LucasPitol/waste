@@ -7,6 +7,7 @@ class SpendingCategory {
   final String value;
   final String? icon; // String do backend (ex: "food", "shoppingBags")
   final String? color; // Hex string do backend (ex: "#FF6B6B")
+  final String type; // "personal" ou "business"
   final DateTime creationDate;
   final DateTime lastUpdate;
 
@@ -20,6 +21,7 @@ class SpendingCategory {
     required this.value,
     this.icon,
     this.color,
+    required this.type,
     required this.creationDate,
     required this.lastUpdate,
   });
@@ -31,6 +33,7 @@ class SpendingCategory {
     final String value = data['value']?.toString() ?? '';
     final String? icon = data['icon']?.toString();
     final String? color = data['color']?.toString();
+    final String type = data['type']?.toString() ?? 'personal'; // Default para 'personal' se não vier
     
     // Parse dates
     DateTime creationDate;
@@ -54,6 +57,7 @@ class SpendingCategory {
       value: value,
       icon: icon,
       color: color,
+      type: type,
       creationDate: creationDate,
       lastUpdate: lastUpdate,
     );
@@ -184,6 +188,7 @@ class SpendingCategory {
         'value': value,
         'icon': icon,
         'color': color,
+        'type': type,
         'creationDate': creationDate.toIso8601String(),
         'lastUpdate': lastUpdate.toIso8601String(),
       };
@@ -198,6 +203,7 @@ class SpendingCategory {
         value: 'food',
         icon: 'food',
         color: '#FF6B6B',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),
@@ -207,6 +213,7 @@ class SpendingCategory {
         value: 'transport',
         icon: 'car',
         color: '#4ECDC4',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),
@@ -216,6 +223,7 @@ class SpendingCategory {
         value: 'house',
         icon: 'house',
         color: '#95E1D3',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),
@@ -225,6 +233,7 @@ class SpendingCategory {
         value: 'health',
         icon: 'health',
         color: '#FF8B94',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),
@@ -234,6 +243,7 @@ class SpendingCategory {
         value: 'education',
         icon: 'education',
         color: '#6C5CE7',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),
@@ -243,6 +253,7 @@ class SpendingCategory {
         value: 'leisure',
         icon: 'entertainment',
         color: '#FD79A8',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),
@@ -252,6 +263,7 @@ class SpendingCategory {
         value: 'shopping',
         icon: 'shoppingBags',
         color: '#FCBAD3',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),
@@ -261,6 +273,7 @@ class SpendingCategory {
         value: 'bills',
         icon: 'bills',
         color: '#74B9FF',
+        type: 'personal',
         creationDate: now,
         lastUpdate: now,
       ),

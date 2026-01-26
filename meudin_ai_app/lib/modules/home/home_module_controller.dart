@@ -185,6 +185,7 @@ class HomeModuleController extends GetxController {
           id: categoryId,
           name: 'Outro',
           value: 'other',
+          type: 'personal',
           creationDate: DateTime.now(),
           lastUpdate: DateTime.now(),
         ),

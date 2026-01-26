@@ -96,6 +96,7 @@ class ExpenseCategoryDetailBottomSheet extends StatelessWidget {
           id: categoryId,
           name: 'Outro',
           value: 'other',
+          type: 'personal',
           creationDate: DateTime.now(),
           lastUpdate: DateTime.now(),
         ),

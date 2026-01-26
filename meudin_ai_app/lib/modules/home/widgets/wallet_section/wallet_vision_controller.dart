@@ -5,6 +5,7 @@ import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
+import 'package:meudin_ai_app/modules/insights/insights_module_controller.dart';
 
 class WalletVisionWidgetController extends GetxController {
   late List<Tuple> tabs;
@@ -106,9 +107,15 @@ class WalletVisionWidgetController extends GetxController {
     );
 
     if (refresh != null && refresh) {
-      // Refresh data in home module (force refresh to get updated data)
-      final homeController = Get.find<HomeModuleController>();
-      await homeController.updatePageData(forceRefresh: true);
+      // Refresh data in both home and insights modules (force refresh to get updated data)
+      if (Get.isRegistered<HomeModuleController>()) {
+        final homeController = Get.find<HomeModuleController>();
+        await homeController.updatePageData(forceRefresh: true);
+      }
+      if (Get.isRegistered<InsightsModuleController>()) {
+        final insightsController = Get.find<InsightsModuleController>();
+        await insightsController.refreshAll(forceRefresh: true);
+      }
     }
   }
 }

@@ -86,7 +86,9 @@ class NewSpendPage extends StatelessWidget {
                         FontAwesomeIcons.dollarSign, 
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                            ?? Colors.grey,
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -136,7 +138,9 @@ class NewSpendPage extends StatelessWidget {
                         FontAwesomeIcons.pen, 
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                            ?? Colors.grey,
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -183,7 +187,9 @@ class NewSpendPage extends StatelessWidget {
                         FontAwesomeIcons.calendar, 
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                            ?? Colors.grey,
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -199,7 +205,9 @@ class NewSpendPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 12, 
                                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                                        ?? Colors.grey,
+                                        ?? (theme.brightness == Brightness.dark
+                                            ? Colors.grey.shade400
+                                            : Colors.grey),
                                   ),
                                 ),
                                 const SizedBox(height: 2),
@@ -207,7 +215,10 @@ class NewSpendPage extends StatelessWidget {
                                   controller.selectedDateString,
                                   style: TextStyle(
                                     fontSize: 16, 
-                                    color: theme.textTheme.bodyLarge?.color ?? Colors.black,
+                                    color: theme.textTheme.bodyLarge?.color ?? 
+                                        (theme.brightness == Brightness.dark 
+                                            ? Colors.white 
+                                            : Colors.black),
                                   ),
                                 ),
                               ],
@@ -253,7 +264,10 @@ class NewSpendPage extends StatelessWidget {
                           controller.selectedCategoryIcon,
                           size: 18,
                           color: controller.selectedCategory?.colorData 
-                              ?? (theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey),
+                              ?? (theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                                  ?? (theme.brightness == Brightness.dark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey)),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -270,7 +284,9 @@ class NewSpendPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 12, 
                                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                                        ?? Colors.grey,
+                                        ?? (theme.brightness == Brightness.dark
+                                            ? Colors.grey.shade400
+                                            : Colors.grey),
                                   ),
                                 ),
                                 const SizedBox(height: 2),
@@ -279,9 +295,14 @@ class NewSpendPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: controller.selectedCategory != null
-                                        ? (theme.textTheme.bodyLarge?.color ?? Colors.black)
+                                        ? (theme.textTheme.bodyLarge?.color ?? 
+                                            (theme.brightness == Brightness.dark 
+                                                ? Colors.white 
+                                                : Colors.black))
                                         : (theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                                            ?? Colors.grey.shade600),
+                                            ?? (theme.brightness == Brightness.dark
+                                                ? Colors.grey.shade400
+                                                : Colors.grey.shade600)),
                                     fontWeight: controller.selectedCategory != null
                                         ? FontWeight.w500
                                         : FontWeight.w400,
@@ -296,7 +317,9 @@ class NewSpendPage extends StatelessWidget {
                         FontAwesomeIcons.chevronRight,
                         size: 14,
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                            ?? Colors.grey,
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
                       ),
                       const SizedBox(width: 4),
                     ],

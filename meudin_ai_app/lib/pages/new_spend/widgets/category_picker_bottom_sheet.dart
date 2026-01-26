@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 
-class CategoryPickerBottomSheet extends StatelessWidget {
+class CategoryPickerBottomSheet extends StatefulWidget {
   final List<SpendingCategory> categories;
   final String? selectedCategoryId;
 
@@ -12,6 +12,19 @@ class CategoryPickerBottomSheet extends StatelessWidget {
     required this.categories,
     this.selectedCategoryId,
   });
+
+  @override
+  State<CategoryPickerBottomSheet> createState() => _CategoryPickerBottomSheetState();
+}
+
+class _CategoryPickerBottomSheetState extends State<CategoryPickerBottomSheet> {
+  String _selectedTab = 'personal'; // Abre selecionando pessoal por padrão
+
+  List<SpendingCategory> get _filteredCategories {
+    return widget.categories
+        .where((category) => category.type == _selectedTab)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,23 +60,39 @@ class CategoryPickerBottomSheet extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Selecione uma categoria',
+                    'Categoria do gasto',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
-                      color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                      color: theme.textTheme.bodyLarge?.color ?? 
+                          (theme.brightness == Brightness.dark 
+                              ? Colors.white 
+                              : Styles.primaryTextColor),
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Organize seus gastos',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
-                          ?? Colors.grey.shade600,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  const SizedBox(height: 16),
+                  // Tabs: Pessoal | Empresarial
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _TabButton(
+                          label: 'Pessoal',
+                          isSelected: _selectedTab == 'personal',
+                          onTap: () => setState(() => _selectedTab = 'personal'),
+                          theme: theme,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _TabButton(
+                          label: 'Empresarial',
+                          isSelected: _selectedTab == 'business',
+                          onTap: () => setState(() => _selectedTab = 'business'),
+                          theme: theme,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -82,10 +111,10 @@ class CategoryPickerBottomSheet extends StatelessWidget {
                     mainAxisSpacing: 12,
                     childAspectRatio: 0.9,
                   ),
-                  itemCount: categories.length,
+                  itemCount: _filteredCategories.length,
                   itemBuilder: (context, index) {
-                    final category = categories[index];
-                    final isSelected = category.id == selectedCategoryId;
+                    final category = _filteredCategories[index];
+                    final isSelected = category.id == widget.selectedCategoryId;
                     
                     return _CategoryCard(
                       category: category,
@@ -97,6 +126,62 @@ class CategoryPickerBottomSheet extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TabButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final ThemeData theme;
+
+  const _TabButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (theme.brightness == Brightness.dark
+                  ? Styles.primaryColor.withOpacity(0.2)
+                  : Styles.primaryColor.withOpacity(0.1))
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected
+                ? Styles.primaryColor
+                : (theme.brightness == Brightness.dark
+                    ? Colors.grey.shade700
+                    : Colors.grey.shade300),
+            width: isSelected ? 1.5 : 0.5,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              color: isSelected
+                  ? Styles.primaryColor
+                  : (theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ??
+                      (theme.brightness == Brightness.dark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600)),
+            ),
+          ),
         ),
       ),
     );
@@ -214,7 +299,10 @@ class _CategoryCardState extends State<_CategoryCard> {
     if (widget.isSelected) {
       return widget.category.colorData;
     }
-    return theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor;
+    return theme.textTheme.bodyLarge?.color ?? 
+        (theme.brightness == Brightness.dark 
+            ? Colors.white 
+            : Styles.primaryTextColor);
   }
 }
 
