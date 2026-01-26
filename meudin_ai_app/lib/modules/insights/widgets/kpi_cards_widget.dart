@@ -151,7 +151,7 @@ class _KpiCard extends StatelessWidget {
           Text(
             Utils.getAmountFormated(value),
             style: TextStyle(
-              fontSize: 18.0,
+              fontSize: 16.0,
               fontWeight: FontWeight.w600,
               color: color,
             ),
