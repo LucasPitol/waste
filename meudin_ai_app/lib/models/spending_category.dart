@@ -120,6 +120,7 @@ class SpendingCategory {
       // Moradia
       'house': FontAwesomeIcons.house,
       'home': FontAwesomeIcons.house,
+      'housing': FontAwesomeIcons.house,
       'moradia': FontAwesomeIcons.house,
       
       // Saúde
@@ -137,7 +138,35 @@ class SpendingCategory {
       'contas': FontAwesomeIcons.fileInvoiceDollar,
       'utilities': FontAwesomeIcons.fileInvoiceDollar,
       
+      // Categorias Empresariais (Business)
+      'boxes-stacked': FontAwesomeIcons.boxesStacked,
+      'materials': FontAwesomeIcons.boxesStacked,
+      'material': FontAwesomeIcons.boxesStacked,
+      'file-invoice-dollar': FontAwesomeIcons.fileInvoiceDollar,
+      'taxes': FontAwesomeIcons.fileInvoiceDollar,
+      'impostos': FontAwesomeIcons.fileInvoiceDollar,
+      'bullhorn': FontAwesomeIcons.bullhorn,
+      'marketing': FontAwesomeIcons.bullhorn,
+      'user-gear': FontAwesomeIcons.userGear,
+      'outsourcing': FontAwesomeIcons.userGear,
+      'servicos-terceirizados': FontAwesomeIcons.userGear,
+      'cloud': FontAwesomeIcons.cloud,
+      'nuvem': FontAwesomeIcons.cloud,
+      'screwdriver-wrench': FontAwesomeIcons.screwdriverWrench,
+      'tools': FontAwesomeIcons.screwdriverWrench,
+      'ferramentas': FontAwesomeIcons.screwdriverWrench,
+      'credit-card': FontAwesomeIcons.creditCard,
+      'fees': FontAwesomeIcons.creditCard,
+      'tarifas': FontAwesomeIcons.creditCard,
+      'truck': FontAwesomeIcons.truck,
+      'logistics': FontAwesomeIcons.truck,
+      'logistica': FontAwesomeIcons.truck,
+      'handshake': FontAwesomeIcons.handshake,
+      'commission': FontAwesomeIcons.handshake,
+      'comissao': FontAwesomeIcons.handshake,
+      
       // Outros
+      'box': FontAwesomeIcons.box,
       'pet': FontAwesomeIcons.paw,
       'travel': FontAwesomeIcons.planeDeparture,
       'viagem': FontAwesomeIcons.planeDeparture,
@@ -155,6 +184,7 @@ class SpendingCategory {
       'assinatura': FontAwesomeIcons.tv,
       'others': FontAwesomeIcons.circleQuestion,
       'outros': FontAwesomeIcons.circleQuestion,
+      'other': FontAwesomeIcons.box,
     };
 
     final lowerIcon = iconString.toLowerCase();
