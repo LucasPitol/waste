@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/currency_input_formatter.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
+import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/pages/edit_spend/edit_spend_page_controller.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -34,27 +35,31 @@ class EditSpendPage extends StatelessWidget {
             controller.update();
           });
         }
+        final theme = Theme.of(context);
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: const FaIcon(
+              icon: FaIcon(
                 FontAwesomeIcons.arrowLeft,
                 size: 20,
+                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               ),
               onPressed: () => Get.back(),
             ),
-            title: const Text(
+            title: Text(
               'Editar Gasto',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
+                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               ),
             ),
-            backgroundColor: Styles.whiteColor,
-            foregroundColor: Styles.primaryTextColor,
+            backgroundColor: theme.brightness == Brightness.dark 
+                ? theme.colorScheme.surface 
+                : Styles.whiteColor,
             elevation: 0,
           ),
-          backgroundColor: Styles.whiteConfortColor,
+          backgroundColor: theme.scaffoldBackgroundColor,
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -63,11 +68,15 @@ class EditSpendPage extends StatelessWidget {
                 // Amount
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.brightness == Brightness.dark 
+                        ? theme.colorScheme.surface 
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.black.withOpacity(0.3)
+                            : Colors.black.withOpacity(0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -76,7 +85,14 @@ class EditSpendPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.dollarSign, size: 18, color: Colors.grey),
+                      FaIcon(
+                        FontAwesomeIcons.dollarSign, 
+                        size: 18, 
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: TextFormField(
@@ -85,8 +101,14 @@ class EditSpendPage extends StatelessWidget {
                           inputFormatters: [
                             CurrencyInputFormatter(leadingSymbol: 'R\$')
                           ],
-                          decoration: const InputDecoration(
+                          style: TextStyle(
+                            color: theme.textTheme.bodyLarge?.color,
+                          ),
+                          decoration: InputDecoration(
                             labelText: 'Valor',
+                            labelStyle: TextStyle(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                            ),
                             border: InputBorder.none,
                           ),
                         ),
@@ -98,11 +120,15 @@ class EditSpendPage extends StatelessWidget {
                 // Reason
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.brightness == Brightness.dark 
+                        ? theme.colorScheme.surface 
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.black.withOpacity(0.3)
+                            : Colors.black.withOpacity(0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -111,13 +137,27 @@ class EditSpendPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.pen, size: 18, color: Colors.grey),
+                      FaIcon(
+                        FontAwesomeIcons.pen, 
+                        size: 18, 
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: TextFormField(
                           controller: controller.reasonController,
-                          decoration: const InputDecoration(
+                          textCapitalization: TextCapitalization.sentences,
+                          style: TextStyle(
+                            color: theme.textTheme.bodyLarge?.color,
+                          ),
+                          decoration: InputDecoration(
                             labelText: 'Descrição',
+                            labelStyle: TextStyle(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                            ),
                             border: InputBorder.none,
                           ),
                         ),
@@ -129,11 +169,15 @@ class EditSpendPage extends StatelessWidget {
                 // Spend Date
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.brightness == Brightness.dark 
+                        ? theme.colorScheme.surface 
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.black.withOpacity(0.3)
+                            : Colors.black.withOpacity(0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -142,7 +186,14 @@ class EditSpendPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.calendar, size: 18, color: Colors.grey),
+                      FaIcon(
+                        FontAwesomeIcons.calendar, 
+                        size: 18, 
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: InkWell(
@@ -152,11 +203,26 @@ class EditSpendPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Data', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                Text(
+                                  'Data', 
+                                  style: TextStyle(
+                                    fontSize: 12, 
+                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                                        ?? (theme.brightness == Brightness.dark
+                                            ? Colors.grey.shade400
+                                            : Colors.grey),
+                                  ),
+                                ),
                                 const SizedBox(height: 2),
                                 Text(
                                   controller.selectedDateString,
-                                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  style: TextStyle(
+                                    fontSize: 16, 
+                                    color: theme.textTheme.bodyLarge?.color ?? 
+                                        (theme.brightness == Brightness.dark 
+                                            ? Colors.white 
+                                            : Colors.black),
+                                  ),
                                 ),
                               ],
                             ),
@@ -170,11 +236,15 @@ class EditSpendPage extends StatelessWidget {
                 // Category
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.brightness == Brightness.dark 
+                        ? theme.colorScheme.surface 
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.03),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.black.withOpacity(0.3)
+                            : Colors.black.withOpacity(0.03),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -188,13 +258,19 @@ class EditSpendPage extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: controller.selectedCategory != null
                               ? controller.selectedCategory!.colorData.withOpacity(0.15)
-                              : Colors.grey[100],
+                              : (theme.brightness == Brightness.dark
+                                  ? Colors.grey.shade800
+                                  : Colors.grey[100]!),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: FaIcon(
                           controller.selectedCategoryIcon,
                           size: 18,
-                          color: controller.selectedCategory?.colorData ?? Colors.grey,
+                          color: controller.selectedCategory?.colorData 
+                              ?? (theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                                  ?? (theme.brightness == Brightness.dark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey)),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -206,15 +282,30 @@ class EditSpendPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Categoria', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                Text(
+                                  'Categoria', 
+                                  style: TextStyle(
+                                    fontSize: 12, 
+                                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                                        ?? (theme.brightness == Brightness.dark
+                                            ? Colors.grey.shade400
+                                            : Colors.grey),
+                                  ),
+                                ),
                                 const SizedBox(height: 2),
                                 Text(
                                   controller.selectedCategoryName,
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: controller.selectedCategory != null
-                                        ? Colors.black
-                                        : Colors.grey[600],
+                                        ? (theme.textTheme.bodyLarge?.color ?? 
+                                            (theme.brightness == Brightness.dark 
+                                                ? Colors.white 
+                                                : Colors.black))
+                                        : (theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                                            ?? (theme.brightness == Brightness.dark
+                                                ? Colors.grey.shade400
+                                                : Colors.grey.shade600)),
                                     fontWeight: controller.selectedCategory != null
                                         ? FontWeight.w500
                                         : FontWeight.w400,
@@ -225,10 +316,13 @@ class EditSpendPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const FaIcon(
+                      FaIcon(
                         FontAwesomeIcons.chevronRight,
                         size: 14,
-                        color: Colors.grey,
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
+                            ?? (theme.brightness == Brightness.dark
+                                ? Colors.grey.shade400
+                                : Colors.grey),
                       ),
                       const SizedBox(width: 4),
                     ],
@@ -242,15 +336,16 @@ class EditSpendPage extends StatelessWidget {
                   textColor: Styles.whiteColor,
                 ),
                 if (controller.loading)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 12),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
                     child: Center(
                       child: SizedBox(
                         width: 24,
                         height: 24,
                         child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Styles.primaryColor,
+                          ),
                           strokeWidth: 2.5,
                         ),
                       ),
