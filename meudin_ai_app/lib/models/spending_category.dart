@@ -12,7 +12,7 @@ class SpendingCategory {
   final DateTime lastUpdate;
 
   // Computed properties para UI
-  IconData get iconData => _getIconFromString(icon ?? '');
+  IconData get iconData => _getIconFromString(icon?.isNotEmpty == true ? icon! : value);
   Color get colorData => _getColorFromString(color ?? '#B2BEC3');
 
   SpendingCategory({
@@ -152,6 +152,8 @@ class SpendingCategory {
       'servicos-terceirizados': FontAwesomeIcons.userGear,
       'cloud': FontAwesomeIcons.cloud,
       'nuvem': FontAwesomeIcons.cloud,
+      'internet': FontAwesomeIcons.wifi,
+      'wifi': FontAwesomeIcons.wifi,
       'screwdriver-wrench': FontAwesomeIcons.screwdriverWrench,
       'tools': FontAwesomeIcons.screwdriverWrench,
       'ferramentas': FontAwesomeIcons.screwdriverWrench,
