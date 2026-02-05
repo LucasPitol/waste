@@ -8,6 +8,7 @@ import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../routes/app_routes.dart';
 import '../../ui/joy_ui.dart';
 
 class HomeModule extends StatelessWidget {
@@ -104,20 +105,17 @@ class HomeModule extends StatelessWidget {
                       ),
                       // Banner de Upgrade (discreto, abaixo do card principal)
                       // Versão escolhida aleatoriamente em tempo de execução (50% de chance para cada)
-                      // AnimatedOpacity(
-                      //   opacity: controller.showUpgradeBanner ? 1.0 : 0.0,
-                      //   duration: const Duration(milliseconds: 300),
-                      //   child: IgnorePointer(
-                      //     ignoring: !controller.showUpgradeBanner,
-                      //     child: UpgradeBannerWidget(
-                      //       version: controller.selectedBannerVersion,
-                      //       onTap: () {
-                      //         // TODO: Implementar navegação para página de planos
-                      //         // Get.toNamed(AppRoutes.plans);
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
+                      AnimatedOpacity(
+                        opacity: controller.showUpgradeBanner ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: IgnorePointer(
+                          ignoring: !controller.showUpgradeBanner,
+                          child: UpgradeBannerWidget(
+                            version: controller.selectedBannerVersion,
+                            onTap: () => Get.toNamed(AppRoutes.plansRoute),
+                          ),
+                        ),
+                      ),
                       // Gráfico de gastos por categoria
                       ExpenseCategoryChartWidget(
                         categoryExpenses: controller.categoryExpenses,
