@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/app_session_initializer.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
+import 'package:meudin_ai_app/services/plan_state_controller.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
