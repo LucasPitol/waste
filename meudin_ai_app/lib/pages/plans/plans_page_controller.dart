@@ -69,16 +69,16 @@ class PlansPageController extends GetxController {
   /// Benefícios em linguagem humana (Plus hero)
   static const List<String> plusBenefits = [
     'Até 5 carteiras',
-    'Histórico completo do ano',
-    'Compartilhe com quem importa',
-    'Relatórios mensais por e-mail',
+    'Até 5 membros por carteira',
+    'Histórico financeiro de até 12 meses',
   ];
 
   /// Benefícios em linguagem humana (Pro)
   static const List<String> proBenefits = [
-    'Uso ilimitado',
-    'Exportação (PDF / Excel)',
-    'Ideal para famílias e negócios',
+    'Até 20 carteiras ativas',
+    'Até 20 membros por carteira',
+    'Histórico financeiro ilimitado',
+    'Ideal para famílias grandes e negócios',
   ];
 
   void onSubscribe(PlanDisplay plan) {

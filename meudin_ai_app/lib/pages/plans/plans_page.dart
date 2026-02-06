@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/pages/plans/plans_page_controller.dart';
@@ -22,7 +23,8 @@ class PlansPage extends StatelessWidget {
             leading: IconButton(
               icon: FaIcon(
                 FontAwesomeIcons.arrowLeft,
-                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                color:
+                    theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 size: 20,
               ),
               onPressed: () => Get.back(),
@@ -30,7 +32,8 @@ class PlansPage extends StatelessWidget {
             title: Text(
               'Planos',
               style: TextStyle(
-                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                color:
+                    theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
@@ -52,6 +55,12 @@ class PlansPage extends StatelessWidget {
                 _buildProCard(context, theme, controller),
                 const SizedBox(height: 24),
                 _buildFreeLink(context, theme),
+                const SizedBox(height: 32),
+                SvgPicture.asset(
+                  'assets/finance.svg',
+                  width: 200,
+                  fit: BoxFit.contain,
+                ),
                 const SizedBox(height: 32),
                 _buildAppleLegalText(theme),
               ],
@@ -152,7 +161,8 @@ class PlansPage extends StatelessWidget {
               fontSize: 22,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.5,
-              color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+              color:
+                  theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
             ),
           ),
           const SizedBox(height: 4),
@@ -249,7 +259,8 @@ class PlansPage extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.2,
-              color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+              color:
+                  theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
             ),
           ),
           const SizedBox(height: 4),
@@ -258,7 +269,8 @@ class PlansPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+              color:
+                  theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
             ),
           ),
           const SizedBox(height: 16),
@@ -330,8 +342,9 @@ class PlansPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
-                    Colors.grey.shade600,
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7) ??
+                        Colors.grey.shade600,
               ),
             ),
             const SizedBox(height: 2),
@@ -340,8 +353,9 @@ class PlansPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
-                color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
-                    Colors.grey.shade500,
+                color:
+                    theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5) ??
+                        Colors.grey.shade500,
               ),
             ),
           ],
