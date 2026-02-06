@@ -3,6 +3,7 @@ import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/services/theme_service.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/app_session_initializer.dart';
+import 'package:meudin_ai_app/services/plan_state_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,12 @@ Future<void> main() async {
   
   // Inicializa sessão antes de rodar o app
   final loggedIn = await initializeAppSession();
-  
+
+  if (loggedIn) {
+    Get.put(PlanStateController(), permanent: true);
+    Get.find<PlanStateController>().refreshPlan(); // fire-and-forget, não bloqueia
+  }
+
   runApp(MyApp(initialRoute: loggedIn ? AppRoutes.homeAppRoute : AppRoutes.signInRoute));
 }
 

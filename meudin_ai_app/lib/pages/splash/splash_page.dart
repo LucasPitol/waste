@@ -21,6 +21,9 @@ class _SplashPageState extends State<SplashPage> {
     final loggedIn = await initializeAppSession();
     if (!mounted) return;
     if (loggedIn) {
+      Get.put(PlanStateController(), permanent: true);
+      await Get.find<PlanStateController>().refreshPlan();
+      if (!mounted) return;
       Get.offAllNamed(AppRoutes.homeAppRoute);
     } else {
       Get.offAllNamed(AppRoutes.signInRoute);

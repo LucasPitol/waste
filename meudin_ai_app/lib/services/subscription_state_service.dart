@@ -46,6 +46,17 @@ class SubscriptionStateService {
     _lastFetch = null;
   }
 
+  /// Atualiza cache a partir de plan_code (endpoint leve GET /me/plan)
+  static void updateFromPlanCode(String planCode) {
+    final limits = PlanLimits.forPlanCode(planCode);
+    _cachedSubscription = UserSubscription(
+      plan: PlanCode.fromString(planCode),
+      limits: limits,
+      subscription: null,
+    );
+    _lastFetch = DateTime.now();
+  }
+
   /// Obtém os limites do plano do dono da carteira atual
   /// Retorna null se não conseguir determinar
   Future<PlanLimits?> getCurrentWalletLimits() async {

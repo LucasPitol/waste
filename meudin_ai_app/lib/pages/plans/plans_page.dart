@@ -57,6 +57,8 @@ class PlansPage extends StatelessWidget {
                 _buildProCard(context, theme, controller),
                 const SizedBox(height: 24),
                 _buildFreeLink(context, theme),
+                const SizedBox(height: 16),
+                _buildRestoreLink(context, theme, controller),
                 const SizedBox(height: 32),
                 SvgPicture.asset(
                   'assets/finance.svg',
@@ -381,6 +383,28 @@ class PlansPage extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRestoreLink(
+    BuildContext context,
+    ThemeData theme,
+    PlansPageController controller,
+  ) {
+    return InkWell(
+      onTap: controller.isPurchasing ? null : () => controller.onRestorePurchases(),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        child: Text(
+          'Restaurar compras',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: Styles.primaryColor,
+          ),
         ),
       ),
     );

@@ -17,6 +17,7 @@ import 'package:meudin_ai_app/models/category_expense.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/services/plan_state_controller.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/services/session_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
@@ -43,9 +44,17 @@ class HomeModuleController extends GetxController {
   late CacheService _cacheService;
   late bool isWalletListLoading;
   late bool isRefreshing;
-  late bool showUpgradeBanner;
   late UpgradeBannerVersion selectedBannerVersion;
   Timer? _upgradeBannerTimer;
+  bool _bannerTimerFired = false;
+
+  bool get showUpgradeBanner {
+    if (!_bannerTimerFired) return false;
+    final planCtrl = Get.isRegistered<PlanStateController>()
+        ? Get.find<PlanStateController>()
+        : null;
+    return planCtrl?.isFree ?? true;
+  }
   List<SpendingCategory> _categories = [];
   List<CategoryExpense> _categoryExpenses = [];
 
@@ -70,7 +79,6 @@ class HomeModuleController extends GetxController {
     loading = false;
     isWalletListLoading = false;
     isRefreshing = false;
-    showUpgradeBanner = false;
     // Seleção aleatória da versão do banner (50% de chance para cada)
     selectedBannerVersion = _selectRandomBannerVersion();
   }
@@ -87,10 +95,19 @@ class HomeModuleController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _ensurePlanStateAndListen();
     _fillStandardDate();
     _fetchCategories();
     _restoreLastSelectedWallet();
     _startUpgradeBannerTimer();
+  }
+
+  void _ensurePlanStateAndListen() {
+    if (!Get.isRegistered<PlanStateController>()) {
+      Get.put(PlanStateController(), permanent: true);
+    }
+    Get.find<PlanStateController>().refreshPlan();
+    ever(Get.find<PlanStateController>().planCode, (_) => update());
   }
 
   /// Restaura a última carteira selecionada do local storage antes de buscar transações
@@ -245,7 +262,7 @@ class HomeModuleController extends GetxController {
 
   void _startUpgradeBannerTimer() {
     _upgradeBannerTimer = Timer(const Duration(seconds: 3), () {
-      showUpgradeBanner = true;
+      _bannerTimerFired = true;
       update();
     });
   }

@@ -1,4 +1,6 @@
+import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
+import 'package:meudin_ai_app/services/plan_state_controller.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
 
 class SessionService {
@@ -45,7 +47,9 @@ class SessionService {
   /// Logout and clear all session data
   static Future<void> logout() async {
     try {
-      // Call API logout endpoint to invalidate session
+      if (Get.isRegistered<PlanStateController>()) {
+        Get.find<PlanStateController>().clearPlan();
+      }
       final userService = UserService();
       await userService.logout();
       

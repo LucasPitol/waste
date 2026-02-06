@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/models/dtos/sign_in_dto.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
+import 'package:meudin_ai_app/services/plan_state_controller.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
@@ -27,6 +28,8 @@ class SignInPageController extends GetxController {
     );
 
     if (authResponse.success) {
+      Get.put(PlanStateController(), permanent: true);
+      await Get.find<PlanStateController>().refreshPlan();
       await Get.offNamed(AppRoutes.homeAppRoute);
     } else {
       loading = false;

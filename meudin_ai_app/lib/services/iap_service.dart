@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:meudin_ai_app/pages/plans/plans_page_controller.dart';
+import 'package:meudin_ai_app/services/receipt_storage_service.dart';
 import 'package:meudin_ai_app/services/subscription_service.dart';
 import 'package:meudin_ai_app/services/subscription_state_service.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
@@ -39,6 +40,7 @@ enum IapPurchaseResult {
 class IapService {
   final InAppPurchase _iap = InAppPurchase.instance;
   final SubscriptionService _subscriptionService = SubscriptionService();
+  final ReceiptStorageService _receiptStorage = ReceiptStorageService();
 
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   Completer<IapPurchaseResult>? _purchaseCompleter;
@@ -145,6 +147,7 @@ class IapService {
   }
 
   /// Envia receipt/token ao backend e completa a compra
+  /// Persiste receipt Apple para validação on-demand
   Future<bool> _validateAndComplete(PurchaseDetails purchase) async {
     final user = UserService.currentUser;
     if (user?.token == null || user!.token!.isEmpty) {
@@ -160,14 +163,74 @@ class IapService {
     if (result) {
       await _iap.completePurchase(purchase);
       SubscriptionStateService.clearCache();
+
+      // MONO-FE-01: Persistir receipt Apple para validação on-demand
+      if (purchase.verificationData.source == 'app_store') {
+        final receipt = purchase.verificationData.serverVerificationData;
+        if (receipt.isNotEmpty) {
+          await _receiptStorage.saveAppleReceipt(receipt);
+        }
+      }
     }
 
     return result;
   }
 
-  /// Restaura compras (ex: troca de dispositivo)
-  Future<void> restorePurchases() async {
+  /// Restaura compras (ex: troca de dispositivo, reinstalação)
+  /// Captura e persiste receipt Apple para validação on-demand
+  Future<IapPurchaseResult> restorePurchases() async {
+    if (!await isAvailable()) return IapPurchaseResult.error;
+
+    _purchaseCompleter = Completer<IapPurchaseResult>();
+    var completed = false;
+
+    _subscription?.cancel();
+    _subscription = _iap.purchaseStream.listen(
+      (purchases) async {
+        if (completed) return;
+        for (final purchase in purchases) {
+          if (purchase.status == PurchaseStatus.restored ||
+              purchase.status == PurchaseStatus.purchased) {
+            completed = true;
+            _purchaseCompleter?.complete(IapPurchaseResult.success);
+            _subscription?.cancel();
+
+            // MONO-FE-01: Persistir receipt Apple
+            if (purchase.verificationData.source == 'app_store') {
+              final receipt = purchase.verificationData.serverVerificationData;
+              if (receipt.isNotEmpty) {
+                await _receiptStorage.saveAppleReceipt(receipt);
+                SubscriptionStateService.clearCache();
+              }
+            }
+            await _iap.completePurchase(purchase);
+            return;
+          }
+        }
+      },
+      onDone: () {
+        if (!completed && !_purchaseCompleter!.isCompleted) {
+          _purchaseCompleter?.complete(IapPurchaseResult.canceled);
+        }
+      },
+      onError: (_) {
+        if (!_purchaseCompleter!.isCompleted) {
+          _purchaseCompleter?.complete(IapPurchaseResult.error);
+        }
+      },
+    );
+
     await _iap.restorePurchases();
+
+    try {
+      return await _purchaseCompleter!.future
+          .timeout(const Duration(seconds: 30));
+    } on TimeoutException {
+      return IapPurchaseResult.error;
+    } finally {
+      _subscription?.cancel();
+      _purchaseCompleter = null;
+    }
   }
 
   void dispose() {

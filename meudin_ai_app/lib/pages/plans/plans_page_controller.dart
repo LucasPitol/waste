@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/models/plan_limits.dart';
 import 'package:meudin_ai_app/services/iap_service.dart';
+import 'package:meudin_ai_app/services/plan_state_controller.dart';
 
 enum PlanCode { free, plus, pro }
 
@@ -99,6 +100,9 @@ class PlansPageController extends GetxController {
 
       switch (result) {
         case IapPurchaseResult.success:
+          if (Get.isRegistered<PlanStateController>()) {
+            await Get.find<PlanStateController>().refreshPlan();
+          }
           Get.back(result: true);
           Get.snackbar(
             'Assinatura ativa',
@@ -130,6 +134,70 @@ class PlansPageController extends GetxController {
           Get.snackbar(
             'Pagamento pendente',
             'Aguardando confirmação do pagamento.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          break;
+      }
+    } catch (e) {
+      _isPurchasing = false;
+      update();
+      Get.snackbar(
+        'Erro',
+        'Tente novamente ou entre em contato com o suporte.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      _isPurchasing = false;
+      update();
+    }
+  }
+
+  /// Restaurar compras (reinstalação ou troca de dispositivo)
+  Future<void> onRestorePurchases() async {
+    if (_isPurchasing) return;
+
+    _isPurchasing = true;
+    update();
+
+    try {
+      final result = await _iapService.restorePurchases();
+
+      switch (result) {
+        case IapPurchaseResult.success:
+          if (Get.isRegistered<PlanStateController>()) {
+            await Get.find<PlanStateController>().refreshPlan();
+          }
+          Get.back(result: true);
+          Get.snackbar(
+            'Compra restaurada',
+            'Seu plano foi restaurado com sucesso.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.isDarkMode
+                ? null
+                : const Color(0xFFAC6CFF).withValues(alpha: 0.15),
+          );
+          break;
+
+        case IapPurchaseResult.canceled:
+          Get.snackbar(
+            'Restauração cancelada',
+            'Nenhuma compra anterior encontrada.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          break;
+
+        case IapPurchaseResult.error:
+          Get.snackbar(
+            'Erro na restauração',
+            'Não foi possível restaurar. Tente novamente.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          break;
+
+        case IapPurchaseResult.pending:
+          Get.snackbar(
+            'Processando...',
+            'Aguardando confirmação.',
             snackPosition: SnackPosition.BOTTOM,
           );
           break;

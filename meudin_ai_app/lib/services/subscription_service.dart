@@ -12,6 +12,28 @@ import 'package:meudin_ai_app/services/user_service.dart';
 class SubscriptionService {
   final String apiUrl = Environment.apiUrl;
 
+  /// Obtém o plano atual do usuário (endpoint leve)
+  /// GET /api/subscriptions/me/plan
+  Future<PlanCode?> getCurrentPlan() async {
+    final user = UserService.currentUser;
+    if (user?.token == null || user!.token!.isEmpty) {
+      return null;
+    }
+
+    final url = Uri.parse('${apiUrl}subscriptions/me/plan');
+    final headers = UserService.getAuthHeaders();
+
+    try {
+      final response = await HttpClient.get(url, headers: headers);
+      if (response.success && response.data != null && response.data is Map) {
+        final data = response.data as Map<String, dynamic>;
+        final planCode = data['plan_code'] as String?;
+        return planCode != null ? PlanCode.fromString(planCode) : null;
+      }
+    } catch (_) {}
+    return null;
+  }
+
   /// Obtém informações da assinatura do usuário autenticado
   Future<ResponseDto> getMySubscription() async {
     final user = UserService.currentUser;
@@ -171,6 +193,43 @@ class SubscriptionService {
       return json['success'] == true;
     } catch (_) {
       return false;
+    }
+  }
+
+  /// Valida assinatura com receipt Apple (app start ou restore)
+  /// POST /api/subscriptions/validate-purchase
+  /// Retorna plan_code ou null
+  Future<PlanCode?> validateReceipt(String receiptData) async {
+    final user = UserService.currentUser;
+    if (user?.token == null || user!.token!.isEmpty) return null;
+    if (receiptData.isEmpty) return null;
+
+    final url = Uri.parse('${apiUrl}subscriptions/validate-purchase');
+    final headers = UserService.getAuthHeaders();
+    final body = jsonEncode({
+      'provider': 'apple',
+      'receipt': receiptData,
+    });
+
+    try {
+      final response = await HttpInterceptor.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode != 200) return null;
+
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
+      if (json['success'] != true) return null;
+
+      final data = json['data'] as Map<String, dynamic>?;
+      if (data == null) return null;
+
+      final planCodeStr = data['plan_code'] as String?;
+      return planCodeStr != null ? PlanCode.fromString(planCodeStr) : null;
+    } catch (_) {
+      return null;
     }
   }
 
