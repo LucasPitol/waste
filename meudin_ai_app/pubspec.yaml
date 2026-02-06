@@ -48,6 +48,7 @@ dependencies:
   fl_chart: ^0.69.0
   package_info_plus: ^8.1.1
   flutter_svg: ^2.0.10+1
+  in_app_purchase: ^3.2.0
 
 flutter_native_splash:
   color: "#FFFFFF"

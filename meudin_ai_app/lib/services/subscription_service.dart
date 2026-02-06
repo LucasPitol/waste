@@ -1,8 +1,11 @@
 import 'dart:convert';
+
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:meudin_ai_app/environment/environment.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/models/user_subscription.dart';
 import 'package:meudin_ai_app/services/http_client.dart';
+import 'package:meudin_ai_app/services/http_interceptor.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
 
 /// Serviço para gerenciar assinaturas e planos
@@ -112,6 +115,77 @@ class SubscriptionService {
         errorMessage: 'Erro ao gerar URL de SSO: $e',
       );
     }
+  }
+
+  /// Valida compra in-app com o backend (receipt Apple ou token Google)
+  /// POST /api/subscriptions/validate-purchase
+  Future<bool> validatePurchase({
+    required PurchaseDetails purchase,
+    required String productId,
+    required String packageName,
+  }) async {
+    final user = UserService.currentUser;
+    if (user?.token == null || user!.token!.isEmpty) {
+      return false;
+    }
+
+    final url = Uri.parse('${apiUrl}subscriptions/validate-purchase');
+    final headers = UserService.getAuthHeaders();
+
+    Map<String, dynamic> body;
+    final source = purchase.verificationData.source;
+
+    if (source == 'app_store') {
+      body = {
+        'provider': 'apple',
+        'receipt': purchase.verificationData.serverVerificationData,
+      };
+    } else if (source == 'play_store') {
+      final token = _extractGooglePurchaseToken(
+        purchase.verificationData.serverVerificationData,
+      );
+      if (token == null) return false;
+
+      body = {
+        'provider': 'google',
+        'package_name': packageName,
+        'product_id': productId,
+        'purchase_token': token,
+      };
+    } else {
+      return false;
+    }
+
+    try {
+      final response = await HttpInterceptor.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode != 200) {
+        return false;
+      }
+
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
+      return json['success'] == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Extrai purchase_token do serverVerificationData (Google)
+  /// Pode ser JSON ou string pura
+  String? _extractGooglePurchaseToken(String data) {
+    try {
+      final decoded = jsonDecode(data);
+      if (decoded is Map && decoded['purchaseToken'] != null) {
+        return decoded['purchaseToken'] as String;
+      }
+    } catch (_) {
+      // Se não for JSON, usar como token direto
+    }
+    return data.isNotEmpty ? data : null;
   }
 }
 

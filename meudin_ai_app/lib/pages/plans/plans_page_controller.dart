@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/models/plan_limits.dart';
+import 'package:meudin_ai_app/services/iap_service.dart';
 
 enum PlanCode { free, plus, pro }
 
@@ -81,8 +83,66 @@ class PlansPageController extends GetxController {
     'Ideal para famílias grandes e negócios',
   ];
 
-  void onSubscribe(PlanDisplay plan) {
-    // TODO: Integrar com IAP (in-app purchase)
-    Get.back();
+  final IapService _iapService = IapService();
+
+  bool _isPurchasing = false;
+  bool get isPurchasing => _isPurchasing;
+
+  Future<void> onSubscribe(PlanDisplay plan) async {
+    if (_isPurchasing) return;
+
+    _isPurchasing = true;
+    update();
+
+    try {
+      final result = await _iapService.purchase(plan);
+
+      switch (result) {
+        case IapPurchaseResult.success:
+          Get.back(result: true);
+          Get.snackbar(
+            'Assinatura ativa',
+            'Seu plano ${plan.name} foi ativado com sucesso.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.isDarkMode ? null : const Color(0xFFAC6CFF).withValues(alpha: 0.15),
+            colorText: Get.isDarkMode ? null : const Color(0xFF212121),
+          );
+          break;
+
+        case IapPurchaseResult.canceled:
+          Get.snackbar(
+            'Compra cancelada',
+            'Nenhuma cobrança foi realizada.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          break;
+
+        case IapPurchaseResult.error:
+          Get.snackbar(
+            'Erro na compra',
+            'Não foi possível processar. Tente novamente ou entre em contato com o suporte.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Get.isDarkMode ? null : Colors.red.shade100,
+          );
+          break;
+
+        case IapPurchaseResult.pending:
+          Get.snackbar(
+            'Pagamento pendente',
+            'Aguardando confirmação do pagamento.',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+          break;
+      }
+    } finally {
+      _isPurchasing = false;
+      update();
+    }
+  }
+
+  @override
+  void onClose() {
+    _iapService.dispose();
+    super.onClose();
   }
 }

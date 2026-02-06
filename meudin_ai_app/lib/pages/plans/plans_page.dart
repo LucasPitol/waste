@@ -40,9 +40,11 @@ class PlansPage extends StatelessWidget {
             ),
             centerTitle: true,
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 16),
@@ -65,6 +67,22 @@ class PlansPage extends StatelessWidget {
                 _buildAppleLegalText(theme),
               ],
             ),
+          ),
+              if (controller.isPurchasing)
+                Container(
+                  color: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
+                  child: const Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16),
+                        Text('Processando compra...'),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
           ),
         );
       },
@@ -209,7 +227,9 @@ class PlansPage extends StatelessWidget {
           SizedBox(
             height: 52,
             child: ElevatedButton(
-              onPressed: () => controller.onSubscribe(plusPlan),
+              onPressed: controller.isPurchasing
+                  ? null
+                  : () => controller.onSubscribe(plusPlan),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Styles.primaryColor,
                 foregroundColor: Styles.whiteColor,
@@ -218,8 +238,8 @@ class PlansPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Assinar Plus',
+              child: Text(
+                controller.isPurchasing ? 'Processando...' : 'Assinar Plus',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -306,7 +326,9 @@ class PlansPage extends StatelessWidget {
           SizedBox(
             height: 48,
             child: OutlinedButton(
-              onPressed: () => controller.onSubscribe(proPlan),
+              onPressed: controller.isPurchasing
+                  ? null
+                  : () => controller.onSubscribe(proPlan),
               style: OutlinedButton.styleFrom(
                 foregroundColor: Styles.primaryColor,
                 side: const BorderSide(color: Styles.primaryColor, width: 2),
@@ -314,8 +336,8 @@ class PlansPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Assinar Pro',
+              child: Text(
+                controller.isPurchasing ? 'Processando...' : 'Assinar Pro',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
