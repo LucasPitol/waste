@@ -1,5 +1,7 @@
-import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:meudin_ai_app/routes/app_routes.dart';
+import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class JoyModal {
   static Widget errorBottomSheet({
@@ -176,6 +178,101 @@ class JoyModal {
     );
 
     showJouBottomSheet(context: context, content: content, isScroll: isScroll);
+  }
+
+  /// Modal de limite atingido com CTA para upgrade
+  static Widget limitReachedBottomSheet({
+    required BuildContext context,
+    required String message,
+    String title = 'Limite do plano',
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? theme.colorScheme.surface : Styles.whiteColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 24),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          Icon(
+            Icons.info_outline_rounded,
+            size: 48,
+            color: Styles.primaryColor,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 15,
+              color: theme.textTheme.bodyMedium?.color ?? Colors.black87,
+              height: 1.4,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: () {
+                Get.back(); // Fecha o modal
+                Get.toNamed(AppRoutes.plansRoute);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Styles.primaryColor,
+                foregroundColor: Styles.whiteColor,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Fazer upgrade',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Fechar',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   static showJouBottomSheet({

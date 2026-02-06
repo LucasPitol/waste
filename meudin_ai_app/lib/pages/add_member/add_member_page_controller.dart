@@ -30,6 +30,47 @@ class AddMemberPageController extends GetxController {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
+  bool _isPlanLimitError(String message) {
+    final lower = message.toLowerCase();
+    return lower.contains('limite') || lower.contains('faça upgrade');
+  }
+
+  void _showErrorOrLimitModal({
+    required String message,
+    required bool isLimitError,
+    required String title,
+  }) {
+    Future.microtask(() {
+      if (isLimitError) {
+        Get.bottomSheet(
+          JoyModal.limitReachedBottomSheet(
+            context: Get.context!,
+            message: message,
+            title: title,
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      } else {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: [message],
+            title: title,
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      }
+    });
+  }
+
   Future<void> addMember() async {
     List<String> errors = validateForm();
     
@@ -85,20 +126,12 @@ class AddMemberPageController extends GetxController {
       if (response.success) {
         Get.back(result: true); // Return true to indicate success
       } else {
-        Future.microtask(() {
-          Get.bottomSheet(
-            JoyModal.errorBottomSheet(
-              context: Get.context!,
-              errorList: [response.errorMessage ?? 'Erro ao adicionar membro'],
-              title: 'Erro ao adicionar membro',
-            ),
-            isScrollControlled: true,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            backgroundColor: Colors.transparent,
-          );
-        });
+        final msg = response.errorMessage ?? 'Erro ao adicionar membro';
+        _showErrorOrLimitModal(
+          message: msg,
+          isLimitError: _isPlanLimitError(msg),
+          title: _isPlanLimitError(msg) ? 'Limite atingido' : 'Erro ao adicionar membro',
+        );
       }
     } catch (e) {
       loading = false;

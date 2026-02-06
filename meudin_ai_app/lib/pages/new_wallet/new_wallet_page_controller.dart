@@ -47,23 +47,12 @@ class NewWalletPageController extends GetxController {
       return;
     }
 
-    // Validar limite de carteiras
+    // Validar limite de carteiras (client-side)
     final canCreate = await _subscriptionStateService.canCreateWallet();
     if (!canCreate) {
-      Future.microtask(() {
-        Get.bottomSheet(
-          JoyModal.errorBottomSheet(
-            context: Get.context!,
-            errorList: ['Você atingiu o limite de carteiras do seu plano. Faça upgrade para criar mais carteiras.'],
-            title: 'Limite atingido',
-          ),
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          backgroundColor: Colors.transparent,
-        );
-      });
+      _showLimitModal(
+        message: 'Você atingiu o limite de carteiras do seu plano. Faça upgrade para criar mais carteiras.',
+      );
       return;
     }
 
@@ -85,12 +74,49 @@ class NewWalletPageController extends GetxController {
           : response.data?.toString();
       Get.back(result: walletId);
     } else {
-      Future.microtask(() {
+      final msg = response.errorMessage ?? 'Erro ao criar carteira';
+      _showErrorOrLimitModal(
+        message: msg,
+        isLimitError: _isPlanLimitError(msg),
+        title: _isPlanLimitError(msg) ? 'Limite atingido' : 'Erro ao criar carteira',
+      );
+    }
+  }
+
+  bool _isPlanLimitError(String message) {
+    final lower = message.toLowerCase();
+    return lower.contains('limite') || lower.contains('faça upgrade');
+  }
+
+  void _showLimitModal({required String message}) {
+    Future.microtask(() {
+      Get.bottomSheet(
+        JoyModal.limitReachedBottomSheet(
+          context: Get.context!,
+          message: message,
+          title: 'Limite atingido',
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        backgroundColor: Colors.transparent,
+      );
+    });
+  }
+
+  void _showErrorOrLimitModal({
+    required String message,
+    required bool isLimitError,
+    required String title,
+  }) {
+    Future.microtask(() {
+      if (isLimitError) {
         Get.bottomSheet(
-          JoyModal.errorBottomSheet(
+          JoyModal.limitReachedBottomSheet(
             context: Get.context!,
-            errorList: [response.errorMessage ?? 'Erro ao criar carteira'],
-            title: 'Erro ao criar carteira',
+            message: message,
+            title: title,
           ),
           isScrollControlled: true,
           shape: const RoundedRectangleBorder(
@@ -98,8 +124,21 @@ class NewWalletPageController extends GetxController {
           ),
           backgroundColor: Colors.transparent,
         );
-      });
-    }
+      } else {
+        Get.bottomSheet(
+          JoyModal.errorBottomSheet(
+            context: Get.context!,
+            errorList: [message],
+            title: title,
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          backgroundColor: Colors.transparent,
+        );
+      }
+    });
   }
 
   @override

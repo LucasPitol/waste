@@ -10,8 +10,8 @@ import 'package:meudin_ai_app/models/category_expense.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
-import 'package:meudin_ai_app/services/session_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/services/cache_service.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
@@ -503,6 +503,20 @@ class InsightsModuleController extends GetxController {
         
         // Calcula comparativo
         await _calculateComparison();
+
+        // Aviso de limite de histórico (backend ajustou intervalo)
+        if (res.warningMessage != null && res.warningMessage!.isNotEmpty) {
+          Get.snackbar(
+            'Limite do plano',
+            res.warningMessage!,
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 5),
+            mainButton: TextButton(
+              onPressed: () => Get.toNamed(AppRoutes.plansRoute),
+              child: const Text('Fazer upgrade'),
+            ),
+          );
+        }
       } else {
         JoyModal.bottomSheetError(
           context: Get.context!,
