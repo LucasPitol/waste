@@ -10,9 +10,11 @@ class JoyModal {
     String title = 'Ops... Algo deu errado',
     String imagePath = 'assets/form_error.png',
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? theme.colorScheme.surface : Styles.whiteColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 36),
@@ -22,7 +24,6 @@ class JoyModal {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Grey bar at the very top
             Align(
               alignment: Alignment.topCenter,
               child: Container(
@@ -30,7 +31,7 @@ class JoyModal {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: isDark ? Colors.grey.shade600 : Colors.grey[300],
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -43,10 +44,10 @@ class JoyModal {
             const SizedBox(height: 24),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -60,7 +61,10 @@ class JoyModal {
                       Expanded(
                         child: Text(
                           e,
-                          style: const TextStyle(fontSize: 16, color: Colors.black87),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: theme.textTheme.bodyMedium?.color ?? (isDark ? Colors.white70 : Colors.black87),
+                          ),
                         ),
                       ),
                     ],
@@ -78,6 +82,8 @@ class JoyModal {
     required List<String> errorList,
     String title = 'Ops...',
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     List<Widget> errorTileList = [];
     for (var i = 0; i < errorList.length; i++) {
       var errorText = errorList[i];
@@ -86,7 +92,7 @@ class JoyModal {
 
     return Container(
       decoration: BoxDecoration(
-        color: Styles.whiteColor,
+        color: isDark ? theme.colorScheme.surface : Styles.whiteColor,
         borderRadius: Styles.sexyBorderRadius,
       ),
       width: double.infinity,
@@ -134,10 +140,12 @@ class JoyModal {
     String imagePath = 'assets/warning.png',
   }) {
     bool isScroll = false;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     final Widget content = Container(
       decoration: BoxDecoration(
-        color: Styles.whiteColor,
+        color: isDark ? theme.colorScheme.surface : Styles.whiteColor,
         borderRadius: Styles.sexyBorderRadius,
       ),
       width: double.infinity,
@@ -203,7 +211,7 @@ class JoyModal {
             height: 4,
             margin: const EdgeInsets.only(bottom: 24),
             decoration: BoxDecoration(
-              color: Colors.grey[400],
+              color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -280,9 +288,13 @@ class JoyModal {
     required content,
     required isScroll,
   }) async {
+    final theme = Theme.of(context);
+    final backgroundColor = theme.brightness == Brightness.dark
+        ? theme.colorScheme.surface
+        : Styles.whiteColor;
     await showModalBottomSheet(
         context: context,
-        backgroundColor: Styles.whiteColor,
+        backgroundColor: backgroundColor,
         isScrollControlled: isScroll,
         builder: (builder) {
           return content;
