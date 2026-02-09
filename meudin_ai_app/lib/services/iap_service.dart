@@ -13,8 +13,8 @@ const String _packageName = 'com.pitol.meudin';
 
 /// IDs dos produtos nas lojas
 class IapProductIds {
-  static const String plus = 'meudin_plus';
-  static const String pro = 'meudin_pro';
+  static const String plus = 'meudin_plus_monthly';
+  static const String pro = 'meudin_pro_monthly';
 
   static String fromPlanCode(PlanCode code) {
     switch (code) {
