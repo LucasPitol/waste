@@ -26,6 +26,9 @@ class InsightsModuleController extends GetxController {
   late double balance;
   late DateTime startDate;
   late DateTime endDate;
+  late DateTime? effectiveStartDate;
+  late DateTime? effectiveEndDate;
+  late bool dateRangeWasAdjusted;
   late List<Transaction> transactionDtoList;
   late TransactionService _transactionService;
   late WalletService _walletService;
@@ -61,6 +64,9 @@ class InsightsModuleController extends GetxController {
     isRefreshing = false;
     previousPeriodSpends = null;
     monthlyAverageSpends = null;
+    effectiveStartDate = null;
+    effectiveEndDate = null;
+    dateRangeWasAdjusted = false;
   }
 
   @override
@@ -117,6 +123,44 @@ class InsightsModuleController extends GetxController {
     DateTime now = DateTime.now();
     startDate = DateTime(now.year, 1, 1);
     endDate = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    effectiveStartDate = null;
+    effectiveEndDate = null;
+    dateRangeWasAdjusted = false;
+  }
+
+  DateTime? _parseApiDate(String? value) {
+    if (value == null || value.isEmpty) return null;
+    final parts = value.split('-');
+    if (parts.length != 3) return null;
+    return DateTime(
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+      int.parse(parts[2]),
+    );
+  }
+
+  void _applyDateRangeMetadata(ResponseDto res) {
+    dateRangeWasAdjusted = res.wasAdjusted;
+    effectiveStartDate = _parseApiDate(res.effectiveStartDate);
+    effectiveEndDate = _parseApiDate(res.effectiveEndDate);
+
+    if (!dateRangeWasAdjusted) {
+      effectiveStartDate = null;
+      effectiveEndDate = null;
+    }
+  }
+
+  void _showPlanLimitSnackbar(String message) {
+    Get.snackbar(
+      'Limite do plano',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      duration: const Duration(seconds: 5),
+      mainButton: TextButton(
+        onPressed: () => Get.toNamed(AppRoutes.plansRoute),
+        child: const Text('Fazer upgrade'),
+      ),
+    );
   }
 
   /// Calcula gastos por categoria usando os dados já carregados
@@ -322,6 +366,9 @@ class InsightsModuleController extends GetxController {
       
       startDate = newStartDate;
       endDate = newEndDate;
+      effectiveStartDate = null;
+      effectiveEndDate = null;
+      dateRangeWasAdjusted = false;
       
       // Se as datas mudaram, invalida o cache para forçar busca com as novas datas
       if (datesChanged) {
@@ -454,6 +501,8 @@ class InsightsModuleController extends GetxController {
       isRefreshing = false;
       
       if (res.success) {
+        _applyDateRangeMetadata(res);
+
         // Converte dados para lista de Map para salvar no cache
         List<Map<String, dynamic>> dataList = [];
         if (res.data is List && (res.data as List).isNotEmpty) {
@@ -504,18 +553,9 @@ class InsightsModuleController extends GetxController {
         // Calcula comparativo
         await _calculateComparison();
 
-        // Aviso de limite de histórico (backend ajustou intervalo)
+        // Aviso de limite de histórico (backend ajustou data inicial)
         if (res.warningMessage != null && res.warningMessage!.isNotEmpty) {
-          Get.snackbar(
-            'Limite do plano',
-            res.warningMessage!,
-            snackPosition: SnackPosition.BOTTOM,
-            duration: const Duration(seconds: 5),
-            mainButton: TextButton(
-              onPressed: () => Get.toNamed(AppRoutes.plansRoute),
-              child: const Text('Fazer upgrade'),
-            ),
-          );
+          _showPlanLimitSnackbar(res.warningMessage!);
         }
       } else {
         JoyModal.bottomSheetError(

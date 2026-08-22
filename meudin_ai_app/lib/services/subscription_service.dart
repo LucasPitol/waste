@@ -148,6 +148,7 @@ class SubscriptionService {
   }) async {
     final user = UserService.currentUser;
     if (user?.token == null || user!.token!.isEmpty) {
+      print('[SubscriptionService] validatePurchase: usuário sem token');
       return false;
     }
 
@@ -156,42 +157,55 @@ class SubscriptionService {
 
     Map<String, dynamic> body;
     final source = purchase.verificationData.source;
+    print('[SubscriptionService] validatePurchase: source=$source, productId=$productId, packageName=$packageName');
 
     if (source == 'app_store') {
       body = {
         'provider': 'apple',
         'receipt': purchase.verificationData.serverVerificationData,
       };
+      print('[SubscriptionService] validatePurchase: body keys=${body.keys}, receipt length=${(body['receipt'] as String).length}');
     } else if (source == 'play_store') {
       final token = _extractGooglePurchaseToken(
         purchase.verificationData.serverVerificationData,
       );
-      if (token == null) return false;
-
+      if (token == null) {
+        print('[SubscriptionService] validatePurchase: não foi possível extrair purchase_token do Google');
+        return false;
+      }
       body = {
         'provider': 'google',
         'package_name': packageName,
         'product_id': productId,
         'purchase_token': token,
       };
+      print('[SubscriptionService] validatePurchase: body keys=${body.keys}, token length=${token.length}');
     } else {
+      print('[SubscriptionService] validatePurchase: source desconhecido=$source');
       return false;
     }
 
     try {
+      print('[SubscriptionService] validatePurchase: POST $url');
       final response = await HttpInterceptor.post(
         url,
         headers: headers,
         body: jsonEncode(body),
       );
 
+      print('[SubscriptionService] validatePurchase: statusCode=${response.statusCode}, body=${response.body}');
       if (response.statusCode != 200) {
+        print('[SubscriptionService] validatePurchase: falhou por statusCode != 200');
         return false;
       }
 
       final json = jsonDecode(response.body) as Map<String, dynamic>;
-      return json['success'] == true;
-    } catch (_) {
+      final success = json['success'] == true;
+      print('[SubscriptionService] validatePurchase: success=$success');
+      return success;
+    } catch (e, st) {
+      print('[SubscriptionService] validatePurchase: exceção $e');
+      print('[SubscriptionService] validatePurchase stackTrace: $st');
       return false;
     }
   }

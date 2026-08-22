@@ -60,6 +60,8 @@ class KpiCardsWidget extends StatelessWidget {
 
   Widget _buildSkeleton(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final skeletonColor = isDark ? Colors.grey.shade700 : Colors.grey.shade300;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
@@ -69,8 +71,8 @@ class KpiCardsWidget extends StatelessWidget {
               margin: EdgeInsets.only(right: index < 2 ? 12 : 0),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: theme.brightness == Brightness.dark 
-                    ? theme.colorScheme.surface 
+                color: isDark
+                    ? theme.colorScheme.surface
                     : Styles.whiteColor,
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -81,7 +83,7 @@ class KpiCardsWidget extends StatelessWidget {
                     width: 60,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: skeletonColor,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -90,7 +92,7 @@ class KpiCardsWidget extends StatelessWidget {
                     width: 80,
                     height: 20,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: skeletonColor,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),

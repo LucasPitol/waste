@@ -43,6 +43,9 @@ class InsightsModule extends StatelessWidget {
                         onClearFilters: controller.hasData 
                             ? controller.clearFilters 
                             : null,
+                        dateRangeWasAdjusted: controller.dateRangeWasAdjusted,
+                        effectiveStartDate: controller.effectiveStartDate,
+                        effectiveEndDate: controller.effectiveEndDate,
                       ),
                       // KPIs principais
                       KpiCardsWidget(

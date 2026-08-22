@@ -92,11 +92,13 @@ class PlansPageController extends GetxController {
   Future<void> onSubscribe(PlanDisplay plan) async {
     if (_isPurchasing) return;
 
+    print('[PlansPageController] onSubscribe: plan=${plan.name}, code=${plan.code}');
     _isPurchasing = true;
     update();
 
     try {
       final result = await _iapService.purchase(plan);
+      print('[PlansPageController] onSubscribe: result=$result');
 
       switch (result) {
         case IapPurchaseResult.success:
@@ -138,7 +140,9 @@ class PlansPageController extends GetxController {
           );
           break;
       }
-    } catch (e) {
+    } catch (e, st) {
+      print('[PlansPageController] onSubscribe: exceção $e');
+      print('[PlansPageController] onSubscribe stackTrace: $st');
       _isPurchasing = false;
       update();
       Get.snackbar(

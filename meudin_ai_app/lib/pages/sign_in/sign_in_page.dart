@@ -114,7 +114,7 @@ class SignInPage extends StatelessWidget {
                                   controller: controller.signInDto.password,
                                   labelText: 'Senha',
                                   obscureText: true,
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.visiblePassword,
                                   textCapitalization: TextCapitalization.none,
                                   onFieldSubmitted: () {
                                     controller.signIn(
