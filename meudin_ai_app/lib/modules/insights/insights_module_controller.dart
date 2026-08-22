@@ -10,7 +10,6 @@ import 'package:meudin_ai_app/models/category_expense.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:get/get.dart';
-import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/services/cache_service.dart';
@@ -26,9 +25,6 @@ class InsightsModuleController extends GetxController {
   late double balance;
   late DateTime startDate;
   late DateTime endDate;
-  late DateTime? effectiveStartDate;
-  late DateTime? effectiveEndDate;
-  late bool dateRangeWasAdjusted;
   late List<Transaction> transactionDtoList;
   late TransactionService _transactionService;
   late WalletService _walletService;
@@ -42,6 +38,12 @@ class InsightsModuleController extends GetxController {
   // Dados para comparação
   double? previousPeriodSpends;
   double? monthlyAverageSpends;
+  double? monthlyAverageRevenue;
+  String? _planLimitNoticeKey;
+
+  static const String _planLimitMessage =
+      'Seu plano limita o histórico de transações disponível. '
+      'Faça upgrade para consultar períodos maiores.';
 
   InsightsModuleController() {
     _userService = UserService();
@@ -64,9 +66,7 @@ class InsightsModuleController extends GetxController {
     isRefreshing = false;
     previousPeriodSpends = null;
     monthlyAverageSpends = null;
-    effectiveStartDate = null;
-    effectiveEndDate = null;
-    dateRangeWasAdjusted = false;
+    monthlyAverageRevenue = null;
   }
 
   @override
@@ -123,9 +123,6 @@ class InsightsModuleController extends GetxController {
     DateTime now = DateTime.now();
     startDate = DateTime(now.year, 1, 1);
     endDate = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
-    effectiveStartDate = null;
-    effectiveEndDate = null;
-    dateRangeWasAdjusted = false;
   }
 
   DateTime? _parseApiDate(String? value) {
@@ -139,28 +136,154 @@ class InsightsModuleController extends GetxController {
     );
   }
 
-  void _applyDateRangeMetadata(ResponseDto res) {
-    dateRangeWasAdjusted = res.wasAdjusted;
-    effectiveStartDate = _parseApiDate(res.effectiveStartDate);
-    effectiveEndDate = _parseApiDate(res.effectiveEndDate);
+  String _formatCacheDate(DateTime date) {
+    return '${date.year.toString().padLeft(4, '0')}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
+  }
 
-    if (!dateRangeWasAdjusted) {
-      effectiveStartDate = null;
-      effectiveEndDate = null;
+  Map<String, dynamic> _buildCacheMetadata({
+    required DateTime requestedStart,
+    required DateTime requestedEnd,
+    required bool wasAdjusted,
+    String? effectiveStartDate,
+    String? effectiveEndDate,
+  }) {
+    return {
+      'requestedStartDate': _formatCacheDate(requestedStart),
+      'requestedEndDate': _formatCacheDate(requestedEnd),
+      'wasAdjusted': wasAdjusted,
+      if (effectiveStartDate != null) 'effectiveStartDate': effectiveStartDate,
+      if (effectiveEndDate != null) 'effectiveEndDate': effectiveEndDate,
+    };
+  }
+
+  bool _matchesRequestedDateRange(Map<String, dynamic> metadata) {
+    return metadata['requestedStartDate'] == _formatCacheDate(startDate) &&
+        metadata['requestedEndDate'] == _formatCacheDate(endDate);
+  }
+
+  void _applyEffectiveDatesFromMetadata(Map<String, dynamic> metadata) {
+    if (metadata['wasAdjusted'] != true) return;
+
+    final effectiveStart = _parseApiDate(metadata['effectiveStartDate'] as String?);
+    final effectiveEnd = _parseApiDate(metadata['effectiveEndDate'] as String?);
+
+    if (effectiveStart != null) {
+      startDate = effectiveStart;
+    }
+    if (effectiveEnd != null) {
+      endDate = DateTime(
+        effectiveEnd.year,
+        effectiveEnd.month,
+        effectiveEnd.day,
+        23,
+        59,
+        59,
+        999,
+      );
     }
   }
 
-  void _showPlanLimitSnackbar(String message) {
-    Get.snackbar(
-      'Limite do plano',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 5),
-      mainButton: TextButton(
-        onPressed: () => Get.toNamed(AppRoutes.plansRoute),
-        child: const Text('Fazer upgrade'),
-      ),
+  void _applyDateRangeMetadata(ResponseDto res) {
+    if (!res.wasAdjusted) return;
+
+    final effectiveStart = _parseApiDate(res.effectiveStartDate);
+    final effectiveEnd = _parseApiDate(res.effectiveEndDate);
+
+    if (effectiveStart != null) {
+      startDate = effectiveStart;
+    }
+    if (effectiveEnd != null) {
+      endDate = DateTime(
+        effectiveEnd.year,
+        effectiveEnd.month,
+        effectiveEnd.day,
+        23,
+        59,
+        59,
+        999,
+      );
+    }
+  }
+
+  String _planLimitNoticeKeyFor({
+    required String walletId,
+    required DateTime requestedStart,
+    required DateTime requestedEnd,
+  }) {
+    return '$walletId|${_formatCacheDate(requestedStart)}|${_formatCacheDate(requestedEnd)}';
+  }
+
+  void _resetPlanLimitNoticeKey() {
+    _planLimitNoticeKey = null;
+  }
+
+  void _maybeShowPlanLimitBottomSheet({
+    required bool wasAdjusted,
+    required String walletId,
+    required DateTime requestedStart,
+    required DateTime requestedEnd,
+  }) {
+    if (!wasAdjusted) return;
+
+    final noticeKey = _planLimitNoticeKeyFor(
+      walletId: walletId,
+      requestedStart: requestedStart,
+      requestedEnd: requestedEnd,
     );
+    if (_planLimitNoticeKey == noticeKey) return;
+    _planLimitNoticeKey = noticeKey;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = Get.context;
+      if (context == null) return;
+
+      Get.bottomSheet(
+        JoyModal.limitReachedBottomSheet(
+          context: context,
+          title: 'Limite do plano',
+          message: _planLimitMessage,
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        backgroundColor: Colors.transparent,
+      );
+    });
+  }
+
+  void _processTransactionList(List<Map<String, dynamic>> dataList) {
+    transactionDtoList = dataList
+        .map<Transaction>((e) => Transaction.fromJson(e))
+        .toList();
+
+    transactionDtoList.sort((a, b) {
+      if (a.transactionDate == null && b.transactionDate == null) return 0;
+      if (a.transactionDate == null) return 1;
+      if (b.transactionDate == null) return -1;
+      return b.transactionDate!.compareTo(a.transactionDate!);
+    });
+
+    double totalRevenueTemp = 0;
+    double totalSpendTemp = 0;
+
+    for (var element in transactionDtoList) {
+      final amount = element.amount!;
+      if (amount > 0) {
+        totalRevenueTemp += amount;
+      } else {
+        totalSpendTemp += amount;
+      }
+    }
+
+    revenue = totalRevenueTemp;
+    spends = totalSpendTemp;
+    balance = totalRevenueTemp + totalSpendTemp;
+
+    _calculateCategoryExpenses();
+    _calculateMonthlyAverages();
   }
 
   /// Calcula gastos por categoria usando os dados já carregados
@@ -253,38 +376,34 @@ class InsightsModuleController extends GetxController {
     }
   }
 
-  /// Calcula a média mensal de despesas
-  void _calculateMonthlyAverage() {
-    if (spends == 0) {
-      monthlyAverageSpends = 0.0;
-      return;
-    }
+  /// Calcula médias mensais de despesas e receitas com base nas transações já carregadas
+  void _calculateMonthlyAverages() {
+    monthlyAverageSpends = _calculateMonthlyAverageForType(isRevenue: false);
+    monthlyAverageRevenue = _calculateMonthlyAverageForType(isRevenue: true);
+  }
 
-    // Filtra apenas despesas (valores negativos)
-    final expenses = transactionDtoList
-        .where((t) => t.amount != null && t.amount! < 0 && t.transactionDate != null)
+  double _calculateMonthlyAverageForType({required bool isRevenue}) {
+    final total = isRevenue ? revenue : spends.abs();
+    if (total == 0) return 0.0;
+
+    final transactions = transactionDtoList
+        .where((t) {
+          if (t.amount == null || t.transactionDate == null) return false;
+          return isRevenue ? t.amount! > 0 : t.amount! < 0;
+        })
         .toList();
 
-    if (expenses.isEmpty) {
-      monthlyAverageSpends = 0.0;
-      return;
-    }
+    if (transactions.isEmpty) return 0.0;
 
-    // Ordena por data (mais antiga primeiro)
-    expenses.sort((a, b) => a.transactionDate!.compareTo(b.transactionDate!));
+    transactions.sort((a, b) => a.transactionDate!.compareTo(b.transactionDate!));
 
-    // Encontra a transação mais próxima do startDate (primeira transação no período)
-    final firstTransactionDate = expenses.first.transactionDate!;
-    
-    // Encontra a última transação no período
-    final lastTransactionDate = expenses.last.transactionDate!;
-
-    // Calcula diferença em meses entre a primeira e última transação (meses com dados reais)
-    final monthsDifference = _calculateMonthsDifference(firstTransactionDate, lastTransactionDate);
-    
-    // Se período for menor que 1 mês, considera pelo menos 1 mês para cálculo
+    final firstTransactionDate = transactions.first.transactionDate!;
+    final lastTransactionDate = transactions.last.transactionDate!;
+    final monthsDifference =
+        _calculateMonthsDifference(firstTransactionDate, lastTransactionDate);
     final effectiveMonths = monthsDifference < 1.0 ? 1.0 : monthsDifference;
-    monthlyAverageSpends = spends.abs() / effectiveMonths;
+
+    return total / effectiveMonths;
   }
 
   /// Calcula diferença em meses entre duas datas
@@ -366,12 +485,10 @@ class InsightsModuleController extends GetxController {
       
       startDate = newStartDate;
       endDate = newEndDate;
-      effectiveStartDate = null;
-      effectiveEndDate = null;
-      dateRangeWasAdjusted = false;
       
       // Se as datas mudaram, invalida o cache para forçar busca com as novas datas
       if (datesChanged) {
+        _resetPlanLimitNoticeKey();
         await _cacheService.invalidateCache('insights', currentWallet.id);
       }
       
@@ -383,7 +500,7 @@ class InsightsModuleController extends GetxController {
   /// Limpa filtros (volta para padrão: 01/01 do ano corrente até hoje)
   Future<void> clearFilters() async {
     _fillDefaultDates();
-    // Invalida o cache ao limpar filtros para garantir dados atualizados
+    _resetPlanLimitNoticeKey();
     await _cacheService.invalidateCache('insights', currentWallet.id);
     update();
     await refreshAll();
@@ -406,12 +523,17 @@ class InsightsModuleController extends GetxController {
 
   Future<void> refreshUserAndWallet() async {
     try {
+      final previousWalletId = currentWallet.id;
       await _walletService.getUserWallets();
       _user = UserService.currentUser;
 
       currentWallet = _user!.walletList
           .singleWhere((element) => element.id == _user!.currentWalletId);
       isWalletOwner = (currentWallet.ownerId == _user!.id);
+
+      if (previousWalletId != currentWallet.id) {
+        _resetPlanLimitNoticeKey();
+      }
     } catch (e) {
       // Handle wallet loading error silently
     }
@@ -426,137 +548,86 @@ class InsightsModuleController extends GetxController {
       }
 
       String walletId = currentWallet.id;
-      List<Map<String, dynamic>>? cachedData;
+      final requestedStart = startDate;
+      final requestedEnd = endDate;
+      CacheEntryResult? cachedEntry;
       
-      // Verifica cache apenas se não for refresh forçado
       if (!forceRefresh) {
-        cachedData = await _cacheService.getCache('insights', walletId);
+        cachedEntry = await _cacheService.getCacheEntry('insights', walletId);
       }
       
-      // Se tem cache válido, usa ele SEM mostrar loading
-      if (cachedData != null && cachedData.isNotEmpty && !forceRefresh) {
+      if (cachedEntry != null &&
+          cachedEntry.data.isNotEmpty &&
+          !forceRefresh &&
+          cachedEntry.metadata != null &&
+          _matchesRequestedDateRange(cachedEntry.metadata!)) {
         try {
-          // Processa dados do cache
-          transactionDtoList = cachedData
-              .map<Transaction>((e) => Transaction.fromJson(e))
-              .toList();
-
-          transactionDtoList.sort((a, b) {
-            if (a.transactionDate == null && b.transactionDate == null) return 0;
-            if (a.transactionDate == null) return 1;
-            if (b.transactionDate == null) return -1;
-            return b.transactionDate!.compareTo(a.transactionDate!);
-          });
-
-          // Calcula KPIs
-          double totalRevenueTemp = 0;
-          double totalSpendTemp = 0;
-
-          for (var element in transactionDtoList) {
-            double amount = element.amount!;
-
-            if (amount > 0) {
-              totalRevenueTemp = totalRevenueTemp + amount;
-            } else {
-              totalSpendTemp = totalSpendTemp + amount;
-            }
-          }
-
-          revenue = totalRevenueTemp;
-          spends = totalSpendTemp;
-          balance = totalRevenueTemp + totalSpendTemp;
-
-          // Calcula gastos por categoria
-          _calculateCategoryExpenses();
-          
-          // Calcula média mensal
-          _calculateMonthlyAverage();
-          
-          // Calcula comparativo (sempre busca da API pois depende de período anterior)
+          _applyEffectiveDatesFromMetadata(cachedEntry.metadata!);
+          _processTransactionList(cachedEntry.data);
           await _calculateComparison();
-          
-          // Não precisa setar loading/isRefreshing pois nunca foram setados
+
+          _maybeShowPlanLimitBottomSheet(
+            wasAdjusted: cachedEntry.metadata!['wasAdjusted'] == true,
+            walletId: walletId,
+            requestedStart: requestedStart,
+            requestedEnd: requestedEnd,
+          );
+
           update();
-          return; // Retorna sem fazer request à API
+          return;
         } catch (e) {
-          // Se houver erro ao processar cache, invalida e busca da API
           await _cacheService.invalidateCache('insights', walletId);
-          // Continua para buscar da API
         }
+      } else if (cachedEntry != null &&
+          (cachedEntry.metadata == null ||
+              !_matchesRequestedDateRange(cachedEntry.metadata!))) {
+        await _cacheService.invalidateCache('insights', walletId);
       }
 
-      // Se não tem cache válido ou forceRefresh, busca da API
-      // Apenas agora mostra loading
       loading = true;
       isRefreshing = true;
       update();
 
       ResponseDto res = await _transactionService.getTransactionDtoList(
         walletId,
-        startDate,
-        endDate,
+        requestedStart,
+        requestedEnd,
       );
 
       loading = false;
       isRefreshing = false;
       
       if (res.success) {
-        _applyDateRangeMetadata(res);
-
-        // Converte dados para lista de Map para salvar no cache
         List<Map<String, dynamic>> dataList = [];
         if (res.data is List && (res.data as List).isNotEmpty) {
           dataList = (res.data as List)
               .map((e) => e as Map<String, dynamic>)
               .toList();
         }
-        
-        // Salva no cache
-        await _cacheService.saveCache('insights', walletId, dataList);
-        
-        // Processa dados para UI
-        transactionDtoList = dataList
-            .map<Transaction>((e) => Transaction.fromJson(e))
-            .toList();
 
-        transactionDtoList.sort((a, b) {
-          if (a.transactionDate == null && b.transactionDate == null) return 0;
-          if (a.transactionDate == null) return 1;
-          if (b.transactionDate == null) return -1;
-          return b.transactionDate!.compareTo(a.transactionDate!);
-        });
+        await _cacheService.saveCache(
+          'insights',
+          walletId,
+          dataList,
+          metadata: _buildCacheMetadata(
+            requestedStart: requestedStart,
+            requestedEnd: requestedEnd,
+            wasAdjusted: res.wasAdjusted,
+            effectiveStartDate: res.effectiveStartDate,
+            effectiveEndDate: res.effectiveEndDate,
+          ),
+        );
 
-        // Calcula KPIs
-        double totalRevenueTemp = 0;
-        double totalSpendTemp = 0;
-
-        for (var element in transactionDtoList) {
-          double amount = element.amount!;
-
-          if (amount > 0) {
-            totalRevenueTemp = totalRevenueTemp + amount;
-          } else {
-            totalSpendTemp = totalSpendTemp + amount;
-          }
-        }
-
-        revenue = totalRevenueTemp;
-        spends = totalSpendTemp;
-        balance = totalRevenueTemp + totalSpendTemp;
-
-        // Calcula gastos por categoria
-        _calculateCategoryExpenses();
-        
-        // Calcula média mensal
-        _calculateMonthlyAverage();
-        
-        // Calcula comparativo
+        _applyDateRangeMetadata(res);
+        _processTransactionList(dataList);
         await _calculateComparison();
 
-        // Aviso de limite de histórico (backend ajustou data inicial)
-        if (res.warningMessage != null && res.warningMessage!.isNotEmpty) {
-          _showPlanLimitSnackbar(res.warningMessage!);
-        }
+        _maybeShowPlanLimitBottomSheet(
+          wasAdjusted: res.wasAdjusted,
+          walletId: walletId,
+          requestedStart: requestedStart,
+          requestedEnd: requestedEnd,
+        );
       } else {
         JoyModal.bottomSheetError(
           context: Get.context!,

@@ -787,17 +787,23 @@ class HomeModuleController extends GetxController {
         _calculateCategoryExpenses();
 
         // Aviso de limite de histórico (backend ajustou intervalo)
-        if (res.warningMessage != null && res.warningMessage!.isNotEmpty) {
-          Get.snackbar(
-            'Limite do plano',
-            res.warningMessage!,
-            snackPosition: SnackPosition.BOTTOM,
-            duration: const Duration(seconds: 5),
-            mainButton: TextButton(
-              onPressed: () => Get.toNamed(AppRoutes.plansRoute),
-              child: const Text('Fazer upgrade'),
-            ),
-          );
+        if (res.wasAdjusted) {
+          Future.microtask(() {
+            Get.bottomSheet(
+              JoyModal.limitReachedBottomSheet(
+                context: Get.context!,
+                title: 'Limite do plano',
+                message:
+                    'Seu plano limita o histórico de transações disponível. '
+                    'Faça upgrade para consultar períodos maiores.',
+              ),
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              backgroundColor: Colors.transparent,
+            );
+          });
         }
       } else {
         JoyModal.bottomSheetError(

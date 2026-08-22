@@ -3,14 +3,82 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
 
+enum MonthlyAverageMetric { expense, revenue }
+
+extension MonthlyAverageMetricConfig on MonthlyAverageMetric {
+  String get title {
+    switch (this) {
+      case MonthlyAverageMetric.expense:
+        return 'Custo médio mensal';
+      case MonthlyAverageMetric.revenue:
+        return 'Receita média mensal';
+    }
+  }
+
+  String get infoTitle {
+    switch (this) {
+      case MonthlyAverageMetric.expense:
+        return 'Como calculamos o custo mensal';
+      case MonthlyAverageMetric.revenue:
+        return 'Como calculamos a receita mensal';
+    }
+  }
+
+  String get infoDescription {
+    switch (this) {
+      case MonthlyAverageMetric.expense:
+        return 'O custo médio mensal é calculado considerando todas as despesas registradas no período selecionado, divididas pelo número de meses em que existem transações reais (da primeira à última transação).';
+      case MonthlyAverageMetric.revenue:
+        return 'A receita média mensal é calculada considerando todas as receitas registradas no período selecionado, divididas pelo número de meses em que existem transações reais (da primeira à última transação).';
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case MonthlyAverageMetric.expense:
+        return Icons.trending_up;
+      case MonthlyAverageMetric.revenue:
+        return Icons.trending_up;
+    }
+  }
+
+  Color get iconColor {
+    switch (this) {
+      case MonthlyAverageMetric.expense:
+        return Styles.primaryColor;
+      case MonthlyAverageMetric.revenue:
+        return Colors.green;
+    }
+  }
+
+  List<String> get infoBulletPoints {
+    switch (this) {
+      case MonthlyAverageMetric.expense:
+        return [
+          'O cálculo respeita a carteira selecionada',
+          'Apenas despesas são consideradas (receitas não entram)',
+          'Mudanças no período ou na carteira atualizam o valor automaticamente',
+        ];
+      case MonthlyAverageMetric.revenue:
+        return [
+          'O cálculo respeita a carteira selecionada',
+          'Apenas receitas são consideradas (despesas não entram)',
+          'Mudanças no período ou na carteira atualizam o valor automaticamente',
+        ];
+    }
+  }
+}
+
 class MonthlyAverageWidget extends StatelessWidget {
   final double? monthlyAverage;
   final bool loading;
+  final MonthlyAverageMetric metric;
 
   const MonthlyAverageWidget({
     super.key,
     this.monthlyAverage,
     this.loading = false,
+    this.metric = MonthlyAverageMetric.expense,
   });
 
   @override
@@ -48,8 +116,8 @@ class MonthlyAverageWidget extends StatelessWidget {
           Row(
             children: [
               Icon(
-                Icons.trending_up,
-                color: Styles.primaryColor,
+                metric.icon,
+                color: metric.iconColor,
                 size: 20,
               ),
               const SizedBox(width: 12),
@@ -58,7 +126,7 @@ class MonthlyAverageWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Custo médio mensal',
+                      metric.title,
                       style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w500,
@@ -122,7 +190,6 @@ class MonthlyAverageWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Grey bar at the top
                 Center(
                   child: Container(
                     width: 40,
@@ -134,10 +201,8 @@ class MonthlyAverageWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-                // Title
                 Text(
-                  'Como calculamos o custo mensal',
+                  metric.infoTitle,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -145,9 +210,8 @@ class MonthlyAverageWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Explanatory text
                 Text(
-                  'O custo médio mensal é calculado considerando todas as despesas registradas no período selecionado, divididas pelo número de meses em que existem transações reais (da primeira à última transação).',
+                  metric.infoDescription,
                   style: TextStyle(
                     fontSize: 16,
                     height: 1.5,
@@ -155,7 +219,6 @@ class MonthlyAverageWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Analytics SVG Image
                 Center(
                   child: SvgPicture.asset(
                     'assets/analytics.svg',
@@ -164,7 +227,6 @@ class MonthlyAverageWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Important notes section
                 Text(
                   'Observações importantes:',
                   style: TextStyle(
@@ -174,20 +236,10 @@ class MonthlyAverageWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _buildBulletPoint(
-                  theme,
-                  'O cálculo respeita a carteira selecionada',
-                ),
-                const SizedBox(height: 8),
-                _buildBulletPoint(
-                  theme,
-                  'Apenas despesas são consideradas (receitas não entram)',
-                ),
-                const SizedBox(height: 8),
-                _buildBulletPoint(
-                  theme,
-                  'Mudanças no período ou na carteira atualizam o valor automaticamente',
-                ),
+                for (var i = 0; i < metric.infoBulletPoints.length; i++) ...[
+                  if (i > 0) const SizedBox(height: 8),
+                  _buildBulletPoint(theme, metric.infoBulletPoints[i]),
+                ],
                 const SizedBox(height: 20),
               ],
             ),
@@ -279,4 +331,3 @@ class MonthlyAverageWidget extends StatelessWidget {
     );
   }
 }
-

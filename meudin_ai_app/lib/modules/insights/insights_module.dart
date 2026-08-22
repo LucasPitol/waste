@@ -14,8 +14,11 @@ class InsightsModule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<InsightsModuleController>()) {
+      Get.put(InsightsModuleController(), permanent: true);
+    }
+
     return GetBuilder<InsightsModuleController>(
-      init: InsightsModuleController(),
       builder: (controller) {
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -43,9 +46,6 @@ class InsightsModule extends StatelessWidget {
                         onClearFilters: controller.hasData 
                             ? controller.clearFilters 
                             : null,
-                        dateRangeWasAdjusted: controller.dateRangeWasAdjusted,
-                        effectiveStartDate: controller.effectiveStartDate,
-                        effectiveEndDate: controller.effectiveEndDate,
                       ),
                       // KPIs principais
                       KpiCardsWidget(
@@ -69,6 +69,12 @@ class InsightsModule extends StatelessWidget {
                         MonthlyAverageWidget(
                           monthlyAverage: controller.monthlyAverageSpends,
                           loading: controller.isRefreshing,
+                        ),
+                        // Média mensal de receitas
+                        MonthlyAverageWidget(
+                          monthlyAverage: controller.monthlyAverageRevenue,
+                          loading: controller.isRefreshing,
+                          metric: MonthlyAverageMetric.revenue,
                         ),
                         // Comparativo simples (se período >= 2 meses)
                         if (controller.canShowComparison)

@@ -5,15 +5,24 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class _CacheEntry {
   final List<Map<String, dynamic>> data;
   final int timestamp;
+  final Map<String, dynamic>? metadata;
   static const Duration ttl = Duration(hours: 2);
   
-  _CacheEntry(this.data, this.timestamp);
+  _CacheEntry(this.data, this.timestamp, [this.metadata]);
   
   bool isExpired() {
     final cacheTime = DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true);
     final now = DateTime.now().toUtc();
     return now.difference(cacheTime) > ttl;
   }
+}
+
+/// Resultado de leitura do cache com metadados opcionais
+class CacheEntryResult {
+  final List<Map<String, dynamic>> data;
+  final Map<String, dynamic>? metadata;
+
+  CacheEntryResult({required this.data, this.metadata});
 }
 
 /// CacheService - Gerencia cache local de dados com TTL e invalidação por carteira
@@ -24,8 +33,9 @@ class _CacheEntry {
 /// 
 /// Cada entrada contém:
 /// {
-///   "data": [...], // Dados processados (lista de transações)
-///   "timestamp": 1234567890 // millisecondsSinceEpoch UTC
+///   "data": [...],
+///   "timestamp": 1234567890,
+///   "metadata": { ... } // opcional
 /// }
 class CacheService {
   static const Duration _ttl = Duration(hours: 2);
@@ -49,22 +59,22 @@ class CacheService {
   }
 
   /// Salva dados no cache para uma tela e carteira específicas
-  /// 
-  /// [screen] deve ser 'home' ou 'insights'
-  /// [walletId] ID da carteira
-  /// [data] Lista de transações já processadas (List<Map<String, dynamic>>)
-  Future<void> saveCache(String screen, String walletId, List<Map<String, dynamic>> data) async {
+  Future<void> saveCache(
+    String screen,
+    String walletId,
+    List<Map<String, dynamic>> data, {
+    Map<String, dynamic>? metadata,
+  }) async {
     try {
       final cacheKey = _getCacheKey(screen, walletId);
       final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
       
-      // Salva em memória primeiro (instantâneo)
-      _memoryCache[cacheKey] = _CacheEntry(data, timestamp);
+      _memoryCache[cacheKey] = _CacheEntry(data, timestamp, metadata);
       
-      // Salva no storage persistente (assíncrono, não bloqueia)
       final cacheData = {
         'data': data,
         'timestamp': timestamp,
+        if (metadata != null) 'metadata': metadata,
       };
       
       final jsonString = jsonEncode(cacheData);
@@ -74,22 +84,24 @@ class CacheService {
     }
   }
 
-  /// Recupera dados do cache se válido (dentro do TTL)
-  /// 
-  /// Retorna null se:
-  /// - Cache não existe
-  /// - Cache expirado (TTL > 2 horas)
-  /// - Erro ao ler/parsear
-  /// 
-  /// Prioriza cache em memória (instantâneo) antes de ler do storage
+  /// Recupera dados do cache (compatível com telas que não usam metadata)
   Future<List<Map<String, dynamic>>?> getCache(String screen, String walletId) async {
+    final entry = await getCacheEntry(screen, walletId);
+    return entry?.data;
+  }
+
+  /// Recupera dados e metadata do cache, se válido
+  Future<CacheEntryResult?> getCacheEntry(String screen, String walletId) async {
     try {
       final cacheKey = _getCacheKey(screen, walletId);
       
       // PRIMEIRO: Verifica cache em memória (instantâneo, sem I/O)
       final memoryEntry = _memoryCache[cacheKey];
       if (memoryEntry != null && !memoryEntry.isExpired()) {
-        return memoryEntry.data;
+        return CacheEntryResult(
+          data: memoryEntry.data,
+          metadata: memoryEntry.metadata,
+        );
       }
       
       // Remove entrada expirada da memória
@@ -107,6 +119,7 @@ class CacheService {
       final cacheData = jsonDecode(cachedJson) as Map<String, dynamic>;
       final timestamp = cacheData['timestamp'] as int;
       final data = cacheData['data'] as List<dynamic>;
+      final metadata = cacheData['metadata'] as Map<String, dynamic>?;
       
       // Verifica TTL
       final cacheTime = DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true);
@@ -122,9 +135,9 @@ class CacheService {
       
       // Cache válido - salva em memória para próximas leituras e retorna
       final dataList = data.map((e) => e as Map<String, dynamic>).toList();
-      _memoryCache[cacheKey] = _CacheEntry(dataList, timestamp);
+      _memoryCache[cacheKey] = _CacheEntry(dataList, timestamp, metadata);
       
-      return dataList;
+      return CacheEntryResult(data: dataList, metadata: metadata);
     } catch (e) {
       // Em caso de erro, remove cache corrompido
       try {
