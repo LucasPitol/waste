@@ -43,9 +43,8 @@ class InsightsModule extends StatelessWidget {
                         startDate: controller.startDate,
                         endDate: controller.endDate,
                         onTap: controller.openDateRangePicker,
-                        onClearFilters: controller.hasData 
-                            ? controller.clearFilters 
-                            : null,
+                        selectedPreset: controller.activeDatePreset,
+                        onPresetSelected: controller.applyDatePreset,
                       ),
                       // KPIs principais
                       KpiCardsWidget(

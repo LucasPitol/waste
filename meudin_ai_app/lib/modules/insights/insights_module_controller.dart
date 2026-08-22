@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/services/cache_service.dart';
+import 'package:meudin_ai_app/modules/insights/widgets/date_filter_header.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class InsightsModuleController extends GetxController {
@@ -118,11 +119,59 @@ class InsightsModuleController extends GetxController {
   List<CategoryExpense> get categoryExpenses => _categoryExpenses;
   List<SpendingCategory> get categories => _categories;
 
-  /// Define datas padrão: 01/01 do ano corrente até hoje
+  /// Define datas padrão: últimos 3 meses até hoje
   void _fillDefaultDates() {
-    DateTime now = DateTime.now();
-    startDate = DateTime(now.year, 1, 1);
-    endDate = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    final range = _dateRangeForPreset(InsightsDatePreset.last3Months);
+    startDate = range.$1;
+    endDate = range.$2;
+  }
+
+  (DateTime, DateTime) _dateRangeForPreset(InsightsDatePreset preset) {
+    final now = DateTime.now();
+    final end = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+
+    switch (preset) {
+      case InsightsDatePreset.last3Months:
+        return (DateTime(now.year, now.month - 3, now.day), end);
+      case InsightsDatePreset.last6Months:
+        return (DateTime(now.year, now.month - 6, now.day), end);
+      case InsightsDatePreset.thisYear:
+        return (DateTime(now.year, 1, 1), end);
+    }
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  InsightsDatePreset? get activeDatePreset {
+    for (final preset in InsightsDatePreset.values) {
+      final range = _dateRangeForPreset(preset);
+      if (_isSameDay(startDate, range.$1) && _isSameDay(endDate, range.$2)) {
+        return preset;
+      }
+    }
+    return null;
+  }
+
+  Future<void> applyDatePreset(InsightsDatePreset preset) async {
+    final range = _dateRangeForPreset(preset);
+    final newStartDate = range.$1;
+    final newEndDate = range.$2;
+
+    final datesChanged = !_isSameDay(newStartDate, startDate) ||
+        !_isSameDay(newEndDate, endDate);
+
+    startDate = newStartDate;
+    endDate = newEndDate;
+
+    if (!datesChanged) return;
+
+    _resetPlanLimitNoticeKey();
+    await _cacheService.invalidateCache('insights', currentWallet.id);
+
+    update();
+    await refreshAll();
   }
 
   DateTime? _parseApiDate(String? value) {
@@ -495,15 +544,6 @@ class InsightsModuleController extends GetxController {
       update();
       await refreshAll();
     }
-  }
-
-  /// Limpa filtros (volta para padrão: 01/01 do ano corrente até hoje)
-  Future<void> clearFilters() async {
-    _fillDefaultDates();
-    _resetPlanLimitNoticeKey();
-    await _cacheService.invalidateCache('insights', currentWallet.id);
-    update();
-    await refreshAll();
   }
 
   /// Complete refresh - busca transações e calcula todos os dados
