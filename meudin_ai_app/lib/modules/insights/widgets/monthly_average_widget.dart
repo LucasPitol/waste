@@ -27,9 +27,9 @@ extension MonthlyAverageMetricConfig on MonthlyAverageMetric {
   String get infoDescription {
     switch (this) {
       case MonthlyAverageMetric.expense:
-        return 'O custo médio mensal é calculado considerando todas as despesas registradas no período selecionado, divididas pelo número de meses em que existem transações reais (da primeira à última transação).';
+        return 'O custo médio mensal é calculado considerando todas as despesas registradas no período selecionado, divididas pelo número de meses do filtro (ex: 3 meses → total ÷ 3).';
       case MonthlyAverageMetric.revenue:
-        return 'A receita média mensal é calculada considerando todas as receitas registradas no período selecionado, divididas pelo número de meses em que existem transações reais (da primeira à última transação).';
+        return 'A receita média mensal é calculada considerando todas as receitas registradas no período selecionado, divididas pelo número de meses do filtro (ex: 3 meses → total ÷ 3).';
     }
   }
 
@@ -140,7 +140,8 @@ class MonthlyAverageWidget extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600,
-                        color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                        color: theme.textTheme.bodyLarge?.color ??
+                            Styles.primaryTextColor,
                       ),
                     ),
                   ],

@@ -5,6 +5,7 @@ import 'package:meudin_ai_app/modules/insights/widgets/comparison_widget.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/date_filter_header.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/empty_state_widget.dart';
 import 'package:meudin_ai_app/modules/home/widgets/expense_category_chart/expense_category_chart_widget.dart';
+import 'package:meudin_ai_app/modules/insights/widgets/monthly_income_expense/monthly_income_expense_bar_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
@@ -20,6 +21,10 @@ class InsightsModule extends StatelessWidget {
 
     return GetBuilder<InsightsModuleController>(
       builder: (controller) {
+        final showSkeleton = controller.showSkeleton;
+        final showContent =
+            controller.hasData || controller.loading || controller.isRefreshing;
+
         return LayoutBuilder(
           builder: (context, constraints) {
             return RefreshIndicator(
@@ -51,39 +56,40 @@ class InsightsModule extends StatelessWidget {
                         revenue: controller.revenue,
                         spends: controller.spends,
                         balance: controller.balance,
-                        loading: controller.isRefreshing,
+                        loading: showSkeleton,
                       ),
-                      // Estado vazio ou conteúdo
-                      if (controller.hasData || controller.isRefreshing) ...[
-                        // Gráfico de gastos por categoria
+                      if (showContent) ...[
                         ExpenseCategoryChartWidget(
                           categoryExpenses: controller.categoryExpenses,
                           startDate: controller.startDate,
-                          loading: controller.isRefreshing,
+                          loading: showSkeleton,
                           transactions: controller.transactionDtoList,
                           categories: controller.categories,
                           showDate: false,
                         ),
-                        // Média mensal de despesas
-                        MonthlyAverageWidget(
-                          monthlyAverage: controller.monthlyAverageSpends,
-                          loading: controller.isRefreshing,
+                        MonthlyIncomeExpenseBarChart(
+                          transactions: controller.transactionDtoList,
+                          startDate: controller.startDate,
+                          endDate: controller.endDate,
+                          loading: showSkeleton,
                         ),
-                        // Média mensal de receitas
                         MonthlyAverageWidget(
                           monthlyAverage: controller.monthlyAverageRevenue,
-                          loading: controller.isRefreshing,
+                          loading: showSkeleton,
                           metric: MonthlyAverageMetric.revenue,
                         ),
-                        // Comparativo simples (se período >= 2 meses)
+                        MonthlyAverageWidget(
+                          monthlyAverage: controller.monthlyAverageSpends,
+                          loading: showSkeleton,
+                        ),
                         if (controller.canShowComparison)
                           ComparisonWidget(
                             comparisonPercentage: controller.comparisonPercentage,
-                            loading: controller.isRefreshing,
+                            loading: showSkeleton,
                           ),
                         const SizedBox(height: 20),
                       ],
-                      if (!controller.hasData && !controller.isRefreshing)
+                      if (!showContent)
                         EmptyStateWidget(
                           onAdjustFilters: controller.openDateRangePicker,
                         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_skeleton.dart';
+import 'package:meudin_ai_app/ui/styles.dart';
 
 class ExpenseCategoryChartSkeleton extends StatelessWidget {
   const ExpenseCategoryChartSkeleton({super.key});
@@ -8,69 +9,55 @@ class ExpenseCategoryChartSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? theme.colorScheme.surface : Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        color: isDark ? theme.colorScheme.surface : Styles.whiteColor,
         boxShadow: [
           BoxShadow(
-            color: isDark 
-                ? Colors.black.withOpacity(0.3)
-                : Colors.black.withOpacity(0.03),
-            offset: const Offset(0, 2),
-            blurRadius: 2,
+            color: isDark
+                ? Colors.black.withOpacity(0.2)
+                : Colors.grey.shade200.withOpacity(0.5),
+            offset: const Offset(0, 1),
+            blurRadius: 1,
           ),
         ],
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header skeleton
+          SkeletonLoader(width: 140, height: 16),
+          const SizedBox(height: 16),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SkeletonLoader(width: 140, height: 20),
-              SkeletonLoader(width: 100, height: 16),
-            ],
-          ),
-          const SizedBox(height: 24),
-          // Chart and Legend skeleton
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Donut Chart skeleton (circular)
-              SizedBox(
-                width: 140,
-                height: 140,
-                child: SkeletonLoader(
-                  width: 140,
-                  height: 140,
-                  borderRadius: BorderRadius.circular(70),
-                ),
+              SkeletonLoader(
+                width: 100,
+                height: 100,
+                borderRadius: BorderRadius.circular(50),
               ),
-              const SizedBox(width: 20),
-              // Legend skeleton
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(4, (index) {
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
+                      padding: EdgeInsets.only(bottom: index < 3 ? 8 : 0),
                       child: Row(
                         children: [
                           SkeletonLoader(
-                            width: 12,
-                            height: 12,
-                            borderRadius: BorderRadius.circular(6),
+                            width: 8,
+                            height: 8,
+                            borderRadius: BorderRadius.circular(4),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: SkeletonLoader(width: 80, height: 16),
+                            child: SkeletonLoader(width: 80, height: 14),
                           ),
-                          SkeletonLoader(width: 30, height: 16),
+                          SkeletonLoader(width: 24, height: 12),
                         ],
                       ),
                     );

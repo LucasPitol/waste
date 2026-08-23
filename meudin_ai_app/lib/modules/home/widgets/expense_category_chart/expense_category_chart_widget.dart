@@ -126,51 +126,47 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          // Chart and Legend - Mesmo bounding box vertical (sem espaço fantasma)
-          IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Donut Chart - Ajustado para compartilhar altura com legenda
-                Expanded(
-                  child: Center(
-                    child: SizedBox(
-                      width: 100, // Diâmetro reduzido para melhor proporção
-                      height: 100,
-                      child: PieChart(
-                        PieChartData(
-                          sections: categoryExpenses.asMap().entries.map((entry) {
-                            final index = entry.key;
-                            final expense = entry.value;
-                            // Paleta com cores específicas
-                            final softPalette = _generateSoftPalette(categoryExpenses.length);
-                            final color = expense.categoryId == 'others' 
-                                ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
-                                : softPalette[index % softPalette.length];
-                            
-                            return PieChartSectionData(
-                              value: expense.amount,
-                              title: '',
-                              color: color,
-                              radius: 7, // Espessura do anel ajustada
-                              showTitle: false,
-                            );
-                          }).toList(),
-                          centerSpaceRadius: 36, // Centro ajustado proporcionalmente
-                          sectionsSpace: 0, // Sem separação (mais discreto)
-                          startDegreeOffset: -90, // Começa no topo
-                        ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Center(
+                  child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: PieChart(
+                      PieChartData(
+                        sections: categoryExpenses.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final expense = entry.value;
+                          final softPalette =
+                              _generateSoftPalette(categoryExpenses.length);
+                          final color = expense.categoryId == 'others'
+                              ? const Color(0xFFD1D5DB)
+                              : softPalette[index % softPalette.length];
+
+                          return PieChartSectionData(
+                            value: expense.amount,
+                            title: '',
+                            color: color,
+                            radius: 7,
+                            showTitle: false,
+                          );
+                        }).toList(),
+                        centerSpaceRadius: 36,
+                        sectionsSpace: 0,
+                        startDegreeOffset: -90,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
-                // Legend - Ajustada para compartilhar altura com gráfico
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: categoryExpenses.asMap().entries.map((entry) {
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: categoryExpenses.asMap().entries.map((entry) {
                       final index = entry.key;
                       final expense = entry.value;
                       final softPalette = _generateSoftPalette(categoryExpenses.length);
@@ -220,10 +216,9 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                         ),
                       );
                     }).toList(),
-                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

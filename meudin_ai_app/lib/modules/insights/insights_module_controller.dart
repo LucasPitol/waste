@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/services/cache_service.dart';
+import 'package:meudin_ai_app/services/subscription_state_service.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/date_filter_header.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
@@ -32,6 +33,7 @@ class InsightsModuleController extends GetxController {
   late UserService _userService;
   late SpendingCategoryService _spendingCategoryService;
   late CacheService _cacheService;
+  late SubscriptionStateService _subscriptionStateService;
   late bool isRefreshing;
   List<SpendingCategory> _categories = [];
   List<CategoryExpense> _categoryExpenses = [];
@@ -63,6 +65,7 @@ class InsightsModuleController extends GetxController {
     _walletService = WalletService();
     _spendingCategoryService = SpendingCategoryService();
     _cacheService = CacheService();
+    _subscriptionStateService = SubscriptionStateService();
     loading = false;
     isRefreshing = false;
     previousPeriodSpends = null;
@@ -132,9 +135,11 @@ class InsightsModuleController extends GetxController {
 
     switch (preset) {
       case InsightsDatePreset.last3Months:
-        return (DateTime(now.year, now.month - 3, now.day), end);
+        // 3 meses incluindo o mês atual (ex: ago → jun, jul, ago)
+        return (DateTime(now.year, now.month - 2, 1), end);
       case InsightsDatePreset.last6Months:
-        return (DateTime(now.year, now.month - 6, now.day), end);
+        // 6 meses incluindo o mês atual (ex: ago → mar … ago)
+        return (DateTime(now.year, now.month - 5, 1), end);
       case InsightsDatePreset.thisYear:
         return (DateTime(now.year, 1, 1), end);
     }
@@ -212,8 +217,48 @@ class InsightsModuleController extends GetxController {
         metadata['requestedEndDate'] == _formatCacheDate(endDate);
   }
 
+  bool _wasUserPeriodAdjusted({
+    required DateTime requestedStart,
+    required DateTime requestedEnd,
+    required bool wasAdjusted,
+    String? effectiveStartDate,
+    String? effectiveEndDate,
+  }) {
+    if (!wasAdjusted) return false;
+
+    final effectiveStart = _parseApiDate(effectiveStartDate);
+    final effectiveEnd = _parseApiDate(effectiveEndDate);
+    if (effectiveStart == null && effectiveEnd == null) return true;
+
+    final requestedStartNorm = _normalizeDate(requestedStart);
+    final requestedEndNorm = _normalizeDate(requestedEnd);
+
+    if (effectiveStart != null &&
+        _normalizeDate(effectiveStart).isAfter(requestedStartNorm)) {
+      return true;
+    }
+
+    if (effectiveEnd != null &&
+        _normalizeDate(effectiveEnd).isBefore(requestedEndNorm)) {
+      return true;
+    }
+
+    return false;
+  }
+
   void _applyEffectiveDatesFromMetadata(Map<String, dynamic> metadata) {
-    if (metadata['wasAdjusted'] != true) return;
+    final requestedStart = _parseApiDate(metadata['requestedStartDate'] as String?);
+    final requestedEnd = _parseApiDate(metadata['requestedEndDate'] as String?);
+    if (requestedStart == null || requestedEnd == null) return;
+
+    final wasUserAdjusted = _wasUserPeriodAdjusted(
+      requestedStart: requestedStart,
+      requestedEnd: requestedEnd,
+      wasAdjusted: metadata['wasAdjusted'] == true,
+      effectiveStartDate: metadata['effectiveStartDate'] as String?,
+      effectiveEndDate: metadata['effectiveEndDate'] as String?,
+    );
+    if (!wasUserAdjusted) return;
 
     final effectiveStart = _parseApiDate(metadata['effectiveStartDate'] as String?);
     final effectiveEnd = _parseApiDate(metadata['effectiveEndDate'] as String?);
@@ -234,8 +279,20 @@ class InsightsModuleController extends GetxController {
     }
   }
 
-  void _applyDateRangeMetadata(ResponseDto res) {
-    if (!res.wasAdjusted) return;
+  void _applyDateRangeMetadata(
+    ResponseDto res, {
+    required DateTime requestedStart,
+    required DateTime requestedEnd,
+  }) {
+    if (!_wasUserPeriodAdjusted(
+      requestedStart: requestedStart,
+      requestedEnd: requestedEnd,
+      wasAdjusted: res.wasAdjusted,
+      effectiveStartDate: res.effectiveStartDate,
+      effectiveEndDate: res.effectiveEndDate,
+    )) {
+      return;
+    }
 
     final effectiveStart = _parseApiDate(res.effectiveStartDate);
     final effectiveEnd = _parseApiDate(res.effectiveEndDate);
@@ -269,12 +326,12 @@ class InsightsModuleController extends GetxController {
   }
 
   void _maybeShowPlanLimitBottomSheet({
-    required bool wasAdjusted,
+    required bool wasUserAdjusted,
     required String walletId,
     required DateTime requestedStart,
     required DateTime requestedEnd,
   }) {
-    if (!wasAdjusted) return;
+    if (!wasUserAdjusted) return;
 
     final noticeKey = _planLimitNoticeKeyFor(
       walletId: walletId,
@@ -303,9 +360,17 @@ class InsightsModuleController extends GetxController {
     });
   }
 
-  void _processTransactionList(List<Map<String, dynamic>> dataList) {
-    transactionDtoList = dataList
+  void _applyTransactionsFromRawData(List<Map<String, dynamic>> dataList) {
+    final allTransactions = dataList
         .map<Transaction>((e) => Transaction.fromJson(e))
+        .toList();
+
+    transactionDtoList = allTransactions
+        .where(
+          (transaction) =>
+              transaction.transactionDate != null &&
+              _isDateInRange(transaction.transactionDate!, startDate, endDate),
+        )
         .toList();
 
     transactionDtoList.sort((a, b) {
@@ -435,77 +500,95 @@ class InsightsModuleController extends GetxController {
     final total = isRevenue ? revenue : spends.abs();
     if (total == 0) return 0.0;
 
-    final transactions = transactionDtoList
-        .where((t) {
-          if (t.amount == null || t.transactionDate == null) return false;
-          return isRevenue ? t.amount! > 0 : t.amount! < 0;
-        })
-        .toList();
+    final monthCount = _countCalendarMonthsInPeriod(startDate, endDate);
+    if (monthCount == 0) return 0.0;
 
-    if (transactions.isEmpty) return 0.0;
-
-    transactions.sort((a, b) => a.transactionDate!.compareTo(b.transactionDate!));
-
-    final firstTransactionDate = transactions.first.transactionDate!;
-    final lastTransactionDate = transactions.last.transactionDate!;
-    final monthsDifference =
-        _calculateMonthsDifference(firstTransactionDate, lastTransactionDate);
-    final effectiveMonths = monthsDifference < 1.0 ? 1.0 : monthsDifference;
-
-    return total / effectiveMonths;
+    return total / monthCount;
   }
 
-  /// Calcula diferença em meses entre duas datas
-  double _calculateMonthsDifference(DateTime start, DateTime end) {
-    final yearsDiff = end.year - start.year;
-    final monthsDiff = end.month - start.month;
-    final daysDiff = end.day - start.day;
-    
-    // Aproximação: considera meses completos + fração do mês atual
-    final totalMonths = yearsDiff * 12 + monthsDiff;
-    final fractionOfMonth = daysDiff / 30.0; // Aproximação
-    
-    return totalMonths + fractionOfMonth;
+  int _countCalendarMonthsInPeriod(DateTime start, DateTime end) {
+    return (end.year - start.year) * 12 + (end.month - start.month) + 1;
   }
 
-  /// Calcula comparativo com período anterior (se período >= 2 meses)
-  Future<void> _calculateComparison() async {
-    final monthsDifference = _calculateMonthsDifference(startDate, endDate);
-    
-    if (monthsDifference < 2) {
-      previousPeriodSpends = null;
+  DateTime _normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
+  bool _isDateInRange(DateTime date, DateTime start, DateTime end) {
+    final normalized = _normalizeDate(date);
+    final rangeStart = _normalizeDate(start);
+    final rangeEnd = _normalizeDate(end);
+    return !normalized.isBefore(rangeStart) && !normalized.isAfter(rangeEnd);
+  }
+
+  (DateTime, DateTime)? _previousPeriodRange() {
+    final monthCount = _countCalendarMonthsInPeriod(startDate, endDate);
+    if (monthCount < 2) return null;
+
+    final previousStart =
+        DateTime(startDate.year, startDate.month - monthCount, 1);
+    final previousEndDay =
+        _normalizeDate(startDate).subtract(const Duration(days: 1));
+    final previousEnd = DateTime(
+      previousEndDay.year,
+      previousEndDay.month,
+      previousEndDay.day,
+      23,
+      59,
+      59,
+      999,
+    );
+    return (previousStart, previousEnd);
+  }
+
+  /// Comparativo exige o período anterior além do filtro atual.
+  /// Ex.: filtro 3 meses → ~6 meses de histórico; Free (3 meses) não cobre.
+  Future<bool> _canLoadComparisonForPlan() async {
+    final range = _previousPeriodRange();
+    if (range == null) return false;
+
+    final maxHistoryMonths =
+        await _subscriptionStateService.getMaxHistoryMonths();
+    if (maxHistoryMonths == null) return true;
+
+    final monthCount = _countCalendarMonthsInPeriod(startDate, endDate);
+    return monthCount * 2 <= maxHistoryMonths;
+  }
+
+  Future<void> _loadPreviousPeriodSpends() async {
+    previousPeriodSpends = null;
+
+    if (!await _canLoadComparisonForPlan()) {
       return;
     }
 
-    // Calcula período anterior (mesma duração, antes do startDate)
-    final periodDuration = endDate.difference(startDate);
-    final previousEndDate = startDate.subtract(const Duration(days: 1));
-    final previousStartDate = previousEndDate.subtract(periodDuration);
+    final range = _previousPeriodRange();
+    if (range == null) {
+      return;
+    }
 
     try {
-      String walletId = currentWallet.id;
-      ResponseDto res = await _transactionService.getTransactionDtoList(
-        walletId,
-        previousStartDate,
-        previousEndDate,
+      final res = await _transactionService.getTransactionDtoList(
+        currentWallet.id,
+        range.$1,
+        range.$2,
       );
 
-      if (res.success && res.data.isNotEmpty) {
-        final previousTransactions = res.data
-            .map<Transaction>((e) => Transaction.fromJson(e))
-            .toList();
-
-        double previousSpendsTemp = 0.0;
-        for (var transaction in previousTransactions) {
-          if (transaction.amount != null && transaction.amount! < 0) {
-            previousSpendsTemp += transaction.amount!.abs();
-          }
-        }
-        previousPeriodSpends = previousSpendsTemp;
-      } else {
+      if (!res.success || res.data is! List) {
         previousPeriodSpends = null;
+        return;
       }
-    } catch (e) {
+
+      var total = 0.0;
+      for (final item in res.data as List) {
+        final transaction =
+            Transaction.fromJson(item as Map<String, dynamic>);
+        if (transaction.amount != null && transaction.amount! < 0) {
+          total += transaction.amount!.abs();
+        }
+      }
+      previousPeriodSpends = total;
+    } catch (_) {
       previousPeriodSpends = null;
     }
   }
@@ -590,6 +673,7 @@ class InsightsModuleController extends GetxController {
       String walletId = currentWallet.id;
       final requestedStart = startDate;
       final requestedEnd = endDate;
+      previousPeriodSpends = null;
       CacheEntryResult? cachedEntry;
       
       if (!forceRefresh) {
@@ -603,11 +687,19 @@ class InsightsModuleController extends GetxController {
           _matchesRequestedDateRange(cachedEntry.metadata!)) {
         try {
           _applyEffectiveDatesFromMetadata(cachedEntry.metadata!);
-          _processTransactionList(cachedEntry.data);
-          await _calculateComparison();
+          _applyTransactionsFromRawData(cachedEntry.data);
+          await _loadPreviousPeriodSpends();
 
           _maybeShowPlanLimitBottomSheet(
-            wasAdjusted: cachedEntry.metadata!['wasAdjusted'] == true,
+            wasUserAdjusted: _wasUserPeriodAdjusted(
+              requestedStart: requestedStart,
+              requestedEnd: requestedEnd,
+              wasAdjusted: cachedEntry.metadata!['wasAdjusted'] == true,
+              effectiveStartDate:
+                  cachedEntry.metadata!['effectiveStartDate'] as String?,
+              effectiveEndDate:
+                  cachedEntry.metadata!['effectiveEndDate'] as String?,
+            ),
             walletId: walletId,
             requestedStart: requestedStart,
             requestedEnd: requestedEnd,
@@ -658,12 +750,22 @@ class InsightsModuleController extends GetxController {
           ),
         );
 
-        _applyDateRangeMetadata(res);
-        _processTransactionList(dataList);
-        await _calculateComparison();
+        _applyDateRangeMetadata(
+          res,
+          requestedStart: requestedStart,
+          requestedEnd: requestedEnd,
+        );
+        _applyTransactionsFromRawData(dataList);
+        await _loadPreviousPeriodSpends();
 
         _maybeShowPlanLimitBottomSheet(
-          wasAdjusted: res.wasAdjusted,
+          wasUserAdjusted: _wasUserPeriodAdjusted(
+            requestedStart: requestedStart,
+            requestedEnd: requestedEnd,
+            wasAdjusted: res.wasAdjusted,
+            effectiveStartDate: res.effectiveStartDate,
+            effectiveEndDate: res.effectiveEndDate,
+          ),
           walletId: walletId,
           requestedStart: requestedStart,
           requestedEnd: requestedEnd,
@@ -693,11 +795,18 @@ class InsightsModuleController extends GetxController {
 
   /// Retorna se há dados para exibir
   bool get hasData => transactionDtoList.isNotEmpty;
+
+  /// Skeleton apenas no carregamento inicial ou fetch sem dados em cache.
+  /// Evita piscar todos os cards em pull-to-refresh ou hit de cache.
+  bool get showSkeleton => loading || (isRefreshing && !hasData);
   
-  /// Retorna se o período é >= 2 meses
+  /// Retorna se o período tem 2+ meses no filtro e há despesas no período anterior
   bool get canShowComparison {
-    final monthsDifference = _calculateMonthsDifference(startDate, endDate);
-    return monthsDifference >= 2 && previousPeriodSpends != null;
+    if (_countCalendarMonthsInPeriod(startDate, endDate) < 2) {
+      return false;
+    }
+    final previous = previousPeriodSpends;
+    return previous != null && previous > 0;
   }
   
   /// Retorna percentual de variação (positivo = aumento, negativo = redução)
