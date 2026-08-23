@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
@@ -1038,9 +1039,9 @@ class _DatePickerField extends StatelessWidget {
                 ),
               ],
             ),
-            Icon(
-              Icons.calendar_today,
-              size: 20,
+            FaIcon(
+              FontAwesomeIcons.calendar,
+              size: 16,
               color: Styles.primaryColor,
             ),
           ],

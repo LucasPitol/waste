@@ -1,4 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:meudin_ai_app/models/transaction.dart';
+import 'package:meudin_ai_app/utils/utils.dart';
+
+enum MonthlyIncomeExpenseChartMode { comparative, balance }
 
 class MonthlyIncomeExpenseBucket {
   final DateTime month;
@@ -10,6 +15,20 @@ class MonthlyIncomeExpenseBucket {
     required this.revenue,
     required this.expense,
   });
+
+  double get balance => revenue - expense;
+}
+
+class MonthlyIncomeExpenseAxisRange {
+  final double minY;
+  final double maxY;
+
+  const MonthlyIncomeExpenseAxisRange({
+    required this.minY,
+    required this.maxY,
+  });
+
+  double get interval => (maxY - minY) / 4;
 }
 
 class MonthlyIncomeExpenseChartData {
@@ -80,16 +99,23 @@ class MonthlyIncomeExpenseChartData {
   static String formatCompactAxisValue(double value) {
     if (value == 0) return '0';
 
+    final prefix = value < 0 ? '-' : '';
     final absValue = value.abs();
     if (absValue >= 1000000) {
       final formatted = absValue / 1000000;
-      return '${_trimTrailingZero(formatted)}M';
+      return '$prefix${_trimTrailingZero(formatted)}M';
     }
     if (absValue >= 1000) {
       final formatted = absValue / 1000;
-      return '${_trimTrailingZero(formatted)}k';
+      return '$prefix${_trimTrailingZero(formatted)}k';
     }
-    return absValue.toStringAsFixed(0);
+    return '$prefix${absValue.toStringAsFixed(0)}';
+  }
+
+  static String formatSignedBalance(double balance) {
+    if (balance > 0) return '+${Utils.getAmountFormated(balance)}';
+    if (balance < 0) return '-${Utils.getAmountFormated(balance.abs())}';
+    return Utils.getAmountFormated(0);
   }
 
   static double calculateMaxY(List<MonthlyIncomeExpenseBucket> buckets) {
@@ -100,6 +126,41 @@ class MonthlyIncomeExpenseChartData {
     }
     if (maxValue == 0) return 10;
     return maxValue * 1.15;
+  }
+
+  static MonthlyIncomeExpenseAxisRange calculateBalanceAxisRange(
+    List<MonthlyIncomeExpenseBucket> buckets,
+  ) {
+    var maxPositive = 0.0;
+    var maxNegative = 0.0;
+
+    for (final bucket in buckets) {
+      final balance = bucket.balance;
+      if (balance > 0) {
+        maxPositive = math.max(maxPositive, balance);
+      } else if (balance < 0) {
+        maxNegative = math.max(maxNegative, balance.abs());
+      }
+    }
+
+    if (maxPositive == 0 && maxNegative == 0) {
+      return const MonthlyIncomeExpenseAxisRange(minY: -10, maxY: 10);
+    }
+    if (maxNegative == 0) {
+      return MonthlyIncomeExpenseAxisRange(
+        minY: 0,
+        maxY: maxPositive * 1.15,
+      );
+    }
+    if (maxPositive == 0) {
+      return MonthlyIncomeExpenseAxisRange(
+        minY: -maxNegative * 1.15,
+        maxY: 0,
+      );
+    }
+
+    final maxAbs = math.max(maxPositive, maxNegative) * 1.15;
+    return MonthlyIncomeExpenseAxisRange(minY: -maxAbs, maxY: maxAbs);
   }
 
   static List<DateTime> _enumerateMonths(DateTime start, DateTime end) {
