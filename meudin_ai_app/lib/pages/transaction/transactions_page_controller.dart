@@ -1,19 +1,54 @@
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/models/category_expense.dart';
+import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
+import 'package:meudin_ai_app/services/spending_category_service.dart';
 import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
+import 'package:meudin_ai_app/utils/expense_category_visuals.dart';
 
 class TransactionsPageController extends GetxController {
   List<Transaction> transactions;
   final DateTime startDate;
   late TransactionService _transactionService;
+  late SpendingCategoryService _spendingCategoryService;
+
+  List<SpendingCategory> categories = [];
+  List<CategoryExpense> chartCategoryExpenses = [];
 
   TransactionsPageController({
     required this.transactions,
     required this.startDate,
   }) {
     _transactionService = TransactionService();
+    _spendingCategoryService = SpendingCategoryService();
+    _recalculateChartCategories();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    final response = await _spendingCategoryService.getSpendingCategories();
+    if (response.success && response.data is List) {
+      categories = (response.data as List)
+          .map<SpendingCategory>((e) => SpendingCategory.fromApi(e))
+          .toList();
+    }
+
+    _recalculateChartCategories();
+    update();
+  }
+
+  void _recalculateChartCategories() {
+    chartCategoryExpenses = ExpenseCategoryVisuals.calculateChartCategories(
+      transactions: transactions,
+      categories: categories,
+    );
   }
 
   void openEditTransaction(Transaction transaction, String type) async {
@@ -56,6 +91,7 @@ class TransactionsPageController extends GetxController {
       transactions = (response.data as List)
           .map((e) => Transaction.fromJson(e))
           .toList();
+      _recalculateChartCategories();
     }
   }
 }

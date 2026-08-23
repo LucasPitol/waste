@@ -5,7 +5,7 @@ import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/modules/home/widgets/expense_category_chart/expense_category_detail_bottom_sheet.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:meudin_ai_app/ui/styles.dart';
+import 'package:meudin_ai_app/utils/expense_category_visuals.dart';
 import 'package:intl/intl.dart';
 import 'package:meudin_ai_app/utils/constants.dart';
 import 'package:meudin_ai_app/modules/home/widgets/expense_category_chart/expense_category_chart_skeleton.dart';
@@ -28,28 +28,6 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
     required this.categories,
     this.showDate = true,
   });
-
-  /// Gera paleta com cores específicas definidas
-  /// Cores suaves e harmoniosas para visual discreto
-  static List<Color> _generateSoftPalette(int count) {
-    // Paleta de cores específicas: roxo principal + tons suaves
-    // final palette = [
-    //   const Color(0xff8147FF),
-    //   Styles.primaryColor,
-    //   const Color(0xffD1B0FF),
-    //   const Color(0xffE9D9FF),
-    // ];
-
-    // Vibrantes
-    final palette = [
-      const Color(0xff2DD4BF),
-      Styles.primaryColor,
-      const Color(0xff6366F1),
-      const Color(0xffF472B6),
-    ];
-    
-    return palette.take(count).toList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,11 +117,11 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                         sections: categoryExpenses.asMap().entries.map((entry) {
                           final index = entry.key;
                           final expense = entry.value;
-                          final softPalette =
-                              _generateSoftPalette(categoryExpenses.length);
-                          final color = expense.categoryId == 'others'
-                              ? const Color(0xFFD1D5DB)
-                              : softPalette[index % softPalette.length];
+                          final color = ExpenseCategoryVisuals.chartColorForIndex(
+                            index: index,
+                            categoryId: expense.categoryId,
+                            chartCategoryCount: categoryExpenses.length,
+                          );
 
                           return PieChartSectionData(
                             value: expense.amount,
@@ -169,10 +147,11 @@ class ExpenseCategoryChartWidget extends StatelessWidget {
                   children: categoryExpenses.asMap().entries.map((entry) {
                       final index = entry.key;
                       final expense = entry.value;
-                      final softPalette = _generateSoftPalette(categoryExpenses.length);
-                      final color = expense.categoryId == 'others' 
-                          ? const Color(0xFFD1D5DB) // Cinza neutro para "Outros"
-                          : softPalette[index % softPalette.length];
+                      final color = ExpenseCategoryVisuals.chartColorForIndex(
+                        index: index,
+                        categoryId: expense.categoryId,
+                        chartCategoryCount: categoryExpenses.length,
+                      );
                       
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 8), // Espaçamento reduzido

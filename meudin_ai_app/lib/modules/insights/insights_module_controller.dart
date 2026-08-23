@@ -16,6 +16,7 @@ import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/services/cache_service.dart';
 import 'package:meudin_ai_app/services/subscription_state_service.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/date_filter_header.dart';
+import 'package:meudin_ai_app/utils/expense_category_visuals.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class InsightsModuleController extends GetxController {
@@ -403,92 +404,10 @@ class InsightsModuleController extends GetxController {
 
   /// Calcula gastos por categoria usando os dados já carregados
   void _calculateCategoryExpenses() {
-    final expenses = transactionDtoList
-        .where((t) => t.amount != null && t.amount! < 0 && t.categoryId != null)
-        .toList();
-
-    if (expenses.isEmpty) {
-      _categoryExpenses = [];
-      return;
-    }
-
-    final Map<String, double> totalByCategory = {};
-    
-    for (var transaction in expenses) {
-      final categoryId = transaction.categoryId!;
-      final amount = transaction.amount!.abs();
-      totalByCategory[categoryId] = (totalByCategory[categoryId] ?? 0.0) + amount;
-    }
-
-    final double totalAmount = totalByCategory.values.fold(0.0, (sum, value) => sum + value);
-
-    if (totalAmount == 0) {
-      _categoryExpenses = [];
-      return;
-    }
-
-    _categoryExpenses = totalByCategory.entries.map((entry) {
-      final categoryId = entry.key;
-      final amount = entry.value;
-      final percentage = (amount / totalAmount) * 100;
-
-      final category = _categories.firstWhere(
-        (cat) => cat.id == categoryId,
-        orElse: () => SpendingCategory(
-          id: categoryId,
-          name: 'Outro',
-          value: 'other',
-          type: 'personal',
-          creationDate: DateTime.now(),
-          lastUpdate: DateTime.now(),
-        ),
-      );
-
-      return CategoryExpense(
-        categoryId: categoryId,
-        categoryName: category.name,
-        categoryColor: category.colorData,
-        amount: amount,
-        percentage: percentage,
-      );
-    }).toList();
-
-    _categoryExpenses.sort((a, b) => b.amount.compareTo(a.amount));
-    
-    if (_categoryExpenses.length > 4) {
-      final topCategories = _categoryExpenses.take(4).toList();
-      final others = _categoryExpenses.skip(4);
-      
-      final othersTotal = others.fold(0.0, (sum, cat) => sum + cat.amount);
-      final othersPercentage = (othersTotal / totalAmount) * 100;
-
-      if (othersTotal > 0) {
-        topCategories.add(CategoryExpense(
-          categoryId: 'others',
-          categoryName: 'Outros',
-          categoryColor: Colors.grey,
-          amount: othersTotal,
-          percentage: othersPercentage,
-        ));
-      }
-
-      _categoryExpenses = topCategories;
-    }
-    
-    if (_categoryExpenses.isNotEmpty) {
-      final totalPercentage = _categoryExpenses.fold(0.0, (sum, e) => sum + e.percentage);
-      final difference = 100.0 - totalPercentage;
-      if (difference.abs() > 0.001) {
-        final lastIndex = _categoryExpenses.length - 1;
-        _categoryExpenses[lastIndex] = CategoryExpense(
-          categoryId: _categoryExpenses[lastIndex].categoryId,
-          categoryName: _categoryExpenses[lastIndex].categoryName,
-          categoryColor: _categoryExpenses[lastIndex].categoryColor,
-          amount: _categoryExpenses[lastIndex].amount,
-          percentage: _categoryExpenses[lastIndex].percentage + difference,
-        );
-      }
-    }
+    _categoryExpenses = ExpenseCategoryVisuals.calculateChartCategories(
+      transactions: transactionDtoList,
+      categories: _categories,
+    );
   }
 
   /// Calcula médias mensais de despesas e receitas com base nas transações já carregadas

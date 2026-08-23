@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:meudin_ai_app/models/category_expense.dart';
+import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
-import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:meudin_ai_app/utils/utils.dart';
 import 'package:meudin_ai_app/pages/transaction/transactions_page_controller.dart';
+import 'package:meudin_ai_app/ui/joy_ui.dart';
+import 'package:meudin_ai_app/utils/expense_category_visuals.dart';
+import 'package:meudin_ai_app/utils/utils.dart';
 
 class TransactionTile extends StatelessWidget {
   final Transaction transaction;
+  final List<SpendingCategory> categories;
+  final List<CategoryExpense> chartCategoryExpenses;
 
-  const TransactionTile({super.key, required this.transaction});
+  const TransactionTile({
+    super.key,
+    required this.transaction,
+    required this.categories,
+    required this.chartCategoryExpenses,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +33,14 @@ class TransactionTile extends StatelessWidget {
       amountStr = '+$amountStr';
     }
 
+    final leadingVisual = isPositive
+        ? ExpenseCategoryVisuals.revenueVisual()
+        : ExpenseCategoryVisuals.resolve(
+            categoryId: transaction.categoryId,
+            chartCategories: chartCategoryExpenses,
+            categories: categories,
+          );
+
     return InkWell(
       onTap: () {
         final controller = Get.find<TransactionsPageController>();
@@ -31,9 +49,11 @@ class TransactionTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
+            ExpenseCategoryIcon(visual: leadingVisual),
+            const SizedBox(width: 12),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -48,8 +68,8 @@ class TransactionTile extends StatelessWidget {
             ),
             JoyText(
               amountStr,
-              textColor: isPositive 
-                  ? Colors.green 
+              textColor: isPositive
+                  ? ExpenseCategoryVisuals.revenueColor
                   : (theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor),
             ),
           ],

@@ -5,6 +5,7 @@ import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/utils/constants.dart';
+import 'package:meudin_ai_app/utils/expense_category_visuals.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
 
 class ExpenseCategoryDetailBottomSheet extends StatelessWidget {
@@ -24,16 +25,8 @@ class ExpenseCategoryDetailBottomSheet extends StatelessWidget {
   });
 
   /// Gera paleta com cores específicas definidas (mesma do gráfico)
-  static List<Color> _generateSoftPalette(int count) {
-    final palette = [
-      const Color(0xff2DD4BF),
-      Styles.primaryColor,
-      const Color(0xff6366F1),
-      const Color(0xffF472B6),
-    ];
-    
-    return palette.take(count).toList();
-  }
+  static List<Color> _generateSoftPalette(int count) =>
+      ExpenseCategoryVisuals.generateSoftPalette(count);
 
   /// Calcula todas as categorias sem agrupamento de "Outros"
   List<CategoryExpense> _calculateAllCategoryExpenses() {
@@ -72,8 +65,12 @@ class ExpenseCategoryDetailBottomSheet extends StatelessWidget {
     for (var i = 0; i < chartCategoryExpenses.length; i++) {
       final expense = chartCategoryExpenses[i];
       if (expense.categoryId != 'others') {
-        // Usa a mesma lógica do gráfico: paleta baseada no índice
-        colorMap[expense.categoryId] = softPalette[i % softPalette.length];
+        colorMap[expense.categoryId] =
+            ExpenseCategoryVisuals.chartColorForIndex(
+          index: i,
+          categoryId: expense.categoryId,
+          chartCategoryCount: chartCategoryExpenses.length,
+        );
       }
     }
 

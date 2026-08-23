@@ -39,7 +39,12 @@ class TransactionsPage extends StatelessWidget {
                       : SizedBox(
                           child: Column(
                             children: controller.transactions.map((e) {
-                              return TransactionTile(transaction: e);
+                              return TransactionTile(
+                                transaction: e,
+                                categories: controller.categories,
+                                chartCategoryExpenses:
+                                    controller.chartCategoryExpenses,
+                              );
                             }).toList(),
                           ),
                         ),
