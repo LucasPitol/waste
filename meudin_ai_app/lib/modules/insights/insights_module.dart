@@ -59,14 +59,6 @@ class InsightsModule extends StatelessWidget {
                         loading: showSkeleton,
                       ),
                       if (showContent) ...[
-                        ExpenseCategoryChartWidget(
-                          categoryExpenses: controller.categoryExpenses,
-                          startDate: controller.startDate,
-                          loading: showSkeleton,
-                          transactions: controller.transactionDtoList,
-                          categories: controller.categories,
-                          showDate: false,
-                        ),
                         MonthlyIncomeExpenseBarChart(
                           transactions: controller.transactionDtoList,
                           startDate: controller.startDate,
@@ -82,11 +74,19 @@ class InsightsModule extends StatelessWidget {
                           monthlyAverage: controller.monthlyAverageSpends,
                           loading: showSkeleton,
                         ),
-                        if (controller.canShowComparison)
+                        if (showSkeleton || controller.canShowComparison)
                           ComparisonWidget(
                             comparisonPercentage: controller.comparisonPercentage,
                             loading: showSkeleton,
                           ),
+                        ExpenseCategoryChartWidget(
+                          categoryExpenses: controller.categoryExpenses,
+                          startDate: controller.startDate,
+                          loading: showSkeleton,
+                          transactions: controller.transactionDtoList,
+                          categories: controller.categories,
+                          showDate: false,
+                        ),
                         const SizedBox(height: 20),
                       ],
                       if (!showContent)
