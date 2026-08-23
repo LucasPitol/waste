@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class RemoveMemberModal extends StatelessWidget {
   final String memberName;
@@ -41,8 +41,8 @@ class RemoveMemberModal extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: const Center(
-                  child: FaIcon(
-                    FontAwesomeIcons.triangleExclamation,
+                  child: AppIcon(
+                    AppIcons.triangleExclamation,
                     color: Colors.red,
                     size: 24,
                   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 
 class ComparisonWidget extends StatelessWidget {
@@ -83,8 +83,8 @@ class ComparisonWidget extends StatelessWidget {
               onTap: () => _showInfoBottomSheet(context),
               child: Container(
                 padding: const EdgeInsets.all(4),
-                child: FaIcon(
-                  FontAwesomeIcons.circleInfo,
+                child: AppIcon(
+                  AppIcons.circleInfo,
                   size: 18,
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.3) 
                       ?? Colors.grey.shade400,

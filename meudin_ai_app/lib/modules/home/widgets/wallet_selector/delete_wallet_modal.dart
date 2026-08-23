@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class DeleteWalletModal extends StatelessWidget {
   final String walletName;
@@ -39,8 +39,8 @@ class DeleteWalletModal extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: const Center(
-                  child: FaIcon(
-                    FontAwesomeIcons.triangleExclamation,
+                  child: AppIcon(
+                    AppIcons.triangleExclamation,
                     color: Colors.red,
                     size: 24,
                   ),
@@ -79,8 +79,8 @@ class DeleteWalletModal extends StatelessWidget {
             ),
             child: Row(
               children: [
-                FaIcon(
-                  FontAwesomeIcons.wallet,
+                AppIcon(
+                  AppIcons.wallet,
                   size: 16,
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey,
                 ),

@@ -5,7 +5,7 @@ import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/pages/edit_spend/edit_spend_page_controller.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class EditSpendPage extends StatelessWidget {
   const EditSpendPage({super.key});
@@ -39,8 +39,8 @@ class EditSpendPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 size: 20,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               ),
@@ -85,8 +85,8 @@ class EditSpendPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.dollarSign, 
+                      AppIcon(
+                        AppIcons.dollarSign, 
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
                             ?? (theme.brightness == Brightness.dark
@@ -137,8 +137,8 @@ class EditSpendPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.pen, 
+                      AppIcon(
+                        AppIcons.pen, 
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
                             ?? (theme.brightness == Brightness.dark
@@ -186,8 +186,8 @@ class EditSpendPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.calendar, 
+                      AppIcon(
+                        AppIcons.calendar, 
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
                             ?? (theme.brightness == Brightness.dark
@@ -263,7 +263,7 @@ class EditSpendPage extends StatelessWidget {
                                   : Colors.grey[100]!),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: FaIcon(
+                        child: AppIcon(
                           controller.selectedCategoryIcon,
                           size: 18,
                           color: controller.selectedCategory?.colorData 
@@ -316,8 +316,8 @@ class EditSpendPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      FaIcon(
-                        FontAwesomeIcons.chevronRight,
+                      AppIcon(
+                        AppIcons.chevronRight,
                         size: 14,
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
                             ?? (theme.brightness == Brightness.dark
@@ -374,8 +374,8 @@ class EditSpendPage extends StatelessWidget {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const FaIcon(
-                              FontAwesomeIcons.trash,
+                            const AppIcon(
+                              AppIcons.trash,
                               size: 16,
                               color: Colors.red,
                             ),

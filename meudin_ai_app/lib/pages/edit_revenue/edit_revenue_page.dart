@@ -5,7 +5,7 @@ import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/pages/edit_revenue/edit_revenue_page_controller.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class EditRevenuePage extends StatelessWidget {
   const EditRevenuePage({super.key});
@@ -20,8 +20,8 @@ class EditRevenuePage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 size: 20,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               ),
@@ -66,8 +66,8 @@ class EditRevenuePage extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.dollarSign,
+                      AppIcon(
+                        AppIcons.dollarSign,
                         size: 18,
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ??
                             (theme.brightness == Brightness.dark
@@ -119,8 +119,8 @@ class EditRevenuePage extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.pen,
+                      AppIcon(
+                        AppIcons.pen,
                         size: 18,
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ??
                             (theme.brightness == Brightness.dark
@@ -168,8 +168,8 @@ class EditRevenuePage extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.calendar,
+                      AppIcon(
+                        AppIcons.calendar,
                         size: 18,
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ??
                             (theme.brightness == Brightness.dark
@@ -258,8 +258,8 @@ class EditRevenuePage extends StatelessWidget {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const FaIcon(
-                              FontAwesomeIcons.trash,
+                            const AppIcon(
+                              AppIcons.trash,
                               size: 16,
                               color: Colors.red,
                             ),

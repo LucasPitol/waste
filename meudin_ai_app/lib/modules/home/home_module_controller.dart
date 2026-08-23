@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/wallet_selector_widget.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/edit_wallet_modal.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/delete_wallet_modal.dart';
@@ -394,8 +394,8 @@ class HomeModuleController extends GetxController {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: FaIcon(
-                FontAwesomeIcons.pen,
+              leading: AppIcon(
+                AppIcons.pen,
                 size: 18,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               ),
@@ -410,8 +410,8 @@ class HomeModuleController extends GetxController {
               },
             ),
             ListTile(
-              leading: FaIcon(
-                FontAwesomeIcons.trash,
+              leading: AppIcon(
+                AppIcons.trash,
                 size: 18,
                 color: Colors.red,
               ),

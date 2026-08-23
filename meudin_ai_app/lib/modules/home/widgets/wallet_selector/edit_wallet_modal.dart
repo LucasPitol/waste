@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class EditWalletModal extends StatelessWidget {
   final String currentName;
@@ -44,8 +44,8 @@ class EditWalletModal extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.xmark,
+                icon: AppIcon(
+                  AppIcons.xmark,
                   size: 18,
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey,
                 ),

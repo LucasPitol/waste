@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
@@ -17,8 +17,8 @@ class TransactionPageHeaderWidget extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: FaIcon(
-              FontAwesomeIcons.arrowLeft,
+            icon: AppIcon(
+              AppIcons.arrowLeft,
               color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               size: 20,
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/utils/constants.dart';
@@ -77,9 +77,9 @@ class DateFilterHeader extends StatelessWidget {
                       ),
                     ],
                   ),
-                  FaIcon(
-                    FontAwesomeIcons.calendar,
-                    size: 16,
+                  AppIcon(
+                    AppIcons.calendarDots,
+                    size: 22,
                     color: Styles.primaryColor,
                   ),
                 ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class SpendingCategory {
   final String id;
@@ -63,134 +63,134 @@ class SpendingCategory {
     );
   }
 
-  /// Mapeia string de ícone do backend para IconData do FontAwesome
+  /// Mapeia string de ícone do backend para IconData do Phosphor
   static IconData _getIconFromString(String iconString) {
     if (iconString.isEmpty) {
-      return FontAwesomeIcons.circleQuestion;
+      return AppIcons.circleQuestion;
     }
     
     final iconMap = {
       // Alimentação
-      'food': FontAwesomeIcons.utensils,
+      'food': AppIcons.utensils,
       
       // Compras/Shopping
-      'shoppingbags': FontAwesomeIcons.shoppingBag,
-      'shopping': FontAwesomeIcons.shoppingBag,
-      'shoppingcart': FontAwesomeIcons.cartShopping,
-      'compras': FontAwesomeIcons.shoppingBag,
+      'shoppingbags': AppIcons.shoppingBag,
+      'shopping': AppIcons.shoppingBag,
+      'shoppingcart': AppIcons.cartShopping,
+      'compras': AppIcons.shoppingBag,
       
       // Investimento
-      'investment': FontAwesomeIcons.chartLine,
-      'investimento': FontAwesomeIcons.chartLine,
-      'investments': FontAwesomeIcons.chartLine,
-      'stocks': FontAwesomeIcons.arrowTrendUp,
-      'stonks': FontAwesomeIcons.arrowTrendUp,
-      'chart': FontAwesomeIcons.chartLine,
+      'investment': AppIcons.chartLine,
+      'investimento': AppIcons.chartLine,
+      'investments': AppIcons.chartLine,
+      'stocks': AppIcons.arrowTrendUp,
+      'stonks': AppIcons.arrowTrendUp,
+      'chart': AppIcons.chartLine,
       
       // Educação
-      'education': FontAwesomeIcons.book,
-      'educacao': FontAwesomeIcons.book,
-      'school': FontAwesomeIcons.graduationCap,
-      'book': FontAwesomeIcons.book,
-      'books': FontAwesomeIcons.book,
-      'livros': FontAwesomeIcons.book,
-      'bookopen': FontAwesomeIcons.bookOpen,
+      'education': AppIcons.book,
+      'educacao': AppIcons.book,
+      'school': AppIcons.graduationCap,
+      'book': AppIcons.book,
+      'books': AppIcons.book,
+      'livros': AppIcons.book,
+      'bookopen': AppIcons.bookOpen,
       
       // Salário
-      'salary': FontAwesomeIcons.moneyBillWave,
-      'salario': FontAwesomeIcons.moneyBillWave,
-      'income': FontAwesomeIcons.moneyBillWave,
-      'wage': FontAwesomeIcons.moneyBillWave,
-      'money': FontAwesomeIcons.moneyBill,
-      'wallet': FontAwesomeIcons.wallet,
-      'coins': FontAwesomeIcons.coins,
+      'salary': AppIcons.moneyBillWave,
+      'salario': AppIcons.moneyBillWave,
+      'income': AppIcons.moneyBillWave,
+      'wage': AppIcons.moneyBillWave,
+      'money': AppIcons.moneyBill,
+      'wallet': AppIcons.wallet,
+      'coins': AppIcons.coins,
       
       // Transporte
-      'transport': FontAwesomeIcons.bus,
-      'transporte': FontAwesomeIcons.bus,
-      'car': FontAwesomeIcons.car,
-      'vehicle': FontAwesomeIcons.car,
-      'veiculo': FontAwesomeIcons.car,
-      'bus': FontAwesomeIcons.bus,
-      'train': FontAwesomeIcons.train,
-      'bicycle': FontAwesomeIcons.bicycle,
-      'motorcycle': FontAwesomeIcons.motorcycle,
-      'taxi': FontAwesomeIcons.taxi,
+      'transport': AppIcons.bus,
+      'transporte': AppIcons.bus,
+      'car': AppIcons.car,
+      'vehicle': AppIcons.car,
+      'veiculo': AppIcons.car,
+      'bus': AppIcons.bus,
+      'train': AppIcons.train,
+      'bicycle': AppIcons.bicycle,
+      'motorcycle': AppIcons.motorcycle,
+      'taxi': AppIcons.taxi,
       
       // Moradia
-      'house': FontAwesomeIcons.house,
-      'home': FontAwesomeIcons.house,
-      'housing': FontAwesomeIcons.house,
-      'moradia': FontAwesomeIcons.house,
+      'house': AppIcons.house,
+      'home': AppIcons.house,
+      'housing': AppIcons.house,
+      'moradia': AppIcons.house,
       
       // Saúde
-      'health': FontAwesomeIcons.heartPulse,
-      'saude': FontAwesomeIcons.heartPulse,
-      'medical': FontAwesomeIcons.heartPulse,
+      'health': AppIcons.heartPulse,
+      'saude': AppIcons.heartPulse,
+      'medical': AppIcons.heartPulse,
       
       // Lazer/Entretenimento
-      'entertainment': FontAwesomeIcons.gamepad,
-      'leisure': FontAwesomeIcons.gamepad,
-      'lazer': FontAwesomeIcons.gamepad,
+      'entertainment': AppIcons.gamepad,
+      'leisure': AppIcons.gamepad,
+      'lazer': AppIcons.gamepad,
       
       // Contas/Utilidades
-      'bills': FontAwesomeIcons.fileInvoiceDollar,
-      'contas': FontAwesomeIcons.fileInvoiceDollar,
-      'utilities': FontAwesomeIcons.fileInvoiceDollar,
+      'bills': AppIcons.fileInvoiceDollar,
+      'contas': AppIcons.fileInvoiceDollar,
+      'utilities': AppIcons.fileInvoiceDollar,
       
       // Categorias Empresariais (Business)
-      'boxes-stacked': FontAwesomeIcons.boxesStacked,
-      'materials': FontAwesomeIcons.boxesStacked,
-      'material': FontAwesomeIcons.boxesStacked,
-      'file-invoice-dollar': FontAwesomeIcons.fileInvoiceDollar,
-      'taxes': FontAwesomeIcons.fileInvoiceDollar,
-      'impostos': FontAwesomeIcons.fileInvoiceDollar,
-      'bullhorn': FontAwesomeIcons.bullhorn,
-      'marketing': FontAwesomeIcons.bullhorn,
-      'user-gear': FontAwesomeIcons.userGear,
-      'outsourcing': FontAwesomeIcons.userGear,
-      'servicos-terceirizados': FontAwesomeIcons.userGear,
-      'cloud': FontAwesomeIcons.cloud,
-      'nuvem': FontAwesomeIcons.cloud,
-      'internet': FontAwesomeIcons.wifi,
-      'wifi': FontAwesomeIcons.wifi,
-      'screwdriver-wrench': FontAwesomeIcons.screwdriverWrench,
-      'tools': FontAwesomeIcons.screwdriverWrench,
-      'ferramentas': FontAwesomeIcons.screwdriverWrench,
-      'credit-card': FontAwesomeIcons.creditCard,
-      'fees': FontAwesomeIcons.creditCard,
-      'tarifas': FontAwesomeIcons.creditCard,
-      'truck': FontAwesomeIcons.truck,
-      'logistics': FontAwesomeIcons.truck,
-      'logistica': FontAwesomeIcons.truck,
-      'handshake': FontAwesomeIcons.handshake,
-      'commission': FontAwesomeIcons.handshake,
-      'comissao': FontAwesomeIcons.handshake,
+      'boxes-stacked': AppIcons.boxesStacked,
+      'materials': AppIcons.boxesStacked,
+      'material': AppIcons.boxesStacked,
+      'file-invoice-dollar': AppIcons.fileInvoiceDollar,
+      'taxes': AppIcons.fileInvoiceDollar,
+      'impostos': AppIcons.fileInvoiceDollar,
+      'bullhorn': AppIcons.bullhorn,
+      'marketing': AppIcons.bullhorn,
+      'user-gear': AppIcons.userGear,
+      'outsourcing': AppIcons.userGear,
+      'servicos-terceirizados': AppIcons.userGear,
+      'cloud': AppIcons.cloud,
+      'nuvem': AppIcons.cloud,
+      'internet': AppIcons.wifi,
+      'wifi': AppIcons.wifi,
+      'screwdriver-wrench': AppIcons.screwdriverWrench,
+      'tools': AppIcons.screwdriverWrench,
+      'ferramentas': AppIcons.screwdriverWrench,
+      'credit-card': AppIcons.creditCard,
+      'fees': AppIcons.creditCard,
+      'tarifas': AppIcons.creditCard,
+      'truck': AppIcons.truck,
+      'logistics': AppIcons.truck,
+      'logistica': AppIcons.truck,
+      'handshake': AppIcons.handshake,
+      'commission': AppIcons.handshake,
+      'comissao': AppIcons.handshake,
       
       // Outros
-      'box': FontAwesomeIcons.box,
-      'pet': FontAwesomeIcons.paw,
-      'travel': FontAwesomeIcons.planeDeparture,
-      'viagem': FontAwesomeIcons.planeDeparture,
-      'fitness': FontAwesomeIcons.dumbbell,
-      'gym': FontAwesomeIcons.dumbbell,
-      'academia': FontAwesomeIcons.dumbbell,
-      'beauty': FontAwesomeIcons.scissors,
-      'beleza': FontAwesomeIcons.scissors,
-      'electronics': FontAwesomeIcons.mobileScreen,
-      'eletronicos': FontAwesomeIcons.mobileScreen,
-      'gift': FontAwesomeIcons.gift,
-      'presente': FontAwesomeIcons.gift,
-      'subscription': FontAwesomeIcons.tv,
-      'streaming': FontAwesomeIcons.tv,
-      'assinatura': FontAwesomeIcons.tv,
-      'others': FontAwesomeIcons.circleQuestion,
-      'outros': FontAwesomeIcons.circleQuestion,
-      'other': FontAwesomeIcons.box,
+      'box': AppIcons.box,
+      'pet': AppIcons.paw,
+      'travel': AppIcons.planeDeparture,
+      'viagem': AppIcons.planeDeparture,
+      'fitness': AppIcons.dumbbell,
+      'gym': AppIcons.dumbbell,
+      'academia': AppIcons.dumbbell,
+      'beauty': AppIcons.scissors,
+      'beleza': AppIcons.scissors,
+      'electronics': AppIcons.mobileScreen,
+      'eletronicos': AppIcons.mobileScreen,
+      'gift': AppIcons.gift,
+      'presente': AppIcons.gift,
+      'subscription': AppIcons.tv,
+      'streaming': AppIcons.tv,
+      'assinatura': AppIcons.tv,
+      'others': AppIcons.circleQuestion,
+      'outros': AppIcons.circleQuestion,
+      'other': AppIcons.box,
     };
 
     final lowerIcon = iconString.toLowerCase();
-    return iconMap[lowerIcon] ?? FontAwesomeIcons.circleQuestion;
+    return iconMap[lowerIcon] ?? AppIcons.circleQuestion;
   }
 
   /// Converte hex string para Color

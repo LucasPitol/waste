@@ -8,7 +8,7 @@ import 'package:meudin_ai_app/models/dtos/response_dto.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/pages/new_spend/widgets/category_picker_bottom_sheet.dart';
 import 'package:meudin_ai_app/utils/centavos_currency_formatter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 
 class NewSpendPageController extends GetxController {
@@ -22,7 +22,7 @@ class NewSpendPageController extends GetxController {
 
   SpendingCategory? selectedCategory;
   String selectedCategoryName = 'Selecione';
-  IconData selectedCategoryIcon = FontAwesomeIcons.shapes;
+  IconData selectedCategoryIcon = AppIcons.shapes;
 
   List<SpendingCategory> categories = [];
   late SpendingCategoryService _spendingCategoryService;

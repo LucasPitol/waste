@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/pages/faq/faq_page_controller.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class FAQPage extends StatelessWidget {
   const FAQPage({super.key});
@@ -19,8 +19,8 @@ class FAQPage extends StatelessWidget {
             backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 size: 20,
               ),
@@ -128,10 +128,10 @@ class FAQPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  FaIcon(
+                  AppIcon(
                     isExpanded 
-                        ? FontAwesomeIcons.chevronUp
-                        : FontAwesomeIcons.chevronDown,
+                        ? AppIcons.chevronUp
+                        : AppIcons.chevronDown,
                     size: 12,
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4) ?? Colors.grey.shade400,
                   ),

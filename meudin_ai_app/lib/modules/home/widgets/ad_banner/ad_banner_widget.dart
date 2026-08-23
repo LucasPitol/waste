@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/models/ad_banner.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AdBannerWidget extends StatelessWidget {
@@ -61,8 +61,8 @@ class AdBannerWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Center(
-                child: FaIcon(
-                  FontAwesomeIcons.bullhorn,
+                child: AppIcon(
+                  AppIcons.bullhorn,
                   size: 18,
                   color: Styles.primaryColor,
                 ),
@@ -110,8 +110,8 @@ class AdBannerWidget extends StatelessWidget {
               ),
             ),
             // Indicador de ação discreto
-            FaIcon(
-              FontAwesomeIcons.chevronRight,
+            AppIcon(
+              AppIcons.chevronRight,
               size: 12,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.3) ?? Colors.grey.shade400,
             ),

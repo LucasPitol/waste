@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/models/subscription_plan.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class PlanCarouselWidget extends StatelessWidget {
   final List<SubscriptionPlan> plans;
@@ -140,8 +140,8 @@ class PlanCarouselWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                FaIcon(
-                  FontAwesomeIcons.chevronRight,
+                AppIcon(
+                  AppIcons.chevronRight,
                   size: 10,
                   color: Styles.primaryColor,
                 ),

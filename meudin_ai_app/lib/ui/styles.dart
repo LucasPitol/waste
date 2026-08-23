@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:meudin_ai_app/ui/app_typography.dart';
 
 class Styles {
   static const Color primaryColor = Color(0xffAC6CFF);
@@ -20,7 +20,7 @@ class Styles {
     ),
     primaryColor: primaryColor,
     scaffoldBackgroundColor: whiteConfortColor,
-    textTheme: GoogleFonts.montserratTextTheme(),
+    textTheme: AppTypography.textTheme(ThemeData.light().textTheme),
     colorScheme: const ColorScheme.light(
       primary: primaryColor,
       surface: whiteColor,
@@ -38,7 +38,7 @@ class Styles {
     ),
     primaryColor: primaryColor,
     scaffoldBackgroundColor: const Color(0xFF121212),
-    textTheme: GoogleFonts.montserratTextTheme(
+    textTheme: AppTypography.textTheme(
       ThemeData.dark().textTheme.copyWith(
         bodyLarge: const TextStyle(color: Colors.white),
         bodyMedium: const TextStyle(color: Colors.white70),

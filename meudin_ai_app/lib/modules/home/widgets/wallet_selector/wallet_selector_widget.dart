@@ -1,5 +1,5 @@
 import 'package:meudin_ai_app/modules/home/widgets/wallet_selector/wallet_selector_widget_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/models/wallet.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +30,7 @@ class WalletSelectorWidget extends StatelessWidget {
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 10),
-                child: Icon(
-                  Icons.maximize,
+                child: Icon(Icons.maximize,
                   color: theme.brightness == Brightness.dark
                       ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) ?? Colors.grey
                       : Styles.grey,
@@ -55,8 +54,8 @@ class WalletSelectorWidget extends StatelessWidget {
                         textColor: Styles.primaryColor,
                       ),
                       const SizedBox(width: 16),
-                      const FaIcon(
-                        FontAwesomeIcons.plus,
+                      const AppIcon(
+                        AppIcons.plus,
                         color: Styles.primaryColor,
                         size: 20,
                       ),
@@ -128,8 +127,8 @@ class WalletSelectorWidget extends StatelessWidget {
                               if (isCurrentWallet)
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.check,
+                                  child: AppIcon(
+                                    AppIcons.check,
                                     size: 14,
                                     color: Styles.primaryColor,
                                   ),
@@ -174,8 +173,8 @@ class WalletSelectorWidget extends StatelessWidget {
           ),
           if (isOwner)
             IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.ellipsisVertical,
+              icon: AppIcon(
+                AppIcons.ellipsisVertical,
                 size: 16,
                 color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey,
               ),

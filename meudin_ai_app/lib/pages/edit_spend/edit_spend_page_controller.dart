@@ -11,7 +11,7 @@ import 'package:meudin_ai_app/pages/new_spend/widgets/category_picker_bottom_she
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
 import 'package:flutter_multi_formatter/formatters/currency_input_formatter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class EditSpendPageController extends GetxController {
   late TransactionService _transactionService;
@@ -26,7 +26,7 @@ class EditSpendPageController extends GetxController {
 
   SpendingCategory? selectedCategory;
   String selectedCategoryName = 'Selecione';
-  IconData selectedCategoryIcon = FontAwesomeIcons.shapes;
+  IconData selectedCategoryIcon = AppIcons.shapes;
 
   List<SpendingCategory> categories = [];
   late SpendingCategoryService _spendingCategoryService;
@@ -238,8 +238,8 @@ class EditSpendPageController extends GetxController {
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.triangleExclamation,
+                    child: AppIcon(
+                      AppIcons.triangleExclamation,
                       color: Colors.red,
                       size: 24,
                     ),

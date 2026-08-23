@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 
@@ -238,7 +238,7 @@ class _CategoryCardState extends State<_CategoryCard> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
-                child: FaIcon(
+                child: AppIcon(
                   widget.category.iconData,
                   size: 24,
                   color: widget.category.colorData,

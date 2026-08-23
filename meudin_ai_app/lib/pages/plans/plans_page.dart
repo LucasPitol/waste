@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/pages/plans/plans_page_controller.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
@@ -21,8 +21,8 @@ class PlansPage extends StatelessWidget {
             backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 color:
                     theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 size: 20,
@@ -202,8 +202,7 @@ class PlansPage extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.check_circle_rounded,
+                  Icon(Icons.check_circle_rounded,
                     size: 20,
                     color: Styles.primaryColor,
                   ),
@@ -302,8 +301,7 @@ class PlansPage extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.check_circle_rounded,
+                  Icon(Icons.check_circle_rounded,
                     size: 18,
                     color: Styles.primaryColor.withValues(alpha: 0.8),
                   ),

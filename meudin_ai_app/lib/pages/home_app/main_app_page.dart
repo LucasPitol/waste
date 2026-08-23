@@ -1,7 +1,7 @@
 import 'package:meudin_ai_app/modules/home/home_module_controller.dart';
 import 'package:meudin_ai_app/modules/insights/insights_module_controller.dart';
 import 'package:meudin_ai_app/pages/home_app/main_app_page_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:meudin_ai_app/routes/app_routes.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
@@ -75,16 +75,20 @@ class MainAppPage extends StatelessWidget {
                   ),
                   child: SpeedDial(
                     backgroundColor: theme.colorScheme.surface,
-                    icon: FontAwesomeIcons.plus,
+                    icon: AppIcons.plus,
                     foregroundColor: Styles.primaryColor,
                     overlayColor: theme.colorScheme.surface,
-                    activeIcon: FontAwesomeIcons.xmark,
+                    activeIcon: AppIcons.xmark,
+                    iconTheme: IconThemeData(
+                      size: AppIcon.renderSize(24),
+                      color: Styles.primaryColor,
+                    ),
                     elevation: 8,
                     children: [
                       SpeedDialChild(
                         backgroundColor: theme.scaffoldBackgroundColor,
-                        child: const FaIcon(
-                          FontAwesomeIcons.arrowTrendDown,
+                        child: const AppIcon(
+                          AppIcons.arrowTrendDown,
                           color: Colors.red,
                         ),
                         onTap: () async {
@@ -96,8 +100,8 @@ class MainAppPage extends StatelessWidget {
                       ),
                       SpeedDialChild(
                         backgroundColor: theme.scaffoldBackgroundColor,
-                        child: const FaIcon(
-                          FontAwesomeIcons.arrowTrendUp,
+                        child: const AppIcon(
+                          AppIcons.arrowTrendUp,
                           color: Colors.green,
                         ),
                         onTap: () async {
@@ -113,15 +117,19 @@ class MainAppPage extends StatelessWidget {
                 )
               : SpeedDial(
               backgroundColor: Styles.whiteColor,
-              icon: FontAwesomeIcons.plus,
+              icon: AppIcons.plus,
               foregroundColor: Styles.primaryColor,
               overlayColor: Styles.whiteColor,
-              activeIcon: FontAwesomeIcons.xmark,
+              activeIcon: AppIcons.xmark,
+              iconTheme: IconThemeData(
+                size: AppIcon.renderSize(24),
+                color: Styles.primaryColor,
+              ),
               children: [
               SpeedDialChild(
                   backgroundColor: theme.scaffoldBackgroundColor,
-                  child: const FaIcon(
-                    FontAwesomeIcons.arrowTrendDown,
+                  child: const AppIcon(
+                    AppIcons.arrowTrendDown,
                     color: Colors.red,
                   ),
                   onTap: () async {
@@ -132,8 +140,8 @@ class MainAppPage extends StatelessWidget {
                   }),
               SpeedDialChild(
                 backgroundColor: theme.scaffoldBackgroundColor,
-                child: const FaIcon(
-                  FontAwesomeIcons.arrowTrendUp,
+                child: const AppIcon(
+                  AppIcons.arrowTrendUp,
                   color: Colors.green,
                 ),
                 onTap: () async {
@@ -161,8 +169,12 @@ class MainAppPage extends StatelessWidget {
                   onPressed: () {
                     controller.onItemTapped(0);
                   },
-                  icon: FaIcon(
-                    FontAwesomeIcons.house,
+                  iconSize: AppIcon.renderSize(24),
+                  icon: AppIcon(
+                    controller.selectedIndex == 0
+                        ? AppIcons.houseFilled
+                        : AppIcons.house,
+                    size: 24,
                     color: controller.selectedIndex == 0
                         ? Styles.primaryColor
                         : Styles.grey,
@@ -175,8 +187,12 @@ class MainAppPage extends StatelessWidget {
                   onPressed: () {
                     controller.onItemTapped(1);
                   },
-                  icon: FaIcon(
-                    FontAwesomeIcons.chartPie,
+                  iconSize: AppIcon.renderSize(24),
+                  icon: AppIcon(
+                    controller.selectedIndex == 1
+                        ? AppIcons.chartDonutFilled
+                        : AppIcons.chartDonut,
+                    size: 24,
                     color: controller.selectedIndex == 1
                         ? Styles.primaryColor
                         : Styles.grey,

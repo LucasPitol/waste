@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
@@ -19,8 +19,8 @@ class EmptyStateWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FaIcon(
-            FontAwesomeIcons.inbox,
+          AppIcon(
+            AppIcons.inbox,
             size: 56,
             color: theme.textTheme.bodyMedium?.color?.withOpacity(0.3) 
                 ?? Colors.grey.shade400,

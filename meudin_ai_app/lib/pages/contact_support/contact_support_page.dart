@@ -5,7 +5,7 @@ import 'package:meudin_ai_app/ui/joy_elevated_button.dart';
 import 'package:meudin_ai_app/ui/joy_text_form_field.dart';
 import 'package:meudin_ai_app/ui/joy_loading_block.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class ContactSupportPage extends StatelessWidget {
   const ContactSupportPage({super.key});
@@ -22,8 +22,8 @@ class ContactSupportPage extends StatelessWidget {
             backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 size: 20,
               ),
@@ -161,8 +161,7 @@ class ContactSupportPage extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(
-                              Icons.info_outline,
+                            Icon(Icons.info_outline,
                               color: theme.brightness == Brightness.dark
                                   ? Colors.blue.shade300
                                   : Colors.blue.shade700,

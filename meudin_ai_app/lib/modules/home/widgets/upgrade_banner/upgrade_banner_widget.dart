@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 enum UpgradeBannerVersion {
   neutral,    // Opção 1 — Neutra (mais segura)
@@ -74,8 +74,8 @@ class UpgradeBannerWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: const Center(
-                child: FaIcon(
-                  FontAwesomeIcons.star,
+                child: AppIcon(
+                  AppIcons.star,
                   size: 12,
                   color: Styles.primaryColor,
                 ),
@@ -112,8 +112,8 @@ class UpgradeBannerWidget extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             // Seta discreta
-            FaIcon(
-              FontAwesomeIcons.chevronRight,
+            AppIcon(
+              AppIcons.chevronRight,
               size: 11,
               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.35) ?? Colors.grey.shade400,
             ),

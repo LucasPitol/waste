@@ -1,4 +1,4 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_skeleton.dart';
 import 'package:meudin_ai_app/modules/home/widgets/app_bar/home_app_bar.dart';
@@ -69,8 +69,8 @@ class HomeModule extends StatelessWidget {
                                                     ),
                                                   ),
                                                   const SizedBox(width: 4),
-                                                  const FaIcon(
-                                                    FontAwesomeIcons.sortDown,
+                                                  const AppIcon(
+                                                    AppIcons.arrowsUpDown,
                                                     color: Colors.grey,
                                                     size: 14,
                                                   ),

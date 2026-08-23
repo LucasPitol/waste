@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/pages/new_revenue/new_revenue_page_controller.dart';
 import 'package:meudin_ai_app/utils/centavos_currency_formatter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class NewRevenuePage extends StatelessWidget {
   const NewRevenuePage({super.key});
@@ -17,8 +17,8 @@ class NewRevenuePage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 size: 20,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
               ),
@@ -63,8 +63,8 @@ class NewRevenuePage extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.dollarSign,
+                      AppIcon(
+                        AppIcons.dollarSign,
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
                             ?? Colors.grey,
@@ -113,8 +113,8 @@ class NewRevenuePage extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.pen,
+                      AppIcon(
+                        AppIcons.pen,
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
                             ?? Colors.grey,
@@ -160,8 +160,8 @@ class NewRevenuePage extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.calendar,
+                      AppIcon(
+                        AppIcons.calendar,
                         size: 18, 
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) 
                             ?? Colors.grey,

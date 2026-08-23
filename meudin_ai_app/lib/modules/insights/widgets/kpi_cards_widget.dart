@@ -152,8 +152,10 @@ class _KpiCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             Utils.getAmountFormated(value),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 16.0,
+              fontSize: 15.0,
               fontWeight: FontWeight.w600,
               color: color,
             ),

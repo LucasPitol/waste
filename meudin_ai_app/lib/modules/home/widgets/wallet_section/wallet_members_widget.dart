@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/models/wallet_member.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_controller.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_skeleton.dart';
@@ -53,8 +53,7 @@ class WalletMembersWidget extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Icon(
-                Icons.error_outline,
+              Icon(Icons.error_outline,
                 color: Colors.red,
                 size: 48,
               ),
@@ -118,8 +117,8 @@ class WalletMembersWidget extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const FaIcon(
-                        FontAwesomeIcons.plus,
+                      const AppIcon(
+                        AppIcons.plus,
                         size: 14,
                         color: Styles.primaryColor,
                       ),
@@ -241,8 +240,8 @@ class WalletMembersWidget extends StatelessWidget {
                       ),
                       if (canRemove)
                         PopupMenuButton<String>(
-                          icon: FaIcon(
-                            FontAwesomeIcons.ellipsisVertical,
+                          icon: AppIcon(
+                            AppIcons.ellipsisVertical,
                             size: 16,
                             color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade600,
                           ),
@@ -256,8 +255,8 @@ class WalletMembersWidget extends StatelessWidget {
                               value: 'remove',
                               child: Row(
                                 children: [
-                                  const FaIcon(
-                                    FontAwesomeIcons.trash,
+                                  const AppIcon(
+                                    AppIcons.trash,
                                     size: 14,
                                     color: Colors.red,
                                   ),

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:meudin_ai_app/pages/profile/profile_page_controller.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/ui/subscription/manage_subscription_button.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -20,8 +20,8 @@ class ProfilePage extends StatelessWidget {
             backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 size: 20,
               ),
@@ -64,8 +64,8 @@ class ProfilePage extends StatelessWidget {
                                 shape: BoxShape.circle,
                               ),
                               child: const Center(
-                                child: FaIcon(
-                                  FontAwesomeIcons.solidUser,
+                                child: AppIcon(
+                                  AppIcons.solidUser,
                                   size: 32,
                                   color: Styles.primaryColor,
                                 ),
@@ -107,7 +107,7 @@ class ProfilePage extends StatelessWidget {
                         context,
                         theme,
                         controller,
-                        icon: FontAwesomeIcons.palette,
+                        icon: AppIcons.palette,
                         title: 'Tema',
                         subtitle: controller.currentThemeName,
                         onTap: () => _showThemeSelector(context, controller),
@@ -122,7 +122,7 @@ class ProfilePage extends StatelessWidget {
                         context,
                         theme,
                         controller,
-                        icon: FontAwesomeIcons.circleQuestion,
+                        icon: AppIcons.circleQuestion,
                         title: 'FAQ',
                         onTap: controller.openFAQ,
                       ),
@@ -131,7 +131,7 @@ class ProfilePage extends StatelessWidget {
                       //   context,
                       //   theme,
                       //   controller,
-                      //   icon: FontAwesomeIcons.message,
+                      //   icon: AppIcons.message,
                       //   title: 'Enviar sugestão',
                       //   onTap: controller.sendFeedback,
                       // ),
@@ -140,7 +140,7 @@ class ProfilePage extends StatelessWidget {
                         context,
                         theme,
                         controller,
-                        icon: FontAwesomeIcons.headset,
+                        icon: AppIcons.headset,
                         title: 'Falar com suporte',
                         onTap: controller.contactSupport,
                       ),
@@ -153,7 +153,7 @@ class ProfilePage extends StatelessWidget {
                         context,
                         theme,
                         controller,
-                        icon: FontAwesomeIcons.circleInfo,
+                        icon: AppIcons.circleInfo,
                         title: 'Sobre o Meudin',
                         onTap: () => _showAboutBottomSheet(context, controller),
                       ),
@@ -162,7 +162,7 @@ class ProfilePage extends StatelessWidget {
                         context,
                         theme,
                         controller,
-                        icon: FontAwesomeIcons.fileLines,
+                        icon: AppIcons.fileLines,
                         title: 'Termos de uso',
                         onTap: controller.openTerms,
                       ),
@@ -171,7 +171,7 @@ class ProfilePage extends StatelessWidget {
                         context,
                         theme,
                         controller,
-                        icon: FontAwesomeIcons.shield,
+                        icon: AppIcons.shield,
                         title: 'Política de privacidade',
                         onTap: controller.openPrivacyPolicy,
                       ),
@@ -227,21 +227,21 @@ class ProfilePage extends StatelessWidget {
                 controller,
                 ThemeMode.system,
                 'Sistema',
-                FontAwesomeIcons.desktop,
+                AppIcons.desktop,
               ),
               _buildThemeOption(
                 context,
                 controller,
                 ThemeMode.light,
                 'Claro',
-                FontAwesomeIcons.sun,
+                AppIcons.sun,
               ),
               _buildThemeOption(
                 context,
                 controller,
                 ThemeMode.dark,
                 'Escuro',
-                FontAwesomeIcons.moon,
+                AppIcons.moon,
               ),
               const SizedBox(height: 10),
             ],
@@ -350,7 +350,7 @@ class ProfilePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(
           children: [
-            FaIcon(
+            AppIcon(
               icon,
               size: 20,
               color: isSelected ? Styles.primaryColor : theme.textTheme.bodyMedium?.color ?? Styles.grey,
@@ -367,8 +367,8 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              const FaIcon(
-                FontAwesomeIcons.check,
+              const AppIcon(
+                AppIcons.check,
                 size: 18,
                 color: Styles.primaryColor,
               ),
@@ -433,7 +433,7 @@ class ProfilePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(
-                  child: FaIcon(
+                  child: AppIcon(
                     icon,
                     size: isPrimary ? 16 : 14,
                     color: Styles.primaryColor,
@@ -470,8 +470,8 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             if (showChevron && isClickable)
-              FaIcon(
-                FontAwesomeIcons.chevronRight,
+              AppIcon(
+                AppIcons.chevronRight,
                 size: 12,
                 color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4) ?? Colors.grey.shade400,
               ),
@@ -519,8 +519,8 @@ class ProfilePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Center(
-                child: FaIcon(
-                  FontAwesomeIcons.arrowRightFromBracket,
+                child: AppIcon(
+                  AppIcons.arrowRightFromBracket,
                   size: 14,
                   color: Colors.red,
                 ),
@@ -595,8 +595,8 @@ class ProfilePage extends StatelessWidget {
                   ],
                 ),
                 child: const Center(
-                  child: FaIcon(
-                    FontAwesomeIcons.crown,
+                  child: AppIcon(
+                    AppIcons.crown,
                     size: 20,
                     color: Colors.white,
                   ),

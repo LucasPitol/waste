@@ -1,5 +1,5 @@
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
+import 'package:meudin_ai_app/ui/app_typography.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 
 class JoyLogo extends StatelessWidget {
@@ -16,7 +16,7 @@ class JoyLogo extends StatelessWidget {
       ).createShader(bounds),
       child: Text(
         'Meudin',
-        style: GoogleFonts.inter(
+        style: AppTypography.textStyle(
           fontSize: 40,
           fontWeight: FontWeight.w700,
           color: Colors.white,

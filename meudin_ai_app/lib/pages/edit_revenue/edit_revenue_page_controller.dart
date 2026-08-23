@@ -6,7 +6,7 @@ import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class EditRevenuePageController extends GetxController {
   late TransactionService _transactionService;
@@ -190,8 +190,8 @@ class EditRevenuePageController extends GetxController {
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.triangleExclamation,
+                    child: AppIcon(
+                      AppIcons.triangleExclamation,
                       color: Colors.red,
                       size: 24,
                     ),

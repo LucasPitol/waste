@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/pages/add_member/add_member_page_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 
 class AddMemberPage extends StatelessWidget {
   const AddMemberPage({super.key});
@@ -23,8 +23,8 @@ class AddMemberPage extends StatelessWidget {
               color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
             ),
             leading: IconButton(
-              icon: FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: AppIcon(
+                AppIcons.arrowLeft,
                 color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                 size: 20,
               ),
@@ -66,8 +66,8 @@ class AddMemberPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: Row(
                     children: [
-                      FaIcon(
-                        FontAwesomeIcons.envelope,
+                      AppIcon(
+                        AppIcons.envelope,
                         size: 18,
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey,
                       ),

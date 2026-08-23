@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/monthly_income_expense/monthly_income_expense_bar_chart_skeleton.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/monthly_income_expense/monthly_income_expense_chart_data.dart';
@@ -432,7 +432,7 @@ class _ChartModeToggle extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _ToggleSegment(
-          icon: FontAwesomeIcons.chartSimple,
+          icon: AppIcons.chartSimple,
           tooltip: 'Comparativo',
           isSelected: mode == MonthlyIncomeExpenseChartMode.comparative,
           inactiveColor: inactiveColor,
@@ -440,7 +440,7 @@ class _ChartModeToggle extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         _ToggleSegment(
-          icon: FontAwesomeIcons.scaleBalanced,
+          icon: AppIcons.scaleBalanced,
           tooltip: 'Saldo',
           isSelected: mode == MonthlyIncomeExpenseChartMode.balance,
           inactiveColor: inactiveColor,
@@ -475,7 +475,7 @@ class _ToggleSegment extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: FaIcon(
+          child: AppIcon(
             icon,
             size: 18,
             color: isSelected ? Styles.primaryColor : inactiveColor,

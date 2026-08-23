@@ -1,5 +1,5 @@
 import 'package:meudin_ai_app/modules/home/widgets/app_bar/home_app_bar_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,8 +20,8 @@ class HomeAppBar extends StatelessWidget {
             children: [
               const JoyLogo(),
               IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.solidCircleUser,
+                icon: AppIcon(
+                  AppIcons.solidCircleUser,
                   color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
                   size: 22,
                 ),

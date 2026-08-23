@@ -1,4 +1,4 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/pages/sign_up/sign_up_page_controller.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
@@ -48,8 +48,8 @@ class SignUpPage extends StatelessWidget {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const FaIcon(
-                          FontAwesomeIcons.arrowLeft,
+                        icon: const AppIcon(
+                          AppIcons.arrowLeft,
                           color: Styles.primaryTextColor,
                           size: 20,
                         ),

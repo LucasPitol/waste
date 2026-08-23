@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/models/category_expense.dart';
 import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
@@ -75,7 +75,7 @@ class ExpenseCategoryVisuals {
 
   static ExpenseCategoryVisual revenueVisual() {
     return const ExpenseCategoryVisual(
-      icon: FontAwesomeIcons.arrowTrendUp,
+      icon: AppIcons.arrowTrendUp,
       color: revenueColor,
     );
   }
@@ -208,7 +208,7 @@ class ExpenseCategoryIcon extends StatelessWidget {
       width: size,
       height: size,
       child: Center(
-        child: FaIcon(
+        child: AppIcon(
           visual.icon,
           size: size,
           color: visual.color,
