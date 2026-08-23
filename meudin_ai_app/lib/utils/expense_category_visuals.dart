@@ -191,29 +191,3 @@ class ExpenseCategoryVisuals {
     return chartCategories;
   }
 }
-
-class ExpenseCategoryIcon extends StatelessWidget {
-  final ExpenseCategoryVisual visual;
-  final double size;
-
-  const ExpenseCategoryIcon({
-    super.key,
-    required this.visual,
-    this.size = 17,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Center(
-        child: AppIcon(
-          visual.icon,
-          size: size,
-          color: visual.color,
-        ),
-      ),
-    );
-  }
-}

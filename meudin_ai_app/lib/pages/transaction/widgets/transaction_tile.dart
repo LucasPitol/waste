@@ -5,6 +5,7 @@ import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/pages/transaction/transactions_page_controller.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
+import 'package:meudin_ai_app/pages/transaction/widgets/transaction_category_badge.dart';
 import 'package:meudin_ai_app/utils/expense_category_visuals.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
 
@@ -51,7 +52,7 @@ class TransactionTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ExpenseCategoryIcon(visual: leadingVisual),
+            TransactionCategoryBadge(visual: leadingVisual),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
