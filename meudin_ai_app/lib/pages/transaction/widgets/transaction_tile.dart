@@ -24,7 +24,7 @@ class TransactionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     String title = transaction.reason ?? '';
-    String date = Utils.formatDateDDMMYY(transaction.transactionDate);
+    String date = Utils.formatTransactionListDate(transaction.transactionDate);
     String amountStr = Utils.getAmountFormated(transaction.amount!.abs());
     bool isPositive = transaction.amount! > 0;
     final transactionType = isPositive ? 'revenue' : 'waste';

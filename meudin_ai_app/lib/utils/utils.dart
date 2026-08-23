@@ -22,4 +22,25 @@ class Utils {
       return DateFormat.yMd(Constants.ptLanguageCode).format(value);
     }
   }
+
+  static String formatTransactionListDate(DateTime? value) {
+    if (value == null) {
+      return Constants.EMPTY_STRING;
+    }
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final date = DateTime(value.year, value.month, value.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    if (date == today) return 'Hoje';
+    if (date == yesterday) return 'Ontem';
+
+    const monthLabels = [
+      'jan', 'fev', 'mar', 'abr', 'mai', 'jun',
+      'jul', 'ago', 'set', 'out', 'nov', 'dez',
+    ];
+
+    return '${value.day} ${monthLabels[value.month - 1]}';
+  }
 }

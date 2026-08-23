@@ -209,7 +209,7 @@ class WalletVisionWidget extends StatelessWidget {
               child: Column(
                 children: twoFirstTransactionDtoList.map((e) {
                   String title = e.reason ?? '';
-                  String date = Utils.formatDateDDMMYY(e.transactionDate);
+                  String date = Utils.formatTransactionListDate(e.transactionDate);
                   String amountStr = Utils.getAmountFormated(e.amount!);
                   bool isPositive = e.amount! > 0;
 
