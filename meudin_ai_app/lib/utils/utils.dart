@@ -1,10 +1,12 @@
 import 'package:intl/intl.dart';
 import 'package:meudin_ai_app/utils/constants.dart';
-import 'package:money_formatter/money_formatter.dart';
 
 class Utils {
+  static final NumberFormat _amountFormat =
+      NumberFormat('#,##0.00', Constants.ptLanguageCode);
+
   static String getAmountFormated(double amount) {
-    return MoneyFormatter(amount: amount).output.nonSymbol;
+    return _amountFormat.format(amount);
   }
 
   static String formatDateMMMdeYYYY(DateTime? value) {

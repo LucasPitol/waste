@@ -23,6 +23,7 @@ import 'package:meudin_ai_app/services/wallet_service.dart';
 import 'package:meudin_ai_app/services/session_service.dart';
 import 'package:meudin_ai_app/services/local_storage_service.dart';
 import 'package:meudin_ai_app/services/cache_service.dart';
+import 'package:meudin_ai_app/modules/insights/insights_module_controller.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 
 class HomeModuleController extends GetxController {
@@ -377,6 +378,10 @@ class HomeModuleController extends GetxController {
 
     // Ao trocar carteira, busca dados (cache será verificado por carteira)
     updatePageData();
+
+    if (Get.isRegistered<InsightsModuleController>()) {
+      Get.find<InsightsModuleController>().syncIfWalletChanged();
+    }
   }
 
   Future<void> _showWalletMenu(String walletId, String walletName) async {

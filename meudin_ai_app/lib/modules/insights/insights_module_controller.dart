@@ -327,6 +327,26 @@ class InsightsModuleController extends GetxController {
     _planLimitNoticeKey = null;
   }
 
+  void _resetPageData() {
+    transactionDtoList = [];
+    revenue = 0.0;
+    spends = 0.0;
+    balance = 0.0;
+    _categoryExpenses = [];
+    previousPeriodSpends = null;
+    monthlyAverageSpends = null;
+    monthlyAverageRevenue = null;
+  }
+
+  /// Sincroniza com a carteira ativa quando Insights volta ao foco ou a carteira mudou em outra aba.
+  Future<void> syncIfWalletChanged() async {
+    final activeWalletId = UserService.currentUser?.currentWalletId;
+    if (activeWalletId == null || activeWalletId.isEmpty) return;
+    if (activeWalletId == currentWallet.id) return;
+
+    await refreshAll();
+  }
+
   void _maybeShowPlanLimitBottomSheet({
     required bool wasUserAdjusted,
     required String walletId,
@@ -552,9 +572,24 @@ class InsightsModuleController extends GetxController {
   /// Complete refresh - busca transações e calcula todos os dados
   /// [forceRefresh] força busca na API mesmo com cache válido (pull to refresh)
   Future<void> refreshAll({bool forceRefresh = false}) async {
+    if (_refreshAllFuture != null) {
+      return _refreshAllFuture!;
+    }
+
+    _refreshAllFuture = _refreshAllImpl(forceRefresh: forceRefresh);
+    try {
+      await _refreshAllFuture;
+    } finally {
+      _refreshAllFuture = null;
+    }
+  }
+
+  Future<void>? _refreshAllFuture;
+
+  Future<void> _refreshAllImpl({bool forceRefresh = false}) async {
     isRefreshing = true;
     update();
-    
+
     try {
       await refreshUserAndWallet();
       await updatePageData(forceRefresh: forceRefresh);
@@ -576,6 +611,8 @@ class InsightsModuleController extends GetxController {
 
       if (previousWalletId != currentWallet.id) {
         _resetPlanLimitNoticeKey();
+        _resetPageData();
+        update();
       }
     } catch (e) {
       // Handle wallet loading error silently

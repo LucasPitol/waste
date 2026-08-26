@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/currency_input_formatter.dart';
+import 'package:flutter_multi_formatter/formatters/money_input_enums.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
@@ -99,7 +100,10 @@ class EditSpendPage extends StatelessWidget {
                           controller: controller.amountController,
                           keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
-                            CurrencyInputFormatter(leadingSymbol: 'R\$')
+                            CurrencyInputFormatter(
+                              leadingSymbol: 'R\$',
+                              thousandSeparator: ThousandSeparator.Period,
+                            )
                           ],
                           style: TextStyle(
                             color: theme.textTheme.bodyLarge?.color,

@@ -98,6 +98,7 @@ class HomeModule extends StatelessWidget {
                         transactionDtoList: controller.transactionDtoList,
                         twoFirstTransactionDtoList:
                             controller.twoFirstTransactionDtoList,
+                        categories: controller.categories,
                         loading: controller.isRefreshing,
                         currentWalletId: controller.currentWallet.id,
                         isWalletOwner: controller.isWalletOwner,

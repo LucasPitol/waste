@@ -155,7 +155,7 @@ class _KpiCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 15.0,
+              fontSize: 14.0,
               fontWeight: FontWeight.w600,
               color: color,
             ),

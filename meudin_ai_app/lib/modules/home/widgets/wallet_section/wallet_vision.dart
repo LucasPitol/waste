@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_controller.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_members_widget.dart';
@@ -17,6 +18,7 @@ class WalletVisionWidget extends StatelessWidget {
   final double monthSpends;
   final List<Transaction> transactionDtoList;
   final List<Transaction> twoFirstTransactionDtoList;
+  final List<SpendingCategory> categories;
   final VoidCallback? onDateTap;
   final bool loading;
   final String currentWalletId;
@@ -30,6 +32,7 @@ class WalletVisionWidget extends StatelessWidget {
     required this.monthSpends,
     required this.transactionDtoList,
     required this.twoFirstTransactionDtoList,
+    required this.categories,
     required this.loading,
     required this.currentWalletId,
     required this.isWalletOwner,
@@ -187,6 +190,7 @@ class WalletVisionWidget extends StatelessWidget {
                     controller.goToSeeAllTransactionsPage(
                       transactions: transactionDtoList,
                       startDate: startDate,
+                      categories: categories,
                     );
                   },
                   style: TextButton.styleFrom(

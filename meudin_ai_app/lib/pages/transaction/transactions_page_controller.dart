@@ -20,16 +20,22 @@ class TransactionsPageController extends GetxController {
   TransactionsPageController({
     required this.transactions,
     required this.startDate,
+    List<SpendingCategory>? initialCategories,
   }) {
     _transactionService = TransactionService();
     _spendingCategoryService = SpendingCategoryService();
+    if (initialCategories != null && initialCategories.isNotEmpty) {
+      categories = initialCategories;
+    }
     _recalculateChartCategories();
   }
 
   @override
   void onInit() {
     super.onInit();
-    _loadCategories();
+    if (categories.isEmpty) {
+      _loadCategories();
+    }
   }
 
   Future<void> _loadCategories() async {

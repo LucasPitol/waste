@@ -1,3 +1,4 @@
+import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/models/tuple.dart';
 import 'package:meudin_ai_app/models/wallet_member.dart';
@@ -100,10 +101,11 @@ class WalletVisionWidgetController extends GetxController {
   goToSeeAllTransactionsPage({
     required List<Transaction> transactions,
     required DateTime startDate,
+    required List<SpendingCategory> categories,
   }) async {
     final refresh = await Get.toNamed(
       AppRoutes.transactionsListRoute,
-      arguments: [transactions, startDate],
+      arguments: [transactions, startDate, categories],
     );
 
     if (refresh != null && refresh) {

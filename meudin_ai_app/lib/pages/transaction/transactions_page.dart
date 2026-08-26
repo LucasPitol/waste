@@ -1,5 +1,6 @@
 import 'package:meudin_ai_app/pages/transaction/transactions_page_controller.dart';
 import 'package:meudin_ai_app/pages/transaction/widgets/widgets.dart';
+import 'package:meudin_ai_app/models/spending_category.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +11,17 @@ class TransactionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final arugments = Get.arguments;
-    final List<Transaction> transactions = arugments[0];
-    final startDate = arugments[1];
+    final arguments = Get.arguments;
+    final List<Transaction> transactions = arguments[0];
+    final startDate = arguments[1];
+    final List<SpendingCategory>? initialCategories =
+        arguments.length > 2 ? arguments[2] as List<SpendingCategory> : null;
 
     return GetBuilder<TransactionsPageController>(
       init: TransactionsPageController(
         transactions: transactions,
         startDate: startDate,
+        initialCategories: initialCategories,
       ),
       builder: (controller) {
         return Scaffold(
