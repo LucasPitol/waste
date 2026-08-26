@@ -180,9 +180,10 @@ class WalletVisionWidget extends StatelessWidget {
                 Text(
                   'Transações',
                   style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7)
+                        ?? Colors.grey.shade700,
                   ),
                 ),
                 TextButton(
