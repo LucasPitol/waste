@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:meudin_ai_app/services/subscription_service.dart';
+import 'package:meudin_ai_app/services/subscription_management_service.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
-import 'package:meudin_ai_app/ui/joy_text_button.dart';
 
-/// Botão para gerenciar assinatura
-/// Abre a página web de billing com SSO
+/// Botão para gerenciar assinatura.
+/// iOS → App Store | Android → Google Play | Web/Asaas → billing com SSO.
 class ManageSubscriptionButton extends StatelessWidget {
   final String? customText;
   final Color? textColor;
   final double? fontSize;
+  final String? subscriptionProvider;
 
   const ManageSubscriptionButton({
     super.key,
     this.customText,
     this.textColor,
     this.fontSize,
+    this.subscriptionProvider,
   });
 
-  Future<void> _openBillingPage(BuildContext context) async {
+  Future<void> _openManagement(BuildContext context) async {
+    final service = SubscriptionManagementService();
+    var loadingShown = false;
+
     try {
-      // Mostrar loading
-      if (context.mounted) {
+      var provider = subscriptionProvider;
+
+      if (provider == null) {
+        final subscription = await service.fetchSubscription();
+        provider = subscription?.subscription?.provider;
+      }
+
+      final needsSso = service.resolveTarget(provider) ==
+          SubscriptionManagementTarget.webBilling;
+
+      if (needsSso && context.mounted) {
+        loadingShown = true;
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -31,49 +44,28 @@ class ManageSubscriptionButton extends StatelessWidget {
         );
       }
 
-      // Obter URL de SSO
-      final subscriptionService = SubscriptionService();
-      final response = await subscriptionService.getSsoUrl();
+      final result = await service.openManagement(provider: provider);
 
-      // Fechar loading
-      if (context.mounted) {
+      if (context.mounted && loadingShown) {
         Navigator.of(context).pop();
+        loadingShown = false;
       }
 
-      if (response.success && response.data != null) {
-        final url = response.data.toString();
-        final uri = Uri.parse(url);
-
-        // Abrir URL no browser externo
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(
-            uri,
-            mode: LaunchMode.externalApplication,
-          );
-        } else {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Não foi possível abrir a página'),
-              ),
-            );
-          }
-        }
-      } else {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                response.errorMessage ?? 'Erro ao abrir página de assinatura',
-              ),
+      if (!result.success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.errorMessage ?? 'Erro ao abrir página de assinatura',
             ),
-          );
-        }
+          ),
+        );
       }
     } catch (e) {
-      // Fechar loading se ainda estiver aberto
-      if (context.mounted) {
+      if (context.mounted && loadingShown) {
         Navigator.of(context).pop();
+      }
+
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro: $e'),
@@ -89,8 +81,7 @@ class ManageSubscriptionButton extends StatelessWidget {
       text: customText ?? 'Gerenciar assinatura',
       textColor: textColor ?? Styles.primaryColor,
       fontSize: fontSize ?? 14,
-      function: () => _openBillingPage(context),
+      function: () => _openManagement(context),
     );
   }
 }
-

@@ -48,6 +48,9 @@ class ProfilePageController extends GetxController {
     return _userSubscription?.subscription?.isActive ?? false;
   }
 
+  String? get subscriptionProvider =>
+      _userSubscription?.subscription?.provider;
+
   String get subscriptionStatusText {
     if (_userSubscription?.subscription == null) {
       return 'Sem assinatura ativa';

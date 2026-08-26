@@ -73,7 +73,9 @@ class PremiumFeatureWrapper extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           const SizedBox(height: 16),
-          const ManageSubscriptionButton(),
+          ManageSubscriptionButton(
+            subscriptionProvider: userSubscription?.subscription?.provider,
+          ),
         ],
       ),
     );

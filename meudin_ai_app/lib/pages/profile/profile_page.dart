@@ -686,6 +686,7 @@ class ProfilePage extends StatelessWidget {
               customText: 'Gerenciar assinatura',
               fontSize: 15,
               textColor: Styles.primaryColor,
+              subscriptionProvider: controller.subscriptionProvider,
             ),
           ),
         ],
