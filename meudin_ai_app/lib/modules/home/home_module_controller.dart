@@ -605,6 +605,7 @@ class HomeModuleController extends GetxController {
     DateTime now = DateTime.now();
     startDate = DateTime(now.year, now.month, 1);
     endDate = DateTime(now.year, now.month, now.day, 59, 59, 59, 59);
+    _capEndDateAtToday(now);
   }
 
   void _updateDatesForMonth(DateTime selectedDate) {
@@ -624,6 +625,15 @@ class HomeModuleController extends GetxController {
       // Get last day of the selected month
       final lastDay = DateTime(selectedYear, selectedMonth + 1, 0);
       endDate = DateTime(selectedYear, selectedMonth, lastDay.day, 23, 59, 59, 999);
+    }
+
+    _capEndDateAtToday(now);
+  }
+
+  void _capEndDateAtToday(DateTime now) {
+    final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59, 999);
+    if (endDate.isAfter(todayEnd)) {
+      endDate = todayEnd;
     }
   }
 
