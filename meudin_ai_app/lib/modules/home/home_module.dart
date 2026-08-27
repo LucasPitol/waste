@@ -1,3 +1,4 @@
+import 'package:meudin_ai_app/pages/home_app/widgets/floating_bottom_bar.dart';
 import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision.dart';
 import 'package:meudin_ai_app/modules/home/widgets/wallet_section/wallet_vision_skeleton.dart';
@@ -125,7 +126,9 @@ class HomeModule extends StatelessWidget {
                         transactions: controller.transactionDtoList,
                         categories: controller.categories,
                       ),
-                      const SizedBox(height: 20), // Espaço extra no final
+                      SizedBox(
+                        height: FloatingBottomBarLayout.scrollBottomInset(context),
+                      ),
                     ],
                   ),
                 ),

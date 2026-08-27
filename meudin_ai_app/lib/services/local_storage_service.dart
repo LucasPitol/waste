@@ -172,13 +172,13 @@ class LocalStorageService {
     }
   }
 
-  /// Get theme preference (default: 'system')
+  /// Get theme preference (default: 'dark')
   Future<String> getThemePreference() async {
     try {
       final themeMode = await _secureStorage.read(key: _themePreferenceKey);
-      return themeMode ?? 'system';
+      return themeMode ?? 'dark';
     } catch (e) {
-      return 'system';
+      return 'dark';
     }
   }
 }

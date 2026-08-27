@@ -1,3 +1,4 @@
+import 'package:meudin_ai_app/pages/home_app/widgets/floating_bottom_bar.dart';
 import 'package:meudin_ai_app/modules/insights/insights_module_controller.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/kpi_cards_widget.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/monthly_average_widget.dart';
@@ -93,6 +94,9 @@ class InsightsModule extends StatelessWidget {
                         EmptyStateWidget(
                           onAdjustFilters: controller.openDateRangePicker,
                         ),
+                      SizedBox(
+                        height: FloatingBottomBarLayout.scrollBottomInset(context),
+                      ),
                     ],
                   ),
                 ),

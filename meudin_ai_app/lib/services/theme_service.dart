@@ -6,7 +6,7 @@ import 'package:meudin_ai_app/services/local_storage_service.dart';
 class ThemeService extends GetxController {
   final LocalStorageService _localStorage = LocalStorageService();
   
-  final Rx<ThemeMode> _themeMode = ThemeMode.system.obs;
+  final Rx<ThemeMode> _themeMode = ThemeMode.dark.obs;
   
   ThemeMode get themeMode => _themeMode.value;
   
@@ -22,7 +22,7 @@ class ThemeService extends GetxController {
       final preference = await _localStorage.getThemePreference();
       _themeMode.value = _stringToThemeMode(preference);
     } catch (e) {
-      _themeMode.value = ThemeMode.system;
+      _themeMode.value = ThemeMode.dark;
     }
   }
 
