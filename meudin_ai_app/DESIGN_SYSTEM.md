@@ -1,478 +1,559 @@
-# 🎨 Design System - Meudin App
+# Design System — Meudin App
 
-## 📐 Tipografia
+Documentação alinhada à implementação em `lib/ui/`, `lib/services/theme_service.dart` e telas do app.
 
-### Fonte Principal
-**Inter** - Moderna, limpa e altamente legível
+---
 
-### Hierarquia de Texto
+## Arquitetura
 
-| Elemento | Tamanho | Weight | Letter Spacing | Uso |
-|----------|---------|--------|----------------|-----|
-| **Logo** | 40px | 700 (Bold) | -1.2 | Marca principal |
-| **H1 (Títulos)** | 32px | 700 (Bold) | -0.8 | Títulos de página |
-| **H2 (Subtítulos)** | 16px | 400 (Regular) | 0.2 | Subtítulos |
-| **Body** | 16px | 500 (Medium) | 0 | Texto de campos |
-| **Label** | 15px | 400 (Regular) | 0 | Labels de campos |
-| **Caption** | 16px | 400 (Regular) | 0.5 | Taglines |
-| **Link** | 15px | 600 (SemiBold) | 0 | Links e CTAs |
-| **Small** | 14px | 400 (Regular) | 0 | Textos secundários |
+### Arquivos centrais
 
-### Pesos de Fonte (Font Weights)
+| Arquivo | Responsabilidade |
+|---------|------------------|
+| `lib/ui/styles.dart` | Cores, temas light/dark, decorações reutilizáveis |
+| `lib/ui/app_typography.dart` | Fonte Inter (Android/Web) ou fonte do sistema (iOS) |
+| `lib/ui/joy_ui.dart` | Barrel export dos componentes Joy |
+| `lib/services/theme_service.dart` | Persistência e troca de tema (GetX) |
+| `lib/main.dart` | Aplica `ThemeMode` via `GetMaterialApp` |
+
+### Componentes Joy (exportados em `joy_ui.dart`)
+
+```
+JoyElevatedButton    JoyTextFormField    JoyLoadingBlock
+JoyTextButton        JoyText             JoyLogo
+JoyModal             JoyGeometrics
+```
+
+Componentes de assinatura em `lib/ui/subscription/`:
+
+```
+PremiumBadge    PremiumFeatureWrapper    ManageSubscriptionButton
+```
+
+Ícones em `lib/ui/app_icons.dart` — wrapper `AppIcon` sobre Phosphor Icons.
+
+---
+
+## Temas (Light / Dark / Sistema)
+
+Gerenciado por `ThemeService`. Preferência salva em secure storage via `LocalStorageService`.
+
+| Modo | Valor salvo | Label na UI |
+|------|-------------|-------------|
+| Escuro (padrão) | `dark` | Escuro |
+| Claro | `light` | Claro |
+| Sistema | `system` | Sistema |
+
+**Padrão para novos usuários:** tema escuro (`ThemeMode.dark`).
+
+Seleção disponível em **Perfil → Tema**.
 
 ```dart
-FontWeight.w400  // Regular - Textos normais, labels
-FontWeight.w500  // Medium - Texto de input
-FontWeight.w600  // SemiBold - Links, botões secundários
-FontWeight.w700  // Bold - Títulos, logo, botões principais
+// main.dart
+GetMaterialApp(
+  theme: Styles.mainTheme,
+  darkTheme: Styles.darkTheme,
+  themeMode: themeService.themeMode,
+)
+```
+
+### Status bar e navigation bar
+
+Ajustados dinamicamente em `main.dart` conforme o brightness ativo:
+- Tema escuro: ícones claros, nav bar `#121212`
+- Tema claro: ícones escuros, nav bar branca
+
+---
+
+## Tipografia
+
+### Fonte
+
+| Plataforma | Fonte |
+|------------|-------|
+| Android / Web | **Inter** via `GoogleFonts.inter` |
+| iOS | Fonte do sistema (SF Pro) |
+
+Use `AppTypography.textTheme()` e `AppTypography.textStyle()` — não instancie `GoogleFonts.inter` diretamente nas telas.
+
+### Hierarquia de referência
+
+Valores usados nas telas principais (login, perfil, cards):
+
+| Elemento | Tamanho | Weight | Letter Spacing | Onde |
+|----------|---------|--------|----------------|------|
+| Logo (`JoyLogo`) | 40px | 700 | -1.2 | App bar, login |
+| H1 (títulos de página) | 32px | 700 | -0.8 | Login (`sign_in_page`) |
+| H1 (`JoyText.h1`) | 20px | bold | — | Modais, avisos |
+| Subtítulo | 16px | 400 | 0.2 | Login, seções |
+| Body / input | 16px | 500 | 0 | `JoyTextFormField` |
+| Label | 15px | 400 | 0 | Labels de campo |
+| Caption / tagline | 16px | 400 | 0.5 | Login |
+| Link / CTA secundário | 15px | 600 | 0 | Links, `JoyTextButton` |
+| Texto secundário | 14px | 400–500 | 0 | `JoyText.secundaryText` |
+| KPI label | 12px | 400 | — | `KpiCardsWidget` |
+| KPI valor | 14px | 600 | — | `KpiCardsWidget` |
+| Badge premium | 11px | 600 | — | `PremiumBadge` |
+
+### Pesos de fonte
+
+```dart
+FontWeight.w400  // Regular — labels, textos secundários
+FontWeight.w500  // Medium — inputs, corpo
+FontWeight.w600  // SemiBold — links, valores KPI
+FontWeight.w700  // Bold — títulos, CTAs principais
 ```
 
 ---
 
-## 🎨 Campos de Texto (Text Fields)
+## Paleta de cores
+
+### Tokens em `Styles`
+
+```dart
+primaryColor:        #AC6CFF   // Roxo vibrante
+primaryColorLight:   #D6B7FF   // Roxo claro
+primaryTextColor:    #212121   // Texto principal (tema claro)
+whiteColor:          #FFFFFF
+whiteConfortColor:   #FAFAFA   // Scaffold tema claro
+grey:                #BDBDBD   // Ícones/texto desabilitado
+selectionTextColor:  #E1F5FE   // Seleção de texto (tema claro)
+```
+
+### Tema claro (`Styles.mainTheme`)
+
+| Token | Valor |
+|-------|-------|
+| Scaffold | `#FAFAFA` (`whiteConfortColor`) |
+| Surface / cards | `#FFFFFF` |
+| Texto principal | `#212121` |
+| Primary | `#AC6CFF` |
+
+### Tema escuro (`Styles.darkTheme`)
+
+| Token | Valor |
+|-------|-------|
+| Scaffold | `#121212` |
+| Surface / cards | `#1E1E1E` |
+| Texto principal | `#FFFFFF` |
+| Texto secundário | `#FFFFFF` 70% / 60% |
+| Primary | `#AC6CFF` |
+| Seleção de texto | `primaryColor` 30% opacidade |
+
+### Cores semânticas (uso pontual)
+
+| Uso | Cor |
+|-----|-----|
+| Receita / positivo | `Colors.green` |
+| Despesa / negativo | `Colors.red` |
+| Neutro / saldo zero | `Colors.grey` |
+| Erro em campos | `Colors.red[300]` / `Colors.red` (focused) |
+
+### Cores de texto por contexto
+
+| Uso | Tema claro | Tema escuro |
+|-----|------------|-------------|
+| Títulos | `#212121` / `titleLarge` | `#FFFFFF` |
+| Subtítulos | `grey[500]` / `bodyMedium` | `white70` |
+| Labels | `grey[600]` | `grey[400]` |
+| Hints | `grey[400]` | `grey[500]` |
+| Links | `primaryColor` | `primaryColor` |
+
+---
+
+## Border radius
+
+Tokens definidos em `Styles`:
+
+```dart
+sexyBorderRadius       // 16px — modais, campos, botões primários inline
+rectangularBorderRadius // 5px  — JoyElevatedButton (legado)
+cardDecoration         // 10px — cards com sombra
+```
+
+| Elemento | Radius |
+|----------|--------|
+| Text fields | 16px |
+| Botão primário (login, CTAs inline) | 16px |
+| `JoyElevatedButton` | 5px |
+| Cards (KPI, `cardDecoration`) | 10px |
+| Bottom sheets (`JoyModal`) | 20px (top) ou 16px |
+| Logo PNG (login) | 28px (`ClipRRect`) |
+| Skeleton shimmer | 4–6px |
+| `PremiumBadge` | 4px |
+
+---
+
+## Campos de texto — `JoyTextFormField`
+
+Componente padrão para formulários (login, cadastro, recuperação de senha, transações, etc.).
+
+```dart
+JoyTextFormField(
+  controller: controller,
+  labelText: 'Email',
+  keyboardType: TextInputType.emailAddress,
+)
+```
 
 ### Especificações
 
+- Fonte do input: 16px, `FontWeight.w500`
+- Padding: 20px horizontal, 18px vertical
+- `filled: true`, radius 16px
+- Label flutuante com animação automática
+- `floatingLabelStyle`: `primaryColor`, 16px, w500
+
+### Estados (adaptados ao tema)
+
+| Estado | Background (claro / escuro) | Border | Width |
+|--------|----------------------------|--------|-------|
+| Default | `grey[50]` / `surface` | `grey[200]` / `grey[700]` | 1px |
+| Focused | idem | `primaryColor` | 2px |
+| Error | idem | `red[300]` | 1px |
+| Error focused | idem | `red` | 2px |
+
+---
+
+## Botões
+
+### Botão primário (padrão recomendado)
+
+Usado inline nas telas de auth e CTAs principais:
+
 ```dart
-TextFormField(
-  style: TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w500,
-    color: Styles.primaryTextColor,
-  ),
-  decoration: InputDecoration(
-    filled: true,
-    fillColor: Colors.grey[50],
-    contentPadding: EdgeInsets.symmetric(
-      horizontal: 20,
-      vertical: 18,
-    ),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide.none,
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(
-        color: Colors.grey[200],
-        width: 1,
+SizedBox(
+  height: 56,
+  child: ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Styles.primaryColor,
+      foregroundColor: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
       ),
     ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(
-        color: Styles.primaryColor,
-        width: 2,
+    child: Text(
+      'ENTRAR',
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.2,
       ),
     ),
   ),
 )
 ```
 
-### Estados
+| Propriedade | Valor |
+|-------------|-------|
+| Altura | 56px |
+| Radius | 16px |
+| Elevation | 0 |
+| Texto | MAIÚSCULAS, bold, letter-spacing 1.2 |
 
-| Estado | Background | Border | Border Width |
-|--------|------------|--------|--------------|
-| **Default** | `grey[50]` | `grey[200]` | 1px |
-| **Focused** | `grey[50]` | `primaryColor` | 2px |
-| **Error** | `grey[50]` | `red[300]` | 1px |
-| **Error Focused** | `grey[50]` | `red` | 2px |
+### `JoyElevatedButton` (legado)
 
-### Características
+Componente existente com specs diferentes — **preferir o padrão inline acima** em telas novas:
 
-- ✅ **Bordas arredondadas**: 16px
-- ✅ **Background suave**: grey[50]
-- ✅ **Padding generoso**: 20px horizontal, 18px vertical
-- ✅ **Transição suave**: Border muda de cor ao focar
-- ✅ **Sem borda padrão**: BorderSide.none no estado default
-- ✅ **Label flutuante**: Animação automática
+| Propriedade | Valor |
+|-------------|-------|
+| Altura | 50px |
+| Radius | 5px (`rectangularBorderRadius`) |
+| Background padrão | `primaryTextColor` (#212121) |
+
+### `JoyTextButton`
+
+Links e ações secundárias — cor padrão `primaryColor`, fonte 14px bold.
 
 ---
 
-## 🎯 Botões
-
-### Botão Principal (Primary Button)
+## Texto — `JoyText`
 
 ```dart
-ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Styles.primaryColor,
-    foregroundColor: Colors.white,
-    elevation: 0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-    ),
-  ),
-  child: Text(
-    'ENTRAR',
-    style: TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 1.2,
-    ),
-  ),
+JoyText('Texto padrão')           // 16px, w600, cor do tema
+JoyText.h1('Título modal')        // 20px, bold
+JoyText.secundaryText('Detalhe')  // 14px, w500, cinza adaptado ao tema
+```
+
+Respeita automaticamente `Theme.of(context)` quando `textColor` é o padrão (`primaryTextColor` ou `grey`).
+
+---
+
+## Logo — `JoyLogo`
+
+Texto "Meudin" com gradiente roxo via `ShaderMask`:
+
+```dart
+const JoyLogo()  // 40px, w700, letterSpacing -1.2
+```
+
+Na tela de login, combina com ícone PNG:
+
+```dart
+Image.asset('assets/internal/icon.png', width: 124, height: 124)
+// + JoyLogo + tagline
+```
+
+---
+
+## Modais e bottom sheets — `JoyModal`
+
+| Método | Uso |
+|--------|-----|
+| `errorBottomSheet` | Erros de formulário (layout compacto) |
+| `bottomSheetError` | Erros com lista de bullets |
+| `bottomSheetWarning` | Avisos |
+| `limitReachedBottomSheet` | Limite de plano + CTA upgrade |
+| `showJouBottomSheet` | Wrapper genérico |
+
+Todos adaptam background e cores ao tema ativo (`surface` no escuro, `whiteColor` no claro).
+
+`JoyGeometrics.horizontalBar()` — handle visual (88×8px, `grey[300]`) nos bottom sheets.
+
+---
+
+## Loading — `JoyLoadingBlock`
+
+Overlay fullscreen com blur (`BackdropFilter`, sigma 10) e `CircularProgressIndicator` na cor `primaryColor`.
+
+```dart
+Stack(
+  children: [
+    /* conteúdo */,
+    JoyLoadingBlock(controller.loading),
+  ],
 )
 ```
 
-**Especificações:**
-- Altura: 56px
-- Border radius: 16px
-- Elevation: 0 (flat)
-- Texto: Maiúsculas, bold, letter-spacing 1.2
+---
+
+## Skeleton loaders
+
+Padrão shimmer reutilizável em `wallet_vision_skeleton.dart`:
+
+```dart
+SkeletonLoader(width: 120, height: 16, borderRadius: BorderRadius.circular(4))
+```
+
+Cores adaptadas ao tema:
+- Claro: base `grey[300]`, highlight `grey[100]`
+- Escuro: base `grey[800]`, highlight `grey[700]`
+
+Implementações existentes:
+- `wallet_vision_skeleton.dart`
+- `expense_category_chart_skeleton.dart`
+- `monthly_income_expense_bar_chart_skeleton.dart`
+- Skeleton inline em `KpiCardsWidget`
 
 ---
 
-## 🎨 Paleta de Cores
+## Cards
 
-### Cores Principais
+Não há componente `JoyCard` — cards são construídos inline ou via `Styles.cardDecoration`:
 
 ```dart
-primaryColor: #AC6CFF       // Roxo vibrante
-primaryColorLight: #D6B7FF  // Roxo claro
-primaryTextColor: #212121   // Texto principal
+// cardDecoration (Styles)
+BoxDecoration(
+  color: whiteColor,
+  borderRadius: 10px,
+  boxShadow: [grey[200], offset (0,2), blur 2],
+)
 ```
 
-### Cores de Texto
-
-| Uso | Cor | Código |
-|-----|-----|--------|
-| **Títulos** | Quase preto | `#212121` |
-| **Subtítulos** | Cinza médio | `grey[500]` |
-| **Labels** | Cinza | `grey[600]` |
-| **Hints** | Cinza claro | `grey[400]` |
-| **Links** | Roxo primário | `#AC6CFF` |
-
-### Cores de Background
-
-| Elemento | Cor |
-|----------|-----|
-| **Scaffold** | `Colors.white` |
-| **Campos** | `grey[50]` |
-| **Bordas** | `grey[200]` |
+Padrão KPI (`KpiCardsWidget`):
+- Padding 16px, radius 10px
+- Background: `whiteColor` (claro) / `surface` (escuro)
+- Sombra sutil adaptada ao tema
 
 ---
 
-## 📏 Espaçamento
+## Ícones — `AppIcon`
 
-### Sistema de Espaçamento (8px base)
+Wrapper sobre **Phosphor Icons** com escala óptica (`opticalScale = 1.12`) para paridade visual.
 
 ```dart
-4px   // Extra pequeno
-8px   // Pequeno
-12px  // Pequeno-médio
-16px  // Médio
-20px  // Médio-grande
-24px  // Grande
-32px  // Extra grande
-40px  // Extra extra grande
-48px  // Seção
-64px  // Entre seções principais
+AppIcon(AppIcons.solidCircleUser, size: 22, color: themeColor)
 ```
 
-### Aplicação na Tela de Login
+Catálogo de ícones em `AppIcons` (`lib/ui/app_icons.dart`).
+
+---
+
+## Assinatura (Premium)
+
+| Componente | Descrição |
+|------------|-----------|
+| `PremiumBadge` | Badge roxo com ícone de estrela |
+| `PremiumFeatureWrapper` | Envolve features bloqueadas |
+| `ManageSubscriptionButton` | Ação de gerenciar assinatura |
+
+Estilo: fundo `primaryColor` 8–12% opacidade, borda roxa sutil.
+
+---
+
+## Espaçamento
+
+Sistema baseado em múltiplos de 4/8px (sem token centralizado — valores usados na prática):
+
+```
+4px   — micro (links próximos)
+8px   — interno de cards/KPI
+12px  — gap entre cards, subtítulo
+16px  — padding interno de cards
+20px  — padding horizontal de app bar, entre campos
+24px  — seções internas
+32px  — padding lateral (auth), entre form e botão
+40px  — margem vertical (auth)
+48px  — entre subtítulo e formulário
+64px  — entre logo e título (referência login)
+```
+
+### Referência — tela de login (`sign_in_page.dart`)
 
 ```dart
-// Entre logo e título
-SizedBox(height: 64)
-
-// Entre título e subtítulo
-SizedBox(height: 12)
-
-// Entre subtítulo e formulário
-SizedBox(height: 48)
-
-// Entre campos
-SizedBox(height: 20)
-
-// Entre formulário e botão
-SizedBox(height: 32)
-
-// Padding lateral
-EdgeInsets.symmetric(horizontal: 32)
+padding horizontal: 32
+logo → título:       24 (após animação)
+título → subtítulo:  12
+subtítulo → form:    48
+entre campos:        20
+form → botão:        32
+botão → links:       32
 ```
 
 ---
 
-## 🎭 Animações
+## Animações
 
-### Logo (Fade In + Slide Up)
+### Entrada do logo (login)
 
 ```dart
 TweenAnimationBuilder(
   tween: Tween<double>(begin: 0, end: 1),
   duration: Duration(milliseconds: 600),
   curve: Curves.easeOut,
-  builder: (context, double value, child) {
-    return Opacity(
-      opacity: value,
-      child: Transform.translate(
-        offset: Offset(0, 20 * (1 - value)),
-        child: child,
-      ),
-    );
-  },
+  // Fade in + slide up 20px
 )
 ```
 
-**Características:**
-- Duração: 600ms
-- Curva: easeOut
-- Efeito: Fade in + slide up 20px
+### Skeleton shimmer
 
----
-
-## 🎨 Componentes
-
-### Logo com Ícone
-
-```dart
-Container(
-  padding: EdgeInsets.all(24),
-  decoration: BoxDecoration(
-    shape: BoxShape.circle,
-    gradient: LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        Styles.primaryColor,
-        Styles.primaryColorLight,
-      ],
-    ),
-  ),
-  child: Icon(
-    Icons.account_balance_wallet_rounded,
-    size: 56,
-    color: Colors.white,
-  ),
-)
-```
-
-### Logo Texto (com Gradiente)
-
-```dart
-ShaderMask(
-  shaderCallback: (bounds) => LinearGradient(
-    colors: [
-      Styles.primaryColor,
-      Styles.primaryColorLight,
-    ],
-  ).createShader(bounds),
-  child: Text(
-    'Meudin',
-    style: GoogleFonts.inter(
-      fontSize: 40,
-      fontWeight: FontWeight.w700,
-      color: Colors.white,
-      letterSpacing: -1.2,
-    ),
-  ),
-)
-```
-
----
-
-## 📱 Responsividade
-
-### Breakpoints
-
-```dart
-// Mobile (padrão)
-horizontal: 32px
-
-// Tablet (>600px)
-horizontal: 64px
-
-// Desktop (>1200px)
-maxWidth: 480px
-```
+`AnimationController` 1200ms, loop, gradiente deslizante.
 
 ### Scroll
 
+`BouncingScrollPhysics()` nas telas de auth.
+
+---
+
+## App bars
+
+Não há `JoyAppBar` genérico. Implementação atual:
+
+- **Auth:** sem app bar
+- **Home:** `HomeAppBar` — `JoyLogo` + ícone de perfil (`AppIcon`)
+- **Demais telas:** `AppBar` padrão Flutter com cores do tema
+
+---
+
+## Feedback ao usuário
+
+| Tipo | Implementação atual |
+|------|---------------------|
+| Erros de form | `JoyModal` bottom sheets |
+| Loading | `JoyLoadingBlock` |
+| Toasts / avisos rápidos | `Get.snackbar` / `SnackBar` (sem componente padronizado) |
+
+---
+
+## Responsividade
+
 ```dart
-SingleChildScrollView(
-  physics: BouncingScrollPhysics(),
-  // ...
-)
+// Auth — padding lateral fixo
+EdgeInsets.symmetric(horizontal: 32)
+
+// Conteúdo principal — margem horizontal 20px (home, insights)
+EdgeInsets.symmetric(horizontal: 20)
+
+// Scroll
+SingleChildScrollView(physics: BouncingScrollPhysics())
 ```
 
 ---
 
-## ✨ Princípios de Design
+## Princípios de design
 
-### 1. Minimalismo
-- Fundo branco limpo
-- Sem elementos desnecessários
-- Foco no conteúdo
-
-### 2. Hierarquia Visual Clara
-- Tamanhos de fonte variados
-- Pesos de fonte apropriados
-- Espaçamento generoso
-
-### 3. Modernidade
-- Bordas arredondadas (16px)
-- Campos com background suave
-- Gradientes sutis
-- Animações suaves
-
-### 4. Consistência
-- Sistema de espaçamento baseado em 8px
-- Paleta de cores definida
-- Tipografia uniforme
-- Componentes reutilizáveis
-
-### 5. Acessibilidade
-- Contraste adequado (WCAG AA)
-- Tamanhos de fonte legíveis (≥14px)
-- Áreas de toque ≥48px
-- Labels claros
+1. **Consistência** — reutilizar componentes Joy e tokens de `Styles`
+2. **Suporte a tema** — sempre consultar `Theme.of(context)` para cores de superfície e texto
+3. **Minimalismo** — fundo neutro, foco no conteúdo financeiro
+4. **Hierarquia clara** — pesos e tamanhos distintos por função
+5. **Acessibilidade** — fontes ≥ 11px, áreas de toque ≥ 48px, contraste adequado nos dois temas
 
 ---
 
-## 🎯 Checklist de Implementação
+## Guia para desenvolvedores
 
-### Tipografia
-- [x] Fonte Inter implementada
-- [x] Hierarquia de tamanhos definida
-- [x] Pesos de fonte consistentes
-- [x] Letter spacing ajustado
-- [x] Line height otimizado
+### 1. Use os componentes existentes
 
-### Campos de Texto
-- [x] Bordas arredondadas (16px)
-- [x] Background suave (grey[50])
-- [x] Padding generoso
-- [x] Estados visuais claros
-- [x] Transições suaves
+```dart
+// ✅ Preferido
+JoyTextFormField(...)
+JoyText(...)
+const JoyLogo()
 
-### Cores
-- [x] Paleta definida
-- [x] Cores de texto consistentes
-- [x] Gradientes aplicados
-- [x] Contraste adequado
+// ❌ Evite recriar TextFormField do zero
+```
 
-### Espaçamento
-- [x] Sistema baseado em 8px
-- [x] Espaçamento consistente
-- [x] Respiração adequada
-- [x] Padding uniforme
+### 2. Respeite o tema ativo
 
-### Animações
-- [x] Animação de entrada do logo
-- [x] Transições suaves
-- [x] Scroll com bounce
-- [x] Feedback visual
+```dart
+final theme = Theme.of(context);
+final isDark = theme.brightness == Brightness.dark;
+color: theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor
+background: isDark ? theme.colorScheme.surface : Styles.whiteColor
+```
 
----
+### 3. Use tokens de cor
 
-## 📊 Comparação Antes vs Depois
+```dart
+// ✅
+Styles.primaryColor
+Styles.primaryTextColor
 
-| Aspecto | Antes | Depois |
-|---------|-------|--------|
-| **Campos** | Quadrados, sem background | Arredondados, background suave |
-| **Bordas** | Retas, 0px | Arredondadas, 16px |
-| **Fonte** | Poppins | Inter (mais moderna) |
-| **Pesos** | Bold genérico | Sistema de pesos (400-700) |
-| **Espaçamento** | Inconsistente | Sistema baseado em 8px |
-| **Tipografia** | Desarmônica | Hierarquia clara |
-| **Visual** | Pesado | Leve e clean |
+// ❌
+Color(0xFFAC6CFF)  // hardcoded
+```
+
+### 4. Tipografia via AppTypography
+
+```dart
+AppTypography.textStyle(fontSize: 16, fontWeight: FontWeight.w500)
+```
+
+### 5. Espaçamento em múltiplos de 4/8
+
+```dart
+SizedBox(height: 16)  // ✅
+SizedBox(height: 15)  // ❌
+```
 
 ---
 
-## 🚀 Próximos Passos
+## Pendências conhecidas
 
-### Aplicar em outras telas
-1. Sign Up
-2. Recover Password
-3. Home
-4. New Transaction
-5. Profile
+Itens ainda não padronizados na codebase:
 
-### Componentes a criar
-- [ ] JoyButton (botão customizado)
-- [ ] JoyCard (card padrão)
-- [ ] JoyAppBar (app bar customizada)
-- [ ] JoyBottomSheet (bottom sheet)
-- [ ] JoyDialog (diálogo)
-
-### Melhorias futuras
-- [ ] Dark mode
-- [ ] Animações de transição
-- [ ] Micro-interações
-- [ ] Skeleton loaders
-- [ ] Toast messages
+- [ ] Unificar `JoyElevatedButton` com o padrão de botão primário (56px / 16px radius)
+- [ ] Criar `JoyCard` reutilizável (hoje cards são inline)
+- [ ] Criar `JoyAppBar` genérico
+- [ ] Criar componente de toast/snackbar padronizado
+- [ ] Documentar tokens de espaçamento como constantes (`AppSpacing`)
+- [ ] Micro-interações e animações de transição entre telas
 
 ---
 
-## 📚 Referências
+## Referências
 
-### Fontes
-- **Inter**: https://fonts.google.com/specimen/Inter
-- Família moderna e versátil
-- Ótima legibilidade em telas
-- Suporta múltiplos pesos
-
-### Inspirações
-- Material Design 3
-- iOS Human Interface Guidelines
-- Fintech apps modernos
-- Dribbble/Behance trends
-
----
-
-## 💡 Dicas de Uso
-
-### Para desenvolvedores
-
-1. **Use o sistema de espaçamento**
-   ```dart
-   // Bom
-   SizedBox(height: 16)
-   
-   // Evite
-   SizedBox(height: 15)
-   ```
-
-2. **Mantenha consistência de pesos**
-   ```dart
-   // Títulos
-   FontWeight.w700
-   
-   // Corpo
-   FontWeight.w500
-   
-   // Labels
-   FontWeight.w400
-   ```
-
-3. **Reutilize componentes**
-   ```dart
-   // Use JoyTextFormField
-   JoyTextFormField(...)
-   
-   // Não crie TextFormField do zero
-   ```
-
-4. **Siga a paleta de cores**
-   ```dart
-   // Use
-   Styles.primaryColor
-   
-   // Não use
-   Color(0xFF...)
-   ```
-
----
-
-## ✅ Resultado Final
-
-O design system agora está:
-- ✨ Moderno e clean
-- 🎨 Visualmente harmonioso
-- 📱 Responsivo
-- ♿ Acessível
-- 🔧 Manutenível
-- 📐 Consistente
-
-**Pronto para escalar para todo o app!** 🚀
-
+- **Inter:** https://fonts.google.com/specimen/Inter
+- **Phosphor Icons:** https://phosphoricons.com/
+- **Material Design 3** — inspiração para elevation, radius e temas
