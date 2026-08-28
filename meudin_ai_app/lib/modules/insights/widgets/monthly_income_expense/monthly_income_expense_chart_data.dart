@@ -32,13 +32,30 @@ class MonthlyIncomeExpenseAxisRange {
 }
 
 class MonthlyIncomeExpenseChartData {
+  static const int minTransactionsToDisplay = 3;
   static const _monthLabels = [
     'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
     'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez',
   ];
 
-  static const int scrollThresholdMonths = 12;
+  static const int maxVisibleItemsInViewport = 10;
+  static const int scrollThresholdMonths = maxVisibleItemsInViewport;
   static const double scrollGroupWidth = 56;
+
+  static double scrollGroupWidthForViewport({
+    required double viewportWidth,
+    required int itemCount,
+    required double minGroupWidth,
+  }) {
+    if (itemCount <= maxVisibleItemsInViewport) {
+      return viewportWidth / itemCount;
+    }
+
+    return math.max(minGroupWidth, viewportWidth / maxVisibleItemsInViewport);
+  }
+
+  static bool needsHorizontalScroll(int itemCount) =>
+      itemCount > maxVisibleItemsInViewport;
 
   static List<MonthlyIncomeExpenseBucket> groupByMonth({
     required List<Transaction> transactions,

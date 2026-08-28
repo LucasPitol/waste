@@ -4,6 +4,7 @@ import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:meudin_ai_app/models/transaction.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/monthly_income_expense/monthly_income_expense_bar_chart_skeleton.dart';
 import 'package:meudin_ai_app/modules/insights/widgets/monthly_income_expense/monthly_income_expense_chart_data.dart';
+import 'package:meudin_ai_app/ui/bar_chart_fixed_y_axis.dart';
 import 'package:meudin_ai_app/ui/styles.dart';
 import 'package:meudin_ai_app/utils/utils.dart';
 
@@ -36,11 +37,15 @@ class _MonthlyIncomeExpenseBarChartState
 
   @override
   Widget build(BuildContext context) {
-    if (widget.loading) {
+    final hasEnoughTransactions = widget.transactions.length >=
+        MonthlyIncomeExpenseChartData.minTransactionsToDisplay;
+
+    if (widget.loading &&
+        (widget.transactions.isEmpty || hasEnoughTransactions)) {
       return const MonthlyIncomeExpenseBarChartSkeleton();
     }
 
-    if (widget.transactions.isEmpty) {
+    if (!hasEnoughTransactions) {
       return const SizedBox.shrink();
     }
 
@@ -57,27 +62,41 @@ class _MonthlyIncomeExpenseBarChartState
     final theme = Theme.of(context);
     final showYear = widget.startDate.year != widget.endDate.year;
     final needsScroll =
-        buckets.length > MonthlyIncomeExpenseChartData.scrollThresholdMonths;
+        MonthlyIncomeExpenseChartData.needsHorizontalScroll(buckets.length);
     final axisLabelColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.5) ??
         Colors.grey.shade500;
+
+    final comparativeMaxY = MonthlyIncomeExpenseChartData.calculateMaxY(buckets);
+    final balanceAxisRange =
+        MonthlyIncomeExpenseChartData.calculateBalanceAxisRange(buckets);
+    final chartMinY = _mode == MonthlyIncomeExpenseChartMode.comparative
+        ? 0.0
+        : balanceAxisRange.minY;
+    final chartMaxY = _mode == MonthlyIncomeExpenseChartMode.comparative
+        ? comparativeMaxY
+        : balanceAxisRange.maxY;
+    final chartInterval = _mode == MonthlyIncomeExpenseChartMode.comparative
+        ? comparativeMaxY / 4
+        : balanceAxisRange.interval;
 
     final chartData = _mode == MonthlyIncomeExpenseChartMode.comparative
         ? _buildComparativeChartData(
             buckets: buckets,
-            maxY: MonthlyIncomeExpenseChartData.calculateMaxY(buckets),
+            maxY: comparativeMaxY,
             showYear: showYear,
             axisLabelColor: axisLabelColor,
             theme: theme,
             needsScroll: needsScroll,
+            hideLeftAxis: needsScroll,
           )
         : _buildBalanceChartData(
             buckets: buckets,
-            axisRange:
-                MonthlyIncomeExpenseChartData.calculateBalanceAxisRange(buckets),
+            axisRange: balanceAxisRange,
             showYear: showYear,
             axisLabelColor: axisLabelColor,
             theme: theme,
             needsScroll: needsScroll,
+            hideLeftAxis: needsScroll,
           );
 
     final chart = BarChart(
@@ -138,16 +157,49 @@ class _MonthlyIncomeExpenseBarChartState
             child: SizedBox(
               key: ValueKey(_mode),
               height: 200,
-              child: needsScroll
-                  ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SizedBox(
-                        width: buckets.length *
-                            MonthlyIncomeExpenseChartData.scrollGroupWidth,
-                        child: chart,
+              child: LayoutBuilder(
+              builder: (context, constraints) {
+                final groupWidth =
+                    MonthlyIncomeExpenseChartData.scrollGroupWidthForViewport(
+                  viewportWidth: needsScroll
+                      ? constraints.maxWidth - BarChartFixedYAxis.axisWidth
+                      : constraints.maxWidth,
+                  itemCount: buckets.length,
+                  minGroupWidth:
+                      MonthlyIncomeExpenseChartData.scrollGroupWidth,
+                );
+
+                final chartArea = SizedBox(
+                  width: buckets.length * groupWidth,
+                  child: chart,
+                );
+
+                if (needsScroll) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      BarChartFixedYAxis(
+                        height: 200,
+                        minY: chartMinY,
+                        maxY: chartMaxY,
+                        interval: chartInterval,
+                        axisLabelColor: axisLabelColor,
+                        formatValue:
+                            MonthlyIncomeExpenseChartData.formatCompactAxisValue,
                       ),
-                    )
-                  : chart,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: chartArea,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                return chartArea;
+              },
+            ),
             ),
           ),
         ],
@@ -162,6 +214,7 @@ class _MonthlyIncomeExpenseBarChartState
     required Color axisLabelColor,
     required ThemeData theme,
     required bool needsScroll,
+    bool hideLeftAxis = false,
   }) {
     return BarChartData(
       maxY: maxY,
@@ -185,6 +238,7 @@ class _MonthlyIncomeExpenseBarChartState
         minY: 0,
         maxY: maxY,
         interval: maxY / 4,
+        hideLeftAxis: hideLeftAxis,
       ),
       barGroups: buckets.asMap().entries.map((entry) {
         final index = entry.key;
@@ -197,14 +251,14 @@ class _MonthlyIncomeExpenseBarChartState
             BarChartRodData(
               toY: bucket.revenue,
               color: MonthlyIncomeExpenseBarChart.revenueColor,
-              width: 10,
+              width: 12,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(3)),
             ),
             BarChartRodData(
               toY: bucket.expense,
               color: MonthlyIncomeExpenseBarChart.expenseColor,
-              width: 10,
+              width: 12,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(3)),
             ),
@@ -252,6 +306,7 @@ class _MonthlyIncomeExpenseBarChartState
     required Color axisLabelColor,
     required ThemeData theme,
     required bool needsScroll,
+    bool hideLeftAxis = false,
   }) {
     final minY = axisRange.minY;
     final maxY = axisRange.maxY;
@@ -286,6 +341,7 @@ class _MonthlyIncomeExpenseBarChartState
         minY: minY,
         maxY: maxY,
         interval: interval,
+        hideLeftAxis: hideLeftAxis,
       ),
       barGroups: buckets.asMap().entries.map((entry) {
         final index = entry.key;
@@ -302,7 +358,7 @@ class _MonthlyIncomeExpenseBarChartState
               color: isPositive
                   ? MonthlyIncomeExpenseBarChart.revenueColor
                   : MonthlyIncomeExpenseBarChart.expenseColor,
-              width: 16,
+              width: 18,
               borderRadius: isPositive
                   ? const BorderRadius.vertical(top: Radius.circular(3))
                   : const BorderRadius.vertical(bottom: Radius.circular(3)),
@@ -349,16 +405,18 @@ class _MonthlyIncomeExpenseBarChartState
     required double minY,
     required double maxY,
     required double interval,
+    bool hideLeftAxis = false,
   }) {
     return FlTitlesData(
       topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       leftTitles: AxisTitles(
         sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 36,
+          showTitles: !hideLeftAxis,
+          reservedSize: hideLeftAxis ? 0 : 36,
           interval: interval,
           getTitlesWidget: (value, meta) {
+            if (hideLeftAxis) return const SizedBox.shrink();
             if (value < minY - 0.001 || value > maxY + 0.001) {
               return const SizedBox.shrink();
             }
@@ -407,7 +465,7 @@ class _MonthlyIncomeExpenseBarChartState
   }
 
   double _groupsSpace(int bucketCount, bool needsScroll) {
-    return bucketCount <= MonthlyIncomeExpenseChartData.scrollThresholdMonths
+    return bucketCount <= MonthlyIncomeExpenseChartData.maxVisibleItemsInViewport
         ? 16
         : 12;
   }

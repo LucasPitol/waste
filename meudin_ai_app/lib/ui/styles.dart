@@ -12,6 +12,32 @@ class Styles {
   static Color greyLighter = Colors.grey.shade200;
   static const Color greyDarker = Colors.grey;
 
+  static DatePickerThemeData datePickerTheme(Brightness brightness) {
+    return DatePickerThemeData(
+      todayBorder: const BorderSide(
+        color: primaryColor,
+        width: 2,
+      ),
+      todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return whiteColor;
+        }
+        if (states.contains(WidgetState.disabled)) {
+          return grey;
+        }
+        return primaryColor;
+      }),
+      todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primaryColor;
+        }
+        return primaryColor.withOpacity(
+          brightness == Brightness.dark ? 0.22 : 0.14,
+        );
+      }),
+    );
+  }
+
   static ThemeData mainTheme = ThemeData(
     textSelectionTheme: const TextSelectionThemeData(
       cursorColor: primaryTextColor,
@@ -27,6 +53,7 @@ class Styles {
       onSurface: primaryTextColor,
       onPrimary: whiteColor,
     ),
+    datePickerTheme: datePickerTheme(Brightness.light),
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -54,6 +81,7 @@ class Styles {
       onSurface: whiteColor,
       onPrimary: whiteColor,
     ),
+    datePickerTheme: datePickerTheme(Brightness.dark),
   );
 
   static BoxDecoration cardDecoration = BoxDecoration(

@@ -126,10 +126,20 @@ class DailyIncomeExpenseChartData {
     return maxValue * 1.15;
   }
 
-  static double scrollGroupWidthFor(DailyIncomeExpenseChartMode mode) {
-    return mode == DailyIncomeExpenseChartMode.expense
+  static double scrollGroupWidthFor(
+    DailyIncomeExpenseChartMode mode, {
+    required double viewportWidth,
+    required int itemCount,
+  }) {
+    final minGroupWidth = mode == DailyIncomeExpenseChartMode.expense
         ? expenseScrollGroupWidth
         : comparativeScrollGroupWidth;
+
+    return MonthlyIncomeExpenseChartData.scrollGroupWidthForViewport(
+      viewportWidth: viewportWidth,
+      itemCount: itemCount,
+      minGroupWidth: minGroupWidth,
+    );
   }
 
   static List<DateTime> _enumerateDays(DateTime start, DateTime end) {
