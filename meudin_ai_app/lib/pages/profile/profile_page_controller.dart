@@ -97,8 +97,15 @@ class ProfilePageController extends GetxController {
   String get currentThemeName => _themeService.getThemeModeName();
 
   Future<void> changeTheme(ThemeMode newThemeMode) async {
-    await _themeService.setThemeMode(newThemeMode);
+    final saved = await _themeService.setThemeMode(newThemeMode);
     update();
+
+    if (!saved) {
+      Get.snackbar(
+        'Erro',
+        'Não foi possível salvar a preferência de tema',
+      );
+    }
   }
 
   void openFAQ() {

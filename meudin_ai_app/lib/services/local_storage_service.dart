@@ -10,6 +10,7 @@ class LocalStorageService {
   // Storage keys
   static const String _userDataKey = 'secure_user_data';
   static const String _themePreferenceKey = 'theme_preference';
+  static const Set<String> _validThemeModes = {'system', 'light', 'dark'};
 
   // Secure storage configuration
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
@@ -79,9 +80,17 @@ class LocalStorageService {
     try {
       await _secureStorage.delete(key: _userDataKey);
     } catch (e) {
-      // Force delete all if specific key fails
+      // Preserva a preferência de tema ao limpar dados corrompidos
       try {
+        final themePreference = await _secureStorage.read(key: _themePreferenceKey);
         await _secureStorage.deleteAll();
+        if (themePreference != null &&
+            _validThemeModes.contains(themePreference)) {
+          await _secureStorage.write(
+            key: _themePreferenceKey,
+            value: themePreference,
+          );
+        }
       } catch (e) {
         // Silent error handling
       }
@@ -161,24 +170,32 @@ class LocalStorageService {
   }
 
   /// Save theme preference (system, light, dark)
-  Future<void> saveThemePreference(String themeMode) async {
+  Future<bool> saveThemePreference(String themeMode) async {
+    if (!_validThemeModes.contains(themeMode)) {
+      return false;
+    }
+
     try {
       await _secureStorage.write(
         key: _themePreferenceKey,
         value: themeMode,
       );
+      return true;
     } catch (e) {
-      // Silent error handling
+      return false;
     }
   }
 
-  /// Get theme preference (default: 'dark')
+  /// Get theme preference (default: 'system')
   Future<String> getThemePreference() async {
     try {
       final themeMode = await _secureStorage.read(key: _themePreferenceKey);
-      return themeMode ?? 'dark';
+      if (themeMode == null) {
+        return 'system';
+      }
+      return _validThemeModes.contains(themeMode) ? themeMode : 'system';
     } catch (e) {
-      return 'dark';
+      return 'system';
     }
   }
 }

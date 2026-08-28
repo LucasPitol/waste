@@ -13,9 +13,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting(Constants.ptLanguageCode, null);
   
-  // Inicializa o ThemeService antes de rodar o app
-  Get.put(ThemeService(), permanent: true);
-  
+  // Inicializa o ThemeService e carrega preferência salva antes de rodar o app
+  final themeService = Get.put(ThemeService(), permanent: true);
+  await themeService.loadSavedPreference();
+
   // Inicializa sessão antes de rodar o app
   final loggedIn = await initializeAppSession();
 

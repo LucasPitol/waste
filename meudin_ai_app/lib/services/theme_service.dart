@@ -6,23 +6,17 @@ import 'package:meudin_ai_app/services/local_storage_service.dart';
 class ThemeService extends GetxController {
   final LocalStorageService _localStorage = LocalStorageService();
   
-  final Rx<ThemeMode> _themeMode = ThemeMode.dark.obs;
+  final Rx<ThemeMode> _themeMode = ThemeMode.system.obs;
   
   ThemeMode get themeMode => _themeMode.value;
-  
-  @override
-  void onInit() {
-    super.onInit();
-    _loadThemePreference();
-  }
 
-  /// Carrega a preferência de tema salva
-  Future<void> _loadThemePreference() async {
+  /// Carrega a preferência de tema salva (deve ser chamado antes do runApp)
+  Future<void> loadSavedPreference() async {
     try {
       final preference = await _localStorage.getThemePreference();
       _themeMode.value = _stringToThemeMode(preference);
     } catch (e) {
-      _themeMode.value = ThemeMode.dark;
+      _themeMode.value = ThemeMode.system;
     }
   }
 
@@ -47,15 +41,23 @@ class ThemeService extends GetxController {
       case ThemeMode.dark:
         return 'dark';
       case ThemeMode.system:
-      default:
         return 'system';
     }
   }
 
   /// Atualiza o tema do aplicativo
-  Future<void> setThemeMode(ThemeMode mode) async {
+  Future<bool> setThemeMode(ThemeMode mode) async {
+    final previousMode = _themeMode.value;
     _themeMode.value = mode;
-    await _localStorage.saveThemePreference(_themeModeToString(mode));
+
+    final saved = await _localStorage.saveThemePreference(
+      _themeModeToString(mode),
+    );
+    if (!saved) {
+      _themeMode.value = previousMode;
+    }
+
+    return saved;
   }
 
   /// Obtém o nome do tema atual para exibição
@@ -66,7 +68,6 @@ class ThemeService extends GetxController {
       case ThemeMode.dark:
         return 'Escuro';
       case ThemeMode.system:
-      default:
         return 'Sistema';
     }
   }
