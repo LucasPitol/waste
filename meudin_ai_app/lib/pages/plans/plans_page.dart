@@ -286,7 +286,7 @@ class PlansPage extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'R\$ 12,90 / mês',
+            'R\$ 9,90 / mês',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,

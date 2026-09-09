@@ -52,7 +52,7 @@ class PlansPageController extends GetxController {
     PlanDisplay(
       code: PlanCode.pro,
       name: 'Pro',
-      price: 'R\$ 12,90',
+      price: 'R\$ 9,90',
       cycle: 'mensal',
       limits: PlanLimits(
         maxWallets: 20,

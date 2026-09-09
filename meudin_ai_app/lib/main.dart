@@ -11,6 +11,7 @@ import 'package:meudin_ai_app/utils/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   await initializeDateFormatting(Constants.ptLanguageCode, null);
   
   // Inicializa o ThemeService e carrega preferência salva antes de rodar o app
@@ -47,8 +48,11 @@ class MyApp extends StatelessWidget {
         SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
-            statusBarIconBrightness: brightness == Brightness.dark 
-                ? Brightness.light 
+            statusBarBrightness: brightness == Brightness.dark
+                ? Brightness.dark
+                : Brightness.light,
+            statusBarIconBrightness: brightness == Brightness.dark
+                ? Brightness.light
                 : Brightness.dark,
             systemNavigationBarColor: brightness == Brightness.dark
                 ? const Color(0xFF121212)

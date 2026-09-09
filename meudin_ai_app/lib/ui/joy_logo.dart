@@ -7,12 +7,21 @@ class JoyLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = isDark
+        ? const [
+            Color(0xFFC084FC),
+            Color(0xFFF5EEFF),
+          ]
+        : [
+            Styles.primaryColor,
+            Styles.primaryColorLight,
+          ];
+
     return ShaderMask(
+      blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) => LinearGradient(
-        colors: [
-          Styles.primaryColor,
-          Styles.primaryColorLight,
-        ],
+        colors: colors,
       ).createShader(bounds),
       child: Text(
         'Meudin',
