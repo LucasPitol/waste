@@ -7,11 +7,20 @@ class JoyLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Dark: keep full purple for most of the word, then fade only the tail
+    // toward a dark purple near the background — never the background itself.
     final colors = isDark
-        ? const [
-            Color(0xFFC084FC),
-            Color(0xFFF5EEFF),
+        ? [
+            Styles.primaryColor,
+            Styles.primaryColor,
+            Color.lerp(
+              theme.scaffoldBackgroundColor,
+              Styles.primaryColor,
+              0.42,
+            )!,
           ]
         : [
             Styles.primaryColor,
@@ -19,9 +28,9 @@ class JoyLogo extends StatelessWidget {
           ];
 
     return ShaderMask(
-      blendMode: BlendMode.srcIn,
       shaderCallback: (bounds) => LinearGradient(
         colors: colors,
+        stops: isDark ? const [0.0, 0.72, 1.0] : null,
       ).createShader(bounds),
       child: Text(
         'Meudin',
