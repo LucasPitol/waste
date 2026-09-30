@@ -691,14 +691,6 @@ class HomeModuleController extends GetxController {
               .map<Transaction>((e) => Transaction.fromJson(e))
               .toList();
 
-          // Sort by transactionDate descending (most recent first)
-          transactionDtoList.sort((a, b) {
-            if (a.transactionDate == null && b.transactionDate == null) return 0;
-            if (a.transactionDate == null) return 1;
-            if (b.transactionDate == null) return -1;
-            return b.transactionDate!.compareTo(a.transactionDate!);
-          });
-
           // Calcula saldo, receitas e despesas usando transactionDtoList
           double totalAmountTemp = 0;
           double totalRevenueTemp = 0;
@@ -766,14 +758,6 @@ class HomeModuleController extends GetxController {
         transactionDtoList = dataList
             .map<Transaction>((e) => Transaction.fromJson(e))
             .toList();
-
-        // Sort by transactionDate descending (most recent first)
-        transactionDtoList.sort((a, b) {
-          if (a.transactionDate == null && b.transactionDate == null) return 0;
-          if (a.transactionDate == null) return 1;
-          if (b.transactionDate == null) return -1;
-          return b.transactionDate!.compareTo(a.transactionDate!);
-        });
 
         // Calcula saldo, receitas e despesas usando transactionDtoList
         double totalAmountTemp = 0;

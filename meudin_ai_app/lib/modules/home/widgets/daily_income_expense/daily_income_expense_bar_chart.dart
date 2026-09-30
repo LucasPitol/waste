@@ -31,6 +31,9 @@ class DailyIncomeExpenseBarChart extends StatefulWidget {
 
 class _DailyIncomeExpenseBarChartState
     extends State<DailyIncomeExpenseBarChart> {
+  /// Space reserved above the plot so touch tooltips are not clipped on tall bars.
+  static const double _chartTopInset = 36;
+
   DailyIncomeExpenseChartMode _mode = DailyIncomeExpenseChartMode.expense;
   final ScrollController _scrollController = ScrollController();
 
@@ -211,7 +214,7 @@ class _DailyIncomeExpenseBarChartState
                       axisLabelColor: axisLabelColor,
                       formatValue:
                           DailyIncomeExpenseChartData.formatCompactAxisValue,
-                      topInset: 10,
+                      topInset: _chartTopInset,
                     ),
                     Expanded(
                       child: SingleChildScrollView(
@@ -280,11 +283,8 @@ class _DailyIncomeExpenseBarChartState
       groupsSpace: 8,
       barTouchData: BarTouchData(
         enabled: true,
-        touchTooltipData: BarTouchTooltipData(
-          tooltipRoundedRadius: 8,
-          getTooltipColor: (_) => theme.brightness == Brightness.dark
-              ? Colors.grey.shade800
-              : Colors.grey.shade900,
+        touchTooltipData: _buildTouchTooltipData(
+          theme: theme,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             if (groupIndex < 0 || groupIndex >= buckets.length) return null;
 
@@ -364,11 +364,8 @@ class _DailyIncomeExpenseBarChartState
       groupsSpace: 8,
       barTouchData: BarTouchData(
         enabled: true,
-        touchTooltipData: BarTouchTooltipData(
-          tooltipRoundedRadius: 8,
-          getTooltipColor: (_) => theme.brightness == Brightness.dark
-              ? Colors.grey.shade800
-              : Colors.grey.shade900,
+        touchTooltipData: _buildTouchTooltipData(
+          theme: theme,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             if (groupIndex < 0 || groupIndex >= buckets.length) return null;
 
@@ -392,6 +389,22 @@ class _DailyIncomeExpenseBarChartState
     );
   }
 
+  BarTouchTooltipData _buildTouchTooltipData({
+    required ThemeData theme,
+    required GetBarTooltipItem getTooltipItem,
+  }) {
+    return BarTouchTooltipData(
+      tooltipRoundedRadius: 8,
+      tooltipMargin: 8,
+      fitInsideHorizontally: true,
+      fitInsideVertically: true,
+      getTooltipColor: (_) => theme.brightness == Brightness.dark
+          ? Colors.grey.shade800
+          : Colors.grey.shade900,
+      getTooltipItem: getTooltipItem,
+    );
+  }
+
   FlTitlesData _buildTitlesData({
     required List<DailyIncomeExpenseBucket> buckets,
     required Color axisLabelColor,
@@ -404,7 +417,7 @@ class _DailyIncomeExpenseBarChartState
       topTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
-          reservedSize: 10,
+          reservedSize: _chartTopInset,
           getTitlesWidget: (_, __) => const SizedBox.shrink(),
         ),
       ),

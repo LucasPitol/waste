@@ -395,13 +395,6 @@ class InsightsModuleController extends GetxController {
         )
         .toList();
 
-    transactionDtoList.sort((a, b) {
-      if (a.transactionDate == null && b.transactionDate == null) return 0;
-      if (a.transactionDate == null) return 1;
-      if (b.transactionDate == null) return -1;
-      return b.transactionDate!.compareTo(a.transactionDate!);
-    });
-
     double totalRevenueTemp = 0;
     double totalSpendTemp = 0;
 

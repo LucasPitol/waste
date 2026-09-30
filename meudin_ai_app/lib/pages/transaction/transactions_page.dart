@@ -29,7 +29,11 @@ class TransactionsPage extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  TransactionPageHeaderWidget(startDate: startDate),
+                  TransactionPageHeaderWidget(
+                    startDate: startDate,
+                    order: controller.order,
+                    onOrderChanged: controller.setOrder,
+                  ),
                   const SizedBox(
                     width: double.infinity,
                     height: 10,

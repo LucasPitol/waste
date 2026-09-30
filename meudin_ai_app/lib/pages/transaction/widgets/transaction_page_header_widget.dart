@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meudin_ai_app/pages/transaction/transactions_page_controller.dart';
 import 'package:meudin_ai_app/ui/app_icons.dart';
 import 'package:get/get.dart';
 import 'package:meudin_ai_app/ui/joy_ui.dart';
@@ -6,8 +7,15 @@ import 'package:meudin_ai_app/utils/utils.dart';
 
 class TransactionPageHeaderWidget extends StatelessWidget {
   final DateTime startDate;
+  final TransactionListOrder order;
+  final ValueChanged<TransactionListOrder> onOrderChanged;
 
-  const TransactionPageHeaderWidget({super.key, required this.startDate});
+  const TransactionPageHeaderWidget({
+    super.key,
+    required this.startDate,
+    required this.order,
+    required this.onOrderChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +60,72 @@ class TransactionPageHeaderWidget extends StatelessWidget {
               ],
             ),
           ),
+          _OrderDropdown(
+            order: order,
+            onChanged: onOrderChanged,
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _OrderDropdown extends StatelessWidget {
+  final TransactionListOrder order;
+  final ValueChanged<TransactionListOrder> onChanged;
+
+  const _OrderDropdown({
+    required this.order,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final labelColor = theme.textTheme.bodyLarge?.color ?? Styles.primaryTextColor;
+    final muted = theme.textTheme.bodyMedium?.color?.withOpacity(0.6) ?? Colors.grey.shade600;
+
+    return PopupMenuButton<TransactionListOrder>(
+      initialValue: order,
+      onSelected: onChanged,
+      padding: EdgeInsets.zero,
+      offset: const Offset(0, 36),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppIcon(AppIcons.sortDown, size: 16, color: muted),
+            const SizedBox(width: 4),
+            Text(
+              order.label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: labelColor,
+              ),
+            ),
+            AppIcon(AppIcons.chevronDown, size: 12, color: muted),
+          ],
+        ),
+      ),
+      itemBuilder: (context) {
+        return TransactionListOrder.values.map((value) {
+          final selected = value == order;
+          return PopupMenuItem<TransactionListOrder>(
+            value: value,
+            child: Text(
+              value.label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                color: selected ? Styles.primaryColor : labelColor,
+              ),
+            ),
+          );
+        }).toList();
+      },
     );
   }
 }

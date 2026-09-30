@@ -8,8 +8,27 @@ import 'package:meudin_ai_app/services/transaction_service.dart';
 import 'package:meudin_ai_app/services/user_service.dart';
 import 'package:meudin_ai_app/utils/expense_category_visuals.dart';
 
+enum TransactionListOrder {
+  date,
+  expense,
+  revenue;
+
+  String get label {
+    switch (this) {
+      case TransactionListOrder.date:
+        return 'Data';
+      case TransactionListOrder.expense:
+        return 'Despesa';
+      case TransactionListOrder.revenue:
+        return 'Receita';
+    }
+  }
+}
+
 class TransactionsPageController extends GetxController {
   List<Transaction> transactions;
+  late List<Transaction> _apiOrder;
+  TransactionListOrder order = TransactionListOrder.date;
   final DateTime startDate;
   late TransactionService _transactionService;
   late SpendingCategoryService _spendingCategoryService;
@@ -18,16 +37,38 @@ class TransactionsPageController extends GetxController {
   List<CategoryExpense> chartCategoryExpenses = [];
 
   TransactionsPageController({
-    required this.transactions,
+    required List<Transaction> transactions,
     required this.startDate,
     List<SpendingCategory>? initialCategories,
-  }) {
+  }) : transactions = List<Transaction>.from(transactions) {
+    _apiOrder = List<Transaction>.from(this.transactions);
     _transactionService = TransactionService();
     _spendingCategoryService = SpendingCategoryService();
     if (initialCategories != null && initialCategories.isNotEmpty) {
       categories = initialCategories;
     }
     _recalculateChartCategories();
+  }
+
+  void setOrder(TransactionListOrder next) {
+    if (next == order) return;
+    order = next;
+    transactions = _orderedCopy(_apiOrder);
+    update();
+  }
+
+  List<Transaction> _orderedCopy(List<Transaction> source) {
+    final copy = List<Transaction>.from(source);
+    switch (order) {
+      case TransactionListOrder.date:
+        return copy;
+      case TransactionListOrder.expense:
+        copy.sort((a, b) => (a.amount ?? 0).compareTo(b.amount ?? 0));
+        return copy;
+      case TransactionListOrder.revenue:
+        copy.sort((a, b) => (b.amount ?? 0).compareTo(a.amount ?? 0));
+        return copy;
+    }
   }
 
   @override
@@ -94,9 +135,10 @@ class TransactionsPageController extends GetxController {
     );
 
     if (response.success && response.data is List) {
-      transactions = (response.data as List)
+      _apiOrder = (response.data as List)
           .map((e) => Transaction.fromJson(e))
           .toList();
+      transactions = _orderedCopy(_apiOrder);
       _recalculateChartCategories();
     }
   }
